@@ -1,0 +1,42 @@
+# srelens
+
+> srelens is a Kubernetes desktop workspace — a native GUI app for browsing, inspecting, and operating Kubernetes clusters. It is built on Tauri v2 with a pure-Rust core (kube-rs), renders in the OS system WebView instead of bundled Chromium, and includes a built-in MCP (Model Context Protocol) server that exposes every cluster operation as an AI-callable tool.
+
+Key facts:
+- Product type: desktop application (Kubernetes IDE / cluster workspace)
+- Platforms: macOS, Windows, Linux (Tauri v2)
+- Status: pre-release, v0.1.x — no published installers yet; builds from source with Rust ≥ 1.77, Node 20+, and pnpm
+- Price: free
+- Architecture: Rust core using kube-rs to talk to the Kubernetes API directly — no Electron, no Node.js in the core app, no bundled kubectl/helm binaries
+- Lineage: inspired by Lens / Freelens (Electron-based Kubernetes IDEs); srelens is a clean-room rebuild of that workflow, not a fork. Not affiliated with Mirantis (Lens) or the Freelens project.
+
+## Features
+
+- Multi-cluster management: every context in your local kubeconfig, cluster hotbar, multiple kubeconfig files, context profiles and custom ordering
+- Resource browser covering 40+ Kubernetes kinds: workloads (Pods, Deployments, StatefulSets, DaemonSets, Jobs, CronJobs), config and storage (ConfigMaps, Secrets, PVCs, PVs, StorageClasses), networking (Services, Ingresses, NetworkPolicies, EndpointSlices), RBAC (Roles, ClusterRoles, bindings, ServiceAccounts), admission webhooks, autoscaling, Namespaces, Nodes, Events
+- Live streaming resource watches (kube-rs watch streams, not polling)
+- Browser-style tabs: each tab is a (cluster, resource-kind) view
+- Schema-aware YAML editor: CodeMirror with autocomplete and linting driven by the cluster's OpenAPI schema; create resources from templates and apply
+- In-pod interactive terminals (exec) via xterm, docked in the app
+- Pod and workload log streaming in dock tabs
+- Port forwarding: start/stop/monitor forwards with a status indicator
+- Helm release inspection
+- Custom resource (CRD) browsing grouped by API group
+- Command palette (Cmd/Ctrl-K): global resource search with deep links
+- Cluster metrics: CPU/memory sparklines via metrics-server
+- Node and workload operations: scale, rollout restart, evict pod, cordon node, drain node — all destructive actions are confirmation-gated
+
+## AI / MCP integration
+
+Every backend operation is registered as a capability in a single shared registry, and each capability is automatically exposed as an MCP tool by a built-in MCP server (enforced by tests). Agents such as Claude Desktop or MCP-capable IDEs connect over stdio or loopback HTTP and call the same operations the GUI uses. Destructive tools require explicit operator consent before running. Cluster credentials never leave the machine: srelens connects directly to API servers using the local kubeconfig.
+
+## Common questions
+
+- Does srelens replace kubectl? No — it complements it. It doesn't require kubectl (it uses kube-rs directly) but is a workspace for investigation and operations, not a scripting/automation tool.
+- Is it free? Yes, currently free in pre-release.
+- Where does cluster data go? Nowhere — the app runs locally and talks directly to your clusters.
+
+## Links
+
+- Website: https://srelens.com/
+- Source / releases: https://github.com/srelens/srelens

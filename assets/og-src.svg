@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#F9FCFF"/>
+      <stop offset="1" stop-color="#EFF5FA"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="200" y1="160" x2="785" y2="838" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1769FF"/>
+      <stop offset="0.58" stop-color="#087AE8"/>
+      <stop offset="1" stop-color="#0AB5A1"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="286" y1="306" x2="630" y2="715" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1769FF"/>
+      <stop offset="0.70" stop-color="#0B83E5"/>
+      <stop offset="1" stop-color="#08A99B"/>
+    </linearGradient>
+    <linearGradient id="word" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#4a8bff"/>
+      <stop offset="1" stop-color="#25c7bd"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0e141b"/>
+  <!-- faint grid -->
+  <g stroke="#1d2734" stroke-width="1">
+    <line x1="0" y1="157" x2="1200" y2="157"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="0" y1="472" x2="1200" y2="472"/>
+    <line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="900" y1="0" x2="900" y2="630"/>
+  </g>
+  <!-- brand glow -->
+  <circle cx="1060" cy="70" r="330" fill="#1769FF" opacity="0.06"/>
+  <circle cx="1120" cy="140" r="220" fill="#25c7bd" opacity="0.05"/>
+
+  <!-- official app icon, inlined and scaled to ~118px -->
+  <g transform="translate(96,84) scale(0.125)">
+    <rect x="76" y="76" width="872" height="872" rx="190" fill="url(#bg)"/>
+    <g transform="translate(166 154)" fill="none">
+      <path d="M346 26 L630 190 L630 516 L346 680 L62 516 L62 190 Z" stroke="url(#brand)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="346" cy="26" r="38" fill="#1769FF" stroke="#fff" stroke-width="9"/>
+      <circle cx="62" cy="516" r="38" fill="#1769FF" stroke="#fff" stroke-width="9"/>
+      <circle cx="630" cy="516" r="38" fill="#35D28C" stroke="#fff" stroke-width="9"/>
+      <path d="M210 405 A148 148 0 0 1 265 236" stroke="url(#ring)" stroke-width="42" stroke-linecap="round"/>
+      <path d="M299 199 A148 148 0 0 1 415 201" stroke="url(#ring)" stroke-width="42" stroke-linecap="round"/>
+      <path d="M458 238 A148 148 0 0 1 491 392" stroke="url(#ring)" stroke-width="42" stroke-linecap="round"/>
+      <path d="M449 449 A148 148 0 0 1 336 499" stroke="url(#ring)" stroke-width="42" stroke-linecap="round"/>
+      <path d="M279 482 A148 148 0 0 1 210 430" stroke="url(#ring)" stroke-width="42" stroke-linecap="round"/>
+      <circle cx="352" cy="352" r="81" fill="#22324D"/>
+      <circle cx="352" cy="352" r="42" fill="#fff" opacity="0.10"/>
+      <path d="M409 409 L543 543" stroke="#26364F" stroke-width="68" stroke-linecap="round"/>
+      <path d="M410 410 L540 540" stroke="#344862" stroke-width="23" stroke-linecap="round" opacity="0.7"/>
+      <path d="M346 137 V190" stroke="#1769FF" stroke-width="32" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- wordmark: sre + lens -->
+  <text x="238" y="168" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="58" font-weight="600" letter-spacing="-1"><tspan fill="#d7e4e3">sre</tspan><tspan fill="#4a8bff">lens</tspan></text>
+
+  <text x="96" y="342" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="84" font-weight="800" fill="#d7e4e3">Your clusters.</text>
+  <text x="96" y="438" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="84" font-weight="800" fill="url(#word)">One workspace.</text>
+  <text x="96" y="532" font-family="Menlo, Courier New, monospace" font-size="27" fill="#87a09f">Kubernetes desktop workspace &#183; pure-Rust core &#183; built-in MCP server</text>
+</svg>

@@ -1,0 +1,7 @@
+# srelens — https://srelens.com
+# All crawlers welcome, including AI/answer-engine crawlers.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://srelens.com/sitemap.xml

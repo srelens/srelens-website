@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page not found — srelens</title>
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="dark light">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="icon" type="image/svg+xml" href="/assets/app-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .nf {
+      min-height: calc(100vh - 64px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 40px 24px;
+    }
+    .nf-code {
+      font-family: var(--mono);
+      font-size: 13.5px;
+      color: #93a3b5;
+      border: 1px solid #263140;
+      background: #0b1017;
+      border-radius: 10px;
+      padding: 16px 22px;
+      display: inline-block;
+      margin-bottom: 30px;
+      text-align: left;
+    }
+    .nf-code .err { color: var(--red); }
+    .nf h1 { font-size: clamp(34px, 6vw, 56px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .nf p { color: var(--muted); margin-bottom: 32px; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <nav class="nav" aria-label="Main">
+        <a class="brand" href="/"><img class="logo-dark" src="/assets/mark-dark.svg" alt="" width="26" height="26"><img class="logo-light" src="/assets/mark-light.svg" alt="" width="26" height="26"> <span>sre<span class="lens">lens</span></span></a>
+      </nav>
+    </div>
+  </header>
+  <main class="nf">
+    <div>
+      <div class="nf-code"><span class="err">Error from server (NotFound):</span> pages "this-one" not found</div>
+      <h1>404 — not in this namespace</h1>
+      <p>The page you're looking for was evicted, or never scheduled.</p>
+      <a class="btn btn-primary" href="/">Back to the workspace</a>
+    </div>
+  </main>
+</body>
+</html>
