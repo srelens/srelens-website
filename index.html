@@ -5,43 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Primary SEO -->
-  <title>srelens — Kubernetes Desktop Workspace Built in Rust</title>
+  <title>srelens — The Kubernetes Control Room. Built in Rust.</title>
   <meta name="description" content="srelens is a fast Kubernetes desktop app with a pure-Rust core — no Electron, no bundled Chromium. Browse 40+ resource kinds, stream logs, exec into pods, and drive it all from AI agents via a built-in MCP server.">
   <link rel="canonical" href="https://srelens.com/">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="author" content="srelens">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e141b">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7fafd">
-  <meta name="color-scheme" content="dark light">
-  <script>
-    (function () {
-      try {
-        var t = new URLSearchParams(location.search).get("theme") || localStorage.getItem("theme");
-        if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
-      } catch (e) {}
-    })();
-  </script>
+  <meta name="theme-color" content="#08060f">
+  <meta name="color-scheme" content="dark">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://srelens.com/">
   <meta property="og:site_name" content="srelens">
-  <meta property="og:title" content="srelens — Kubernetes Desktop Workspace Built in Rust">
-  <meta property="og:description" content="Your clusters. One workspace. A pure-Rust Kubernetes UI for focused investigation and safe, in-context operations — with a built-in MCP server for AI agents.">
+  <meta property="og:title" content="srelens — The Kubernetes Control Room. Built in Rust.">
+  <meta property="og:description" content="See everything. Break nothing. A pure-Rust Kubernetes workspace for operators and AI agents — every action callable over MCP.">
   <meta property="og:image" content="https://srelens.com/assets/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="srelens — Your clusters. One workspace.">
+  <meta property="og:image:alt" content="srelens — The Kubernetes control room.">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="srelens — Kubernetes Desktop Workspace Built in Rust">
-  <meta name="twitter:description" content="A pure-Rust Kubernetes UI for focused investigation and safe, in-context operations — with a built-in MCP server for AI agents.">
+  <meta name="twitter:title" content="srelens — The Kubernetes Control Room. Built in Rust.">
+  <meta name="twitter:description" content="See everything. Break nothing. A pure-Rust Kubernetes workspace for operators and AI agents — every action callable over MCP.">
   <meta name="twitter:image" content="https://srelens.com/assets/og-image.png">
 
   <!-- Icons / PWA -->
-  <link rel="icon" type="image/svg+xml" href="/assets/app-icon.svg">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -50,7 +41,7 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/styles.css">
 
@@ -176,18 +167,14 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-
-  <div class="announce" id="announce">
-    srelens is in pre-release — <a href="https://github.com/srelens/srelens" rel="noopener">star the repo</a> to follow releases.
-    <button class="announce-close" type="button" aria-label="Dismiss announcement">×</button>
-  </div>
+  <div class="bg-aurora" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
 
   <header class="site-header">
     <div class="wrap">
       <nav class="nav" aria-label="Main">
         <a class="brand" href="/">
-          <img class="logo-dark" src="/assets/mark-dark.svg" alt="" width="27" height="27">
-          <img class="logo-light" src="/assets/mark-light.svg" alt="" width="27" height="27">
+          <img src="/assets/logo-mark.svg" alt="" width="30" height="30">
           <span>sre<span class="lens">lens</span></span>
         </a>
         <ul class="nav-links">
@@ -196,11 +183,11 @@
           <li><a href="#compare">Why srelens</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ul>
-        <button class="theme-toggle" type="button" aria-label="Toggle color theme">
-          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-        </button>
-        <a class="nav-cta" href="https://github.com/srelens/srelens" rel="noopener">GitHub</a>
+        <span class="nav-status" aria-hidden="true"><span class="dot"></span> all systems go</span>
+        <a class="nav-cta" href="https://github.com/srelens/srelens" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+          GitHub
+        </a>
       </nav>
     </div>
   </header>
@@ -210,22 +197,29 @@
     <!-- ============ HERO ============ -->
     <section class="hero">
       <div class="wrap">
-        <p class="eyebrow"><span class="tick">●</span> Built for operators. Ready for agents.</p>
-        <h1 class="display">Your clusters.<br><span class="grad">One workspace.</span></h1>
+        <p class="hero-badge"><span class="dot"></span> all clusters operational · built for operators, ready for agents</p>
+        <h1 class="display">See everything.<br><span class="grad">Break nothing.</span></h1>
         <p class="lede">
-          srelens is a Kubernetes desktop app with a <strong>pure-Rust core</strong> —
-          no Electron, no bundled Chromium, no Node.js. Resources, live watches, logs,
-          terminals, and safe operations in a single native window, with every action
-          callable by AI agents over MCP.
+          srelens is the Kubernetes control room — a desktop workspace with a
+          <strong>pure-Rust core</strong>. No Electron, no bundled Chromium, no Node.js.
+          Resources, live watches, logs, terminals, and safe operations in one native
+          window, with every action callable by AI agents over MCP.
         </p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
           <span class="cmd-chip">
-            <code>git clone https://github.com/srelens/srelens</code>
+            <code><span class="p">$</span> git clone https://github.com/srelens/srelens</code>
             <button type="button" data-copy="git clone https://github.com/srelens/srelens" aria-label="Copy clone command">copy</button>
           </span>
         </div>
-        <p class="hero-platforms">Available on <b>macOS</b> · <b>Linux</b> · <b>Windows</b> — v0.1 pre-release</p>
+        <p class="hero-platforms"><b>macOS</b> · <b>Linux</b> · <b>Windows</b> — v0.1 pre-release</p>
+
+        <div class="slo-strip" aria-label="Why it matters">
+          <div class="slo"><span class="k">core runtime</span><div class="v ok">100<span class="u">% rust</span></div></div>
+          <div class="slo"><span class="k">resource kinds</span><div class="v info">40<span class="u">+</span></div></div>
+          <div class="slo"><span class="k">electron shipped</span><div class="v warn">0<span class="u"> bytes</span></div></div>
+          <div class="slo"><span class="k">mcp tools</span><div class="v violet">every<span class="u"> capability</span></div></div>
+        </div>
       </div>
     </section>
 
@@ -326,39 +320,38 @@
       </ul>
     </div>
 
-    <!-- ============ CREAM: WORKFLOW ============ -->
-    <section class="light" id="workflow">
+    <!-- ============ WORKFLOW LOOP ============ -->
+    <section class="section" id="workflow">
       <div class="wrap">
-        <div class="light-head">
-          <p class="eyebrow reveal"><span class="tick">●</span> Designed for operations</p>
-          <h2 class="display reveal">From signal to action, without switching tools.</h2>
+        <div class="section-head center">
+          <p class="eyebrow reveal"><span class="tick">●</span> The reliability loop</p>
+          <h2 class="reveal">From signal to action,<br>without switching tools.</h2>
           <p class="sub reveal">
             Incidents don't wait while you juggle terminals, dashboards, and YAML files.
-            srelens keeps the whole investigation in one connected workspace — from
-            signal to action.
+            srelens keeps the whole investigation in one connected workspace.
           </p>
         </div>
-        <ol class="flow-grid">
-          <li class="flow-step reveal">
-            <span class="num"><b>01</b> — discover</span>
-            <h3>Discover</h3>
-            <p>Move through workloads, networking, storage, and access control without changing tools. Every context, one hotbar away.</p>
+        <ol class="loop-grid">
+          <li class="loop-step reveal">
+            <span class="num"><b>01</b> — observe</span>
+            <h3>Observe</h3>
+            <p>Move through workloads, networking, storage, and access control without changing tools. Every context, one hotbar away. Live watches stream state as it changes.</p>
           </li>
-          <li class="flow-step reveal">
-            <span class="num"><b>02</b> — understand</span>
-            <h3>Understand</h3>
-            <p>Inspect health, relationships, events, and manifests side by side. Live watches stream changes as they happen.</p>
+          <li class="loop-step reveal">
+            <span class="num"><b>02</b> — diagnose</span>
+            <h3>Diagnose</h3>
+            <p>Inspect health, relationships, events, and manifests side by side. Follow logs, exec into containers, and forward ports — all docked next to the evidence.</p>
           </li>
-          <li class="flow-step reveal">
-            <span class="num"><b>03</b> — operate</span>
-            <h3>Operate</h3>
-            <p>Keep logs, shells, port forwards, and edits beside the resource that started the task. Destructive actions always ask first.</p>
+          <li class="loop-step reveal">
+            <span class="num"><b>03</b> — act</span>
+            <h3>Act</h3>
+            <p>Scale, restart, cordon, drain, or apply an edit right where you found the problem. Destructive actions always ask first — your error budget stays yours.</p>
           </li>
         </ol>
       </div>
     </section>
 
-    <!-- ============ DARK: FEATURE EDITORIAL ============ -->
+    <!-- ============ FEATURE EDITORIAL ============ -->
     <section class="section" id="features">
       <div class="wrap">
         <div class="section-head">
@@ -433,7 +426,7 @@
   <span class="tk-key">"replicas"</span>:  <span class="tk-num">6</span>
 <span class="tk-key">}</span>
 
-<span class="tk-dim">⚠ destructive tool — waiting for consent…</span>
+<span class="tk-warn">⚠ destructive tool — waiting for consent…</span>
 <span class="tk-ok">✓ approved by operator</span>
 
 <span class="tk-dir">←</span> <span class="tk-ok">ok</span> <span class="tk-dim">checkout-api scaled 3 → 6 · 412ms</span></pre>
@@ -506,7 +499,7 @@
       <div class="wrap">
         <div class="section-head">
           <p class="eyebrow reveal"><span class="tick">●</span> Why not Electron?</p>
-          <h2 class="reveal">The Lens workflow, without the Lens weight.</h2>
+          <h2 class="reveal">The Lens workflow, <span class="grad">without the weight.</span></h2>
           <p class="sub reveal">
             srelens is inspired by Lens and Freelens — it rebuilds what made them great
             and removes the machinery that made them heavy.
@@ -661,8 +654,8 @@ pnpm tauri dev">copy</button>
     <div class="wrap">
       <div class="footer-grid">
         <div>
-          <p class="footer-brand"><img class="logo-dark" src="/assets/mark-dark.svg" alt="" width="24" height="24"><img class="logo-light" src="/assets/mark-light.svg" alt="" width="24" height="24"> <span>sre<span class="lens">lens</span></span></p>
-          <p class="footer-tag">Kubernetes desktop workspace · built with Rust &amp; Tauri</p>
+          <p class="footer-brand"><img src="/assets/logo-mark.svg" alt="" width="26" height="26"> <span>sre<span class="lens">lens</span></span></p>
+          <p class="footer-tag">The Kubernetes control room · built with Rust &amp; Tauri</p>
         </div>
         <div class="footer-cols">
           <div class="footer-col">
