@@ -44,6 +44,38 @@
   --wrap: 1160px;
 }
 
+/* ============================================================
+   LIGHT THEME
+   Dark is default. The app mock (.window), code minis, and
+   codeblock intentionally stay dark — they read as screenshots.
+   ============================================================ */
+html[data-theme="light"] {
+  --bg: #faf9fe;
+  --bg-2: #f5f2fc;
+  --surface: #ffffff;
+  --surface-2: #f3effc;
+  --line: rgba(76, 54, 128, 0.12);
+  --line-strong: rgba(76, 54, 128, 0.2);
+
+  --accent: #7c3aed;
+  --accent-bright: #6d28d9;
+  --accent-2: #db2777;
+  --ember: #ea580c;
+
+  --ok: #059669;
+  --warn: #b45309;
+  --crit: #e11d48;
+  --info: #0369a1;
+  --violet: #7c3aed;
+
+  --text: #221838;
+  --text-dim: #584e75;
+  --text-faint: #877e9f;
+
+  --grad: linear-gradient(92deg, #7c3aed, #d6247f 52%, #ea580c);
+  --glow: 0 0 24px rgba(124, 58, 237, 0.22);
+}
+
 /* ---------- reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
@@ -140,6 +172,19 @@ code, pre, kbd { font-family: var(--mono); }
   transition: border-color .15s, box-shadow .15s, transform .15s;
 }
 .nav-cta:hover { border-color: rgba(167, 139, 250, .55); box-shadow: var(--glow); transform: translateY(-1px); }
+
+.theme-toggle {
+  display: grid; place-items: center;
+  width: 36px; height: 36px; border-radius: 10px;
+  border: 1px solid var(--line-strong); background: var(--surface);
+  color: var(--text-dim);
+  transition: border-color .15s, color .15s, transform .15s;
+}
+.theme-toggle:hover { border-color: rgba(167, 139, 250, .55); color: var(--text); transform: translateY(-1px); }
+.theme-toggle .sun { display: none; }
+.theme-toggle .moon { display: block; }
+html[data-theme="light"] .theme-toggle .sun { display: block; }
+html[data-theme="light"] .theme-toggle .moon { display: none; }
 
 @media (min-width: 900px) { .nav-status { display: inline-flex; } }
 @media (max-width: 760px) { .nav-links { display: none; } }
@@ -642,6 +687,67 @@ code, pre, kbd { font-family: var(--mono); }
 /* ---------- reveal animation ---------- */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
 .reveal.in { opacity: 1; transform: none; }
+
+/* ============================================================
+   LIGHT THEME — targeted overrides for hard-coded dark values
+   ============================================================ */
+html[data-theme="light"] body { background: var(--bg); }
+html[data-theme="light"] .bg-grid {
+  background-image:
+    linear-gradient(rgba(90, 60, 150, .07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90, 60, 150, .07) 1px, transparent 1px);
+}
+html[data-theme="light"] .bg-aurora {
+  background:
+    radial-gradient(600px 420px at 15% -5%, rgba(139, 92, 246, .12), transparent 65%),
+    radial-gradient(720px 480px at 85% -10%, rgba(219, 39, 119, .07), transparent 65%),
+    radial-gradient(900px 600px at 50% 115%, rgba(234, 88, 12, .05), transparent 60%);
+}
+html[data-theme="light"] .site-header { background: rgba(250, 249, 254, .78); }
+html[data-theme="light"] .site-footer { background: rgba(245, 242, 252, .7); }
+html[data-theme="light"] .nav-links a:hover { background: rgba(124, 58, 237, .08); }
+html[data-theme="light"] .hero-badge { background: rgba(124, 58, 237, .08); border-color: rgba(124, 58, 237, .35); }
+html[data-theme="light"] .slo-strip { background: rgba(255, 255, 255, .75); }
+html[data-theme="light"] .loop-step,
+html[data-theme="light"] .bento-cell,
+html[data-theme="light"] .dl-card {
+  background: #ffffff;
+  box-shadow: 0 2px 14px rgba(46, 26, 90, .05);
+}
+html[data-theme="light"] .faq-list details { background: rgba(255, 255, 255, .8); }
+html[data-theme="light"] .compare { background: #ffffff; }
+html[data-theme="light"] .compare td.yes { background: rgba(124, 58, 237, .06); }
+html[data-theme="light"] .win-tab.active { border-bottom-color: var(--surface-2); }
+html[data-theme="light"] .btn-primary { color: #fff7fd; }
+html[data-theme="light"] .skip-link { color: #ffffff; }
+
+/* keep the app mock, code minis, and codeblock dark in light mode */
+html[data-theme="light"] .window,
+html[data-theme="light"] .mini,
+html[data-theme="light"] .codeblock {
+  --text: #f0ecfa;
+  --text-dim: #a094b8;
+  --text-faint: #675e80;
+  --line: rgba(180, 160, 230, 0.10);
+  --line-strong: rgba(180, 160, 230, 0.18);
+  --surface: #110c20;
+  --surface-2: #161029;
+  --accent: #a78bfa;
+  --accent-bright: #c4a7ff;
+  --accent-2: #f472d0;
+  --ember: #fb923c;
+  --ok: #34d399;
+  --warn: #fbbf24;
+  --crit: #fb5e7e;
+  --info: #5eb8ff;
+  --violet: #a78bfa;
+  color: var(--text);
+}
+html[data-theme="light"] .window { box-shadow: 0 24px 60px rgba(46, 26, 90, .25), 0 0 0 1px rgba(124, 58, 237, .08); }
+html[data-theme="light"] .mini,
+html[data-theme="light"] .codeblock { box-shadow: 0 16px 44px rgba(46, 26, 90, .2); }
+html[data-theme="light"] .band-glow { background: radial-gradient(closest-side, rgba(124, 58, 237, .12), transparent); }
+html[data-theme="light"] .final::before { background: radial-gradient(640px 380px at 50% 100%, rgba(124, 58, 237, .1), transparent 70%); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

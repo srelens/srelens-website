@@ -6,7 +6,17 @@
   <title>404 — Page not found · srelens</title>
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#08060f">
-  <meta name="color-scheme" content="dark">
+  <meta name="color-scheme" content="dark light">
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem("theme"); } catch (e) {}
+      if (t !== "light" && t !== "dark") {
+        t = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      }
+      document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
   <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +34,11 @@
           <img src="/assets/logo-mark.svg" alt="" width="30" height="30">
           <span>sre<span class="lens">lens</span></span>
         </a>
-        <a class="nav-cta" href="https://github.com/srelens/srelens" rel="noopener" style="margin-left:auto">GitHub</a>
+        <button class="theme-toggle" type="button" aria-label="Toggle light/dark theme" style="margin-left:auto">
+          <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+        <a class="nav-cta" href="https://github.com/srelens/srelens" rel="noopener">GitHub</a>
       </nav>
     </div>
   </header>
@@ -37,5 +51,6 @@
       <a class="btn btn-primary" href="/">Back to the control room</a>
     </div>
   </main>
+  <script src="/main.js" defer></script>
 </body>
 </html>

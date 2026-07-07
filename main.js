@@ -6,6 +6,26 @@
   var year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
+  /* ---------- theme toggle ---------- */
+  function syncThemeColor() {
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.setAttribute(
+        "content",
+        document.documentElement.getAttribute("data-theme") === "light" ? "#faf9fe" : "#08060f"
+      );
+    }
+  }
+  syncThemeColor();
+  document.querySelectorAll(".theme-toggle").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var next = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("theme", next); } catch (e) {}
+      syncThemeColor();
+    });
+  });
+
   /* ---------- copy buttons ---------- */
   document.querySelectorAll("[data-copy]").forEach(function (btn) {
     btn.addEventListener("click", function () {
