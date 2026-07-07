@@ -2,88 +2,61 @@
 
 Marketing site for [srelens](https://srelens.com) — the Kubernetes desktop workspace built in Rust.
 
-- **Live site:** https://srelens.com
-- **This repo:** https://github.com/srelens/srelens-website
-- **App source:** https://github.com/srelens/srelens
-
-Pure static HTML/CSS/JS. No build step, no framework, no dependencies.
+Pure static HTML/CSS/JS. No build step, no framework, no dependencies. Deploy the directory as-is to any static host.
 
 ## Structure
 
 ```
 index.html        landing page (all sections + JSON-LD structured data)
 404.html          not-found page
-styles.css        all styles (design tokens at the top; dark + light themes)
+styles.css        all styles (design tokens at the top)
 main.js           progressive enhancement only — page works without JS
-CNAME             custom domain for GitHub Pages (srelens.com)
 robots.txt        crawler policy + sitemap pointer
-sitemap.xml       sitemap
+sitemap.xml       sitemap (single URL for now)
 llms.txt          AI/answer-engine summary of the product (AEO)
 site.webmanifest  PWA manifest
-_headers          security/cache headers (only honored on Netlify/Cloudflare Pages)
-vercel.json       same headers for Vercel (only honored there)
-assets/           brand SVGs, favicons, apple-touch-icon, og-image.png
-                  app-icon.svg + srelens-logo.svg are the official brand files;
-                  mark-dark.svg / mark-light.svg are per-theme header marks;
-                  og-src.svg is the editable source for og-image.png
+_headers          security + cache headers (Netlify / Cloudflare Pages)
+vercel.json       same headers for Vercel
+assets/           logo-mark.svg + logo-full.svg (brand: hexagon lens + pulse), favicons, apple-touch-icon, og-image.png
+                  og-src.svg is the editable source for the rendered OG image
 ```
 
-## Deployment
+## Deploy
 
-Deployed with **GitHub Pages** from the `main` branch root. Every push to `main`
-triggers the `pages-build-deployment` workflow — no manual steps.
+Any of these work with zero config:
 
-Custom domain is `srelens.com` (via the `CNAME` file). DNS must point the apex
-at GitHub Pages: a Cloudflare CNAME record `@ → srelens.github.io` (flattened),
-optionally `www → srelens.github.io`. Once the certificate is issued, enable
-**Enforce HTTPS** in Settings → Pages.
+- **Netlify**: drag the folder into the dashboard, or `netlify deploy --prod --dir .` (`_headers` is picked up automatically)
+- **Vercel**: `vercel --prod` (`vercel.json` is picked up automatically)
+- **Cloudflare Pages**: create a project, upload the directory (`_headers` is picked up automatically)
+- **GitHub Pages**: push to a repo, enable Pages on the root
 
-Note: GitHub Pages ignores `_headers` and `vercel.json`; they're kept in case
-the site ever moves to Netlify, Cloudflare Pages, or Vercel.
+## Before going live — update these placeholders
 
-## Theming
-
-Dark is the default. Light theme activates via `prefers-color-scheme`, the
-sun/moon toggle in the nav (persisted in `localStorage`), or a `?theme=light`
-URL parameter. Console-style surfaces (the app-window mock, code blocks, the
-clone chip) intentionally stay dark in both themes.
-
-Brand rule: **"srelens" is always lowercase**, including at sentence starts.
-
-## Regenerating assets
-
-Icons and the social image are rendered from SVG sources with `rsvg-convert`
-(`brew install librsvg`):
-
-```sh
-cd assets
-rsvg-convert -w 1200 -h 630 og-src.svg -o og-image.png
-rsvg-convert -w 32 -h 32 app-icon.svg -o favicon-32.png
-rsvg-convert -w 16 -h 16 app-icon.svg -o favicon-16.png
-rsvg-convert -w 180 -h 180 app-icon.svg -o apple-touch-icon.png
-rsvg-convert -w 192 -h 192 app-icon.svg -o icon-192.png
-rsvg-convert -w 512 -h 512 app-icon.svg -o icon-512.png
-```
-
-## When releases ship
-
-The site currently says "pre-release, build from source." When installers are
-published:
-
-1. Replace the Get started section and hero copy with download buttons
-2. Update `softwareVersion` and `releaseNotes` in the SoftwareApplication JSON-LD
-3. Update the "Can I download srelens today?" FAQ answer (page + FAQPage JSON-LD)
-4. Bump `lastmod` in `sitemap.xml`
+1. **Domain** — the site assumes `https://srelens.com`. If you use a different domain, search-and-replace `srelens.com` in `index.html`, `sitemap.xml`, `robots.txt`, and `llms.txt`.
+2. **GitHub URL** — `https://github.com/srelens/srelens` is a placeholder. Replace it in `index.html` and `llms.txt` once the real repo is public.
+3. **OG image / icons** — rendered from `assets/og-src.svg` and `assets/logo-mark.svg`. To regenerate after edits:
+   ```sh
+   cd assets
+   rsvg-convert -w 1200 -h 630 og-src.svg -o og-image.png
+   rsvg-convert -w 32 -h 32 logo-mark.svg -o favicon-32.png
+   rsvg-convert -w 16 -h 16 logo-mark.svg -o favicon-16.png
+   rsvg-convert -w 180 -h 180 logo-mark.svg -o apple-touch-icon.png
+   rsvg-convert -w 192 -h 192 logo-mark.svg -o icon-192.png
+   rsvg-convert -w 512 -h 512 logo-mark.svg -o icon-512.png
+   ```
+4. **Downloads** — when installers ship, replace the "Build from source" section and the pre-release copy in the hero/FAQ, and update the `softwareVersion` + `releaseNotes` in the SoftwareApplication JSON-LD.
+5. **Sitemap lastmod** — bump the date in `sitemap.xml` when content changes.
 
 ## SEO / AEO checklist (already included)
 
 - Title, meta description, canonical URL, robots meta
 - Open Graph + Twitter card with a 1200×630 image
 - JSON-LD: `SoftwareApplication` (with featureList), `WebSite`, `FAQPage`
-- `robots.txt` + `sitemap.xml` + `llms.txt`
-- Semantic HTML (single `h1`, real `<details>` FAQ matching the FAQPage schema)
-- No framework; system fonts fallback, `display=swap`
-- Accessible: skip link, focus states, `prefers-reduced-motion`, decorative mock `aria-hidden`
+- `robots.txt` + `sitemap.xml`
+- `llms.txt` for AI crawlers / answer engines
+- Semantic HTML (single `h1`, real `<details>` FAQ that matches the FAQPage schema)
+- Fast: no framework, ~15 KB CSS, ~2 KB JS, system-rendered fonts with `display=swap`
+- Accessible: skip link, visible focus states, `prefers-reduced-motion` respected, decorative mock marked `aria-hidden`
 
 ## Local preview
 
