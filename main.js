@@ -26,6 +26,29 @@
     });
   });
 
+  /* ---------- latest release: rewrite version labels + download links ---------- */
+  var versionEls = document.querySelectorAll("[data-version]");
+  var assetLinks = document.querySelectorAll("[data-asset]");
+  if ((versionEls.length || assetLinks.length) && window.fetch) {
+    fetch("https://api.github.com/repos/srelens/srelens/releases/latest")
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (rel) {
+        if (!rel || !rel.tag_name) return;
+        var match = /(\d+\.\d+\.\d+)/.exec(rel.tag_name);
+        if (!match) return;
+        var version = match[1];
+        versionEls.forEach(function (el) { el.textContent = "v" + version; });
+        var assetUrls = {};
+        (rel.assets || []).forEach(function (a) { assetUrls[a.name] = a.browser_download_url; });
+        assetLinks.forEach(function (link) {
+          var name = link.getAttribute("data-asset").replace("{v}", version);
+          link.href = assetUrls[name] ||
+            "https://github.com/srelens/srelens/releases/download/" + rel.tag_name + "/" + name;
+        });
+      })
+      .catch(function () { /* keep the hardcoded fallback links */ });
+  }
+
   /* ---------- copy buttons ---------- */
   document.querySelectorAll("[data-copy]").forEach(function (btn) {
     btn.addEventListener("click", function () {
