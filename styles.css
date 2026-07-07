@@ -511,6 +511,34 @@ code, pre, kbd { font-family: var(--mono); }
 .compare td.yes::before { content: "✓ "; color: var(--accent-bright); font-weight: 700; }
 .compare td.no::before { content: "✕ "; color: var(--crit); font-weight: 700; }
 
+/* ---------- download ---------- */
+.dl-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  max-width: 980px; margin: 0 auto;
+}
+.dl-card {
+  padding: 30px 28px; text-align: center;
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, rgba(22, 16, 41, .8), rgba(13, 10, 24, .8));
+  transition: border-color .2s, transform .2s;
+}
+.dl-card:hover { border-color: rgba(167, 139, 250, .4); transform: translateY(-3px); }
+.dl-card h3 { font-size: 21px; letter-spacing: -.02em; }
+.dl-card > p {
+  margin-top: 4px; margin-bottom: 20px;
+  font-family: var(--mono); font-size: 12px; color: var(--text-faint);
+}
+.dl-links { display: flex; flex-direction: column; gap: 10px; }
+.dl-btn { justify-content: center; padding: 11px 18px; font-size: 14.5px; }
+.dl-btn span { font-family: var(--mono); font-size: 12px; opacity: .75; font-weight: 400; }
+.dl-note {
+  margin-top: 28px; text-align: center;
+  font-family: var(--mono); font-size: 13px; color: var(--text-faint);
+}
+.dl-note a { color: var(--accent-2); text-decoration: none; }
+.dl-note a:hover { text-decoration: underline; }
+@media (max-width: 860px) { .dl-grid { grid-template-columns: 1fr; } }
+
 /* ---------- get started ---------- */
 .get-grid {
   display: grid; grid-template-columns: 5fr 6fr; gap: 56px; align-items: center;

@@ -57,7 +57,8 @@
     "applicationSubCategory": "Kubernetes IDE",
     "operatingSystem": "macOS, Windows, Linux",
     "softwareVersion": "0.1.0",
-    "releaseNotes": "Pre-release. Public builds are not yet available; the app can be built from source.",
+    "releaseNotes": "Pre-release. Installers for macOS, Windows, and Linux are available on GitHub Releases.",
+    "downloadUrl": "https://github.com/srelens/srelens/releases/latest",
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -158,7 +159,7 @@
         "name": "Can I download srelens today?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "srelens is in pre-release development (v0.1.x). Installers for macOS, Windows, and Linux are not published yet, but you can build and run it from source with pnpm and the Rust toolchain. Follow the project on GitHub for release announcements."
+          "text": "Yes. Pre-release installers for macOS (Apple Silicon and Intel), Windows (installer and MSI), and Linux (AppImage, deb, rpm) are published on GitHub Releases — v0.1.0 is the current build. You can also build from source with pnpm and the Rust toolchain."
         }
       }
     ]
@@ -181,6 +182,7 @@
           <li><a href="#features">Features</a></li>
           <li><a href="#mcp">MCP</a></li>
           <li><a href="#compare">Why srelens</a></li>
+          <li><a href="#download">Download</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ul>
         <span class="nav-status" aria-hidden="true"><span class="dot"></span> all systems go</span>
@@ -206,13 +208,10 @@
           window, with every action callable by AI agents over MCP.
         </p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
-          <span class="cmd-chip">
-            <code><span class="p">$</span> git clone https://github.com/srelens/srelens</code>
-            <button type="button" data-copy="git clone https://github.com/srelens/srelens" aria-label="Copy clone command">copy</button>
-          </span>
+          <a class="btn btn-primary" href="#download">Download v0.1.0</a>
+          <a class="btn btn-ghost" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
         </div>
-        <p class="hero-platforms"><b>macOS</b> · <b>Linux</b> · <b>Windows</b> — v0.1 pre-release</p>
+        <p class="hero-platforms"><b>macOS</b> · <b>Linux</b> · <b>Windows</b> — free pre-release</p>
 
         <div class="slo-strip" aria-label="Why it matters">
           <div class="slo"><span class="k">core runtime</span><div class="v ok">100<span class="u">% rust</span></div></div>
@@ -548,18 +547,56 @@
       </div>
     </section>
 
+    <!-- ============ DOWNLOAD ============ -->
+    <section class="section" id="download">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow reveal"><span class="tick">●</span> Download · v0.1.0 pre-release</p>
+          <h2 class="reveal">Get it on your desk <span class="grad">in a minute.</span></h2>
+          <p class="sub reveal">Free, direct from GitHub Releases. Pre-release builds — your OS may ask you to approve the unsigned installer.</p>
+        </div>
+        <div class="dl-grid">
+          <article class="dl-card reveal">
+            <h3>macOS</h3>
+            <p>macOS 11+</p>
+            <div class="dl-links">
+              <a class="btn btn-primary dl-btn" href="https://github.com/srelens/srelens/releases/download/srelens-v0.1.0/srelens_0.1.0_aarch64.dmg" rel="noopener">Apple Silicon <span>.dmg</span></a>
+              <a class="btn btn-ghost dl-btn" href="https://github.com/srelens/srelens/releases/download/srelens-v0.1.0/srelens_0.1.0_x64.dmg" rel="noopener">Intel <span>.dmg</span></a>
+            </div>
+          </article>
+          <article class="dl-card reveal">
+            <h3>Windows</h3>
+            <p>Windows 10+ · x64</p>
+            <div class="dl-links">
+              <a class="btn btn-primary dl-btn" href="https://github.com/srelens/srelens/releases/download/srelens-v0.1.0/srelens_0.1.0_x64-setup.exe" rel="noopener">Installer <span>.exe</span></a>
+              <a class="btn btn-ghost dl-btn" href="https://github.com/srelens/srelens/releases/download/srelens-v0.1.0/srelens_0.1.0_x64_en-US.msi" rel="noopener">MSI <span>.msi</span></a>
+            </div>
+          </article>
+          <article class="dl-card reveal">
+            <h3>Linux</h3>
+            <p>x86_64</p>
+            <div class="dl-links">
+              <a class="btn btn-primary dl-btn" href="https://github.com/srelens/srelens/releases/download/srelens-v0.1.0/srelens_0.1.0_amd64.AppImage" rel="noopener">AppImage</a>
+              <a class="btn btn-ghost dl-btn" href="https://github.com/srelens/srelens/releases/download/srelens-v0.1.0/srelens_0.1.0_amd64.deb" rel="noopener">Debian <span>.deb</span></a>
+              <a class="btn btn-ghost dl-btn" href="https://github.com/srelens/srelens/releases/download/srelens-v0.1.0/srelens-0.1.0-1.x86_64.rpm" rel="noopener">RPM <span>.rpm</span></a>
+            </div>
+          </article>
+        </div>
+        <p class="dl-note reveal">All builds · checksums · signatures → <a href="https://github.com/srelens/srelens/releases" rel="noopener">github.com/srelens/srelens/releases</a></p>
+      </div>
+    </section>
+
     <!-- ============ GET STARTED ============ -->
     <section class="section" id="get-started">
       <div class="wrap">
         <div class="get-grid">
           <div>
             <div class="section-head">
-              <p class="eyebrow reveal"><span class="tick">●</span> Pre-release</p>
-              <h2 class="reveal">Run it from source today.</h2>
+              <p class="eyebrow reveal"><span class="tick">●</span> Hacking on it?</p>
+              <h2 class="reveal">Or run it from source.</h2>
               <p class="sub reveal">
-                srelens is at v0.1 — installers aren't published yet, but the app builds
-                and runs with the standard Rust and pnpm toolchains. Star the repo to
-                hear when signed builds land.
+                Prefer to build it yourself — or want to contribute? The app builds
+                and runs with the standard Rust and pnpm toolchains.
               </p>
             </div>
             <p class="get-note reveal">
@@ -630,7 +667,7 @@ pnpm tauri dev">copy</button>
           <details>
             <summary>Can I download srelens today?</summary>
             <div class="faq-a">
-              <p>srelens is in pre-release development (v0.1.x). Installers aren't published yet, but you can <a href="#get-started">build and run it from source</a> with pnpm and the Rust toolchain. Follow the repo on GitHub for release announcements.</p>
+              <p>Yes — pre-release installers for macOS (Apple Silicon and Intel), Windows, and Linux (AppImage, deb, rpm) are on the <a href="#download">download section</a> and <a href="https://github.com/srelens/srelens/releases" rel="noopener">GitHub Releases</a>. You can also <a href="#get-started">build from source</a> with pnpm and the Rust toolchain.</p>
             </div>
           </details>
         </div>
@@ -643,8 +680,8 @@ pnpm tauri dev">copy</button>
       <h2 class="display">Ready when the pager <span class="grad">goes off.</span></h2>
       <p>Light enough to leave open all day. Honest enough to ask before it deletes anything.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
-        <a class="btn btn-ghost" href="#get-started">Build from source</a>
+        <a class="btn btn-primary" href="#download">Download v0.1.0</a>
+        <a class="btn btn-ghost" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
       </div>
     </section>
 
@@ -664,13 +701,14 @@ pnpm tauri dev">copy</button>
               <li><a href="#features">Features</a></li>
               <li><a href="#mcp">MCP</a></li>
               <li><a href="#compare">Why srelens</a></li>
+              <li><a href="#download">Download</a></li>
             </ul>
           </div>
           <div class="footer-col">
             <h4>Project</h4>
             <ul>
               <li><a href="https://github.com/srelens/srelens" rel="noopener">GitHub</a></li>
-              <li><a href="#get-started">Build from source</a></li>
+              <li><a href="https://github.com/srelens/srelens/releases" rel="noopener">Releases</a></li>
               <li><a href="#faq">FAQ</a></li>
             </ul>
           </div>
