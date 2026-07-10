@@ -425,7 +425,7 @@
             <div class="copy reveal">
               <span class="fr-num">/ 03</span>
               <h3>Every capability is an MCP tool</h3>
-              <p>One registry drives the GUI and a built-in MCP server — if srelens can do it, your agent can do it. Claude Desktop and MCP-capable IDEs connect over stdio or loopback HTTP. Destructive tools wait for <code>consent</code> before they run.</p>
+              <p>One registry drives the GUI and a built-in MCP server — backend capabilities are also available as MCP tools. Claude Desktop and MCP-capable IDEs can connect over stdio or loopback HTTP. Mutating tools require an explicit <code>_confirm: true</code> argument before they run.</p>
             </div>
             <div class="mini reveal" aria-label="Example MCP tool call">
               <div class="mini-bar">mcp · srelens — agent session</div>
@@ -436,11 +436,11 @@
   <span class="tk-key">"kind"</span>:      <span class="tk-str">"Deployment"</span>,
   <span class="tk-key">"namespace"</span>: <span class="tk-str">"payments"</span>,
   <span class="tk-key">"name"</span>:      <span class="tk-str">"checkout-api"</span>,
-  <span class="tk-key">"replicas"</span>:  <span class="tk-num">6</span>
+  <span class="tk-key">"replicas"</span>:  <span class="tk-num">6</span>,
+<span class="tk-key">"_confirm"</span>:  <span class="tk-dir">true</span>
 <span class="tk-key">}</span>
 
-<span class="tk-warn">⚠ destructive tool — waiting for consent…</span>
-<span class="tk-ok">✓ approved by operator</span>
+<span class="tk-ok">✓ explicit confirmation supplied</span>
 
 <span class="tk-dir">←</span> <span class="tk-ok">ok</span> <span class="tk-dim">checkout-api scaled 3 → 6 · 412ms</span></pre>
               </div>
