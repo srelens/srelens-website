@@ -153,7 +153,7 @@
         "name": "How does the AI (MCP) integration work?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Every backend operation in srelens — listing pods, streaming logs, scaling a deployment, draining a node — is registered as a capability in a single shared registry, and each capability is automatically exposed as a Model Context Protocol (MCP) tool by a built-in MCP server. Agents like Claude Desktop or MCP-capable IDEs connect over stdio or loopback HTTP and call the same operations the GUI uses. Destructive tools are consent-gated, so an agent can't delete or drain anything without explicit approval."
+          "text": "Supported backend capabilities in srelens are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned."
         }
       },
       {
