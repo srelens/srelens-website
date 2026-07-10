@@ -129,7 +129,7 @@
         "name": "How is srelens different from Lens or Freelens?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Lens and Freelens are Electron apps: they ship a bundled Chromium browser and a Node.js main process, and reach clusters through bundled kubectl and helm binaries plus a proxy layer. srelens rebuilds the same operator workflow on Tauri v2 — it renders in your OS system WebView and its core is pure Rust, talking to the Kubernetes API server directly through kube-rs. That means a much smaller binary, lower memory use, and no Node.js in the core app. srelens also adds something Lens-family apps don't have: a built-in MCP server that exposes every cluster operation as a tool AI agents can call."
+          "text": "Lens and Freelens are Electron apps: they ship a bundled Chromium browser and a Node.js main process, and reach clusters through bundled kubectl and helm binaries plus a proxy layer. srelens rebuilds the same operator workflow on Tauri v2 — it renders in your OS system WebView and its core is pure Rust, talking to the Kubernetes API server directly through kube-rs. This avoids bundling Chromium and keeps Node.js out of the core application runtime. srelens also adds something Lens-family apps don't have: a built-in MCP server that exposes every cluster operation as a tool AI agents can call."
         }
       },
       {
@@ -651,7 +651,7 @@ pnpm tauri dev">copy</button>
           <details>
             <summary>How is srelens different from Lens or Freelens?</summary>
             <div class="faq-a">
-              <p>Lens and Freelens are Electron apps: they ship a bundled Chromium browser and a Node.js main process, and reach clusters through bundled <code>kubectl</code> and <code>helm</code> binaries plus a proxy layer. srelens rebuilds the same operator workflow on Tauri v2 — it renders in your OS system WebView and its core is pure Rust, talking to the API server directly through kube-rs. That means a much smaller binary, lower memory use, and no Node.js in the core app. It also adds something the Lens family doesn't have: a built-in MCP server for AI agents.</p>
+              <p>Lens and Freelens are Electron apps: they ship a bundled Chromium browser and a Node.js main process, and reach clusters through bundled <code>kubectl</code> and <code>helm</code> binaries plus a proxy layer. srelens rebuilds the same operator workflow on Tauri v2 — it renders in your OS system WebView and its core is pure Rust, talking to the API server directly through kube-rs. This avoids bundling Chromium and keeps Node.js out of the core application runtime. It also adds something the Lens family doesn't have: a built-in MCP server for AI agents.</p>
             </div>
           </details>
           <details>
