@@ -29,7 +29,7 @@
   <meta property="og:site_name" content="srelens">
   <meta property="og:title" content="srelens — The Kubernetes control room">
   <meta property="og:description" content="A local-first Kubernetes desktop workspace built in Rust for engineers and AI agents. Investigate, analyse, and take safe action across clusters.">
- <meta property="og:image" content="https://srelens.com/assets/og-image.png">
+  <meta property="og:image" content="https://srelens.com/assets/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="srelens — The Kubernetes control room.">
@@ -62,9 +62,9 @@
     "@type": "SoftwareApplication",
     "name": "srelens",
     "url": "https://srelens.com/",
-    "description": "srelens is a Kubernetes desktop workspace with a pure-Rust core, built on Tauri v2. It provides multi-cluster resource browsing, live watches, log streaming, in-pod terminals, port forwarding, Helm release views, a schema-aware YAML editor, and a built-in MCP server that exposes every operation as an AI-callable tool.",
+    "description": "srelens is an open-source, local-first Kubernetes desktop workspace built with Tauri v2 and a pure-Rust core. It provides multi-cluster resource browsing, live watches, YAML editing, logs, pod terminals, port forwarding, Helm views, metrics, safe cluster operations, and MCP access for supported backend capabilities.",
     "applicationCategory": "DeveloperApplication",
-    "applicationSubCategory": "Kubernetes IDE",
+    "applicationSubCategory": "Kubernetes desktop workspace",
     "operatingSystem": "macOS, Windows, Linux",
     "softwareVersion": "0.2.0",
     "releaseNotes": "Beta. Installers for macOS, Windows, and Linux are available on GitHub Releases.",
@@ -94,7 +94,7 @@
       "Command palette with global resource search",
       "Node operations: cordon, drain, evict — confirmation-gated",
       "Cluster CPU and memory metrics via metrics-server",
-      "Built-in MCP server exposing every capability as an AI-callable tool"
+      "Built-in MCP server exposing supported backend capabilities as AI-callable tools"
     ]
   }
   </script>
@@ -129,7 +129,7 @@
         "name": "How is srelens different from Lens or Freelens?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Lens and Freelens are Electron apps: they ship a bundled Chromium browser and a Node.js main process, and reach clusters through bundled kubectl and helm binaries plus a proxy layer. srelens rebuilds the same operator workflow on Tauri v2 — it renders in your OS system WebView and its core is pure Rust, talking to the Kubernetes API server directly through kube-rs. This avoids bundling Chromium and keeps Node.js out of the core application runtime. srelens also adds something Lens-family apps don't have: a built-in MCP server that exposes every cluster operation as a tool AI agents can call."
+          "text": "srelens uses Tauri v2 with a pure-Rust core and connects directly to Kubernetes API servers through kube-rs. It follows a familiar Kubernetes desktop workflow while providing local-first operation and MCP access for supported backend capabilities. srelens is independently developed and is not affiliated with Mirantis Lens or the Freelens project."
         }
       },
       {
@@ -137,7 +137,7 @@
         "name": "What platforms does srelens run on?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "srelens targets macOS, Windows, and Linux desktops via Tauri v2. Android groundwork exists in the codebase but desktop is the focus."
+          "text": "srelens targets macOS, Windows, and Linux desktops via Tauri v2."
         }
       },
       {
@@ -145,7 +145,7 @@
         "name": "Does srelens replace kubectl?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No — it complements it. srelens talks to the Kubernetes API directly through the Rust kube-rs client rather than shelling out to kubectl, so it doesn't need kubectl installed. But it's a workspace for investigation and day-to-day operations, not a replacement for scripting and automation you do with kubectl in CI or the terminal."
+          "text": "No. srelens complements kubectl by giving engineers a visual workspace for investigation, analysis, and day-to-day cluster operations. The built-in local terminal still lets you use kubectl and other command-line tools when needed."
         }
       },
       {
@@ -195,7 +195,7 @@
           <li><a href="#download">Download</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ul>
-        <span class="nav-status" aria-hidden="true"><span class="dot"></span> all systems go</span>
+        <span class="nav-status" aria-hidden="true"><span class="dot"></span> beta available</span>
         <button class="theme-toggle" type="button" aria-label="Toggle light/dark theme">
           <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -229,8 +229,8 @@
         <div class="slo-strip" aria-label="Why it matters">
           <div class="slo"><span class="k">core runtime</span><div class="v ok">100<span class="u">% rust</span></div></div>
           <div class="slo"><span class="k">resource kinds</span><div class="v info">40<span class="u">+</span></div></div>
-          <div class="slo"><span class="k">electron shipped</span><div class="v warn">0<span class="u"> bytes</span></div></div>
-          <div class="slo"><span class="k">mcp tools</span><div class="v violet">every<span class="u"> capability</span></div></div>
+          <div class="slo"><span class="k">electron runtime</span><div class="v warn">not<span class="u"> used</span></div></div>
+          <div class="slo"><span class="k">mcp access</span><div class="v violet">built-in<span class="u"> server</span></div></div>
         </div>
       </div>
     </section>
@@ -370,8 +370,8 @@
           <p class="eyebrow reveal"><span class="tick">●</span> The workspace in detail</p>
           <h2 class="reveal">The whole investigation, <span class="grad">in one window.</span></h2>
           <p class="sub reveal">
-            The Lens-style workflow you know, rebuilt clean on React 19 — and backed
-            by Rust instead of a fleet of bundled binaries.
+            srelens brings investigation, analysis, and safe cluster operations into one
+            local-first workspace, built with React 19, Tauri v2, and a pure-Rust core.
           </p>
         </div>
 
@@ -423,8 +423,8 @@
           <div class="feature-row" id="mcp">
             <div class="copy reveal">
               <span class="fr-num">/ 03</span>
-              <h3>Every capability is an MCP tool</h3>
-              <p>One registry drives the GUI and a built-in MCP server — backend capabilities are also available as MCP tools. Claude Desktop and MCP-capable IDEs can connect over stdio or loopback HTTP. Mutating tools require an explicit <code>_confirm: true</code> argument before they run.</p>
+              <h3>Backend capabilities available through MCP</h3>
+              <p>One shared registry powers the desktop application and the built-in MCP server. Supported backend capabilities are available as MCP tools. Claude Desktop and MCP-capable IDEs can connect over stdio or loopback HTTP. Mutating tools require an explicit <code>_confirm: true</code> argument before they run.</p>
             </div>
             <div class="mini reveal" aria-label="Example MCP tool call">
               <div class="mini-bar">mcp · srelens — agent session</div>
@@ -510,7 +510,7 @@
     <section class="section" id="compare">
       <div class="wrap">
         <div class="section-head">
-          <p class="eyebrow reveal"><span class="tick">●</span> Why not Electron?</p>
+          <p class="eyebrow reveal"><span class="tick">●</span> Architecture</p>
           <h2 class="reveal">A familiar workflow, <span class="grad">rebuilt in Rust.</span></h2>
          <p class="sub reveal">
             srelens follows a familiar Kubernetes desktop workflow while using Tauri v2
@@ -523,36 +523,36 @@
             <table>
               <thead>
                 <tr>
-                  <th scope="col"></th>
-                  <th scope="col" class="srelens">srelens</th>
-                  <th scope="col">Electron-era Kubernetes IDEs</th>
+                  <th scope="col">Architecture choice</th>
+                  <th scope="col" class="srelens">srelens approach</th>
+                  <th scope="col">What it means</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <th scope="row">Rendering</th>
                   <td class="yes">OS system WebView via Tauri v2</td>
-                  <td class="no">Bundled Chromium shipped in every install</td>
+                  <td>No bundled Chromium in the application package</td>
                 </tr>
                 <tr>
                   <th scope="row">Core runtime</th>
-                  <td class="yes">Pure Rust — no Node.js in the core app</td>
-                  <td class="no">Node.js main process</td>
+                  <td class="yes">Pure Rust using kube-rs and tokio</td>
+                  <td>No Node.js in the core application runtime</td>
                 </tr>
                 <tr>
                   <th scope="row">Cluster access</th>
-                  <td class="yes">kube-rs, direct to the API server</td>
-                  <td class="no">Bundled kubectl + helm binaries behind a proxy layer</td>
+                  <td class="yes">Direct to the Kubernetes API server</td>
+                  <td>Uses local kubeconfig credentials without an intermediary srelens cloud service</td>
                 </tr>
                 <tr>
                   <th scope="row">AI agents</th>
-                  <td class="yes">Built-in MCP server, every capability exposed</td>
-                  <td class="no">—</td>
+                  <td class="yes">Built-in MCP server</td>
+                  <td>Supported backend capabilities are available to MCP-capable clients</td>
                 </tr>
                 <tr>
-                  <th scope="row">UI stack</th>
-                  <td class="yes">React 19, rebuilt clean-room</td>
-                  <td class="no">Legacy React 17 + MUI lineage</td>
+                  <th scope="row">Project model</th>
+                  <td class="yes">Open source under the MIT license</td>
+                  <td>Code, releases, issues, and roadmap are public on GitHub</td>
                 </tr>
               </tbody>
             </table>
@@ -566,8 +566,8 @@
       <div class="wrap">
         <div class="section-head center">
           <p class="eyebrow reveal"><span class="tick">●</span> Download · <span data-version>v0.2.0</span> beta</p>
-          <h2 class="reveal">Get it on your desk <span class="grad">in a minute.</span></h2>
-          <p class="sub reveal">Free, direct from GitHub Releases. Beta builds — your OS may ask you to approve the unsigned installer.</p>
+          <h2 class="reveal">Download the latest <span class="grad">srelens beta.</span></h2>
+          <p class="sub reveal">Free, direct from GitHub Releases. Review the release notes and your operating system’s first-launch prompts.</p>
         </div>
         <div class="dl-grid">
           <article class="dl-card reveal">
@@ -596,7 +596,7 @@
             </div>
           </article>
         </div>
-        <p class="dl-note reveal">All builds · checksums · signatures → <a href="https://github.com/srelens/srelens/releases" rel="noopener">github.com/srelens/srelens/releases</a></p>
+        <p class="dl-note reveal">All builds and release notes → <a href="https://github.com/srelens/srelens/releases" rel="noopener">github.com/srelens/srelens/releases</a></p>
       </div>
     </section>
 
@@ -614,8 +614,8 @@
               </p>
             </div>
             <p class="get-note reveal">
-              Requires Rust ≥ 1.77, Node 20+, pnpm, and the
-              <a href="https://tauri.app/start/prerequisites/" rel="noopener">Tauri v2 prerequisites</a>
+              Requires Rust (stable), Node.js 22+, pnpm 9+, and the
+              <a href="https://v2.tauri.app/start/prerequisites/" rel="noopener">Tauri v2 prerequisites</a>
               for your platform.
             </p>
           </div>
@@ -623,12 +623,12 @@
             <button class="copy-btn" type="button" data-copy="git clone https://github.com/srelens/srelens
 cd srelens
 pnpm install
-pnpm tauri dev">copy</button>
+pnpm dev">copy</button>
 <pre><span class="c"># clone and run the desktop app</span>
 <span class="p">$</span> git clone https://github.com/srelens/srelens
 <span class="p">$</span> cd srelens
 <span class="p">$</span> pnpm install
-<span class="p">$</span> pnpm tauri dev</pre>
+<span class="p">$</span> pnpm dev</pre>
           </div>
         </div>
       </div>
@@ -651,25 +651,25 @@ pnpm tauri dev">copy</button>
           <details>
             <summary>How is srelens different from Lens or Freelens?</summary>
             <div class="faq-a">
-              <p>Lens and Freelens are Electron apps: they ship a bundled Chromium browser and a Node.js main process, and reach clusters through bundled <code>kubectl</code> and <code>helm</code> binaries plus a proxy layer. srelens rebuilds the same operator workflow on Tauri v2 — it renders in your OS system WebView and its core is pure Rust, talking to the API server directly through kube-rs. This avoids bundling Chromium and keeps Node.js out of the core application runtime. It also adds something the Lens family doesn't have: a built-in MCP server for AI agents.</p>
+              <p>srelens uses Tauri v2 with a pure-Rust core and connects directly to Kubernetes API servers through kube-rs. It follows a familiar Kubernetes desktop workflow while providing local-first operation and MCP access for supported backend capabilities. srelens is independently developed and is not affiliated with Mirantis Lens or the Freelens project.</p>
             </div>
           </details>
           <details>
             <summary>What platforms does srelens run on?</summary>
             <div class="faq-a">
-              <p>macOS, Windows, and Linux desktops via Tauri v2. Android groundwork exists in the codebase, but desktop is the focus.</p>
+              <p>macOS, Windows, and Linux desktops via Tauri v2.</p>
             </div>
           </details>
           <details>
             <summary>Does srelens replace kubectl?</summary>
             <div class="faq-a">
-              <p>No — it complements it. srelens talks to the Kubernetes API directly through kube-rs rather than shelling out to <code>kubectl</code>, so it doesn't need kubectl installed. But it's a workspace for investigation and day-to-day operations, not a replacement for the scripting and automation you do in the terminal or CI.</p>
+              <p>No. srelens complements kubectl by giving engineers a visual workspace for investigation, analysis, and day-to-day cluster operations. The built-in local terminal still lets you use <code>kubectl</code> and other command-line tools when needed.</p>
             </div>
           </details>
           <details>
             <summary>How does the AI (MCP) integration work?</summary>
             <div class="faq-a">
-              <p>Every backend operation — listing pods, streaming logs, scaling a deployment, draining a node — is registered as a capability in one shared registry, and each capability is automatically exposed as a Model Context Protocol tool by the built-in MCP server. Agents connect over stdio (Claude Desktop, IDEs) or loopback HTTP and call the same operations the GUI uses. Destructive tools are consent-gated: nothing gets deleted or drained without explicit approval.</p>
+              <p>Supported backend capabilities are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit <code>_confirm: true</code> argument before they run. Additional MCP security and audit controls are planned.</p>
             </div>
           </details>
           <details>
@@ -681,7 +681,7 @@ pnpm tauri dev">copy</button>
           <details>
             <summary>Can I download srelens today?</summary>
             <div class="faq-a">
-              <p>Yes — pre-release installers for macOS (Apple Silicon and Intel), Windows, and Linux (AppImage, deb, rpm) are on the <a href="#download">download section</a> and <a href="https://github.com/srelens/srelens/releases" rel="noopener">GitHub Releases</a>. You can also <a href="#get-started">build from source</a> with pnpm and the Rust toolchain.</p>
+              <p>Yes — beta installers for macOS (Apple Silicon and Intel), Windows, and Linux are available in the <a href="#download">download section</a> and on <a href="https://github.com/srelens/srelens/releases" rel="noopener">GitHub Releases</a>. You can also <a href="#get-started">build srelens from source</a>.</p>
             </div>
           </details>
         </div>
@@ -690,9 +690,9 @@ pnpm tauri dev">copy</button>
 
     <!-- ============ FINAL CTA ============ -->
     <section class="final">
-      <p class="eyebrow"><span class="tick">●</span> One workspace, every cluster</p>
+      <p class="eyebrow"><span class="tick">●</span> One workspace for your clusters</p>
       <h2 class="display">Ready when the pager <span class="grad">goes off.</span></h2>
-      <p>Light enough to leave open all day. Honest enough to ask before it deletes anything.</p>
+      <p>Local-first, open source, and confirmation-gated for destructive actions.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="#download">Download <span data-version>v0.2.0</span></a>
         <a class="btn btn-ghost" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
