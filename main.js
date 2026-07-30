@@ -26,6 +26,17 @@
     });
   });
 
+  /* ---------- navigation scroll progress ---------- */
+  function updateScrollProgress() {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var pageProgress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    var progress = 0.18 + pageProgress * 0.82;
+    document.body.style.setProperty("--scroll-progress", progress.toFixed(4));
+  }
+  updateScrollProgress();
+  window.addEventListener("scroll", updateScrollProgress, { passive: true });
+  window.addEventListener("resize", updateScrollProgress);
+
   /* ---------- latest release: rewrite version labels + download links ---------- */
   var versionEls = document.querySelectorAll("[data-version]");
   var assetLinks = document.querySelectorAll("[data-asset]");
@@ -59,6 +70,71 @@
         btn.textContent = "copied";
         setTimeout(function () { btn.textContent = prev; }, 1400);
       });
+    });
+  });
+
+  /* ---------- product walkthrough dialog ---------- */
+  var tourDialog = document.querySelector("[data-tour-dialog]");
+  var tourVideo = document.querySelector("[data-tour-video]");
+  document.querySelectorAll("[data-tour-open]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (!tourDialog || typeof tourDialog.showModal !== "function") {
+        window.location.href = "/assets/media/srelens-product-tour.mp4";
+        return;
+      }
+      tourDialog.showModal();
+      if (tourVideo) {
+        tourVideo.currentTime = 0;
+        tourVideo.play().catch(function () { /* controls remain available */ });
+      }
+    });
+  });
+  function closeTour() {
+    if (!tourDialog) return;
+    if (tourVideo) tourVideo.pause();
+    tourDialog.close();
+  }
+  document.querySelectorAll("[data-tour-close]").forEach(function (btn) {
+    btn.addEventListener("click", closeTour);
+  });
+  if (tourDialog) {
+    tourDialog.addEventListener("click", function (event) {
+      if (event.target === tourDialog) closeTour();
+    });
+    tourDialog.addEventListener("close", function () {
+      if (tourVideo) tourVideo.pause();
+    });
+  }
+
+  /* ---------- interactive incident drill ---------- */
+  var incidentTabs = Array.from(document.querySelectorAll("[data-incident-tab]"));
+  var incidentPanels = Array.from(document.querySelectorAll("[data-incident-panel]"));
+  function showIncidentStep(step, focusTab) {
+    incidentTabs.forEach(function (tab) {
+      var selected = tab.getAttribute("data-incident-tab") === step;
+      tab.setAttribute("aria-selected", String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      if (selected && focusTab) tab.focus();
+    });
+    incidentPanels.forEach(function (panel) {
+      panel.hidden = panel.getAttribute("data-incident-panel") !== step;
+    });
+  }
+  incidentTabs.forEach(function (tab, index) {
+    tab.addEventListener("click", function () {
+      showIncidentStep(tab.getAttribute("data-incident-tab"), false);
+    });
+    tab.addEventListener("keydown", function (event) {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      var delta = event.key === "ArrowRight" ? 1 : -1;
+      var next = (index + delta + incidentTabs.length) % incidentTabs.length;
+      showIncidentStep(incidentTabs[next].getAttribute("data-incident-tab"), true);
+    });
+  });
+  document.querySelectorAll("[data-incident-next]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      showIncidentStep(btn.getAttribute("data-incident-next"), false);
     });
   });
 

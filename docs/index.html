@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>srelens Documentation — Install, Connect, and Operate Kubernetes</title>
+  <meta name="description" content="Start using srelens: install the desktop app, connect kubeconfig contexts, investigate Kubernetes resources, and configure MCP clients.">
+  <link rel="canonical" href="https://srelens.com/docs/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#08060f">
+  <script>
+    (function(){var t=null;try{var m=location.search.match(/[?&]theme=(light|dark)/);if(m)t=m[1]}catch(e){}try{if(!t)t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.setAttribute("data-theme",t)})();
+  </script>
+  <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/enterprise.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap"><nav class="nav" aria-label="Main">
+    <a class="brand" href="/"><img src="/assets/logo-mark.svg" alt="" width="30" height="30"><span>sre<span class="lens">lens</span></span></a>
+    <ul class="nav-links"><li><a href="/features/">Features</a></li><li><a href="/mcp/">MCP</a></li><li><a href="/compare/">Compare</a></li><li><a class="active" href="/docs/">Docs</a></li><li><a href="/download/">Download</a></li><li><a href="/faq/">FAQ</a></li></ul>
+    <span class="nav-status" aria-hidden="true"><span class="dot"></span> beta available</span>
+    <button class="theme-toggle" type="button" aria-label="Toggle light/dark theme"><svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2"/></svg></button>
+    <a class="nav-cta" href="https://github.com/srelens/srelens" rel="noopener">GitHub</a>
+  </nav></div></header>
+
+  <main id="main">
+    <section class="page-hero"><div class="wrap">
+      <div class="crumbs"><a href="/">srelens</a> / Documentation</div>
+      <h1>Operate srelens with confidence.</h1>
+      <p class="lede">Install the app, connect your existing kubeconfig, and move from cluster signal to diagnosis and guarded action.</p>
+      <div class="article-meta"><span>Desktop</span><span>macOS · Windows · Linux</span><span>Beta</span></div>
+    </div></section>
+
+    <section class="section"><div class="wrap content-shell">
+      <aside class="content-nav" aria-label="Documentation navigation">
+        <strong>Documentation</strong>
+        <ul>
+          <li><a class="active" href="/docs/">Quick start</a></li>
+          <li><a href="/guides/">SRE guides</a></li>
+          <li><a href="/security/">Security</a></li>
+          <li><a href="/architecture/">Architecture</a></li>
+          <li><a href="/mcp/">MCP setup</a></li>
+          <li><a href="/download/">Installers</a></li>
+        </ul>
+      </aside>
+      <article class="prose">
+        <h2 id="quick-start">Five-minute quick start</h2>
+        <ol>
+          <li><a href="/download/">Download srelens</a> for your operating system and complete the platform installation.</li>
+          <li>Launch the app. srelens reads the default kubeconfig and files listed in <code>KUBECONFIG</code>.</li>
+          <li>Select a context from the searchable first-launch list.</li>
+          <li>Open <strong>Overview</strong> to confirm node readiness, workload health, and recent warnings.</li>
+          <li>Press <strong>Cmd/Ctrl-K</strong> to navigate to a resource or search across the open cluster.</li>
+        </ol>
+        <div class="operator-callout">
+          <strong>No account or cluster-side installation</strong>
+          <p>The desktop app connects directly to Kubernetes API servers with the credentials already available through your local kubeconfig.</p>
+        </div>
+
+        <h2 id="clusters">Connect and distinguish clusters</h2>
+        <p>Settings → Contexts manages kubeconfig sources and visual identity. Add files or paste YAML, then assign a display name, short label, logo, and colour without changing the underlying kubeconfig. Contexts with duplicate names remain visible and are prefixed by their source file.</p>
+        <p>Use the cluster hotbar to switch between open contexts. Local development clusters such as kind, k3d, minikube, and Docker Desktop are grouped separately from remote clusters.</p>
+
+        <h2 id="investigate">Investigate a workload</h2>
+        <ol>
+          <li>Open Workloads → Pods or Deployments and scope the list by namespace.</li>
+          <li>Select a resource to inspect its Overview, YAML, Events, relationships, restart counts, conditions, and metrics when available.</li>
+          <li>Open Logs from a pod or workload. Use <strong>prev</strong> for the previous crashed container instance and <strong>ts</strong> for timestamps.</li>
+          <li>Use Shell for an in-pod exec session. For minimal or distroless containers, attach an ephemeral debug container.</li>
+          <li>Before changing YAML, open <strong>Changes</strong> to run a dry-run diff. Applying uses server-side apply and asks for confirmation.</li>
+        </ol>
+
+        <h2 id="actions">Take guarded action</h2>
+        <p>Actions are preflighted against Kubernetes RBAC. An unavailable action is disabled with the reason. Destructive operations—such as delete, evict, drain, or Helm uninstall—require confirmation.</p>
+        <table>
+          <thead><tr><th>Resource</th><th>Common actions</th></tr></thead>
+          <tbody>
+            <tr><td>Pod</td><td>Logs, shell, debug container, edit, forward, evict, delete</td></tr>
+            <tr><td>Workload</td><td>Logs, edit, scale, rollout restart, delete</td></tr>
+            <tr><td>Node</td><td>Cordon, uncordon, drain, node shell</td></tr>
+            <tr><td>Helm release</td><td>Inspect, upgrade, rollback, rendered-diff preview, uninstall</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="mcp">Connect an MCP client</h2>
+        <p>Open Settings → MCP. Run the loopback HTTP server or install the <code>srelens</code> CLI for stdio, then copy the configuration for your MCP client.</p>
+        <pre><code>{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens",
+      "args": ["--mcp-stdio"]
+    }
+  }
+}</code></pre>
+        <p>Mutating tools require an explicit <code>"_confirm": true</code> argument. Review tool calls and use Kubernetes RBAC appropriate to the target cluster.</p>
+
+        <h2 id="troubleshooting">When something fails</h2>
+        <ul>
+          <li>Check Settings → Application logs for connection, authentication, and unexpected application errors.</li>
+          <li>Use the Toolbox context-health view to identify missing exec-auth plugins or cloud CLIs.</li>
+          <li>If metrics are unavailable, confirm that Metrics Server is installed and accessible with your RBAC.</li>
+          <li>For reproducible bugs, open a <a href="https://github.com/srelens/srelens/issues" rel="noopener">GitHub issue</a> with the application log details you can safely share.</li>
+        </ul>
+      </article>
+    </div></section>
+  </main>
+
+  <footer class="site-footer"><div class="wrap"><div class="footer-grid"><div><p class="footer-brand"><img src="/assets/logo-mark.svg" alt="" width="26" height="26"> <span>sre<span class="lens">lens</span></span></p><p class="footer-tag">The Kubernetes control room · built with Rust &amp; Tauri</p></div><div class="footer-cols"><div class="footer-col"><h4>Learn</h4><ul><li><a href="/docs/">Documentation</a></li><li><a href="/guides/">SRE guides</a></li><li><a href="/security/">Security</a></li><li><a href="/architecture/">Architecture</a></li></ul></div><div class="footer-col"><h4>Project</h4><ul><li><a href="https://github.com/srelens/srelens" rel="noopener">GitHub</a></li><li><a href="/download/">Download</a></li><li><a href="/faq/">FAQ</a></li></ul></div></div></div><div class="footer-meta"><span>© <span id="year">2026</span> srelens.</span><span>MIT licensed · beta</span></div></div></footer>
+  <script src="/main.js" defer></script>
+</body>
+</html>

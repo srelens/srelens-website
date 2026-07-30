@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kubernetes Troubleshooting Guides for SREs — srelens</title>
+  <meta name="description" content="Practical Kubernetes troubleshooting guides for CrashLoopBackOff, OOMKilled containers, and failed deployments using events, logs, metrics, YAML, and guarded actions.">
+  <link rel="canonical" href="https://srelens.com/guides/"><meta name="robots" content="index, follow"><meta name="theme-color" content="#08060f">
+  <script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.setAttribute("data-theme",t)})();</script>
+  <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/enterprise.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap"><nav class="nav" aria-label="Main"><a class="brand" href="/"><img src="/assets/logo-mark.svg" alt="" width="30" height="30"><span>sre<span class="lens">lens</span></span></a><ul class="nav-links"><li><a href="/features/">Features</a></li><li><a href="/mcp/">MCP</a></li><li><a href="/compare/">Compare</a></li><li><a class="active" href="/docs/">Docs</a></li><li><a href="/download/">Download</a></li><li><a href="/faq/">FAQ</a></li></ul><span class="nav-status" aria-hidden="true"><span class="dot"></span> operator guides</span><button class="theme-toggle" type="button" aria-label="Toggle light/dark theme"><svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/></svg></button><a class="nav-cta" href="/download/">Download</a></nav></div></header>
+  <main id="main">
+    <section class="page-hero"><div class="wrap"><div class="crumbs"><a href="/">srelens</a> / <a href="/docs/">Docs</a> / SRE guides</div><h1>Troubleshoot the failure in front of you.</h1><p class="lede">Decision-oriented Kubernetes runbooks that connect symptoms to evidence and evidence to a safe next action.</p></div></section>
+    <section class="section"><div class="wrap">
+      <div class="guide-grid">
+        <a class="guide-card" href="/guides/crashloopbackoff/"><span>Pod lifecycle</span><h2>Debug CrashLoopBackOff</h2><p>Use restart history, previous-instance logs, events, and container state to isolate the failing process.</p><b>→</b></a>
+        <a class="guide-card" href="/guides/oomkilled/"><span>Resource pressure</span><h2>Investigate OOMKilled pods</h2><p>Confirm exit 137, compare limits with observed memory, and review a controlled resource change.</p><b>→</b></a>
+        <a class="guide-card" href="/guides/failed-deployment/"><span>Rollout health</span><h2>Diagnose a failed deployment</h2><p>Trace rollout state through revisions, ReplicaSets, pods, events, logs, and manifest changes.</p><b>→</b></a>
+      </div>
+      <div class="operator-callout" style="margin-top:42px"><strong>Use the guide, not a blind mutation</strong><p>These runbooks prioritize evidence gathering. The correct action depends on your workload, deployment process, RBAC, and incident policy.</p></div>
+    </div></section>
+    <section class="final"><h2 class="display">Keep the whole investigation in one window.</h2><p>Browse resources, follow relationships, stream logs, inspect YAML, and take confirmation-gated action.</p><div class="hero-actions"><a class="btn btn-primary" href="/download/">Download srelens</a><a class="btn btn-ghost" href="/docs/">Read the quick start</a></div></section>
+  </main>
+  <footer class="site-footer"><div class="wrap"><div class="footer-grid"><div><p class="footer-brand"><img src="/assets/logo-mark.svg" alt="" width="26" height="26"> <span>sre<span class="lens">lens</span></span></p></div><div class="footer-cols"><div class="footer-col"><h4>Learn</h4><ul><li><a href="/docs/">Documentation</a></li><li><a href="/security/">Security</a></li><li><a href="/architecture/">Architecture</a></li></ul></div><div class="footer-col"><h4>Project</h4><ul><li><a href="https://github.com/srelens/srelens" rel="noopener">GitHub</a></li><li><a href="/download/">Download</a></li></ul></div></div></div></div></footer><script src="/main.js" defer></script>
+</body></html>

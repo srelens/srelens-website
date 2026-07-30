@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-30T00:00:00Z",
+  "title": "Design System: srelens",
+  "extensions": {
+    "colorMeta": {
+      "control-violet": {
+        "role": "primary",
+        "displayName": "Control Violet",
+        "canonical": "#6d44c5",
+        "tonalRamp": ["#1b102e", "#2d1851", "#46287a", "#5834a9", "#6d44c5", "#9874df", "#c4a7ff", "#eadfff"]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Operational Paper",
+        "canonical": "#f7f5fa",
+        "tonalRamp": ["#21192c", "#392c4a", "#5a4d68", "#81738d", "#aaa0b3", "#cec7d4", "#e7e2eb", "#f7f5fa"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Operational Ink",
+        "canonical": "#21192c",
+        "tonalRamp": ["#0d0b14", "#21192c", "#3b3048", "#554a61", "#786c82", "#a59aac", "#d0c8d6", "#f2edf8"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Homepage thesis only." },
+      "headline": { "displayName": "Headline", "purpose": "Page and section headings." },
+      "body": { "displayName": "Body", "purpose": "Long-form product explanation." },
+      "data": { "displayName": "Data", "purpose": "Code, versions, paths, and measured state." }
+    },
+    "shadows": [
+      {
+        "name": "evidence-window",
+        "value": "0 18px 48px rgba(34, 22, 52, .18)",
+        "purpose": "Separation for real application screenshots only."
+      }
+    ],
+    "motion": [
+      {
+        "name": "evidence-open",
+        "value": "800ms cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "Single initial reveal of the homepage product capture."
+      }
+    ],
+    "breakpoints": [
+      { "name": "compact", "value": "720px" },
+      { "name": "medium", "value": "920px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single high-priority action in a decision area.",
+      "html": "<button class=\"ds-btn-primary\">Download srelens</button>",
+      "css": ".ds-btn-primary{min-height:44px;padding:10px 17px;border:1px solid #6d44c5;border-radius:3px;background:#6d44c5;color:#fff;font:600 15px 'Source Sans 3',sans-serif}.ds-btn-primary:hover{background:#5834a9;border-color:#5834a9}.ds-btn-primary:focus-visible{outline:2px solid #6d44c5;outline-offset:4px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "A supporting action that remains visually subordinate.",
+      "html": "<button class=\"ds-btn-secondary\">View source</button>",
+      "css": ".ds-btn-secondary{min-height:44px;padding:10px 17px;border:1px solid rgba(67,47,97,.28);border-radius:3px;background:transparent;color:#21192c;font:600 15px 'Source Sans 3',sans-serif}.ds-btn-secondary:hover{background:#f1edf6}.ds-btn-secondary:focus-visible{outline:2px solid #6d44c5;outline-offset:4px}"
+    },
+    {
+      "name": "Incident Drill",
+      "kind": "custom",
+      "description": "Accessible signal, diagnosis, and guarded-action workflow in the homepage first viewport.",
+      "html": "<div class=\"ds-incident\"><nav><button>Signal</button><button>Diagnose</button><button>Act</button></nav><section><small>prod-eu / checkout-api</small><h3>5xx rate rising</h3><p>Error rate 12.4%</p></section></div>",
+      "css": ".ds-incident{overflow:hidden;border:1px solid rgba(67,47,97,.28);border-top:3px solid #6d44c5;border-radius:5px;background:#fff}.ds-incident nav{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid rgba(67,47,97,.28)}.ds-incident button{padding:12px 8px;border:0;border-right:1px solid rgba(67,47,97,.14);background:transparent}.ds-incident section{padding:21px 20px}.ds-incident h3{font:600 20px Archivo,sans-serif}"
+    },
+    {
+      "name": "Compact Panel Group",
+      "kind": "custom",
+      "description": "Dense shared structure for capabilities, comparisons, and download options.",
+      "html": "<div class=\"ds-panel-group\"><section><h3>Live watches</h3><p>Resource state updates in place.</p></section><section><h3>Local access</h3><p>Direct connection through kubeconfig.</p></section></div>",
+      "css": ".ds-panel-group{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.ds-panel-group section{padding:22px 24px;border:1px solid rgba(67,47,97,.14);border-radius:6px;background:#fff}.ds-panel-group h3{margin:0 0 9px;font:600 21px Archivo,sans-serif}.ds-panel-group p{margin:0;color:#554a61;font:400 15px 'Source Sans 3',sans-serif}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Operations Brief",
+    "overview": "srelens uses the language of mature infrastructure operations: change-control records, status boards, incident packets, and precise product evidence. It is quiet, information-dense, and direct. The website avoids theatrical tech effects and lets the real application carry the product story.",
+    "keyCharacteristics": [
+      "Real product captures are the primary visual evidence.",
+      "Compact technical panels keep repeated content dense and scannable.",
+      "Blueprint geometry appears as restrained structural annotation.",
+      "Violet communicates brand and primary action; green is reserved for success.",
+      "Dense technical content remains calm through alignment and whitespace.",
+      "Motion is reserved for the initial reveal of product evidence."
+    ],
+    "rules": [
+      { "name": "The Status Color Rule", "body": "Green, amber, and red describe state. Violet carries brand and primary action. None becomes ambient decoration.", "section": "colors" },
+      { "name": "The Instrument Type Rule", "body": "Monospace describes a machine-readable value. It is never used merely to make an element feel technical.", "section": "typography" },
+      { "name": "The Evidence Elevation Rule", "body": "Shadows are reserved for actual captured product surfaces. Marketing containers remain flat.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do lead with real application captures and specific workflow copy.",
+      "Do use compact bordered panels to organize repeated information.",
+      "Do preserve semantic status colors and visible focus."
+    ],
+    "donts": [
+      "Don't use gradient text, colored glows, aurora backgrounds, or decorative glass.",
+      "Don't inflate feature or comparison panels with decorative empty space.",
+      "Don't add customer proof, benchmarks, or enterprise claims without real evidence."
+    ]
+  }
+}
