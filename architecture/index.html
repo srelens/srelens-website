@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>srelens Architecture — Rust, Tauri, kube-rs, and MCP</title>
+  <meta name="description" content="Explore the srelens architecture: React and Tauri desktop shell, pure-Rust backend, kube-rs integration, capability registry, event streams, and MCP server.">
+  <link rel="canonical" href="https://srelens.com/architecture/"><meta name="robots" content="index, follow"><meta name="theme-color" content="#08060f">
+  <script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.setAttribute("data-theme",t)})();</script>
+  <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/enterprise.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap"><nav class="nav" aria-label="Main"><a class="brand" href="/"><img src="/assets/logo-mark.svg" alt="" width="30" height="30"><span>sre<span class="lens">lens</span></span></a><ul class="nav-links"><li><a href="/features/">Features</a></li><li><a href="/mcp/">MCP</a></li><li><a href="/compare/">Compare</a></li><li><a class="active" href="/docs/">Docs</a></li><li><a href="/download/">Download</a></li><li><a href="/faq/">FAQ</a></li></ul><span class="nav-status" aria-hidden="true"><span class="dot"></span> pure Rust core</span><button class="theme-toggle" type="button" aria-label="Toggle light/dark theme"><svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/></svg></button><a class="nav-cta" href="https://github.com/srelens/srelens" rel="noopener">Source</a></nav></div></header>
+  <main id="main">
+    <section class="page-hero"><div class="wrap"><div class="crumbs"><a href="/">srelens</a> / <a href="/docs/">Docs</a> / Architecture</div><h1>One capability registry, two operating surfaces.</h1><p class="lede">The desktop interface and MCP server dispatch through the same typed Rust capability layer, while dedicated event channels carry long-lived Kubernetes streams.</p><div class="article-meta"><span>React 19</span><span>Tauri v2</span><span>Rust · kube-rs</span><span>MCP</span></div></div></section>
+    <section class="section"><div class="wrap content-shell">
+      <aside class="content-nav" aria-label="Documentation navigation"><strong>Documentation</strong><ul><li><a href="/docs/">Quick start</a></li><li><a href="/guides/">SRE guides</a></li><li><a href="/security/">Security</a></li><li><a class="active" href="/architecture/">Architecture</a></li><li><a href="/mcp/">MCP setup</a></li></ul></aside>
+      <article class="prose">
+        <h2>System map</h2>
+        <div class="architecture-plate" role="img" aria-label="Architecture flow from React interface through Tauri transport to the Rust capability registry, Kubernetes integration, and MCP server">
+          <div class="architecture-flow">
+            <div class="architecture-node"><strong>React 19 + TypeScript interface</strong><span>resource browser · logs · terminal · YAML · settings</span></div>
+            <div class="architecture-arrow">TAURI COMMANDS + EVENTS ↓</div>
+            <div class="architecture-node"><strong>Tauri v2 desktop shell</strong><span>transport shim · command bridge · native window and updater</span></div>
+            <div class="architecture-arrow">INVOKE CAPABILITY ↓</div>
+            <div class="architecture-node"><strong>Pure-Rust capability registry</strong><span>id · input/output schema · safety annotations · async handler</span></div>
+            <div class="architecture-arrow">DISPATCH ↓</div>
+            <div class="architecture-split">
+              <div class="architecture-node"><strong>kube-rs</strong><span>clients · watches · actions · Helm · metrics · CRDs</span></div>
+              <div class="architecture-node"><strong>Long-lived streams</strong><span>logs · exec · watches · port forwards</span></div>
+              <div class="architecture-node"><strong>MCP server</strong><span>stdio · loopback HTTP · shared schemas</span></div>
+            </div>
+          </div>
+        </div>
+
+        <h2>The capability registry</h2>
+        <p>Every registered backend operation carries an identifier, JSON input and output schemas, safety annotations, and an asynchronous handler. One registration becomes available to both the Tauri command bridge and the MCP tool surface.</p>
+        <p>A completeness test in the application repository asserts that registered capabilities and the MCP tool list remain aligned. This makes the shared surface testable rather than relying on documentation convention.</p>
+
+        <h2>Streaming operations</h2>
+        <p>Resource watches, pod exec sessions, log tails, and port forwards do not fit a request/response call. Dedicated start, stop, input, and resize commands push updates through Tauri events while the frontend maintains the visible session.</p>
+
+        <h2>Local Kubernetes access</h2>
+        <p>The Rust backend resolves kubeconfig contexts and constructs kube-rs clients. Cluster browsing, RBAC checks, schema discovery, metrics, Helm inspection, and operational actions remain local to the application process and the target Kubernetes API server.</p>
+
+        <h2>Why Tauri</h2>
+        <p>Tauri uses the operating system WebView for the React interface while native operations stay in Rust. srelens does not bundle an Electron runtime. The transport shim is the only frontend module that imports the Tauri API, keeping application state and UI logic testable outside the desktop shell.</p>
+
+        <h2>Read the source</h2>
+        <ul>
+          <li><a href="https://github.com/srelens/srelens/tree/main/crates/capability" rel="noopener">Capability registry</a></li>
+          <li><a href="https://github.com/srelens/srelens/tree/main/crates/kube" rel="noopener">Kubernetes integration</a></li>
+          <li><a href="https://github.com/srelens/srelens/tree/main/crates/mcp" rel="noopener">MCP server</a></li>
+          <li><a href="https://github.com/srelens/srelens/blob/main/docs/DEVELOPMENT.md" rel="noopener">Developer guide</a></li>
+        </ul>
+      </article>
+    </div></section>
+  </main>
+  <footer class="site-footer"><div class="wrap"><div class="footer-grid"><div><p class="footer-brand"><img src="/assets/logo-mark.svg" alt="" width="26" height="26"> <span>sre<span class="lens">lens</span></span></p><p class="footer-tag">The Kubernetes control room</p></div><div class="footer-cols"><div class="footer-col"><h4>Learn</h4><ul><li><a href="/docs/">Documentation</a></li><li><a href="/guides/">SRE guides</a></li><li><a href="/security/">Security</a></li></ul></div><div class="footer-col"><h4>Project</h4><ul><li><a href="https://github.com/srelens/srelens" rel="noopener">GitHub</a></li><li><a href="/download/">Download</a></li></ul></div></div></div></div></footer><script src="/main.js" defer></script>
+</body></html>

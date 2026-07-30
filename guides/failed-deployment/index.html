@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Diagnose a Failed Kubernetes Deployment — srelens Guide</title>
+  <meta name="description" content="Diagnose a failed Kubernetes Deployment by tracing rollout conditions, ReplicaSets, pods, events, logs, YAML changes, and guarded recovery actions.">
+  <link rel="canonical" href="https://srelens.com/guides/failed-deployment/"><meta name="robots" content="index, follow"><meta name="theme-color" content="#08060f">
+  <script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.setAttribute("data-theme",t)})();</script>
+  <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/enterprise.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to diagnose a failed Kubernetes Deployment","description":"Trace rollout conditions through ReplicaSets, pods, events, logs, manifest changes, and safe recovery options.","step":[{"@type":"HowToStep","name":"Read controller rollout state"},{"@type":"HowToStep","name":"Follow the active revision"},{"@type":"HowToStep","name":"Collect pod-level evidence"},{"@type":"HowToStep","name":"Review manifest and history"},{"@type":"HowToStep","name":"Choose the smallest safe recovery"},{"@type":"HowToStep","name":"Confirm rollout health"}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap"><nav class="nav" aria-label="Main"><a class="brand" href="/"><img src="/assets/logo-mark.svg" alt="" width="30" height="30"><span>sre<span class="lens">lens</span></span></a><ul class="nav-links"><li><a href="/features/">Features</a></li><li><a href="/mcp/">MCP</a></li><li><a href="/compare/">Compare</a></li><li><a class="active" href="/docs/">Docs</a></li><li><a href="/download/">Download</a></li><li><a href="/faq/">FAQ</a></li></ul><button class="theme-toggle" type="button" aria-label="Toggle light/dark theme"><svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/></svg></button><a class="nav-cta" href="/download/">Download</a></nav></div></header>
+  <main id="main">
+    <section class="page-hero"><div class="wrap"><div class="crumbs"><a href="/">srelens</a> / <a href="/guides/">SRE guides</a> / Failed deployment</div><h1>Trace a failed deployment through its rollout graph.</h1><p class="lede">Start with controller conditions, then follow the active revision to ReplicaSets and pods before choosing rollback, edit, or restart.</p><div class="article-meta"><span>Deployment</span><span>15-minute runbook</span><span>Rollback-aware</span></div></div></section>
+    <section class="section"><div class="wrap content-shell">
+      <aside class="content-nav" aria-label="Guide contents"><strong>In this guide</strong><ul><li><a href="#state">Read rollout state</a></li><li><a href="#graph">Follow relationships</a></li><li><a href="#evidence">Collect evidence</a></li><li><a href="#diff">Review manifest</a></li><li><a href="#recover">Choose recovery</a></li></ul></aside>
+      <article class="prose">
+        <h2 id="state">1. Read the controller state</h2>
+        <p>Open Workloads → Deployments and select the affected controller. Compare desired, updated, available, and unavailable replica counts. Read progressing and available conditions before interpreting the rollout as stuck or failed.</p>
+        <p>Check recent events for quota denials, scheduling failures, image pull errors, probe failures, or admission-policy rejection.</p>
+
+        <h2 id="graph">2. Follow the active revision</h2>
+        <p>Use the workload relationships to open its ReplicaSets and pods. Identify whether the newest revision created pods, whether old replicas remain available, and whether failures are isolated to the new template.</p>
+        <table><thead><tr><th>Observation</th><th>Likely investigation path</th></tr></thead><tbody>
+          <tr><td>No new pods</td><td>Admission, quota, selector, controller, or image configuration</td></tr>
+          <tr><td>Pods Pending</td><td>Scheduling events, resources, volumes, affinity, or taints</td></tr>
+          <tr><td>Pods crash looping</td><td>Previous logs, container state, probes, command, configuration</td></tr>
+          <tr><td>Pods Running but unavailable</td><td>Readiness probe, service dependency, or application initialization</td></tr>
+        </tbody></table>
+
+        <h2 id="evidence">3. Collect pod-level evidence</h2>
+        <p>Open a failing pod. Read its Overview, Events, and container state. Stream workload logs to compare replicas; use <strong>prev</strong> for crashed instances. Open a shell or attach an ephemeral debug container only when it adds evidence unavailable through status, logs, and events.</p>
+
+        <h2 id="diff">4. Review the manifest and rollout history</h2>
+        <p>Inspect image tags, commands, environment sources, volumes, probes, security context, and resource policy. Compare the change with the previous revision in your delivery system. srelens can show workload revisions and a dry-run YAML diff before a server-side apply.</p>
+
+        <h2 id="recover">5. Choose the smallest safe recovery</h2>
+        <ul>
+          <li><strong>Rollback</strong> when the current revision is known-bad and the previous revision remains valid.</li>
+          <li><strong>Fix forward</strong> when the correction is understood, reviewed, and safer than restoring the prior version.</li>
+          <li><strong>Rollout restart</strong> when configuration or credentials changed outside the pod template and restarting is an intentional reload mechanism—not as a generic first response.</li>
+          <li><strong>Scale</strong> only after considering capacity, dependencies, and how the change affects the incident.</li>
+        </ul>
+        <div class="operator-callout"><strong>Prefer the deployment pipeline</strong><p>During an incident, direct edits can restore service but also create configuration drift. Record the exact mutation and reconcile it with source control immediately.</p></div>
+
+        <h2>6. Confirm rollout health</h2>
+        <p>Watch updated and available replicas converge, confirm readiness across the new pods, and monitor events and logs through the original failure window. Validate the user-facing or service-level symptom that started the investigation.</p>
+      </article>
+    </div></section>
+  </main>
+  <footer class="site-footer"><div class="wrap"><div class="footer-meta"><span>Part of the <a href="/guides/">srelens SRE guide library</a></span><span><a href="/docs/">Documentation</a> · <a href="/security/">Security</a></span></div></div></footer><script src="/main.js" defer></script>
+</body></html>

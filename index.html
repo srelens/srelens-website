@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Primary SEO -->
-  <title>srelens — Local-first Kubernetes Desktop Workspace</title>
-  <meta name="description" content="srelens is an open-source, local-first Kubernetes desktop workspace for SREs, platform engineers, and DevOps engineers, built with a pure-Rust core.">
+  <title>srelens — Open-Source Kubernetes Desktop Client Built in Rust</title>
+  <meta name="description" content="srelens is an open-source Kubernetes desktop client (GUI) for macOS, Windows, and Linux. Built in Rust with Tauri v2, it combines live resource browsing, logs, terminals, YAML editing, and a built-in MCP server for AI agents.">
   <link rel="canonical" href="https://srelens.com/">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="author" content="srelens">
@@ -15,7 +15,8 @@
   <script>
     (function () {
       var t = null;
-      try { t = localStorage.getItem("theme"); } catch (e) {}
+      try { var m = location.search.match(/[?&]theme=(light|dark)/); if (m) t = m[1]; } catch (e) {}
+      try { if (!t) t = localStorage.getItem("theme"); } catch (e) {}
       if (t !== "light" && t !== "dark") {
         t = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
       }
@@ -28,18 +29,18 @@
   <meta property="og:url" content="https://srelens.com/">
   <meta property="og:site_name" content="srelens">
   <meta property="og:title" content="srelens — The Kubernetes control room">
-  <meta property="og:description" content="A local-first Kubernetes desktop workspace built in Rust for engineers and AI agents. Investigate, analyse, and take safe action across clusters.">
-  <meta property="og:image" content="https://srelens.com/assets/og-image.png">
+  <meta property="og:description" content="A local-first Kubernetes desktop workspace built in Rust for engineers and AI agents. Real screenshots, live clusters, one window.">
+  <meta property="og:image" content="https://srelens.com/assets/og/og-home.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="srelens — The Kubernetes control room.">
+  <meta property="og:image:alt" content="srelens cluster overview dashboard for a three-node Kubernetes cluster.">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="srelens — The Kubernetes control room">
-  <meta name="twitter:description" content="A local-first Kubernetes desktop workspace built in Rust for engineers and AI agents. Investigate, analyse, and take safe action across clusters.">
-  <meta name="twitter:image" content="https://srelens.com/assets/og-image.png">
+  <meta name="twitter:description" content="A local-first Kubernetes desktop workspace built in Rust for engineers and AI agents.">
+  <meta name="twitter:image" content="https://srelens.com/assets/og/og-home.jpg">
 
   <!-- Icons / PWA -->
   <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg">
@@ -51,9 +52,11 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
 
+  <link rel="preload" as="image" href="/assets/shots/dark-overview.webp" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/enterprise.css">
 
   <!-- Structured data: SoftwareApplication -->
   <script type="application/ld+json">
@@ -66,15 +69,31 @@
     "applicationCategory": "DeveloperApplication",
     "applicationSubCategory": "Kubernetes desktop workspace",
     "operatingSystem": "macOS, Windows, Linux",
-    "softwareVersion": "0.2.0",
+    "softwareVersion": "0.3.0",
     "releaseNotes": "Beta. Installers for macOS, Windows, and Linux are available on GitHub Releases.",
-    "downloadUrl": "https://github.com/srelens/srelens/releases/latest",
+    "downloadUrl": "https://srelens.com/download/",
+    "screenshot": [
+      "https://srelens.com/assets/shots/dark-overview.webp",
+      "https://srelens.com/assets/shots/dark-nodes.webp",
+      "https://srelens.com/assets/shots/dark-namespaces.webp",
+      "https://srelens.com/assets/shots/dark-events.webp",
+      "https://srelens.com/assets/shots/dark-pods.webp",
+      "https://srelens.com/assets/shots/dark-deployments.webp",
+      "https://srelens.com/assets/shots/dark-pod-detail.webp",
+      "https://srelens.com/assets/shots/dark-yaml.webp",
+      "https://srelens.com/assets/shots/dark-logs.webp",
+      "https://srelens.com/assets/shots/dark-terminal.webp",
+      "https://srelens.com/assets/shots/dark-services.webp",
+      "https://srelens.com/assets/shots/dark-port-forwards.webp",
+      "https://srelens.com/assets/shots/dark-helm.webp",
+      "https://srelens.com/assets/shots/dark-mcp.webp"
+    ],
     "offers": {
       "@type": "Offer",
       "price": "0",
       "priceCurrency": "USD"
     },
-    "image": "https://srelens.com/assets/og-image.png",
+    "image": "https://srelens.com/assets/og/og-home.jpg",
     "publisher": {
       "@type": "Organization",
       "name": "srelens",
@@ -110,73 +129,27 @@
   }
   </script>
 
-  <!-- Structured data: FAQPage -->
+  <!-- Structured data: Organization -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is srelens?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "srelens is a Kubernetes desktop workspace — a native GUI app for browsing, inspecting, and operating Kubernetes clusters. It reads the contexts in your local kubeconfig and gives you resource browsing across 40+ kinds, live watches, log streaming, in-pod terminals, port forwarding, Helm release views, and a schema-aware YAML editor, all in one window. It is built on Tauri v2 with a pure-Rust core."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How is srelens different from Lens or Freelens?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "srelens uses Tauri v2 with a pure-Rust core and connects directly to Kubernetes API servers through kube-rs. It follows a familiar Kubernetes desktop workflow while providing local-first operation and MCP access for supported backend capabilities. srelens is independently developed and is not affiliated with Mirantis Lens or the Freelens project."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What platforms does srelens run on?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "srelens targets macOS, Windows, and Linux desktops via Tauri v2."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does srelens replace kubectl?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. srelens complements kubectl by giving engineers a visual workspace for investigation, analysis, and day-to-day cluster operations. The built-in local terminal still lets you use kubectl and other command-line tools when needed."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How does the AI (MCP) integration work?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Supported backend capabilities in srelens are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Where do my cluster credentials go?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Nowhere. srelens runs entirely on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There is no intermediary cloud service between the app and your API servers."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I download srelens today?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. Beta installers for macOS (Apple Silicon and Intel), Windows, and Linux are published on GitHub Releases. The latest build is always available there, and you can also build srelens from source."
-        }
-      }
-    ]
+    "@type": "Organization",
+    "name": "srelens",
+    "url": "https://srelens.com/",
+    "logo": "https://srelens.com/assets/icon-512.png",
+    "sameAs": ["https://github.com/srelens/srelens"]
   }
   </script>
 </head>
 <body>
+  <!--
+  THESIS: srelens is an operational instrument, not a neon SaaS promise; the site refuses gradient-led card stacks.
+  OWN-WORLD: violet-tinted paper and ink, ruled layouts, square controls, real product captures, and measured data labels derived from the logo.
+  STORY: see the live control room, understand its local Rust architecture, compare it honestly, then download it.
+  FIRST VIEWPORT: a left-aligned operational brief and decision rail lead directly into the full-width real cluster overview; download remains the primary action.
+  FORM: enterprise operations brief, assigned direction 6, seed cfc1e530.
+  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+  -->
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="bg-aurora" aria-hidden="true"></div>
   <div class="bg-grid" aria-hidden="true"></div>
@@ -189,11 +162,11 @@
           <span>sre<span class="lens">lens</span></span>
         </a>
         <ul class="nav-links">
-          <li><a href="#features">Features</a></li>
-          <li><a href="#mcp">MCP</a></li>
-          <li><a href="#compare">Why srelens</a></li>
-          <li><a href="#download">Download</a></li>
-          <li><a href="#faq">FAQ</a></li>
+          <li><a href="/features/">Features</a></li>
+          <li><a href="/mcp/">MCP</a></li>
+          <li><a href="/compare/">Compare</a></li>
+          <li><a href="/docs/">Docs</a></li><li><a href="/download/">Download</a></li>
+          <li><a href="/faq/">FAQ</a></li>
         </ul>
         <span class="nav-status" aria-hidden="true"><span class="dot"></span> beta available</span>
         <button class="theme-toggle" type="button" aria-label="Toggle light/dark theme">
@@ -221,105 +194,82 @@
           Backend capabilities are also available to AI agents through MCP.
         </p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#download">Download <span data-version>v0.2.0</span></a>
+          <a class="btn btn-primary" href="/download/">Download <span data-version>v0.3.0</span></a>
           <a class="btn btn-ghost" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
         </div>
-        <p class="hero-platforms"><b>macOS</b> · <b>Linux</b> · <b>Windows</b> — free beta</p>
+        <p class="hero-platforms"><b>macOS</b> · <b>Linux</b> · <b>Windows</b> · free beta</p>
 
-        <div class="slo-strip" aria-label="Why it matters">
-          <div class="slo"><span class="k">core runtime</span><div class="v ok">100<span class="u">% rust</span></div></div>
-          <div class="slo"><span class="k">resource kinds</span><div class="v info">40<span class="u">+</span></div></div>
-          <div class="slo"><span class="k">electron runtime</span><div class="v warn">not<span class="u"> used</span></div></div>
-          <div class="slo"><span class="k">mcp access</span><div class="v violet">built-in<span class="u"> server</span></div></div>
+        <div class="slo-strip incident-drill" aria-label="Interactive incident drill">
+          <div class="slo-title">
+            <span>Incident drill</span>
+            <span><i class="incident-live"></i> live signal</span>
+          </div>
+          <div class="incident-tabs" role="tablist" aria-label="Incident workflow">
+            <button id="incident-tab-signal" type="button" role="tab" aria-selected="true" aria-controls="incident-signal" data-incident-tab="signal"><b>01</b> Signal</button>
+            <button id="incident-tab-diagnose" type="button" role="tab" aria-selected="false" aria-controls="incident-diagnose" data-incident-tab="diagnose" tabindex="-1"><b>02</b> Diagnose</button>
+            <button id="incident-tab-act" type="button" role="tab" aria-selected="false" aria-controls="incident-act" data-incident-tab="act" tabindex="-1"><b>03</b> Act</button>
+          </div>
+          <section class="incident-panel" id="incident-signal" role="tabpanel" aria-labelledby="incident-tab-signal" data-incident-panel="signal">
+            <p class="incident-context">prod-eu / checkout-api</p>
+            <div class="incident-heading"><strong>5xx rate rising</strong><span class="incident-severity">SEV-2</span></div>
+            <dl class="incident-facts">
+              <div><dt>Error rate</dt><dd>12.4%</dd></div>
+              <div><dt>Window</dt><dd>5 min</dd></div>
+            </dl>
+            <button class="incident-next" type="button" data-incident-next="diagnose">Inspect workload <span>→</span></button>
+          </section>
+          <section class="incident-panel" id="incident-diagnose" role="tabpanel" aria-labelledby="incident-tab-diagnose" data-incident-panel="diagnose" hidden>
+            <p class="incident-context">deployment / checkout-api</p>
+            <div class="incident-heading"><strong>2 pods crash looping</strong><span class="incident-severity">17 restarts</span></div>
+            <p class="incident-log"><span>last termination</span><code>OOMKilled · exit 137</code></p>
+            <button class="incident-next" type="button" data-incident-next="act">Prepare safe action <span>→</span></button>
+          </section>
+          <section class="incident-panel" id="incident-act" role="tabpanel" aria-labelledby="incident-tab-act" data-incident-panel="act" hidden>
+            <p class="incident-context">guarded mutation</p>
+            <div class="incident-heading"><strong>Rollback revision 42</strong><span class="incident-ready">ready</span></div>
+            <p class="incident-guard">Target and impact are shown before the cluster changes. Explicit confirmation is required.</p>
+            <button class="incident-next incident-confirm" type="button" data-incident-next="signal">Review complete <span>↺</span></button>
+          </section>
         </div>
       </div>
     </section>
 
-    <!-- ============ WINDOW BAND (signature) ============ -->
-    <div class="band" aria-hidden="true">
-      <div class="band-glow"></div>
-      <div class="window">
-        <div class="win-titlebar">
-          <div class="traffic"><span></span><span></span><span></span></div>
-          <div class="win-title">srelens</div>
-          <span class="kbd-chip">⌘K</span>
-        </div>
-        <div class="win-body">
-          <div class="win-rail">
-            <span class="rail-avatar active">PE</span>
-            <span class="rail-avatar">ST</span>
-            <span class="rail-avatar">DV</span>
-            <span class="rail-avatar add">+</span>
-          </div>
-          <div class="win-main">
-            <div class="win-tabs">
-              <span class="win-tab active">prod-east <span class="k">/ Pods</span></span>
-              <span class="win-tab">staging / Deployments</span>
-              <span class="win-tab">prod-east / Nodes</span>
-            </div>
-            <div class="win-toolbar">
-              <span class="ns-chip">namespace: payments ▾</span>
-              <span>search…</span>
-              <span class="live-chip"><i></i> watching</span>
-            </div>
-            <div class="win-table">
-              <table>
-                <thead>
-                  <tr><th>NAME</th><th>READY</th><th>STATUS</th><th>RESTARTS</th><th>AGE</th></tr>
-                </thead>
-                <tbody>
-                  <tr class="selected">
-                    <td class="name">checkout-api-7d4f9b-xkq2p</td><td>1/1</td>
-                    <td><span class="status running"><i></i>Running</span></td><td>0</td><td>3d2h</td>
-                  </tr>
-                  <tr>
-                    <td class="name">checkout-api-7d4f9b-m3nvw</td><td>1/1</td>
-                    <td><span class="status running"><i></i>Running</span></td><td>0</td><td>3d2h</td>
-                  </tr>
-                  <tr>
-                    <td class="name">payments-worker-0</td><td>1/1</td>
-                    <td><span class="status running"><i></i>Running</span></td><td>1</td><td>12d</td>
-                  </tr>
-                  <tr>
-                    <td class="name">redis-cache-6c9dd4-tk8wz</td><td>0/1</td>
-                    <td id="flip-status"><span class="status pending"><i></i>Pending</span></td><td>0</td><td>8s</td>
-                  </tr>
-                  <tr>
-                    <td class="name">billing-cron-29174-q7xnd</td><td>0/1</td>
-                    <td><span class="status completed"><i></i>Completed</span></td><td>0</td><td>42m</td>
-                  </tr>
-                  <tr>
-                    <td class="name">legacy-adapter-5b78c-jw4rp</td><td>0/1</td>
-                    <td><span class="status crash"><i></i>CrashLoopBackOff</span></td><td>12</td><td>1h4m</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="win-dock">
-              <div class="dock-tabs">
-                <span class="active">Logs · checkout-api-7d4f9b-xkq2p</span>
-                <span>Terminal</span>
-                <span>Forwards · 2</span>
-              </div>
-              <div class="dock-log">
-                <div><span class="t">14:02:11</span> <span class="ok">INFO</span> server listening on :8080</div>
-                <div><span class="t">14:02:14</span> <span class="ok">INFO</span> connected to redis-cache:6379</div>
-                <div><span class="t">14:02:31</span> <span class="warn">WARN</span> retrying payment gateway (attempt 2/5)</div>
-                <div><span class="t">14:02:33</span> <span class="ok">INFO</span> <span id="type-line"></span><span class="caret" aria-hidden="true"></span></div>
-              </div>
-              <div class="win-status">
-                <span class="ctx">⎈ prod-east</span>
-                <span>v1.31.2</span>
-                <span class="right">
-                  <span>forwards: 2 active</span>
-                  <span>cpu 41% · mem 63%</span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- ============ HERO SCREENSHOT (real capture) ============ -->
+    <div class="band">
+      <div class="band-glow" aria-hidden="true"></div>
+      <figure class="shot hero-shot tour-poster">
+        <img class="shot-dark" src="/assets/shots/dark-overview.webp" width="2400" height="1461"
+             fetchpriority="high"
+             alt="srelens cluster overview showing node readiness, pod health, pod distribution, and recent warnings for a three-node kind Kubernetes cluster, with live pod logs streaming in the dock">
+        <img class="shot-light" src="/assets/shots/light-overview.webp" width="2400" height="1461" loading="lazy"
+             alt="srelens cluster overview in light theme showing node readiness, pod health, and recent warnings for a three-node kind Kubernetes cluster">
+        <button class="tour-play" type="button" data-tour-open aria-label="Play the 17-second srelens product walkthrough">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          Watch product tour <span>17 sec</span>
+        </button>
+      </figure>
     </div>
+    <p class="shot-cap" style="max-width:1080px;margin:0 auto;padding:0 24px;">real screenshot · srelens connected to a 3-node kind cluster (1 control-plane + 2 workers) · <button class="text-action" type="button" data-tour-open>play walkthrough</button></p>
+
+    <dialog class="tour-dialog" data-tour-dialog aria-labelledby="tour-title">
+      <div class="tour-dialog-head">
+        <div>
+          <p id="tour-title">srelens operational walkthrough</p>
+          <span>Seven verified product captures · no synthetic interface</span>
+        </div>
+        <button type="button" class="tour-close" data-tour-close aria-label="Close product walkthrough">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <video data-tour-video controls preload="metadata" poster="/assets/shots/dark-overview.webp">
+        <source src="/assets/media/srelens-product-tour.mp4" type="video/mp4">
+        Your browser cannot play the video. <a href="/assets/media/srelens-product-tour.gif">Open the animated GIF instead</a>.
+      </video>
+      <ol class="tour-sequence" aria-label="Walkthrough sequence">
+        <li>Overview</li><li>Pods</li><li>Details</li><li>Logs</li><li>Terminal</li><li>YAML</li><li>MCP</li>
+      </ol>
+      <p class="tour-fallback"><a href="/assets/media/srelens-product-tour.gif">Open GIF version</a></p>
+    </dialog>
 
     <!-- ============ TECH STRIP ============ -->
     <div class="tech-strip reveal" aria-label="Built with">
@@ -352,26 +302,26 @@
           <li class="loop-step reveal">
             <span class="num"><b>02</b> — diagnose</span>
             <h3>Diagnose</h3>
-            <p>Inspect health, relationships, events, and manifests side by side. Follow logs, exec into containers, and forward ports — all docked next to the evidence.</p>
+            <p>Inspect health, relationships, events, and manifests side by side. Follow logs, exec into containers, and forward ports, all docked next to the evidence.</p>
           </li>
           <li class="loop-step reveal">
             <span class="num"><b>03</b> — act</span>
             <h3>Act</h3>
-            <p>Scale, restart, cordon, drain, or apply an edit right where you found the problem. Destructive actions always ask first — your error budget stays yours.</p>
+            <p>Scale, restart, cordon, drain, or apply an edit right where you found the problem. Destructive actions always ask first. Your error budget stays yours.</p>
           </li>
         </ol>
       </div>
     </section>
 
-    <!-- ============ FEATURE EDITORIAL ============ -->
+    <!-- ============ FEATURE EDITORIAL (real screenshots) ============ -->
     <section class="section" id="features">
       <div class="wrap">
         <div class="section-head">
           <p class="eyebrow reveal"><span class="tick">●</span> The workspace in detail</p>
           <h2 class="reveal">The whole investigation, <span class="grad">in one window.</span></h2>
           <p class="sub reveal">
-            srelens brings investigation, analysis, and safe cluster operations into one
-            local-first workspace, built with React 19, Tauri v2, and a pure-Rust core.
+            Every image on this page is a real capture of srelens running against a live
+            multi-node kind cluster, not a mockup.
           </p>
         </div>
 
@@ -379,71 +329,45 @@
           <div class="feature-row">
             <div class="copy reveal">
               <span class="fr-num">/ 01</span>
-              <h3>Schema-aware editing</h3>
-              <p>The YAML editor autocompletes and lints against your cluster's own OpenAPI schema — CRDs included. Create resources from templates and apply without leaving the drawer.</p>
+              <h3>Live metrics beside the manifest</h3>
+              <p>Select a pod and the drawer shows CPU and memory streamed from the Kubernetes Metrics Server, next to properties, conditions, events, and the full YAML. No tab-hopping between dashboards and manifests.</p>
+              <p><a href="/features/">Explore all features →</a></p>
             </div>
-            <div class="mini reveal" aria-hidden="true">
-              <div class="mini-bar">deployment.yaml — prod-east / payments</div>
-              <div class="mini-body">
-<pre><span class="tk-kw">apiVersion</span><span class="tk-dim">:</span> <span class="tk-str">apps/v1</span>
-<span class="tk-kw">kind</span><span class="tk-dim">:</span> <span class="tk-str">Deployment</span>
-<span class="tk-kw">spec</span><span class="tk-dim">:</span>
-  <span class="tk-kw">replicas</span><span class="tk-dim">:</span> <span class="tk-num">3</span>
-  <span class="tk-kw">strategy</span><span class="tk-dim">:</span>
-    <span class="tk-kw">type</span><span class="tk-dim">:</span> <span class="tk-hint">RollingUpdate ▾</span> <span class="tk-dim">· Recreate</span>
-  <span class="tk-kw">template</span><span class="tk-dim">:</span>
-    <span class="tk-kw">spec</span><span class="tk-dim">:</span>
-      <span class="tk-kw">containers</span><span class="tk-dim">:</span>
-        - <span class="tk-kw">name</span><span class="tk-dim">:</span> <span class="tk-str">checkout-api</span>
-          <span class="tk-kw">imagePullPolicy</span><span class="tk-dim">:</span> <span class="tk-err">Alwys</span> <span class="tk-dim">⚠ did you mean "Always"?</span></pre>
-              </div>
-            </div>
+            <figure class="shot reveal">
+              <img class="shot-dark" src="/assets/shots/dark-pod-detail.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens pod detail drawer with live CPU and memory metrics from the Kubernetes Metrics Server beside the pods table">
+              <img class="shot-light" src="/assets/shots/light-pod-detail.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens pod detail drawer in light theme with live metrics, properties, and conditions for a payments worker pod">
+            </figure>
           </div>
 
           <div class="feature-row">
             <div class="copy reveal">
               <span class="fr-num">/ 02</span>
               <h3>Logs, shells &amp; forwards in the dock</h3>
-              <p>Exec into containers with a full terminal, follow logs from pods or whole workloads, and manage port forwards — all docked beside the resource you're debugging, all still there when you switch tabs.</p>
+              <p>Exec into containers with a full terminal, follow logs from pods or whole workloads, and manage port forwards. Everything stays docked beside the resource you are debugging, even when you switch tabs.</p>
             </div>
-            <div class="mini reveal" aria-hidden="true">
-              <div class="mini-bar">Terminal — checkout-api-7d4f9b-xkq2p / app</div>
-              <div class="mini-body">
-<pre><span class="tk-ok">app@checkout-api</span><span class="tk-dim">:/$</span> curl -s localhost:8080/healthz
-<span class="tk-str">{"status":"ok","redis":"connected","uptime":"3d2h"}</span>
-<span class="tk-ok">app@checkout-api</span><span class="tk-dim">:/$</span> <span class="tk-dim">▮</span>
-
-<span class="tk-dim">── forwards ────────────────────────────────</span>
-<span class="tk-ok">●</span> checkout-api  <span class="tk-dim">8080 → localhost:8080</span>
-<span class="tk-ok">●</span> redis-cache   <span class="tk-dim">6379 → localhost:16379</span></pre>
-              </div>
-            </div>
+            <figure class="shot reveal">
+              <img class="shot-dark" src="/assets/shots/dark-terminal.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens in-pod exec terminal resolving a headless Redis service with nslookup while the YAML editor stays open">
+              <img class="shot-light" src="/assets/shots/light-terminal.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens exec terminal in light theme running hostname and nslookup inside a payments worker pod">
+            </figure>
           </div>
 
           <div class="feature-row" id="mcp">
             <div class="copy reveal">
               <span class="fr-num">/ 03</span>
               <h3>Backend capabilities available through MCP</h3>
-              <p>One shared registry powers the desktop application and the built-in MCP server. Supported backend capabilities are available as MCP tools. Claude Desktop and MCP-capable IDEs can connect over stdio or loopback HTTP. Mutating tools require an explicit <code>_confirm: true</code> argument before they run.</p>
+              <p>One shared registry powers the desktop application and the built-in MCP server. Supported backend capabilities are available as MCP tools over stdio or loopback HTTP, with ready-to-paste config for Claude Code, Claude Desktop, Cursor, and other MCP clients. Mutating tools require an explicit <code>_confirm: true</code> argument before they run.</p>
+              <p><a href="/mcp/">How the MCP server works →</a></p>
             </div>
-            <div class="mini reveal" aria-label="Example MCP tool call">
-              <div class="mini-bar">mcp · srelens — agent session</div>
-              <div class="mini-body">
-<pre><span class="tk-dir">→</span> <span class="tk-method">tools/call</span> <span class="tk-dim">scale_workload</span>
-<span class="tk-key">{</span>
-  <span class="tk-key">"context"</span>:   <span class="tk-str">"prod-east"</span>,
-  <span class="tk-key">"kind"</span>:      <span class="tk-str">"Deployment"</span>,
-  <span class="tk-key">"namespace"</span>: <span class="tk-str">"payments"</span>,
-  <span class="tk-key">"name"</span>:      <span class="tk-str">"checkout-api"</span>,
-  <span class="tk-key">"replicas"</span>:  <span class="tk-num">6</span>,
-<span class="tk-key">"_confirm"</span>:  <span class="tk-dir">true</span>
-<span class="tk-key">}</span>
-
-<span class="tk-ok">✓ explicit confirmation supplied</span>
-
-<span class="tk-dir">←</span> <span class="tk-ok">ok</span> <span class="tk-dim">checkout-api scaled 3 → 6 · 412ms</span></pre>
-              </div>
-            </div>
+            <figure class="shot reveal">
+              <img class="shot-dark" src="/assets/shots/dark-mcp.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens MCP settings with the built-in server listening on loopback HTTP and client setup for Claude Code">
+              <img class="shot-light" src="/assets/shots/light-mcp.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens MCP settings in light theme showing the HTTP server toggle, port, CLI install, and client config">
+            </figure>
           </div>
         </div>
       </div>
@@ -460,32 +384,32 @@
           <article class="bento-cell reveal">
             <span class="kicker">resources</span>
             <h3>40+ resource kinds</h3>
-            <p>Workloads, config, storage, networking, RBAC, admission, autoscaling — filterable by namespace, remembered per cluster.</p>
+            <p>Workloads, config, storage, networking, RBAC, admission, and autoscaling. Filter by namespace with state remembered per cluster.</p>
           </article>
           <article class="bento-cell reveal">
             <span class="kicker">live data</span>
             <h3>Streaming watches</h3>
-            <p>Tables update in place as the cluster changes, backed by shared kube-rs watch streams — not polling.</p>
+            <p>Tables update in place as the cluster changes, backed by shared kube-rs watch streams instead of polling.</p>
           </article>
           <article class="bento-cell reveal">
             <span class="kicker">speed</span>
             <h3>Command palette</h3>
-            <p>Hit <code>⌘K</code> to jump to any resource in any cluster — global search with deep links into detail views.</p>
+            <p>Hit <code>⌘K</code> to jump to any resource in any cluster using global search with deep links into detail views.</p>
           </article>
           <article class="bento-cell reveal">
             <span class="kicker">ecosystem</span>
             <h3>Helm &amp; CRDs</h3>
-            <p>Inspect Helm releases and browse custom resources grouped by API group — CRDs are first-class citizens.</p>
+            <p>Inspect Helm releases and browse custom resources grouped by API group. CRDs are first-class citizens.</p>
           </article>
           <article class="bento-cell reveal">
             <span class="kicker">metrics</span>
             <h3>Cluster usage</h3>
-            <p>CPU and memory sparklines for nodes and pods via metrics-server — health at a glance.</p>
+            <p>CPU and memory for nodes and pods via metrics-server provide health at a glance.</p>
           </article>
           <article class="bento-cell reveal">
             <span class="kicker">node ops</span>
             <h3>Safe cluster actions</h3>
-            <p>Scale, rollout-restart, evict, cordon, drain — every destructive action is flagged and confirmation-gated.</p>
+            <p>Scale, rollout-restart, evict, cordon, and drain. Every destructive action is flagged and confirmation-gated.</p>
           </article>
           <article class="bento-cell reveal">
             <span class="kicker">contexts</span>
@@ -495,13 +419,29 @@
           <article class="bento-cell reveal">
             <span class="kicker">tabs</span>
             <h3>Browser-style tabs</h3>
-            <p>Each tab is a cluster + resource view. Close others, close to the right — investigation state that survives.</p>
+            <p>Each tab is a cluster and resource view. Close others or close to the right without losing investigation state.</p>
           </article>
           <article class="bento-cell reveal">
             <span class="kicker">privacy</span>
             <h3>Local-first</h3>
             <p>Talks directly to your API servers with your kubeconfig credentials. No cloud service in between.</p>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ OPERATOR LIBRARY ============ -->
+    <section class="section" id="learn">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Keep the runbook beside the control room.</h2>
+          <p class="sub">Start quickly, understand the trust boundaries, and follow evidence-first incident guides.</p>
+        </div>
+        <div class="guide-grid">
+          <a class="guide-card" href="/docs/"><span>Get started</span><h3>Documentation</h3><p>Install, connect contexts, investigate resources, and configure MCP clients.</p><b>→</b></a>
+          <a class="guide-card" href="/guides/"><span>Incident response</span><h3>SRE guides</h3><p>CrashLoopBackOff, OOMKilled, and failed-deployment troubleshooting workflows.</p><b>→</b></a>
+          <a class="guide-card" href="/security/"><span>Trust model</span><h3>Security</h3><p>Credentials, direct cluster access, RBAC, MCP, confirmation gates, and web mode.</p><b>→</b></a>
+          <a class="guide-card" href="/architecture/"><span>Under the hood</span><h3>Architecture</h3><p>React, Tauri, the Rust capability registry, kube-rs streams, and MCP.</p><b>→</b></a>
         </div>
       </div>
     </section>
@@ -516,6 +456,7 @@
             srelens follows a familiar Kubernetes desktop workflow while using Tauri v2
             and a pure-Rust core. It is independently developed and is not affiliated
             with Mirantis Lens or the Freelens project.
+            <a href="/compare/">See the full comparison →</a>
           </p>
         </div>
         <div class="compare reveal">
@@ -565,34 +506,34 @@
     <section class="section" id="download">
       <div class="wrap">
         <div class="section-head center">
-          <p class="eyebrow reveal"><span class="tick">●</span> Download · <span data-version>v0.2.0</span> beta</p>
+          <p class="eyebrow reveal"><span class="tick">●</span> Download · <span data-version>v0.3.0</span> beta</p>
           <h2 class="reveal">Download the latest <span class="grad">srelens beta.</span></h2>
-          <p class="sub reveal">Free, direct from GitHub Releases. Review the release notes and your operating system’s first-launch prompts.</p>
+          <p class="sub reveal">Free, direct from GitHub Releases. Review the release notes and your operating system’s first-launch prompts. <a href="/download/">All platforms and details →</a></p>
         </div>
         <div class="dl-grid">
           <article class="dl-card reveal">
             <h3>macOS</h3>
             <p>macOS 11+</p>
             <div class="dl-links">
-              <a class="btn btn-primary dl-btn" data-asset="srelens_{v}_aarch64.dmg" href="https://github.com/srelens/srelens/releases/download/srelens-v0.2.0/srelens_0.2.0_aarch64.dmg" rel="noopener">Apple Silicon <span>.dmg</span></a>
-              <a class="btn btn-ghost dl-btn" data-asset="srelens_{v}_x64.dmg" href="https://github.com/srelens/srelens/releases/download/srelens-v0.2.0/srelens_0.2.0_x64.dmg" rel="noopener">Intel <span>.dmg</span></a>
+              <a class="btn btn-primary dl-btn" data-asset="srelens_{v}_aarch64.dmg" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens_0.3.0_aarch64.dmg" rel="noopener">Apple Silicon <span>.dmg</span></a>
+              <a class="btn btn-ghost dl-btn" data-asset="srelens_{v}_x64.dmg" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens_0.3.0_x64.dmg" rel="noopener">Intel <span>.dmg</span></a>
             </div>
           </article>
           <article class="dl-card reveal">
             <h3>Windows</h3>
             <p>Windows 10+ · x64</p>
             <div class="dl-links">
-              <a class="btn btn-primary dl-btn" data-asset="srelens_{v}_x64-setup.exe" href="https://github.com/srelens/srelens/releases/download/srelens-v0.2.0/srelens_0.2.0_x64-setup.exe" rel="noopener">Installer <span>.exe</span></a>
-              <a class="btn btn-ghost dl-btn" data-asset="srelens_{v}_x64_en-US.msi" href="https://github.com/srelens/srelens/releases/download/srelens-v0.2.0/srelens_0.2.0_x64_en-US.msi" rel="noopener">MSI <span>.msi</span></a>
+              <a class="btn btn-primary dl-btn" data-asset="srelens_{v}_x64-setup.exe" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens_0.3.0_x64-setup.exe" rel="noopener">Installer <span>.exe</span></a>
+              <a class="btn btn-ghost dl-btn" data-asset="srelens_{v}_x64_en-US.msi" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens_0.3.0_x64_en-US.msi" rel="noopener">MSI <span>.msi</span></a>
             </div>
           </article>
           <article class="dl-card reveal">
             <h3>Linux</h3>
             <p>x86_64</p>
             <div class="dl-links">
-              <a class="btn btn-primary dl-btn" data-asset="srelens_{v}_amd64.AppImage" href="https://github.com/srelens/srelens/releases/download/srelens-v0.2.0/srelens_0.2.0_amd64.AppImage" rel="noopener">AppImage</a>
-              <a class="btn btn-ghost dl-btn" data-asset="srelens_{v}_amd64.deb" href="https://github.com/srelens/srelens/releases/download/srelens-v0.2.0/srelens_0.2.0_amd64.deb" rel="noopener">Debian <span>.deb</span></a>
-              <a class="btn btn-ghost dl-btn" data-asset="srelens-{v}-1.x86_64.rpm" href="https://github.com/srelens/srelens/releases/download/srelens-v0.2.0/srelens-0.2.0-1.x86_64.rpm" rel="noopener">RPM <span>.rpm</span></a>
+              <a class="btn btn-primary dl-btn" data-asset="srelens_{v}_amd64.AppImage" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens_0.3.0_amd64.AppImage" rel="noopener">AppImage</a>
+              <a class="btn btn-ghost dl-btn" data-asset="srelens_{v}_amd64.deb" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens_0.3.0_amd64.deb" rel="noopener">Debian <span>.deb</span></a>
+              <a class="btn btn-ghost dl-btn" data-asset="srelens-{v}-1.x86_64.rpm" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-0.3.0-1.x86_64.rpm" rel="noopener">RPM <span>.rpm</span></a>
             </div>
           </article>
         </div>
@@ -609,7 +550,7 @@
               <p class="eyebrow reveal"><span class="tick">●</span> Hacking on it?</p>
               <h2 class="reveal">Or run it from source.</h2>
               <p class="sub reveal">
-                Prefer to build it yourself — or want to contribute? The app builds
+                Prefer to build it yourself or want to contribute? The app builds
                 and runs with the standard Rust and pnpm toolchains.
               </p>
             </div>
@@ -634,7 +575,7 @@ pnpm dev">copy</button>
       </div>
     </section>
 
-    <!-- ============ FAQ ============ -->
+    <!-- ============ FAQ TEASER ============ -->
     <section class="section" id="faq">
       <div class="wrap">
         <div class="section-head">
@@ -651,25 +592,7 @@ pnpm dev">copy</button>
           <details>
             <summary>How is srelens different from Lens or Freelens?</summary>
             <div class="faq-a">
-              <p>srelens uses Tauri v2 with a pure-Rust core and connects directly to Kubernetes API servers through kube-rs. It follows a familiar Kubernetes desktop workflow while providing local-first operation and MCP access for supported backend capabilities. srelens is independently developed and is not affiliated with Mirantis Lens or the Freelens project.</p>
-            </div>
-          </details>
-          <details>
-            <summary>What platforms does srelens run on?</summary>
-            <div class="faq-a">
-              <p>macOS, Windows, and Linux desktops via Tauri v2.</p>
-            </div>
-          </details>
-          <details>
-            <summary>Does srelens replace kubectl?</summary>
-            <div class="faq-a">
-              <p>No. srelens complements kubectl by giving engineers a visual workspace for investigation, analysis, and day-to-day cluster operations. The built-in local terminal still lets you use <code>kubectl</code> and other command-line tools when needed.</p>
-            </div>
-          </details>
-          <details>
-            <summary>How does the AI (MCP) integration work?</summary>
-            <div class="faq-a">
-              <p>Supported backend capabilities are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit <code>_confirm: true</code> argument before they run. Additional MCP security and audit controls are planned.</p>
+              <p>srelens uses Tauri v2 with a pure-Rust core and connects directly to Kubernetes API servers through kube-rs. It follows a familiar Kubernetes desktop workflow while providing local-first operation and MCP access for supported backend capabilities. srelens is independently developed and is not affiliated with Mirantis Lens or the Freelens project. <a href="/compare/">Read the full comparison</a>.</p>
             </div>
           </details>
           <details>
@@ -678,13 +601,8 @@ pnpm dev">copy</button>
               <p>Nowhere. srelens runs entirely on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There's no intermediary cloud service between the app and your API servers.</p>
             </div>
           </details>
-          <details>
-            <summary>Can I download srelens today?</summary>
-            <div class="faq-a">
-              <p>Yes — beta installers for macOS (Apple Silicon and Intel), Windows, and Linux are available in the <a href="#download">download section</a> and on <a href="https://github.com/srelens/srelens/releases" rel="noopener">GitHub Releases</a>. You can also <a href="#get-started">build srelens from source</a>.</p>
-            </div>
-          </details>
         </div>
+        <p class="dl-note reveal" style="text-align:left;margin-top:20px;">All questions answered → <a href="/faq/">srelens.com/faq</a></p>
       </div>
     </section>
 
@@ -694,7 +612,7 @@ pnpm dev">copy</button>
       <h2 class="display">Ready when the pager <span class="grad">goes off.</span></h2>
       <p>Local-first, open source, and confirmation-gated for destructive actions.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="#download">Download <span data-version>v0.2.0</span></a>
+        <a class="btn btn-primary" href="/download/">Download <span data-version>v0.3.0</span></a>
         <a class="btn btn-ghost" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
       </div>
     </section>
@@ -712,10 +630,10 @@ pnpm dev">copy</button>
           <div class="footer-col">
             <h4>Product</h4>
             <ul>
-              <li><a href="#features">Features</a></li>
-              <li><a href="#mcp">MCP</a></li>
-              <li><a href="#compare">Why srelens</a></li>
-              <li><a href="#download">Download</a></li>
+              <li><a href="/features/">Features</a></li>
+              <li><a href="/mcp/">MCP</a></li>
+              <li><a href="/compare/">Compare</a></li>
+              <li><a href="/docs/">Docs</a></li><li><a href="/download/">Download</a></li>
             </ul>
           </div>
           <div class="footer-col">
@@ -723,7 +641,7 @@ pnpm dev">copy</button>
             <ul>
               <li><a href="https://github.com/srelens/srelens" rel="noopener">GitHub</a></li>
               <li><a href="https://github.com/srelens/srelens/releases" rel="noopener">Releases</a></li>
-              <li><a href="#faq">FAQ</a></li>
+              <li><a href="/faq/">FAQ</a></li>
             </ul>
           </div>
         </div>

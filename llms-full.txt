@@ -25,13 +25,6 @@ Key facts:
 - Kubernetes Dashboard alternatives: https://srelens.com/compare/kubernetes-dashboard/
 - Download for macOS, Windows, Linux: https://srelens.com/download/
 - FAQ: https://srelens.com/faq/
-- Documentation and quick start: https://srelens.com/docs/
-- Security and privacy model: https://srelens.com/security/
-- Architecture: https://srelens.com/architecture/
-- Kubernetes troubleshooting guides: https://srelens.com/guides/
-- Debug CrashLoopBackOff: https://srelens.com/guides/crashloopbackoff/
-- Investigate OOMKilled pods: https://srelens.com/guides/oomkilled/
-- Diagnose failed Deployments: https://srelens.com/guides/failed-deployment/
 
 ## Features
 
@@ -65,3 +58,26 @@ Supported backend capabilities are registered in a shared capability registry an
 - Website: https://srelens.com/
 - Download: https://srelens.com/download/
 - Source / releases: https://github.com/srelens/srelens/releases
+
+## Screenshot inventory (all real captures, dark and light themes)
+
+- Cluster overview: node readiness, pod health, pod distribution, recent warnings — https://srelens.com/assets/shots/dark-overview.webp
+- Nodes table with live CPU/memory from metrics-server — https://srelens.com/assets/shots/dark-nodes.webp
+- Pods table (live metrics, phases, nodes, and restarts across namespaces) — https://srelens.com/assets/shots/dark-pods.webp
+- Pod detail drawer with live metrics — https://srelens.com/assets/shots/dark-pod-detail.webp
+- Schema-aware YAML editor — https://srelens.com/assets/shots/dark-yaml.webp
+- In-pod exec terminal — https://srelens.com/assets/shots/dark-terminal.webp
+- Log streaming dock — https://srelens.com/assets/shots/dark-logs.webp
+- MCP settings panel (server, CLI, client config) — https://srelens.com/assets/shots/dark-mcp.webp
+- Namespaces with status and resource totals — https://srelens.com/assets/shots/dark-namespaces.webp
+- Kubernetes events with reasons, objects, messages, and age — https://srelens.com/assets/shots/dark-events.webp
+- Deployments with replicas, images, selectors, and usage — https://srelens.com/assets/shots/dark-deployments.webp
+- Services with cluster IPs, ports, selectors, and endpoints — https://srelens.com/assets/shots/dark-services.webp
+- Port-forward management — https://srelens.com/assets/shots/dark-port-forwards.webp
+- Helm release management — https://srelens.com/assets/shots/dark-helm.webp
+
+Light-theme variants use the same names with the `light-` prefix.
+
+## Demo environment used for screenshots
+
+kind cluster `srelens-demo`: 1 control-plane + 2 worker nodes (Kubernetes v1.35), namespaces `payments`, `checkout`, `monitoring`; workloads include multi-replica Deployments (checkout-api, storefront-web, cart-service, payments-worker, metrics-agent), a redis StatefulSet, a billing CronJob, an HPA, and a deliberately crash-looping `legacy-adapter` Deployment. metrics-server installed for live usage numbers.

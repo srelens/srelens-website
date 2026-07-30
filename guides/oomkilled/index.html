@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Investigate Kubernetes OOMKilled Pods — srelens Guide</title>
+  <meta name="description" content="Investigate Kubernetes OOMKilled containers using exit state, previous logs, memory metrics, resource limits, workload YAML, and controlled verification.">
+  <link rel="canonical" href="https://srelens.com/guides/oomkilled/"><meta name="robots" content="index, follow"><meta name="theme-color" content="#08060f">
+  <script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.setAttribute("data-theme",t)})();</script>
+  <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/enterprise.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to investigate Kubernetes OOMKilled pods","description":"Confirm an OOM termination, reconstruct memory demand, compare workload limits, review a controlled change, and verify recovery.","step":[{"@type":"HowToStep","name":"Confirm the OOMKilled termination"},{"@type":"HowToStep","name":"Reconstruct the last container instance"},{"@type":"HowToStep","name":"Compare demand with resource limits"},{"@type":"HowToStep","name":"Review a controlled change"},{"@type":"HowToStep","name":"Verify recovery"}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap"><nav class="nav" aria-label="Main"><a class="brand" href="/"><img src="/assets/logo-mark.svg" alt="" width="30" height="30"><span>sre<span class="lens">lens</span></span></a><ul class="nav-links"><li><a href="/features/">Features</a></li><li><a href="/mcp/">MCP</a></li><li><a href="/compare/">Compare</a></li><li><a class="active" href="/docs/">Docs</a></li><li><a href="/download/">Download</a></li><li><a href="/faq/">FAQ</a></li></ul><button class="theme-toggle" type="button" aria-label="Toggle light/dark theme"><svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/></svg></button><a class="nav-cta" href="/download/">Download</a></nav></div></header>
+  <main id="main">
+    <section class="page-hero"><div class="wrap"><div class="crumbs"><a href="/">srelens</a> / <a href="/guides/">SRE guides</a> / OOMKilled</div><h1>Investigate OOMKilled before increasing the limit.</h1><p class="lede">Confirm the kernel termination, reconstruct what the process was doing, and distinguish a legitimate capacity change from a leak or unbounded workload.</p><div class="article-meta"><span>Memory pressure</span><span>10-minute runbook</span><span>Metrics Server optional</span></div></div></section>
+    <section class="section"><div class="wrap content-shell">
+      <aside class="content-nav" aria-label="Guide contents"><strong>In this guide</strong><ul><li><a href="#confirm">Confirm OOMKilled</a></li><li><a href="#history">Reconstruct the failure</a></li><li><a href="#limits">Compare limits</a></li><li><a href="#change">Review the change</a></li><li><a href="#verify">Verify recovery</a></li></ul></aside>
+      <article class="prose">
+        <h2 id="confirm">1. Confirm the termination</h2>
+        <p>Open the pod detail and identify the affected container. Verify that the last termination reason is <code>OOMKilled</code>; exit code <code>137</code> is a supporting signal but should not replace the explicit container state.</p>
+        <p>Check restart count, QoS class, node placement, and whether sibling replicas failed at the same time.</p>
+
+        <h2 id="history">2. Reconstruct the last instance</h2>
+        <p>Open Logs, select the affected container, and enable <strong>prev</strong> and <strong>ts</strong>. Look for large batch operations, cache warm-up, concurrency spikes, expensive requests, or a steady increase before termination.</p>
+        <p>If Metrics Server is available, compare the pod or controller memory graph across 5m, 10m, 30m, and 1h ranges. Metrics may show the direction of travel even if the final peak was missed.</p>
+
+        <h2 id="limits">3. Compare observed demand with the manifest</h2>
+        <p>Follow the owner link to the workload and open YAML. Review container memory requests and limits, replica count, environment flags that affect concurrency or caching, and any recently changed command arguments.</p>
+        <table><thead><tr><th>Pattern</th><th>Possible next investigation</th></tr></thead><tbody>
+          <tr><td>Immediate failure after startup</td><td>Startup heap, migration, cache load, or configuration expansion</td></tr>
+          <tr><td>Steady rise across time</td><td>Leak, retained queue, cache growth, or missing bounds</td></tr>
+          <tr><td>Multiple pods fail together</td><td>Traffic spike, synchronized job, rollout change, or node pressure</td></tr>
+          <tr><td>Only one replica fails</td><td>Skewed traffic, hot partition, pod-specific data, or node conditions</td></tr>
+        </tbody></table>
+
+        <h2 id="change">4. Review a controlled change</h2>
+        <p>A higher limit may be correct, but it can also delay a repeat incident. Make the application or resource change through the workload’s normal deployment path when possible. If editing in srelens, use the YAML <strong>Changes</strong> view for a server dry-run diff before applying.</p>
+        <div class="operator-callout"><strong>Check node capacity</strong><p>Increasing a container limit without checking node allocatable memory and workload density can move the incident from a pod-level OOM to broader node pressure.</p></div>
+
+        <h2 id="verify">5. Verify recovery</h2>
+        <p>Watch the rollout, desired replicas, pod readiness, restart count, events, and memory graph. Recovery means the workload remains healthy through the conditions that triggered the failure—not merely that the newest pod started.</p>
+        <p><a href="/guides/crashloopbackoff/">Return to the general CrashLoopBackOff workflow →</a></p>
+      </article>
+    </div></section>
+  </main>
+  <footer class="site-footer"><div class="wrap"><div class="footer-meta"><span>Part of the <a href="/guides/">srelens SRE guide library</a></span><span><a href="/docs/">Documentation</a> · <a href="/security/">Security</a></span></div></div></footer><script src="/main.js" defer></script>
+</body></html>
