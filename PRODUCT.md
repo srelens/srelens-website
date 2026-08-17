@@ -32,7 +32,7 @@ is a clean-room product, not a Lens or Freelens fork.
 Engineers use srelens during cluster exploration, incident response, deployment
 inspection, and routine operations across macOS, Windows, and Linux. Evaluation happens
 through real product screenshots, architectural comparisons, documentation, GitHub,
-and a downloadable beta.
+and a downloadable release.
 
 ## Capabilities and Constraints
 
@@ -41,7 +41,7 @@ and a downloadable beta.
 - Existing factual copy, metadata, structured data, accessibility behavior, theme
   preference, download behavior, and product claims must remain accurate.
 - Real dark and light screenshots in `assets/shots/` are the primary product evidence.
-- The product is beta, free, MIT-licensed, and distributed through GitHub Releases.
+- The product is free, MIT-licensed, and distributed through GitHub Releases.
 - No fabricated customer logos, testimonials, benchmarks, adoption numbers, or
   enterprise security claims.
 

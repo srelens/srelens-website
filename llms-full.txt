@@ -5,7 +5,7 @@
 Key facts:
 - Product type: desktop application (Kubernetes IDE / cluster workspace)
 - Platforms: macOS, Windows, Linux (Tauri v2)
-- Status: beta — installers published on GitHub Releases for macOS (Apple Silicon + Intel .dmg), Windows (.exe installer, .msi), and Linux (.AppImage, .deb, .rpm); can also be built from source with Rust (stable), Node 22+, and pnpm 9+
+- Status: available — installers published on GitHub Releases for macOS (Apple Silicon + Intel .dmg), Windows (.exe installer, .msi), and Linux (.AppImage, .deb, .rpm); can also be built from source with Rust (stable), Node 22+, and pnpm 9+
 - Price: free, open source under the MIT license
 - Architecture: Rust core using kube-rs to talk to the Kubernetes API directly — no Electron, no Node.js in the core app runtime
 - Lineage: inspired by Lens / Freelens (Electron-based Kubernetes IDEs); srelens is a clean-room rebuild of that workflow, not a fork. Not affiliated with Mirantis (Lens) or the Freelens project.
