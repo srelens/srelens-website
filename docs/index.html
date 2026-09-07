@@ -41,6 +41,7 @@
         <strong>Documentation</strong>
         <ul>
           <li><a class="active" href="/docs/">Quick start</a></li>
+          <li><a href="#tui">Terminal UI</a></li>
           <li><a href="/guides/">SRE guides</a></li>
           <li><a href="/security/">Security</a></li>
           <li><a href="/architecture/">Architecture</a></li>
@@ -61,6 +62,16 @@
           <strong>No account or cluster-side installation</strong>
           <p>The desktop app connects directly to Kubernetes API servers with the credentials already available through your local kubeconfig.</p>
         </div>
+
+        <h2 id="tui">Terminal interface (srelens-tui)</h2>
+        <p>For operators living in shells or working across SSH connections, <code>srelens-tui</code> provides the full power of srelens inside a native pure-Rust Ratatui terminal application with 0ms Informer caching.</p>
+        <ol>
+          <li>Install via Cargo (<code>cargo install --git https://github.com/srelens/srelens.git srelens-tui</code>) or download pre-built binaries from <a href="/download/#tui">Download</a>.</li>
+          <li>Run <code>srelens-tui</code> in any terminal, tmux window, or remote SSH bastion.</li>
+          <li>Type <code>:</code> to open the command palette with Tab completion: <code>:po</code> (Pods), <code>:svc</code> (Services), <code>:deploy</code> (Deployments), <code>:helm</code> (Helm releases), <code>:workloads</code> (Workloads overview), <code>:topology</code> (Traffic topology), <code>:gpuinfo</code> (GPU nodes &amp; VRAM), <code>:top</code> (Hotspots), and <code>:ctx</code> (Context switcher).</li>
+          <li>Press <strong>Enter</strong> on a Helm release to launch the 5-tab Deep Helm Inspector with live computed values diff, revision history, and rollback.</li>
+          <li>Press <strong>Tab</strong> to open the embedded AI assistant drawer to chat or analyze cluster state directly from your terminal.</li>
+        </ol>
 
         <h2 id="clusters">Connect and distinguish clusters</h2>
         <p>Settings → Contexts manages kubeconfig sources and visual identity. Add files or paste YAML, then assign a display name, short label, logo, and colour without changing the underlying kubeconfig. Contexts with duplicate names remain visible and are prefixed by their source file.</p>
