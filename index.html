@@ -101,19 +101,20 @@
       "logo": "https://srelens.com/assets/icon-512.png"
     },
     "featureList": [
+      "Dual-mode interface: Desktop GUI application and standalone pure-Rust Terminal UI (srelens-tui)",
       "Multi-cluster kubeconfig context management with cluster hotbar",
       "Resource browser covering 40+ Kubernetes resource kinds",
-      "Live streaming resource watches",
+      "Live streaming resource watches and 0ms Informer cache",
       "Schema-aware YAML editor with autocomplete and linting",
       "In-pod interactive terminals (exec)",
       "Pod and workload log streaming",
       "Port forwarding management",
-      "Helm release inspection",
+      "Deep Helm release inspection and values diff with rollback",
       "Custom Resource Definition (CRD) browsing",
       "Command palette with global resource search",
       "Node operations: cordon, drain, evict — confirmation-gated",
       "Cluster CPU and memory metrics via metrics-server",
-      "Built-in MCP server exposing supported backend capabilities as AI-callable tools"
+      "Built-in MCP server and embedded AI assistant drawer"
     ]
   }
   </script>
@@ -186,18 +187,19 @@
     <!-- ============ HERO ============ -->
     <section class="hero">
       <div class="wrap">
-        <p class="hero-badge"><span class="dot"></span> open source · built for engineers and AI agents</p>
+        <p class="hero-badge"><span class="dot"></span> open source · desktop GUI &amp; terminal TUI · built for engineers and AI agents</p>
         <h1 class="display">The Kubernetes control room<br><span class="grad">for engineers and AI agents.</span></h1>
         <p class="lede">
-          Investigate, analyse, and take safe action across Kubernetes clusters from one
-          local-first desktop workspace, built with a <strong>pure-Rust core</strong>.
-          Backend capabilities are also available to AI agents through MCP.
+          Investigate, analyse, and take safe action across Kubernetes clusters from a
+          high-performance desktop workspace or an ultra-fast terminal UI (<code>srelens-tui</code>),
+          built with a <strong>pure-Rust core</strong>. Backend capabilities are also available to AI agents through MCP.
         </p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="/download/">Download <span data-version>v0.3.0</span></a>
+          <a class="btn btn-ghost" href="/download/#tui">Terminal UI (srelens-tui)</a>
           <a class="btn btn-ghost" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
         </div>
-        <p class="hero-platforms"><b>macOS</b> · <b>Linux</b> · <b>Windows</b> · free and open source</p>
+        <p class="hero-platforms"><b>Desktop GUI</b> · <b>Terminal UI (TUI)</b> · <b>macOS</b> · <b>Linux</b> · <b>Windows</b> · free and open source</p>
 
         <div class="slo-strip incident-drill" aria-label="Interactive incident drill">
           <div class="slo-title">
@@ -425,6 +427,11 @@
             <span class="kicker">privacy</span>
             <h3>Local-first</h3>
             <p>Talks directly to your API servers with your kubeconfig credentials. No cloud service in between.</p>
+          </article>
+          <article class="bento-cell reveal">
+            <span class="kicker">terminal UI</span>
+            <h3>srelens-tui in your shell</h3>
+            <p>Standalone pure-Rust Ratatui interface with 0ms Informer cache, deep Helm values diff, live topology, and embedded AI over SSH or locally.</p>
           </article>
         </div>
       </div>

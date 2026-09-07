@@ -23,7 +23,7 @@ evaluate or download.
 
 ## Positioning
 
-srelens combines a native Tauri desktop application, a pure-Rust kube-rs core, direct
+srelens combines a native Tauri desktop application, a standalone pure-Rust Terminal UI (`srelens-tui`), a kube-rs core, direct
 local kubeconfig access, and a built-in MCP server in one open-source control room. It
 is a clean-room product, not a Lens or Freelens fork.
 

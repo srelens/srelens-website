@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Download srelens — Kubernetes GUI for macOS, Windows &amp; Linux</title>
-  <meta name="description" content="Download srelens free: Kubernetes desktop client installers for macOS (Apple Silicon and Intel .dmg), Windows (.exe and .msi), and Linux (AppImage, .deb, .rpm) — direct from GitHub Releases, or build from source.">
+  <title>Download srelens — Kubernetes GUI &amp; Terminal UI (TUI) for macOS, Windows &amp; Linux</title>
+  <meta name="description" content="Download srelens free: Kubernetes desktop client and pure-Rust terminal UI (srelens-tui) for macOS, Windows, and Linux — direct from GitHub Releases, or install via Cargo.">
   <link rel="canonical" href="https://srelens.com/download/">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="author" content="srelens">
@@ -150,9 +150,71 @@
           </article>
         </div>
         <p class="dl-note reveal">
-          Every asset ships with a <code>.sig</code> signature and the Tauri updater manifest.
+          Every desktop asset ships with a <code>.sig</code> signature and the Tauri updater manifest.
           All builds and release notes → <a href="https://github.com/srelens/srelens/releases" rel="noopener">github.com/srelens/srelens/releases</a>
         </p>
+      </div>
+    </section>
+
+    <section class="section" id="tui" style="padding-top:48px;">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow reveal"><span class="tick">●</span> Terminal UI</p>
+          <h2 class="reveal">srelens-tui: <span class="grad">pure Rust in your terminal.</span></h2>
+          <p class="sub reveal">
+            Prefer the terminal or working over remote SSH sessions? <code>srelens-tui</code> brings the full
+            srelens control room into a blazing-fast Ratatui interface with 0ms Informer cache, live stream watches,
+            deep Helm values diff, interactive themes, and an embedded AI assistant.
+          </p>
+        </div>
+
+        <div class="dl-grid">
+          <article class="dl-card reveal">
+            <h3>macOS (CLI)</h3>
+            <p>Apple Silicon &amp; Intel · CLI</p>
+            <div class="dl-links">
+              <a class="btn btn-primary dl-btn" data-asset="srelens-tui-{v}-aarch64-apple-darwin.tar.gz" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-tui-0.3.0-aarch64-apple-darwin.tar.gz" rel="noopener">Apple Silicon <span>.tar.gz</span></a>
+              <a class="btn btn-ghost dl-btn" data-asset="srelens-tui-{v}-x86_64-apple-darwin.tar.gz" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-tui-0.3.0-x86_64-apple-darwin.tar.gz" rel="noopener">Intel <span>.tar.gz</span></a>
+            </div>
+          </article>
+          <article class="dl-card reveal">
+            <h3>Linux (CLI)</h3>
+            <p>x86_64 &amp; aarch64 · CLI</p>
+            <div class="dl-links">
+              <a class="btn btn-primary dl-btn" data-asset="srelens-tui-{v}-x86_64-unknown-linux-gnu.tar.gz" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-tui-0.3.0-x86_64-unknown-linux-gnu.tar.gz" rel="noopener">x86_64 <span>.tar.gz</span></a>
+              <a class="btn btn-ghost dl-btn" data-asset="srelens-tui-{v}-aarch64-unknown-linux-gnu.tar.gz" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-tui-0.3.0-aarch64-unknown-linux-gnu.tar.gz" rel="noopener">ARM64 <span>.tar.gz</span></a>
+            </div>
+          </article>
+          <article class="dl-card reveal">
+            <h3>Windows (CLI)</h3>
+            <p>x64 &amp; ARM64 · CLI</p>
+            <div class="dl-links">
+              <a class="btn btn-primary dl-btn" data-asset="srelens-tui-{v}-x86_64-pc-windows-msvc.zip" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-tui-0.3.0-x86_64-pc-windows-msvc.zip" rel="noopener">x64 <span>.zip</span></a>
+              <a class="btn btn-ghost dl-btn" data-asset="srelens-tui-{v}-aarch64-pc-windows-msvc.zip" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-tui-0.3.0-aarch64-pc-windows-msvc.zip" rel="noopener">ARM64 <span>.zip</span></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="get-grid" style="margin-top: 48px;">
+          <div>
+            <div class="section-head" style="margin-bottom: 12px;">
+              <p class="eyebrow reveal"><span class="tick">●</span> Cargo Install</p>
+              <h2 class="reveal" style="font-size: clamp(24px, 3vw, 36px);">Install directly via Cargo.</h2>
+            </div>
+            <p class="get-note reveal">
+              With the standard Rust toolchain, install the latest <code>srelens-tui</code> binary straight into your path.
+            </p>
+          </div>
+          <div class="codeblock reveal">
+            <button class="copy-btn" type="button" data-copy="cargo install --git https://github.com/srelens/srelens.git srelens-tui
+srelens-tui">copy</button>
+<pre><span class="c"># install the pure-Rust terminal interface</span>
+<span class="p">$</span> cargo install --git https://github.com/srelens/srelens.git srelens-tui
+
+<span class="c"># launch srelens-tui</span>
+<span class="p">$</span> srelens-tui</pre>
+          </div>
+        </div>
       </div>
     </section>
 
