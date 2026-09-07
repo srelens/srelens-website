@@ -5,7 +5,7 @@
 Key facts:
 - Product type: desktop application (Kubernetes IDE / cluster workspace) & standalone Terminal UI (srelens-tui)
 - Platforms: macOS, Windows, Linux (Tauri v2 desktop app; standalone binary CLI / TUI)
-- Status: available — desktop installers and srelens-tui CLI archives published on GitHub Releases for macOS (Apple Silicon + Intel), Windows (x64 + ARM64), and Linux (x86_64 + aarch64); srelens-tui also installable via `cargo install --git https://github.com/srelens/srelens.git srelens-tui`
+- Status: available — desktop installers and srelens-tui CLI archives published on GitHub Releases for macOS (Apple Silicon + Intel), Windows (x64 + ARM64), and Linux (x86_64 + aarch64); srelens-tui also installable via Homebrew (`brew install srelens/tap/srelens-tui`)
 - Price: free, open source under the MIT license
 - Architecture: Rust core using kube-rs to talk to the Kubernetes API directly — no Electron, no Node.js in the core app runtime
 - Lineage: inspired by Lens / Freelens (Electron-based Kubernetes IDEs); srelens is a clean-room rebuild of that workflow, not a fork. Not affiliated with Mirantis (Lens) or the Freelens project.
