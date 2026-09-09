@@ -64,14 +64,77 @@
         </div>
 
         <h2 id="tui">Terminal interface (srelens-tui)</h2>
-        <p>For operators living in shells or working across SSH connections, <code>srelens-tui</code> provides the full power of srelens inside a native pure-Rust Ratatui terminal application with 0ms Informer caching.</p>
-        <ol>
-          <li>Install via Homebrew (<code>brew install srelens/tap/srelens-tui</code>) or download pre-built binaries from <a href="/download/#tui">Download</a>.</li>
-          <li>Run <code>srelens-tui</code> in any terminal, tmux window, or remote SSH bastion.</li>
-          <li>Type <code>:</code> to open the command palette with Tab completion: <code>:po</code> (Pods), <code>:svc</code> (Services), <code>:deploy</code> (Deployments), <code>:helm</code> (Helm releases), <code>:workloads</code> (Workloads overview), <code>:topology</code> (Traffic topology), <code>:gpuinfo</code> (GPU nodes &amp; VRAM), <code>:top</code> (Hotspots), and <code>:ctx</code> (Context switcher).</li>
-          <li>Press <strong>Enter</strong> on a Helm release to launch the 5-tab Deep Helm Inspector with live computed values diff, revision history, and rollback.</li>
-          <li>Press <strong>Tab</strong> to open the embedded AI assistant drawer to chat or analyze cluster state directly from your terminal.</li>
-        </ol>
+        <p>For operators living in shells or working across SSH connections, <code>srelens-tui</code> provides the full power of srelens inside a native pure-Rust terminal workspace built on <code>kube-rs</code> and <code>ratatui</code>. Completely asynchronous throughout, the interface never blocks on cluster latency.</p>
+
+        <div class="operator-callout">
+          <strong>Fast, keyboard-driven investigation</strong>
+          <p>Sub-millisecond view transitions powered by an in-memory Informer cache, live on-demand watch streams, interactive logs with hanging indent, smart shell detection, and embedded AI diagnostics—right in your terminal.</p>
+        </div>
+
+        <h3 id="tui-install">Installation</h3>
+        <p>Install via Homebrew, download direct binaries from <a href="/download/#tui">Download</a>, or build from source:</p>
+        <pre><code># Homebrew (macOS &amp; Linux)
+brew install srelens/tap/srelens-tui
+
+# One-line install script (macOS &amp; Linux)
+curl -fsSL https://srelens.com/install.sh | bash
+
+# Cargo
+cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
+        <p>If you installed via prebuilt binary or the script, update in-place with <code>srelens-tui update</code> (use <code>--check</code> to inspect available updates without installing).</p>
+
+        <h3 id="tui-features">Key capabilities</h3>
+        <ul>
+          <li><strong>Adaptive On-Demand Watching:</strong> An LRU-bounded stream pool watches only the active view and namespace, preventing cluster API overload while streaming live updates to the current screen.</li>
+          <li><strong>First-Class CRD Support:</strong> Auto-discovers every CustomResourceDefinition, extracts server-side printer columns (evaluating JSONPaths dynamically), and live-watches CRD instances just like built-in primitives.</li>
+          <li><strong>Engineered Logs Viewer:</strong> Long lines wrap with clean hanging indents under the line-number gutter (<code>│ continuation</code>) so numbers stay pinned. Toggle wrap off with <code>w</code> for horizontal scrolling (<code>h</code>/<code>l</code>, <code>0</code> to reset). True follow-mode accounts for wrapped visual rows.</li>
+          <li><strong>Instant Shells &amp; Deep Debugging:</strong> Press <code>s</code> to drop into a container shell with automatic fallback from <code>bash</code> to <code>sh</code>. Launch ephemeral debug containers for distroless pods (<code>Shift + D</code>), or open privileged node shells (<code>Shift + N</code>). External interactive sessions run on an alternate screen with zero terminal debris on exit.</li>
+          <li><strong>Cluster Health &amp; Node Inspector:</strong> Real-time gauges for CPU, memory, and GPU/VRAM utilization. Inspect node allocatable capacity, taints, cordons, and live pods scheduled on each node alongside canvas metrics history charts.</li>
+          <li><strong>Visual Resource Trees:</strong> Press <code>t</code> to view hierarchical ASCII owner-reference trees (Deployments ➔ ReplicaSets ➔ Pods, CRD owners) with live health dots.</li>
+          <li><strong>Helm &amp; Port Forwarding:</strong> Browse releases, inspect revision history, diff values and rendered manifests, and trigger rollbacks. Manage background port-forwards with live throughput metrics and automatic reconnects (<code>:pf</code>).</li>
+          <li><strong>Embedded SRE AI Assistant &amp; Reason Rail:</strong> Instant event triage and incident correlation via Reason Rail, plus integrated AI troubleshooting via Anthropic, OpenAI, or local Ollama models (with MCP tool support and compact caveman mode).</li>
+        </ul>
+
+        <h3 id="tui-usage">CLI Usage &amp; Subcommands</h3>
+        <pre><code>srelens-tui [TARGET] [-n NAMESPACE] [-A] [--context CONTEXT] [--kubeconfig PATH]</code></pre>
+        <table>
+          <thead><tr><th>Flag / Command</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>TARGET</code></td><td>Resource or view to open initially (e.g. <code>pods</code>, <code>nodes</code>, <code>deployments</code>, <code>helm</code>, <code>top</code>)</td></tr>
+            <tr><td><code>-n, --namespace &lt;NS&gt;</code></td><td>Kubernetes namespace to scope the initial view</td></tr>
+            <tr><td><code>-A, --all-namespaces</code></td><td>Launch scoped to all cluster namespaces</td></tr>
+            <tr><td><code>-c, --context &lt;NAME&gt;</code></td><td>Kubernetes context to activate (defaults to current context)</td></tr>
+            <tr><td><code>-k, --kubeconfig &lt;PATH&gt;</code></td><td>Custom path to kubeconfig file</td></tr>
+            <tr><td><code>srelens-tui info</code></td><td>Print cluster overview &amp; reachability diagnostics</td></tr>
+            <tr><td><code>srelens-tui toolbox</code></td><td>Check tooling diagnostics (kubectl, helm, krew plugins)</td></tr>
+            <tr><td><code>srelens-tui update</code></td><td>Update binary in-place to the latest release (<code>--check</code> to inspect)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="tui-keybindings">Keybindings quick reference</h3>
+        <table>
+          <thead><tr><th>Key</th><th>Context</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td><code>:</code></td><td>Global</td><td>Open command palette (e.g. <code>:po</code>, <code>:deploy</code>, <code>:crd</code>, <code>:helm</code>, <code>:top</code>, <code>:pf</code>, <code>:ctx</code>)</td></tr>
+            <tr><td><code>/</code></td><td>Global</td><td>Filter table rows (plain substring or persistent regex)</td></tr>
+            <tr><td><code>Enter</code></td><td>Tables</td><td>Drill into selected resource (or open CRD instances / Helm inspector)</td></tr>
+            <tr><td><code>l</code></td><td>Workloads / Pods</td><td>Open live streaming logs</td></tr>
+            <tr><td><code>s</code></td><td>Workloads / Pods</td><td>Open container shell (detects <code>bash</code> ➔ <code>sh</code>)</td></tr>
+            <tr><td><code>Shift + D</code></td><td>Workloads / Pods</td><td>Inject ephemeral debug container</td></tr>
+            <tr><td><code>Shift + N</code></td><td>Nodes</td><td>Open privileged node shell</td></tr>
+            <tr><td><code>Shift + F</code></td><td>Workloads / Pods</td><td>Start background port-forward</td></tr>
+            <tr><td><code>t</code></td><td>Tables</td><td>Show ASCII resource tree &amp; owner topology</td></tr>
+            <tr><td><code>m</code></td><td>Tables</td><td>Open metrics panel with sparklines &amp; canvas charts</td></tr>
+            <tr><td><code>d</code> / <code>y</code></td><td>Tables</td><td>Describe resource / View &amp; edit live YAML</td></tr>
+            <tr><td><code>Space</code></td><td>Tables</td><td>Mark / unmark row for bulk operations</td></tr>
+            <tr><td><code>w</code></td><td>Logs</td><td>Toggle line wrapping with hanging indent</td></tr>
+            <tr><td><code>h</code> / <code>l</code> or <code>←</code> / <code>→</code></td><td>Logs</td><td>Scroll horizontally when wrap is off (<code>0</code> resets)</td></tr>
+            <tr><td><code>f</code></td><td>Logs</td><td>Toggle follow mode (pinned to live tail)</td></tr>
+            <tr><td><code>c</code> / <code>p</code></td><td>Logs</td><td>Switch container / Toggle previous (crashed) logs</td></tr>
+            <tr><td><code>Tab</code></td><td>Global</td><td>Toggle embedded AI assistant drawer</td></tr>
+            <tr><td><code>Esc</code></td><td>Global</td><td>Clear filter, close modal, or go back to previous view</td></tr>
+          </tbody>
+        </table>
 
         <h2 id="clusters">Connect and distinguish clusters</h2>
         <p>Settings → Contexts manages kubeconfig sources and visual identity. Add files or paste YAML, then assign a display name, short label, logo, and colour without changing the underlying kubeconfig. Contexts with duplicate names remain visible and are prefixed by their source file.</p>
