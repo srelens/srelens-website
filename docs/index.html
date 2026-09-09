@@ -68,7 +68,7 @@
 
         <div class="operator-callout">
           <strong>Fast, keyboard-driven investigation</strong>
-          <p>Sub-millisecond view transitions powered by an in-memory Informer cache, live on-demand watch streams, interactive logs with hanging indent, smart shell detection, and embedded AI diagnostics—right in your terminal.</p>
+          <p>Sub-millisecond view transitions powered by an in-memory Informer cache, live on-demand watch streams, deep Helm and hardware inspection, interactive logs with hanging indent, smart shell detection, and embedded AI diagnostics—right in your terminal.</p>
         </div>
 
         <h3 id="tui-install">Installation</h3>
@@ -83,16 +83,63 @@ curl -fsSL https://srelens.com/install.sh | bash
 cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
         <p>If you installed via prebuilt binary or the script, update in-place with <code>srelens-tui update</code> (use <code>--check</code> to inspect available updates without installing).</p>
 
-        <h3 id="tui-features">Key capabilities</h3>
+        <h3 id="tui-overview">Cluster health &amp; overview (<code>:overview</code>)</h3>
+        <p>Type <code>:overview</code> (or <code>:cluster</code>, <code>:info</code>) from anywhere to get an immediate, high-level control room readout of your connected cluster:</p>
+        <ul>
+          <li><strong>Cluster Vitals:</strong> Kubernetes server version, API endpoint, reachability status, and context name.</li>
+          <li><strong>Capacity &amp; Readiness:</strong> Real-time counts for ready vs. total nodes, and pod distribution broken down by status (Running, Pending, Failed).</li>
+          <li><strong>Aggregate Resource Gauges:</strong> Visual progress gauges tracking total CPU cores allocated vs. available, and memory GiB consumed vs. capacity.</li>
+          <li><strong>GPU &amp; Accelerator Awareness:</strong> Automatically detects GPU hardware across the cluster and adds dedicated VRAM and card allocation gauges when GPU nodes are present.</li>
+        </ul>
+
+        <h3 id="tui-node-inspection">Deep node &amp; hardware inspection (<code>:nodes</code> ➔ <code>Enter</code>)</h3>
+        <p>From the node list (<code>:nodes</code> or <code>:no</code>), press <strong>Enter</strong> on any node (or type <code>:node &lt;name&gt;</code>) to open the deep Node &amp; Hardware Inspector:</p>
+        <ul>
+          <li><strong>Hardware &amp; System Specs:</strong> Displays CPU architecture, OS image, kernel version, container runtime (e.g. containerd, CRI-O), kubelet version, and internal/external IP addresses.</li>
+          <li><strong>Capacity vs. Allocatable:</strong> Direct side-by-side comparison of total vs. allocatable capacity for CPU millicores, Memory MiB, maximum pods, and ephemeral storage.</li>
+          <li><strong>Health Conditions &amp; Taints:</strong> Real-time status flags for <code>Ready</code>, <code>MemoryPressure</code>, <code>DiskPressure</code>, <code>PIDPressure</code>, and <code>NetworkUnavailable</code>, alongside active taints, labels, and cordoned/unschedulable state.</li>
+          <li><strong>Pods-per-Node Mapping:</strong> Complete table of all pods currently scheduled on the selected node, showing individual pod phases, CPU requests, and memory footprints.</li>
+          <li><strong>Dual Canvas Trend Charts:</strong> Real-time canvas line graphs with dynamic Y-axis bounds plotting historical CPU millicores and memory usage trends over time (populated via <code>metrics-server</code>).</li>
+        </ul>
+
+        <h3 id="tui-gpuinfo">GPU nodes &amp; VRAM allocation inspector (<code>:gpuinfo</code>)</h3>
+        <p>For machine learning, AI inference, and compute-heavy clusters, <code>:gpuinfo</code> (or <code>:gpu</code>, <code>:gpus</code>) opens a dedicated, dual-pane accelerator dashboard:</p>
+        <ul>
+          <li><strong>GPU Node Fleet (Left Pane):</strong> Inspect every GPU-equipped node, detected physical accelerator models (NVIDIA A100, H100, L4, V100, RTX series), installed card counts, total vs. allocated VRAM, and per-node GPU utilization gauges.</li>
+          <li><strong>Workload VRAM Breakdown (Right Pane):</strong> See exactly which pods and namespaces are consuming accelerator capacity, their requested physical GPUs or fractional MIG/vGPU slices, and current execution phase.</li>
+          <li><strong>Cluster Totals:</strong> Top-level summary tracking total cards installed, cards allocated, aggregate VRAM capacity, and assigned VRAM.</li>
+        </ul>
+
+        <h3 id="tui-helm">Deep Helm 3 inspection (<code>:helm</code> ➔ <code>Enter</code>)</h3>
+        <p>Type <code>:helm</code> (or <code>:releases</code>) to list all Helm releases across namespaces with chart names, revision numbers, and update times. Press <strong>Enter</strong> on any release to launch the 5-tab Deep Helm Inspector without needing the <code>helm</code> CLI installed:</p>
+        <ul>
+          <li><strong>Tab 1 — Overview:</strong> Release status, chart name &amp; version, application version, revision count, and timestamp of the last deployment.</li>
+          <li><strong>Tab 2 — Values Diff:</strong> Built-in 3-way values diff engine. Compare <em>User-Supplied Values</em> against <em>Computed All-Values</em>, compare custom values against chart defaults, or diff current values against the previous revision.</li>
+          <li><strong>Tab 3 — Revisions:</strong> Complete historical changelog of every revision. Select any prior revision and press <strong>r</strong> to perform a safe, one-touch rollback.</li>
+          <li><strong>Tab 4 — Manifest:</strong> Full syntax-highlighted rendered Kubernetes YAML manifest produced by the chart templates for that revision.</li>
+          <li><strong>Tab 5 — Notes:</strong> View post-installation instructions, endpoints, and release notes rendered by the chart's <code>NOTES.txt</code>.</li>
+        </ul>
+
+        <h3 id="tui-assistant">Embedded SRE AI assistant (<code>:assistant</code> or <code>Tab</code>)</h3>
+        <p>Press <strong>Tab</strong> or type <code>:assistant</code> (aliases: <code>:ai</code>, <code>:chat</code>) to open the interactive AI assistant drawer directly inside your terminal:</p>
+        <ul>
+          <li><strong>Context-Aware Troubleshooting:</strong> Ask questions about failing workloads, parse confusing stack traces, diagnose crashloops, or investigate warning event cascades. The assistant receives active cluster context to provide grounded answers.</li>
+          <li><strong>Built-in Slash Commands:</strong> Run quick investigation macros like <code>/explain</code>, <code>/crashloop</code>, <code>/logs</code>, <code>/network</code>, or <code>/playbook</code> to trigger standardized diagnostic workflows.</li>
+          <li><strong>Multi-Provider &amp; Local LLMs:</strong> Configure Anthropic (Claude), OpenAI, Google, or local Ollama models via <code>:ai-settings</code> (or <code>:settings</code>). No proprietary lock-in.</li>
+          <li><strong>High-Density "Caveman Mode":</strong> Enable terse, high-information-density output (<code>/caveman</code>) designed specifically for rapid operational debugging with minimal token overhead.</li>
+          <li><strong>Model Context Protocol (MCP) Tools:</strong> Integrated with srelens's native MCP tool registry, allowing the AI to safely query cluster APIs and execute diagnostic lookups with confirmation gates.</li>
+        </ul>
+
+        <h3 id="tui-features">Additional capabilities</h3>
         <ul>
           <li><strong>Adaptive On-Demand Watching:</strong> An LRU-bounded stream pool watches only the active view and namespace, preventing cluster API overload while streaming live updates to the current screen.</li>
           <li><strong>First-Class CRD Support:</strong> Auto-discovers every CustomResourceDefinition, extracts server-side printer columns (evaluating JSONPaths dynamically), and live-watches CRD instances just like built-in primitives.</li>
           <li><strong>Engineered Logs Viewer:</strong> Long lines wrap with clean hanging indents under the line-number gutter (<code>│ continuation</code>) so numbers stay pinned. Toggle wrap off with <code>w</code> for horizontal scrolling (<code>h</code>/<code>l</code>, <code>0</code> to reset). True follow-mode accounts for wrapped visual rows.</li>
           <li><strong>Instant Shells &amp; Deep Debugging:</strong> Press <code>s</code> to drop into a container shell with automatic fallback from <code>bash</code> to <code>sh</code>. Launch ephemeral debug containers for distroless pods (<code>Shift + D</code>), or open privileged node shells (<code>Shift + N</code>). External interactive sessions run on an alternate screen with zero terminal debris on exit.</li>
-          <li><strong>Cluster Health &amp; Node Inspector:</strong> Real-time gauges for CPU, memory, and GPU/VRAM utilization. Inspect node allocatable capacity, taints, cordons, and live pods scheduled on each node alongside canvas metrics history charts.</li>
           <li><strong>Visual Resource Trees:</strong> Press <code>t</code> to view hierarchical ASCII owner-reference trees (Deployments ➔ ReplicaSets ➔ Pods, CRD owners) with live health dots.</li>
-          <li><strong>Helm &amp; Port Forwarding:</strong> Browse releases, inspect revision history, diff values and rendered manifests, and trigger rollbacks. Manage background port-forwards with live throughput metrics and automatic reconnects (<code>:pf</code>).</li>
-          <li><strong>Embedded SRE AI Assistant &amp; Reason Rail:</strong> Instant event triage and incident correlation via Reason Rail, plus integrated AI troubleshooting via Anthropic, OpenAI, or local Ollama models (with MCP tool support and compact caveman mode).</li>
+          <li><strong>Port Forwarding Manager:</strong> Manage background port-forwards with live throughput metrics and automatic reconnects (<code>:pf</code>).</li>
+          <li><strong>Reason Rail:</strong> Instant event triage and correlation for warning events and crash loops.</li>
+          <li><strong>k9s-Familiar Ergonomics &amp; Theming:</strong> <code>:</code> command palette, <code>/</code> filter bar with persistent regex, <code>Space</code> marks for bulk operations, and themes (Catppuccin, Nord, Dracula, Gruvbox, Tokyo Night).</li>
         </ul>
 
         <h3 id="tui-usage">CLI Usage &amp; Subcommands</h3>
