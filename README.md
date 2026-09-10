@@ -60,6 +60,15 @@ Any of these work with zero config:
 - **Cloudflare Pages**: create a project, upload the directory
 - **GitHub Pages**: push to a repo, enable Pages on the root
 
+## Installation script
+
+`https://srelens.com/install.sh` serves the Linux `srelens-tui` installer as a
+static shell script. `install.sh` is copied verbatim from
+[`srelens/srelens:packaging/install/install.sh`](https://github.com/srelens/srelens/blob/main/packaging/install/install.sh)
+(source blob `4c68b1a29844635cac023b0aca5d5117a1d4479e`). Refresh this copy
+when the upstream installer changes; GitHub Pages cannot proxy the upstream URL.
+Run `sh -n install.sh` before publishing an update.
+
 ## Release hygiene
 
 - `main.js` rewrites `[data-version]` labels and `[data-asset]` hrefs from the
