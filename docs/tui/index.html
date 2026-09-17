@@ -84,8 +84,13 @@
             <li><a href="#bgp-dashboard">BGP Peering Dashboard</a></li>
             <li><a href="#helm-inspector">Helm 3 Values Diff</a></li>
             <li><a href="#log-streamer">Log Streaming &amp; Wrap</a></li>
+            <li><a href="#resource-tree">Resource Hierarchy Tree</a></li>
+            <li><a href="#pod-operations">Pod &amp; Workload Operations</a></li>
+            <li><a href="#gpu-fleet">GPU Fleet &amp; VRAM</a></li>
+            <li><a href="#argocd-gitops">ArgoCD GitOps</a></li>
             <li><a href="#debug-shells">Shells &amp; Debug Containers</a></li>
             <li><a href="#crd-support">CRD Discovery &amp; Watches</a></li>
+            <li><a href="#troubleshooting">Diagnostics</a></li>
           </ul>
         </aside>
 
@@ -98,7 +103,7 @@
           </p>
 
           <figure class="shot" style="margin: 24px 0;">
-            <img src="/assets/shots/tui-overview.webp" width="2400" height="1461" alt="srelens-tui terminal control room overview">
+            <img src="/assets/shots/tui-overview.webp" width="1721" height="1034" alt="srelens-tui terminal control room overview">
             <figcaption class="shot-cap" style="padding:10px 16px;">srelens-tui cluster overview: aggregate CPU/Memory gauges, node health, and context info</figcaption>
           </figure>
 
@@ -137,7 +142,7 @@ srelens-tui update</code></pre>
               <tr><th>Argument / Flag</th><th>Description</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>TARGET</code></td><td>Optional initial resource view to open on launch (e.g. <code>pods</code>, <code>nodes</code>, <code>bgp</code>, <code>helm</code>, <code>deployments</code>, <code>overview</code>)</td></tr>
+              <tr><td><code>TARGET</code></td><td>Optional initial resource view to open on launch (e.g. <code>pods</code>, <code>nodes</code>, <code>bgp</code>, <code>helm</code>, <code>gpuinfo</code>, <code>argo</code>, <code>deployments</code>, <code>overview</code>)</td></tr>
               <tr><td><code>-n, --namespace &lt;NS&gt;</code></td><td>Scope the initial view to a specific namespace</td></tr>
               <tr><td><code>-A, --all-namespaces</code></td><td>Launch scoped to all cluster namespaces</td></tr>
               <tr><td><code>-c, --context &lt;NAME&gt;</code></td><td>Activate a specific kubeconfig context on launch</td></tr>
@@ -165,6 +170,7 @@ srelens-tui update</code></pre>
               <tr><td><code>:gpuinfo</code></td><td><code>:gpu</code>, <code>:gpus</code></td><td>GPU accelerator fleet, physical models (A100/H100/L4), and VRAM allocation breakdown</td></tr>
               <tr><td><code>:bgp</code></td><td><code>:peering</code>, <code>:bgp-peers</code></td><td>BGP Control Plane dashboard (Cilium, MetalLB, Calico) and advertised prefixes</td></tr>
               <tr><td><code>:helm</code></td><td><code>:releases</code></td><td>5-tab Helm 3 release inspector, values diff engine, and rollback triggers</td></tr>
+              <tr><td><code>:argo</code></td><td><code>:argocd</code>, <code>:apps</code></td><td>ArgoCD Applications list, Git sync states, health status, and repository targets</td></tr>
               <tr><td><code>:crd</code></td><td><code>:crds</code>, <code>:custom</code></td><td>Browse Custom Resource Definitions and dynamically evaluated printer columns</td></tr>
               <tr><td><code>:events</code></td><td><code>:ev</code></td><td>Live streaming cluster warning and normal events triage</td></tr>
               <tr><td><code>:services</code></td><td><code>:svc</code></td><td>List Services, ClusterIPs, NodePorts, LoadBalancers, and selectors</td></tr>
@@ -182,6 +188,11 @@ srelens-tui update</code></pre>
           </table>
 
           <h2 id="keybindings">Keybindings Reference</h2>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-banner.webp" width="1721" height="1034" alt="srelens-tui help modal and shortcuts guide">
+            <figcaption class="shot-cap" style="padding:10px 16px;"><code>?</code> · In-app keyboard shortcuts, command guide, and operational help modal</figcaption>
+          </figure>
 
           <h3>Global Keybindings</h3>
           <table>
@@ -236,7 +247,7 @@ srelens-tui update</code></pre>
           </p>
 
           <figure class="shot" style="margin: 24px 0;">
-            <img src="/assets/shots/tui-assistant.webp" width="2400" height="1461" alt="srelens-tui AI assistant drawer running incident diagnosis">
+            <img src="/assets/shots/tui-assistant.webp" width="1721" height="1034" alt="srelens-tui AI assistant drawer running incident diagnosis">
             <figcaption class="shot-cap" style="padding:10px 16px;">AI assistant running /crashloop diagnosis with live tool execution badges</figcaption>
           </figure>
 
@@ -268,7 +279,7 @@ srelens-tui update</code></pre>
           </p>
 
           <figure class="shot" style="margin: 24px 0;">
-            <img src="/assets/shots/tui-bgp.webp" width="2400" height="1461" alt="srelens-tui BGP Peering and Topology dashboard">
+            <img src="/assets/shots/tui-bgp.webp" width="1721" height="1034" alt="srelens-tui BGP Peering and Topology dashboard">
             <figcaption class="shot-cap" style="padding:10px 16px;">BGP control plane dashboard: peer states, hold timers, and prefix announcements</figcaption>
           </figure>
 
@@ -285,7 +296,7 @@ srelens-tui update</code></pre>
           </p>
 
           <figure class="shot" style="margin: 24px 0;">
-            <img src="/assets/shots/tui-helm.webp" width="2400" height="1461" alt="srelens-tui Helm 3 inspector and values diff">
+            <img src="/assets/shots/tui-helm.webp" width="1721" height="1034" alt="srelens-tui Helm 3 inspector and values diff">
             <figcaption class="shot-cap" style="padding:10px 16px;">Helm 3 inspector: values diff, historical release audit trail, and rollback trigger</figcaption>
           </figure>
 
@@ -302,7 +313,7 @@ srelens-tui update</code></pre>
           </p>
 
           <figure class="shot" style="margin: 24px 0;">
-            <img src="/assets/shots/tui-logs.webp" width="2400" height="1461" alt="srelens-tui multi-pod log streamer">
+            <img src="/assets/shots/tui-logs.webp" width="1721" height="1034" alt="srelens-tui multi-pod log streamer">
             <figcaption class="shot-cap" style="padding:10px 16px;">Log streamer: severity syntax coloring and hanging indent wrapping beneath line numbers</figcaption>
           </figure>
 
@@ -310,6 +321,69 @@ srelens-tui update</code></pre>
             <li><strong>Hanging Indents:</strong> Wrapped lines wrap cleanly beneath the line number gutter (<code>│ continuation</code>). Line numbers stay pinned.</li>
             <li><strong>Previous Container Logs (<code>p</code>):</strong> View logs from crashed or restarted containers before the fatal exit.</li>
             <li><strong>Severity Highlighting:</strong> Automatically highlights log levels (<code>FATAL</code>, <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>).</li>
+          </ul>
+
+          <h2 id="resource-tree">Resource Hierarchy Tree (<code>t</code>)</h2>
+          <p>
+            Press <code>t</code> on any Kubernetes resource to visualize the complete owner-reference hierarchy tree from Ingress down to Pods and HPAs.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-tree.webp" width="1721" height="1034" alt="srelens-tui resource hierarchy tree view">
+            <figcaption class="shot-cap" style="padding:10px 16px;">Resource tree: owner-references, replica status, and live health dots for rapid dependency tracing</figcaption>
+          </figure>
+
+          <ul>
+            <li><strong>Live Health Indicators:</strong> Status dots beside every resource indicate readiness, crashes, or degraded states.</li>
+            <li><strong>Direct Drilldown:</strong> Press <code>Enter</code> on any child item in the tree to jump directly to its details.</li>
+          </ul>
+
+          <h2 id="pod-operations">Pod &amp; Workload Operations (<code>:pods</code>)</h2>
+          <p>
+            The pod table provides high-density, real-time monitoring across namespaces with instant filtering and rapid troubleshooting actions.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-pods.webp" width="1721" height="1034" alt="srelens-tui pod operations table">
+            <figcaption class="shot-cap" style="padding:10px 16px;">Pod table: namespaces, pod readiness, restart counters, node placements, and action shortcuts</figcaption>
+          </figure>
+
+          <ul>
+            <li><strong>Instant Shells (<code>s</code>):</strong> Direct interactive container shells with automatic fallback.</li>
+            <li><strong>Debug Containers (<code>Shift + D</code>):</strong> Inject ephemeral troubleshooting tools without restarting pods.</li>
+            <li><strong>Port Forwarding (<code>Shift + F</code>):</strong> Quick port forwarding with throughput monitoring.</li>
+          </ul>
+
+          <h2 id="gpu-fleet">GPU Fleet &amp; VRAM Allocation Telemetry (<code>:gpuinfo</code>)</h2>
+          <p>
+            View hardware GPU accelerator distribution, physical models, and live VRAM allocation gauges across nodes.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-gpuinfo.webp" width="1721" height="1034" alt="srelens-tui GPU accelerator fleet and VRAM allocation view">
+            <figcaption class="shot-cap" style="padding:10px 16px;">GPU fleet view: Tesla/modern GPU models, allocatable vs requested VRAM, and active workloads</figcaption>
+          </figure>
+
+          <ul>
+            <li><strong>Accelerator Models:</strong> Automatically detects hardware accelerator classes (H100, A100, L4, T4, Tesla).</li>
+            <li><strong>VRAM Capacity Gauges:</strong> Real-time visual progress bars of allocated vs. total GPU memory.</li>
+            <li><strong>Attached Workloads:</strong> Drill into training jobs and inference pods bound to specific GPU devices.</li>
+          </ul>
+
+          <h2 id="argocd-gitops">ArgoCD Applications &amp; GitOps Sync (<code>:argo</code>)</h2>
+          <p>
+            Inspect and operate GitOps deployments managed by ArgoCD across multiple target clusters and namespaces.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-argo.webp" width="1721" height="1034" alt="srelens-tui ArgoCD Applications GitOps view">
+            <figcaption class="shot-cap" style="padding:10px 16px;">ArgoCD dashboard: Git sync states, application health, revision SHAs, and target clusters</figcaption>
+          </figure>
+
+          <ul>
+            <li><strong>Health &amp; Sync Matrix:</strong> Instantly check <code>Synced</code> / <code>OutOfSync</code> states and <code>Healthy</code> / <code>Degraded</code> flags.</li>
+            <li><strong>Repo &amp; Revision:</strong> Inspect target git repository URLs, branches, and deployed commit SHAs.</li>
+            <li><strong>Resource Tree Integration:</strong> Seamlessly pivot from ArgoCD application to child Kubernetes resources.</li>
           </ul>
 
           <h2 id="debug-shells">Shells &amp; Ephemeral Debug Containers</h2>
