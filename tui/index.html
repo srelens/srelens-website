@@ -170,9 +170,9 @@
     <div class="band" style="padding-top:16px;">
       <div class="band-glow" aria-hidden="true"></div>
       <figure class="shot hero-shot">
-        <img src="/assets/shots/tui-overview.webp" width="2782" height="1696"
+        <img src="/assets/shots/tui-banner.webp" width="2886" height="1752"
              fetchpriority="high"
-             alt="srelens-tui cluster overview">
+             alt="srelens-tui help modal and shortcuts guide">
       </figure>
     </div>
 
@@ -258,7 +258,28 @@
           </figure>
         </div>
 
-        <!-- 3. High-Density Pods -->
+        <!-- 3. Real-Time Cluster Overview -->
+        <div class="feature-row" style="margin-top: 64px;">
+          <div class="feature-narrative reveal">
+            <p class="feature-tag">Cluster Telemetry &amp; Capacity</p>
+            <h3>Real-Time Cluster Overview &amp; Telemetry (<code>:overview</code>)</h3>
+            <p>
+              Instant bird's-eye view of cluster-wide resource allocation, capacity pressure, and node health
+              metrics in a single high-density pane.
+            </p>
+            <ul class="feature-bullets">
+              <li><strong>Live Resource Gauges:</strong> Real-time visual progress bars for cluster-wide CPU, memory, and storage utilization.</li>
+              <li><strong>Node Fleet Health:</strong> Monitor node conditions (<code>Ready</code>, <code>MemoryPressure</code>, <code>DiskPressure</code>, <code>PIDPressure</code>) with instant drilldown.</li>
+              <li><strong>Zero-Latency Refresh:</strong> In-memory Informer cache continuously syncs cluster metrics with sub-millisecond redraws.</li>
+            </ul>
+          </div>
+          <figure class="shot reveal">
+            <img src="/assets/shots/tui-overview.webp" width="2782" height="1696" loading="lazy"
+                 alt="srelens-tui cluster overview and node telemetry">
+          </figure>
+        </div>
+
+        <!-- 4. High-Density Pods -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Workload Operations</p>
@@ -280,7 +301,7 @@
           </figure>
         </div>
 
-        <!-- 4. Deep Helm Inspector -->
+        <!-- 5. Deep Helm Inspector -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Release Management</p>
@@ -302,7 +323,7 @@
           </figure>
         </div>
 
-        <!-- 5. GPU Inspector -->
+        <!-- 6. GPU Inspector -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">AI &amp; Accelerator Infrastructure</p>
@@ -322,7 +343,7 @@
           </figure>
         </div>
 
-        <!-- 6. BGP Peering -->
+        <!-- 7. BGP Peering -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Networking &amp; Control Plane</p>
@@ -343,7 +364,7 @@
           </figure>
         </div>
 
-        <!-- 7. Logs -->
+        <!-- 8. Logs -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Telemetry &amp; Logging</p>
@@ -365,7 +386,7 @@
           </figure>
         </div>
 
-        <!-- 8. Resource Hierarchy Tree -->
+        <!-- 9. Resource Hierarchy Tree -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Topology &amp; Relationships</p>
