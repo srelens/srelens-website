@@ -925,8 +925,8 @@ html[data-theme="light"] .shot-zoom-overlay {
 }
 
 .shot-zoom-img {
-  max-width: min(94vw, 1721px);
-  max-height: calc(88vh - 44px);
+  max-width: 95vw;
+  max-height: 90vh;
   width: auto;
   height: auto;
   object-fit: contain;
