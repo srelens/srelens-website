@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>srelens-tui Documentation — Pure-Rust Terminal UI for Kubernetes</title>
+  <meta name="description" content="Comprehensive documentation for srelens-tui: installation, keybindings, command palette reference, BGP peering dashboard, Helm 3 values diff, log streaming, and AI assistant configuration.">
+  <link rel="canonical" href="https://srelens.com/docs/tui/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#08060f">
+  <meta name="color-scheme" content="dark light">
+  <script>
+    (function(){var t=null;try{var m=location.search.match(/[?&]theme=(light|dark)/);if(m)t=m[1]}catch(e){}try{if(!t)t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.setAttribute("data-theme",t)})();
+  </script>
+  <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=2">
+  <link rel="stylesheet" href="/enterprise.css?v=2">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="bg-aurora" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="wrap">
+      <nav class="nav" aria-label="Main">
+        <a class="brand" href="/">
+          <img src="/assets/logo-mark.svg" alt="" width="30" height="30">
+          <span>sre<span class="lens">lens</span></span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="/features/">Features</a></li>
+          <li><a href="/tui/">TUI</a></li>
+          <li><a href="/mcp/">MCP</a></li>
+          <li><a href="/compare/">Compare</a></li>
+          <li><a class="active" href="/docs/">Docs</a></li>
+          <li><a href="/download/">Download</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+        </ul>
+        <span class="nav-status" aria-hidden="true"><span class="dot"></span> pure Rust core</span>
+        <button class="theme-toggle" type="button" aria-label="Toggle light/dark theme">
+          <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2"/></svg>
+        </button>
+        <a class="nav-cta" href="https://github.com/srelens/srelens" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="wrap">
+        <div class="crumbs"><a href="/">srelens</a> / <a href="/docs/">Docs</a> / Terminal UI (srelens-tui)</div>
+        <h1>srelens-tui Guide &amp; Reference</h1>
+        <p class="lede">A high-performance, keyboard-driven pure-Rust terminal workspace for Kubernetes operators and SREs.</p>
+        <div class="article-meta"><span>Standalone CLI / TUI</span><span>Ratatui &amp; kube-rs</span><span>Zero Electron</span><span>Open Source</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap content-shell">
+        <aside class="content-nav" aria-label="Documentation navigation">
+          <strong>Documentation</strong>
+          <ul>
+            <li><a href="/docs/">Quick start</a></li>
+            <li><a class="active" href="/docs/tui/">Terminal UI (TUI)</a></li>
+            <li><a href="/guides/">SRE guides</a></li>
+            <li><a href="/security/">Security</a></li>
+            <li><a href="/architecture/">Architecture</a></li>
+            <li><a href="/mcp/">MCP setup</a></li>
+            <li><a href="/download/">Installers</a></li>
+          </ul>
+          <strong style="margin-top:24px;display:block;">On this page</strong>
+          <ul style="font-size:13px;">
+            <li><a href="#overview">Overview &amp; Architecture</a></li>
+            <li><a href="#install">Installation &amp; Updates</a></li>
+            <li><a href="#cli-usage">CLI Arguments &amp; Flags</a></li>
+            <li><a href="#command-palette">Command Palette Reference</a></li>
+            <li><a href="#keybindings">Keybindings Reference</a></li>
+            <li><a href="#ai-assistant">Embedded AI Assistant</a></li>
+            <li><a href="#argocd-gitops">ArgoCD GitOps</a></li>
+            <li><a href="#pod-operations">Pod &amp; Workload Operations</a></li>
+            <li><a href="#helm-inspector">Helm 3 Values Diff</a></li>
+            <li><a href="#gpu-fleet">GPU Fleet &amp; VRAM</a></li>
+            <li><a href="#bgp-dashboard">BGP Peering Dashboard</a></li>
+            <li><a href="#log-streamer">Log Streaming &amp; Wrap</a></li>
+            <li><a href="#resource-tree">Resource Hierarchy Tree</a></li>
+            <li><a href="#debug-shells">Shells &amp; Debug Containers</a></li>
+            <li><a href="#crd-support">CRD Discovery &amp; Watches</a></li>
+            <li><a href="#troubleshooting">Diagnostics</a></li>
+          </ul>
+        </aside>
+
+        <article class="prose">
+          <h2 id="overview">Overview</h2>
+          <p>
+            <code>srelens-tui</code> is a native, standalone terminal workspace for Kubernetes. Built with <code>kube-rs</code> and <code>ratatui</code>,
+            it delivers sub-millisecond view switching via an in-memory Informer cache, live resource watches, deep Helm 3 values diffs,
+            BGP control plane topology views, and an embedded SRE AI assistant.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-overview.webp" width="2782" height="1696" alt="srelens-tui cluster overview">
+          </figure>
+
+          <h2 id="install">Installation &amp; Updates</h2>
+          
+          <h3>Homebrew (macOS &amp; Linux)</h3>
+          <p>Install the pre-built binary formula using our official Homebrew tap:</p>
+          <pre><code># Tap and install srelens-tui
+brew install srelens/tap/srelens-tui
+
+# Launch
+srelens-tui</code></pre>
+
+          <h3>Standalone Install Script (macOS &amp; Linux)</h3>
+          <p>Download and install the latest static binary for your architecture automatically:</p>
+          <pre><code>curl -fsSL https://srelens.com/install.sh | bash</code></pre>
+
+          <h3>Cargo (From Source)</h3>
+          <pre><code>cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
+
+          <h3>Updating in-place</h3>
+          <p>
+            If you installed via prebuilt binary or the shell install script, update the binary in-place with a single command:
+          </p>
+          <pre><code># Check for available updates without installing
+srelens-tui update --check
+
+# Download and apply update in-place
+srelens-tui update</code></pre>
+
+          <h2 id="cli-usage">CLI Arguments &amp; Flags</h2>
+          <pre><code>srelens-tui [TARGET] [-n NAMESPACE] [-A] [-c CONTEXT] [-k KUBECONFIG] [SUBCOMMAND]</code></pre>
+
+          <table>
+            <thead>
+              <tr><th>Argument / Flag</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>TARGET</code></td><td>Optional initial resource view to open on launch (e.g. <code>pods</code>, <code>nodes</code>, <code>bgp</code>, <code>helm</code>, <code>gpuinfo</code>, <code>argo</code>, <code>deployments</code>, <code>overview</code>)</td></tr>
+              <tr><td><code>-n, --namespace &lt;NS&gt;</code></td><td>Scope the initial view to a specific namespace</td></tr>
+              <tr><td><code>-A, --all-namespaces</code></td><td>Launch scoped to all cluster namespaces</td></tr>
+              <tr><td><code>-c, --context &lt;NAME&gt;</code></td><td>Activate a specific kubeconfig context on launch</td></tr>
+              <tr><td><code>-k, --kubeconfig &lt;PATH&gt;</code></td><td>Explicit path to a kubeconfig file (defaults to <code>$KUBECONFIG</code> or <code>~/.kube/config</code>)</td></tr>
+              <tr><td><code>info</code></td><td>Subcommand: Print cluster connectivity, server version, and reachability diagnostics without starting TUI</td></tr>
+              <tr><td><code>toolbox</code></td><td>Subcommand: Check local CLI diagnostics (kubectl, helm, krew plugins)</td></tr>
+              <tr><td><code>update</code></td><td>Subcommand: Update srelens-tui in-place to the latest release (<code>--check</code> to inspect)</td></tr>
+            </tbody>
+          </table>
+
+          <h2 id="command-palette">Command Palette Reference (<code>:</code>)</h2>
+          <p>
+            Press <code>:</code> anywhere in the application to open the command palette. Commands support autocomplete with <code>Tab</code> and short aliases:
+          </p>
+
+          <table>
+            <thead>
+              <tr><th>Command</th><th>Aliases</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>:overview</code></td><td><code>:cluster</code>, <code>:info</code></td><td>Open cluster overview with CPU/Memory gauges and node health</td></tr>
+              <tr><td><code>:pods</code></td><td><code>:po</code>, <code>:pod</code></td><td>List pods across namespaces with status, restarts, and node mapping</td></tr>
+              <tr><td><code>:deployments</code></td><td><code>:deploy</code>, <code>:dp</code></td><td>List Deployments with replica readiness and rollout status</td></tr>
+              <tr><td><code>:nodes</code></td><td><code>:no</code>, <code>:node</code></td><td>List cluster nodes; press <code>Enter</code> for hardware &amp; condition inspection</td></tr>
+              <tr><td><code>:gpuinfo</code></td><td><code>:gpu</code>, <code>:gpus</code></td><td>GPU accelerator fleet, physical models (A100/H100/L4), and VRAM allocation breakdown</td></tr>
+              <tr><td><code>:bgp</code></td><td><code>:peering</code>, <code>:bgp-peers</code></td><td>BGP Control Plane dashboard (Cilium, MetalLB, Calico) and advertised prefixes</td></tr>
+              <tr><td><code>:helm</code></td><td><code>:releases</code></td><td>5-tab Helm 3 release inspector, values diff engine, and rollback triggers</td></tr>
+              <tr><td><code>:argo</code></td><td><code>:argocd</code>, <code>:apps</code></td><td>ArgoCD Applications list, Git sync states, health status, and repository targets</td></tr>
+              <tr><td><code>:crd</code></td><td><code>:crds</code>, <code>:custom</code></td><td>Browse Custom Resource Definitions and dynamically evaluated printer columns</td></tr>
+              <tr><td><code>:events</code></td><td><code>:ev</code></td><td>Live streaming cluster warning and normal events triage</td></tr>
+              <tr><td><code>:services</code></td><td><code>:svc</code></td><td>List Services, ClusterIPs, NodePorts, LoadBalancers, and selectors</td></tr>
+              <tr><td><code>:ingresses</code></td><td><code>:ing</code></td><td>List Ingresses, rules, hostnames, and TLS termination endpoints</td></tr>
+              <tr><td><code>:configmaps</code></td><td><code>:cm</code></td><td>List ConfigMaps and inspect keys/data</td></tr>
+              <tr><td><code>:secrets</code></td><td><code>:sec</code></td><td>List Secrets with consent-gated reveal</td></tr>
+              <tr><td><code>:pf</code></td><td><code>:port-forwards</code></td><td>Manage active background port forwards with throughput gauges</td></tr>
+              <tr><td><code>:ctx</code></td><td><code>:contexts</code></td><td>Switch active kubeconfig context</td></tr>
+              <tr><td><code>:ns</code></td><td><code>:namespaces</code></td><td>Switch active namespace filter (or select <code>all</code>)</td></tr>
+              <tr><td><code>:ai</code></td><td><code>:assistant</code>, <code>:chat</code></td><td>Toggle embedded SRE AI assistant drawer</td></tr>
+              <tr><td><code>:ai-settings</code></td><td><code>:settings</code></td><td>Configure AI provider, model keys, endpoints, and temperature</td></tr>
+              <tr><td><code>:theme</code></td><td><code>:colors</code></td><td>Switch active theme (Catppuccin, Nord, Dracula, Gruvbox, Tokyo Night)</td></tr>
+              <tr><td><code>:quit</code></td><td><code>:q</code>, <code>:exit</code></td><td>Exit srelens-tui</td></tr>
+            </tbody>
+          </table>
+
+          <h2 id="keybindings">Keybindings Reference</h2>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-banner.webp" width="2886" height="1752" alt="srelens-tui help modal and shortcuts guide">
+          </figure>
+
+          <h3>Global Keybindings</h3>
+          <table>
+            <thead><tr><th>Key</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><code>:</code></td><td>Open command palette</td></tr>
+              <tr><td><code>/</code></td><td>Open filter prompt (plain text substring or regex)</td></tr>
+              <tr><td><code>Tab</code></td><td>Toggle embedded SRE AI assistant drawer</td></tr>
+              <tr><td><code>Esc</code></td><td>Clear active filter, close modal/drawer, or return to previous view</td></tr>
+              <tr><td><code>?</code></td><td>Show keyboard shortcuts help modal</td></tr>
+              <tr><td><code>q</code></td><td>Quit or exit current subview</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Table &amp; Resource Navigation</h3>
+          <table>
+            <thead><tr><th>Key</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><code>Enter</code></td><td>Drill into selected resource (or open Helm inspector / Node inspector)</td></tr>
+              <tr><td><code>l</code></td><td>Open live streaming logs for selected pod/workload</td></tr>
+              <tr><td><code>s</code></td><td>Open interactive container shell (auto-detects <code>bash</code> ➔ <code>sh</code>)</td></tr>
+              <tr><td><code>Shift + D</code></td><td>Attach ephemeral debug container to target pod</td></tr>
+              <tr><td><code>Shift + N</code></td><td>Launch root node diagnostic shell (from node view)</td></tr>
+              <tr><td><code>Shift + F</code></td><td>Open port forward creation dialog for selected workload</td></tr>
+              <tr><td><code>t</code></td><td>View ASCII resource hierarchy topology tree</td></tr>
+              <tr><td><code>d</code></td><td>Describe resource (human-readable Kubernetes describe output)</td></tr>
+              <tr><td><code>y</code></td><td>View &amp; edit live resource YAML manifest</td></tr>
+              <tr><td><code>Space</code></td><td>Mark / unmark row for bulk batch actions</td></tr>
+              <tr><td><code>Ctrl + D</code></td><td>Trigger guarded resource deletion (confirmation dialog required)</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Log Streaming Viewer</h3>
+          <table>
+            <thead><tr><th>Key</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><code>w</code></td><td>Toggle line wrapping with hanging indent under the line gutter</td></tr>
+              <tr><td><code>f</code></td><td>Toggle follow mode (pinned to live log tail)</td></tr>
+              <tr><td><code>p</code></td><td>Toggle previous container instance logs (for crashed/restarted pods)</td></tr>
+              <tr><td><code>t</code></td><td>Toggle RFC3339 timestamps on log lines</td></tr>
+              <tr><td><code>c</code></td><td>Switch container in multi-container pods</td></tr>
+              <tr><td><code>/</code></td><td>Filter log lines in real-time</td></tr>
+              <tr><td><code>h</code> / <code>l</code> or <code>←</code> / <code>→</code></td><td>Scroll horizontally when line wrapping is toggled off</td></tr>
+              <tr><td><code>0</code></td><td>Reset horizontal scroll position to left margin</td></tr>
+            </tbody>
+          </table>
+
+          <h2 id="ai-assistant">Embedded SRE AI Assistant (<code>:ai</code> or <code>Tab</code>)</h2>
+          <p>
+            The AI assistant drawer provides in-process conversational diagnosis powered by native prompt caching
+            and direct Kubernetes MCP tool execution.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-assistant.webp" width="2784" height="1692" alt="srelens-tui AI assistant drawer running incident diagnosis">
+          </figure>
+
+          <h3>Supported Providers</h3>
+          <p>Configure your model provider in <code>:ai-settings</code>:</p>
+          <ul>
+            <li><strong>Anthropic Claude:</strong> Claude 3.5 Sonnet, Claude 3.7 Sonnet (Supports native prompt caching).</li>
+            <li><strong>OpenAI:</strong> GPT-4o, GPT-4o-mini, o1, o3-mini.</li>
+            <li><strong>Google Gemini:</strong> Gemini 2.0 Flash, Gemini 1.5 Pro.</li>
+            <li><strong>Ollama (Local):</strong> Run offline models like <code>llama3.1</code>, <code>qwen2.5-coder</code>, or <code>deepseek-r1</code> on <code>http://localhost:11434</code>.</li>
+          </ul>
+
+          <h3>Built-in Diagnostic Slash Commands</h3>
+          <table>
+            <thead><tr><th>Command</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>/crashloop</code></td><td>Automated CrashLoopBackOff analysis: pulls exit codes, crash logs, and event cascades</td></tr>
+              <tr><td><code>/oom</code></td><td>Diagnoses OOMKilled events and memory limit pressure</td></tr>
+              <tr><td><code>/rollout</code></td><td>Diagnoses stalled Deployment rollouts, replica mismatches, and probe failures</td></tr>
+              <tr><td><code>/network</code></td><td>Investigates Service endpoint resolution, CoreDNS errors, and network policy drops</td></tr>
+              <tr><td><code>/caveman</code></td><td>Enables high-density, ultra-terse output mode for high-stress pager duty</td></tr>
+              <tr><td><code>/explain</code></td><td>Explains complex YAML manifests and CRD fields</td></tr>
+            </tbody>
+          </table>
+
+          <h2 id="argocd-gitops">ArgoCD Applications &amp; GitOps Sync (<code>:argo</code>)</h2>
+          <p>
+            Inspect and operate GitOps deployments managed by ArgoCD across multiple target clusters and namespaces.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-argo.webp" width="2770" height="1674" alt="srelens-tui ArgoCD Applications GitOps view">
+          </figure>
+
+          <ul>
+            <li><strong>Health &amp; Sync Matrix:</strong> Instantly check <code>Synced</code> / <code>OutOfSync</code> states and <code>Healthy</code> / <code>Degraded</code> flags.</li>
+            <li><strong>Repo &amp; Revision:</strong> Inspect target git repository URLs, branches, and deployed commit SHAs.</li>
+            <li><strong>Resource Tree Integration:</strong> Seamlessly pivot from ArgoCD application to child Kubernetes resources.</li>
+          </ul>
+
+          <h2 id="pod-operations">Pod &amp; Workload Operations (<code>:pods</code>)</h2>
+          <p>
+            The pod table provides high-density, real-time monitoring across namespaces with instant filtering and rapid troubleshooting actions.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-pods.webp" width="2778" height="1684" alt="srelens-tui pod operations table">
+          </figure>
+
+          <ul>
+            <li><strong>Instant Shells (<code>s</code>):</strong> Direct interactive container shells with automatic fallback.</li>
+            <li><strong>Debug Containers (<code>Shift + D</code>):</strong> Inject ephemeral troubleshooting tools without restarting pods.</li>
+            <li><strong>Port Forwarding (<code>Shift + F</code>):</strong> Quick port forwarding with throughput monitoring.</li>
+          </ul>
+
+          <h2 id="helm-inspector">Deep Helm 3 Values Diff &amp; Rollback (<code>:helm</code>)</h2>
+          <p>
+            Press <code>Enter</code> on any Helm release to launch the 5-tab Helm Inspector without needing the <code>helm</code> CLI installed.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-helm.webp" width="2762" height="1692" alt="srelens-tui Helm 3 inspector and values diff">
+          </figure>
+
+          <ul>
+            <li><strong>3-Way Diff Engine:</strong> Compare user values vs. computed values, or diff current release vs. prior revision.</li>
+            <li><strong>Changelog &amp; History:</strong> Inspect release dates, revision status (<code>deployed</code>, <code>superseded</code>, <code>failed</code>).</li>
+            <li><strong>Safe Rollback (<code>r</code>):</strong> Select any prior revision and press <code>r</code> to trigger an RBAC-preflighted rollback.</li>
+          </ul>
+
+          <h2 id="gpu-fleet">GPU Fleet &amp; VRAM Allocation Telemetry (<code>:gpuinfo</code>)</h2>
+          <p>
+            View hardware GPU accelerator distribution, physical models, and live VRAM allocation gauges across nodes.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-gpuinfo.webp" width="2778" height="1682" alt="srelens-tui GPU accelerator fleet and VRAM allocation view">
+          </figure>
+
+          <ul>
+            <li><strong>Accelerator Models:</strong> Automatically detects hardware accelerator classes (H100, A100, L4, T4, Tesla).</li>
+            <li><strong>VRAM Capacity Gauges:</strong> Real-time visual progress bars of allocated vs. total GPU memory.</li>
+            <li><strong>Attached Workloads:</strong> Drill into training jobs and inference pods bound to specific GPU devices.</li>
+          </ul>
+
+          <h2 id="bgp-dashboard">BGP Peering &amp; Topology Dashboard (<code>:bgp</code>)</h2>
+          <p>
+            <code>srelens-tui</code> automatically detects cloud-native BGP implementations deployed in your cluster:
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-bgp.webp" width="2770" height="1678" alt="srelens-tui BGP Peering and Topology dashboard">
+          </figure>
+
+          <ul>
+            <li><strong>Cilium BGP Control Plane:</strong> Automatically tracks <code>CiliumBGPPeeringPolicy</code> and live peer state.</li>
+            <li><strong>MetalLB:</strong> Inspects <code>BGPPeer</code>, <code>BGPAdvertisement</code>, and <code>IPAddressPool</code> resources.</li>
+            <li><strong>Calico:</strong> Discovers <code>BGPPeer</code> and <code>BGPConfiguration</code> resources.</li>
+            <li><strong>Timers &amp; Metrics:</strong> Real-time keep-alive timers, hold-down countdowns, and received/advertised route counts.</li>
+          </ul>
+
+          <h2 id="log-streamer">Engineered Multi-Pod Log Streamer (<code>l</code>)</h2>
+          <p>
+            When inspecting microservices with high-volume JSON logs, standard terminals break line numbers and wrap text chaotically.
+            <code>srelens-tui</code> features engineered log wrapping:
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-logs.webp" width="2776" height="1682" alt="srelens-tui multi-pod log streamer">
+          </figure>
+
+          <ul>
+            <li><strong>Hanging Indents:</strong> Wrapped lines wrap cleanly beneath the line number gutter (<code>│ continuation</code>) so line numbers remain readable and aligned.</li>
+            <li><strong>Previous Container Logs (<code>p</code>):</strong> View logs from crashed or restarted containers before the fatal exit.</li>
+            <li><strong>Severity Highlighting:</strong> Automatically highlights log levels (<code>FATAL</code>, <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>).</li>
+          </ul>
+
+          <h2 id="resource-tree">Resource Hierarchy Tree (<code>t</code>)</h2>
+          <p>
+            Press <code>t</code> on any Kubernetes resource to visualize the complete owner-reference hierarchy tree from Ingress down to Pods and HPAs.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-tree.webp" width="2774" height="1686" alt="srelens-tui resource hierarchy tree view">
+          </figure>
+
+          <ul>
+            <li><strong>Live Health Indicators:</strong> Status dots beside every resource indicate readiness, crashes, or degraded states.</li>
+            <li><strong>Direct Drilldown:</strong> Press <code>Enter</code> on any child item in the tree to jump directly to its details.</li>
+          </ul>
+
+          <h2 id="debug-shells">Shells &amp; Ephemeral Debug Containers</h2>
+          <ul>
+            <li><strong>Container Shell (<code>s</code>):</strong> Drops straight into a container shell, automatically falling back from <code>/bin/bash</code> to <code>/bin/sh</code>.</li>
+            <li><strong>Ephemeral Debug Containers (<code>Shift + D</code>):</strong> Injects a debug container with full diagnostic toolkits into distroless production pods without restarting the workload.</li>
+            <li><strong>Privileged Node Shell (<code>Shift + N</code>):</strong> Spawns a privileged pod on the target node with access to host namespaces and root filesystem.</li>
+          </ul>
+
+          <h2 id="crd-support">CRD Discovery &amp; Evaluated Printer Columns</h2>
+          <p>
+            CustomResourceDefinitions are first-class citizens in <code>srelens-tui</code>:
+          </p>
+          <ul>
+            <li>Auto-discovers all CRDs installed across cluster API groups.</li>
+            <li>Evaluates server-side printer column JSONPaths dynamically.</li>
+            <li>Maintains live streaming Informer watches for CRD instances just like built-in primitives.</li>
+          </ul>
+
+          <h2 id="troubleshooting">Diagnostics &amp; Troubleshooting</h2>
+          <pre><code># Run cluster reachability diagnostics
+srelens-tui info
+
+# Check local CLI toolchains
+srelens-tui toolbox</code></pre>
+          <p>
+            For reproducible issues or feature requests, visit the <a href="https://github.com/srelens/srelens/issues" rel="noopener">srelens GitHub Issues</a> tracker.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <p class="footer-brand"><img src="/assets/logo-mark.svg" alt="" width="26" height="26"> <span>sre<span class="lens">lens</span></span></p>
+          <p class="footer-tag">The Kubernetes control room · built with Rust &amp; Tauri</p>
+        </div>
+        <div class="footer-cols">
+          <div class="footer-col">
+            <h4>Product</h4>
+            <ul>
+              <li><a href="/features/">Features</a></li>
+              <li><a href="/tui/">TUI</a></li>
+              <li><a href="/mcp/">MCP</a></li>
+              <li><a href="/compare/">Compare</a></li>
+              <li><a href="/docs/">Docs</a></li>
+              <li><a href="/download/">Download</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Project</h4>
+            <ul>
+              <li><a href="https://github.com/srelens/srelens" rel="noopener">GitHub</a></li>
+              <li><a href="https://github.com/srelens/srelens/releases" rel="noopener">Releases</a></li>
+              <li><a href="/docs/tui/">TUI Docs</a></li>
+              <li><a href="/faq/">FAQ</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-meta">
+        <span>© <span id="year">2026</span> srelens. All rights reserved.</span>
+        <span>MIT licensed</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/main.js?v=2" defer></script>
+</body>
+</html>

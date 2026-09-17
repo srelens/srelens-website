@@ -156,6 +156,94 @@
     revealEls.forEach(function (el) { io.observe(el); });
   }
 
+  /* ---------- screenshot zoom modal dialog ---------- */
+  var zoomDialog = document.createElement("dialog");
+  zoomDialog.className = "shot-dialog";
+  zoomDialog.setAttribute("aria-label", "Enlarged screenshot");
+
+  var zoomCloseBtn = document.createElement("button");
+  zoomCloseBtn.className = "shot-dialog-close";
+  zoomCloseBtn.setAttribute("type", "button");
+  zoomCloseBtn.setAttribute("aria-label", "Close enlarged view (Esc)");
+  zoomCloseBtn.innerHTML = '<span>Esc</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+
+  var zoomBody = document.createElement("div");
+  zoomBody.className = "shot-dialog-body";
+
+  var zoomImg = document.createElement("img");
+  zoomImg.className = "shot-dialog-img";
+  zoomImg.alt = "Enlarged screenshot";
+
+  zoomBody.appendChild(zoomImg);
+  zoomDialog.appendChild(zoomCloseBtn);
+  zoomDialog.appendChild(zoomBody);
+
+  function ensureDialogInBody() {
+    if (!document.body.contains(zoomDialog)) {
+      document.body.appendChild(zoomDialog);
+    }
+  }
+
+  function openZoom(src, alt) {
+    ensureDialogInBody();
+    zoomImg.src = src;
+    zoomImg.alt = alt || "Enlarged screenshot";
+    if (typeof zoomDialog.showModal === "function") {
+      try {
+        zoomDialog.showModal();
+      } catch (err) {
+        /* if already open, ignore */
+      }
+    } else {
+      zoomDialog.setAttribute("open", "");
+    }
+  }
+
+  function closeZoom() {
+    if (typeof zoomDialog.close === "function") {
+      try {
+        zoomDialog.close();
+      } catch (err) {}
+    } else {
+      zoomDialog.removeAttribute("open");
+    }
+  }
+
+  zoomDialog.addEventListener("click", function (e) {
+    closeZoom();
+  });
+
+  zoomCloseBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    closeZoom();
+  });
+
+  document.addEventListener("click", function (e) {
+    var target = e.target;
+    if (target.closest("a, button, input, select, textarea, dialog")) return;
+
+    var fig = target.closest(".shot, .hero-shot, figure");
+    if (!fig) return;
+
+    var img = target.tagName === "IMG" ? target : fig.querySelector("img");
+    if (!img) return;
+
+    var visibleImg = img;
+    if (fig.querySelectorAll("img").length > 1) {
+      var isDark = document.documentElement.getAttribute("data-theme") !== "light";
+      var darkImg = fig.querySelector(".shot-dark");
+      var lightImg = fig.querySelector(".shot-light");
+      if (isDark && darkImg) visibleImg = darkImg;
+      else if (!isDark && lightImg) visibleImg = lightImg;
+    }
+
+    var src = visibleImg.currentSrc || visibleImg.src || visibleImg.getAttribute("src");
+    if (!src) return;
+
+    e.preventDefault();
+    openZoom(src, visibleImg.alt);
+  });
+
   if (reduced) return;
 
   /* ---------- hero mock: typing log line ---------- */

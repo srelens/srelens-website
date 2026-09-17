@@ -858,12 +858,110 @@ html[data-theme="light"] .final::before { background: radial-gradient(640px 380p
   border: 1px solid var(--line-strong); border-radius: var(--radius);
   background: #0b0816; overflow: hidden;
   box-shadow: 0 24px 70px rgba(0, 0, 0, .5), 0 0 0 1px rgba(167, 139, 250, .06), 0 0 50px rgba(139, 92, 246, .08);
+  cursor: zoom-in;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.shot:hover {
+  border-color: rgba(167, 139, 250, .35);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, .6), 0 0 0 1px rgba(167, 139, 250, .15), 0 0 60px rgba(139, 92, 246, .14);
 }
 .shot img { width: 100%; height: auto; display: block; }
 .shot .shot-light { display: none; }
 html[data-theme="light"] .shot { background: #ffffff; box-shadow: 0 20px 54px rgba(46, 26, 90, .22), 0 0 0 1px rgba(124, 58, 237, .08); }
+html[data-theme="light"] .shot:hover { border-color: rgba(124, 58, 237, .4); box-shadow: 0 24px 64px rgba(46, 26, 90, .28), 0 0 0 1px rgba(124, 58, 237, .2); }
 html[data-theme="light"] .shot .shot-dark { display: none; }
 html[data-theme="light"] .shot .shot-light { display: block; }
+
+/* ---------- screenshot zoom modal dialog ---------- */
+.shot,
+.shot img {
+  cursor: zoom-in;
+}
+
+dialog.shot-dialog {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: auto;
+  max-width: 95vw;
+  max-height: 95vh;
+  overflow: visible;
+  outline: none;
+  cursor: zoom-out;
+}
+
+dialog.shot-dialog::backdrop {
+  background: rgba(5, 3, 10, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  cursor: zoom-out;
+}
+
+html[data-theme="light"] dialog.shot-dialog::backdrop {
+  background: rgba(246, 245, 252, 0.9);
+}
+
+.shot-dialog-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+.shot-dialog-img {
+  max-width: 95vw;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(167, 139, 250, 0.2);
+  display: block;
+}
+
+html[data-theme="light"] .shot-dialog-img {
+  box-shadow: 0 24px 70px rgba(46, 26, 90, 0.3), 0 0 0 1px rgba(124, 58, 237, 0.15);
+}
+
+.shot-dialog-close {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10002;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.shot-dialog-close:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+}
+
+html[data-theme="light"] .shot-dialog-close {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #111;
+}
+
+html[data-theme="light"] .shot-dialog-close:hover {
+  background: rgba(0, 0, 0, 0.15);
+  border-color: rgba(0, 0, 0, 0.3);
+}
 
 .shot-cap {
   margin-top: 14px;
