@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary SEO -->
+  <title>srelens-tui — Pure-Rust Terminal UI for Kubernetes</title>
+  <meta name="description" content="srelens-tui is an ultra-fast, keyboard-driven terminal UI for Kubernetes built in Rust with Ratatui and kube-rs. Live stream watches, BGP peering dashboard, Helm 3 inspector, interactive logs, and in-process AI diagnostics.">
+  <link rel="canonical" href="https://srelens.com/tui/">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <meta name="author" content="srelens">
+  <meta name="theme-color" content="#08060f">
+  <meta name="color-scheme" content="dark light">
+  <script>
+    (function () {
+      var t = null;
+      try { var m = location.search.match(/[?&]theme=(light|dark)/); if (m) t = m[1]; } catch (e) {}
+      try { if (!t) t = localStorage.getItem("theme"); } catch (e) {}
+      if (t !== "light" && t !== "dark") {
+        t = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      }
+      document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://srelens.com/tui/">
+  <meta property="og:site_name" content="srelens">
+  <meta property="og:title" content="srelens-tui — Pure-Rust Terminal UI for Kubernetes">
+  <meta property="og:description" content="An ultra-fast, keyboard-driven terminal workspace for Kubernetes operators. Live stream watches, BGP peering dashboard, Helm 3 diffs, and embedded AI diagnostics.">
+  <meta property="og:image" content="https://srelens.com/assets/shots/tui-overview.webp">
+  <meta property="og:image:width" content="2400">
+  <meta property="og:image:height" content="1461">
+  <meta property="og:image:alt" content="srelens-tui cluster overview running in a modern terminal.">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="srelens-tui — Pure-Rust Terminal UI for Kubernetes">
+  <meta name="twitter:description" content="An ultra-fast, keyboard-driven terminal workspace for Kubernetes operators. Live stream watches, BGP peering dashboard, Helm 3 diffs, and embedded AI diagnostics.">
+  <meta name="twitter:image" content="https://srelens.com/assets/shots/tui-overview.webp">
+
+  <!-- Icons / PWA -->
+  <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/enterprise.css">
+
+  <!-- Structured data: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "srelens-tui",
+    "url": "https://srelens.com/tui/",
+    "description": "srelens-tui is a standalone pure-Rust terminal user interface for Kubernetes operators, built with Ratatui and kube-rs. It provides 0ms Informer cache browsing, live stream watches, BGP peering dashboard, deep Helm 3 values diff and rollback, auto-wrapped logs, debug containers, and an in-process AI assistant drawer.",
+    "applicationCategory": "DeveloperApplication",
+    "applicationSubCategory": "Kubernetes Terminal UI",
+    "operatingSystem": "macOS, Linux, Windows",
+    "softwareVersion": "0.3.0",
+    "downloadUrl": "https://srelens.com/download/#tui",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "image": "https://srelens.com/assets/shots/tui-overview.webp",
+    "publisher": {
+      "@type": "Organization",
+      "name": "srelens",
+      "url": "https://srelens.com/",
+      "logo": "https://srelens.com/assets/icon-512.png"
+    }
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="bg-aurora" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="wrap">
+      <nav class="nav" aria-label="Main">
+        <a class="brand" href="/">
+          <img src="/assets/logo-mark.svg" alt="" width="30" height="30">
+          <span>sre<span class="lens">lens</span></span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="/features/">Features</a></li>
+          <li><a class="active" href="/tui/">TUI</a></li>
+          <li><a href="/mcp/">MCP</a></li>
+          <li><a href="/compare/">Compare</a></li>
+          <li><a href="/docs/">Docs</a></li>
+          <li><a href="/download/">Download</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+        </ul>
+        <span class="nav-status" aria-hidden="true"><span class="dot"></span> pure Rust core</span>
+        <button class="theme-toggle" type="button" aria-label="Toggle light/dark theme">
+          <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+        <a class="nav-cta" href="https://github.com/srelens/srelens" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+          GitHub
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ HERO ============ -->
+    <section class="page-hero">
+      <div class="wrap">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/">srelens</a> <span class="sep">/</span> <span>tui</span>
+        </nav>
+        <p class="hero-badge" style="margin-bottom:16px;"><span class="dot"></span> pure Rust · sub-millisecond · in-process AI assistant · zero Electron</p>
+        <h1 class="display">The terminal control room <br><span class="grad">for Kubernetes.</span></h1>
+        <p class="lede">
+          Built on <code>ratatui</code> and <code>kube-rs</code>, <strong>srelens-tui</strong> delivers the full operational
+          power of srelens inside a single, blazing-fast native binary. Featuring a zero-latency Informer cache,
+          live streaming watches, BGP network peering dashboards, Helm 3 values diffs, auto-wrapped logs, and an
+          embedded AI assistant with native token caching.
+        </p>
+        <div class="hero-actions" style="justify-content:flex-start;">
+          <a class="btn btn-primary" href="/download/#tui">Install srelens-tui</a>
+          <a class="btn btn-ghost" href="/docs/tui/">Read Documentation</a>
+          <a class="btn btn-ghost" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
+        </div>
+
+        <div class="get-grid" style="margin-top: 36px;">
+          <div>
+            <div class="section-head" style="margin-bottom: 8px;">
+              <p class="eyebrow" style="font-size:12px;"><span class="tick">●</span> One-Line Install</p>
+              <h2 style="font-size: clamp(20px, 2.5vw, 26px);">Install via Homebrew or Shell Script</h2>
+            </div>
+            <p class="get-note" style="margin-top:0;">
+              Available on macOS (Apple Silicon &amp; Intel), Linux (x86_64 &amp; ARM64), and Windows. Updates in-place with <code>srelens-tui update</code>.
+            </p>
+          </div>
+          <div class="codeblock">
+            <button class="copy-btn" type="button" data-copy="brew install srelens/tap/srelens-tui">copy</button>
+<pre><span class="c"># macOS / Linux via Homebrew</span>
+<span class="p">$</span> brew install srelens/tap/srelens-tui
+
+<span class="c"># or standalone shell script</span>
+<span class="p">$</span> curl -fsSL https://srelens.com/install.sh | bash
+
+<span class="c"># launch immediately</span>
+<span class="p">$</span> srelens-tui</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HERO SCREENSHOT ============ -->
+    <div class="band" style="padding-top:16px;">
+      <div class="band-glow" aria-hidden="true"></div>
+      <figure class="shot hero-shot">
+        <img src="/assets/shots/tui-overview.webp" width="2400" height="1461"
+             fetchpriority="high"
+             alt="srelens-tui terminal control room showing cluster overview with CPU/Memory gauges, node health, pod distribution, and active context">
+      </figure>
+    </div>
+    <p class="shot-cap" style="max-width:1080px;margin:12px auto 0;padding:0 24px;">real terminal capture · <code>srelens-tui :overview</code> control room dashboard with aggregate resource gauges and node vitals</p>
+
+    <!-- ============ KEY STATS STRIP ============ -->
+    <section class="section" style="padding: 48px 0 24px;">
+      <div class="wrap">
+        <div class="dl-grid" style="grid-template-columns: repeat(4, 1fr);">
+          <article class="dl-card" style="padding: 20px;">
+            <p style="font-family:var(--mono);font-size:26px;font-weight:700;color:var(--accent-bright);">&lt;15ms</p>
+            <h3 style="font-size:16px;margin:4px 0 2px;">Startup Time</h3>
+            <p style="font-size:13px;color:var(--text-dim);">Instant cold launch with zero Electron runtime.</p>
+          </article>
+          <article class="dl-card" style="padding: 20px;">
+            <p style="font-family:var(--mono);font-size:26px;font-weight:700;color:var(--ok);">0ms</p>
+            <h3 style="font-size:16px;margin:4px 0 2px;">Informer Cache</h3>
+            <p style="font-size:13px;color:var(--text-dim);">Sub-millisecond view transitions without network roundtrips.</p>
+          </article>
+          <article class="dl-card" style="padding: 20px;">
+            <p style="font-family:var(--mono);font-size:26px;font-weight:700;color:var(--ember);">&lt;25MB</p>
+            <h3 style="font-size:16px;margin:4px 0 2px;">Memory Footprint</h3>
+            <p style="font-size:13px;color:var(--text-dim);">Lightweight resident memory in high-density multi-pod clusters.</p>
+          </article>
+          <article class="dl-card" style="padding: 20px;">
+            <p style="font-family:var(--mono);font-size:26px;font-weight:700;color:var(--info);">100%</p>
+            <h3 style="font-size:16px;margin:4px 0 2px;">Pure Rust Core</h3>
+            <p style="font-size:13px;color:var(--text-dim);">Built with Ratatui &amp; kube-rs. No Node, no webviews.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FEATURE SHOWCASES ============ -->
+    <section class="section" id="features">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow reveal"><span class="tick">●</span> Core Capabilities</p>
+          <h2 class="reveal">Engineered for high-stakes <span class="grad">SRE operations.</span></h2>
+          <p class="sub reveal">
+            Everything you need during on-call incidents: live peering states, instant AI triage playbooks,
+            smart auto-wrapped logs, 3-way Helm diffs, and hierarchy trees.
+          </p>
+        </div>
+
+        <!-- 1. BGP Peering -->
+        <div class="feature-row" style="margin-top: 48px;">
+          <div class="feature-narrative reveal">
+            <p class="feature-tag">Networking &amp; Control Plane</p>
+            <h3>BGP Peering &amp; Topology Dashboard (<code>:bgp</code>)</h3>
+            <p>
+              First-class visibility into cloud-native routing. Automatically discovers and inspects
+              <strong>Cilium BGP Control Plane</strong>, <strong>MetalLB</strong>, and <strong>Calico</strong> BGP peering topologies.
+            </p>
+            <ul class="feature-bullets">
+              <li><strong>Peering Sessions:</strong> Live state of all BGP neighbors with remote ASN, state (<code>Established</code>, <code>Active</code>, <code>Idle</code>), and uptime.</li>
+              <li><strong>Prefix Announcements:</strong> Track advertised Service VIPs and Pod CIDRs with real-time hold-timer and keep-alive countdowns.</li>
+              <li><strong>Multi-Router Topology:</strong> Inspect BGP node peer configurations, router IDs, and autonomous system boundaries.</li>
+            </ul>
+          </div>
+          <figure class="shot reveal">
+            <img src="/assets/shots/tui-bgp.webp" width="2400" height="1461" loading="lazy"
+                 alt="srelens-tui BGP Peering Dashboard showing Cilium BGP control plane sessions, remote ASNs, advertised prefixes, and hold timers">
+            <figcaption class="shot-cap" style="padding:10px 16px;"><code>:bgp</code> · Live Cilium &amp; MetalLB BGP peering sessions, ASN topology, and prefix announcements</figcaption>
+          </figure>
+        </div>
+
+        <!-- 2. AI Assistant -->
+        <div class="feature-row" style="margin-top: 64px;">
+          <div class="feature-narrative reveal">
+            <p class="feature-tag">In-Process AI Diagnostics</p>
+            <h3>Embedded SRE AI Assistant (<code>:ai</code> or <code>Tab</code>)</h3>
+            <p>
+              An intelligent troubleshooting companion embedded directly in your terminal. No external browser
+              context-switching required.
+            </p>
+            <ul class="feature-bullets">
+              <li><strong>Incident Playbooks:</strong> Run <code>/crashloop</code>, <code>/oom</code>, <code>/rollout</code>, or <code>/network</code> to diagnose failing workloads with grounded root cause analysis.</li>
+              <li><strong>Tool Badges &amp; Execution:</strong> Transparently runs diagnostic tools (<code>kubectl describe</code>, log tailing, event triage) with confirmation gates.</li>
+              <li><strong>Token Efficiency &amp; Multi-Provider:</strong> Native prompt caching reduces API costs by up to 90%. Connect Anthropic Claude, OpenAI, Google Gemini, or local <strong>Ollama</strong> models.</li>
+              <li><strong>High-Density Caveman Mode:</strong> Use <code>/caveman</code> for terse, ultra-compact operational output designed for high-stress pager duty.</li>
+            </ul>
+          </div>
+          <figure class="shot reveal">
+            <img src="/assets/shots/tui-assistant.webp" width="2400" height="1461" loading="lazy"
+                 alt="srelens-tui in-process AI assistant drawer diagnosing a CrashLoopBackOff incident with tool execution badges and root cause playbook">
+            <figcaption class="shot-cap" style="padding:10px 16px;"><code>:ai</code> or <code>Tab</code> · Embedded AI assistant running <code>/crashloop</code> playbook with live tool invocation badges</figcaption>
+          </figure>
+        </div>
+
+        <!-- 3. Resource Hierarchy Tree -->
+        <div class="feature-row" style="margin-top: 64px;">
+          <div class="feature-narrative reveal">
+            <p class="feature-tag">Topology &amp; Relationships</p>
+            <h3>Visual Resource Hierarchy Trees (<code>t</code>)</h3>
+            <p>
+              Instantly resolve the full owner-reference and dependency tree for any Kubernetes primitive without
+              manually correlating labels or selector strings.
+            </p>
+            <ul class="feature-bullets">
+              <li><strong>Full Stack Topology:</strong> Follows relationships from <code>Ingress</code> ➔ <code>Service</code> ➔ <code>Deployment</code> ➔ <code>ReplicaSet</code> ➔ <code>Pods</code> ➔ <code>HPA</code>.</li>
+              <li><strong>Live Health Dots:</strong> Visual status indicators beside every node in the tree show replica readiness, crash counts, and degraded states.</li>
+              <li><strong>Direct Drilldown:</strong> Press <code>Enter</code> on any sub-resource in the tree to immediately jump to its detail view or open live logs.</li>
+            </ul>
+          </div>
+          <figure class="shot reveal">
+            <img src="/assets/shots/tui-tree.webp" width="2400" height="1461" loading="lazy"
+                 alt="srelens-tui resource hierarchy tree showing deployment, replica sets, pods, and related services with health status indicators">
+            <figcaption class="shot-cap" style="padding:10px 16px;"><code>t</code> · ASCII resource topology tree mapping Ingresses, Services, Deployments, and Pods with live status dots</figcaption>
+          </figure>
+        </div>
+
+        <!-- 4. Multi-Pod Logs -->
+        <div class="feature-row" style="margin-top: 64px;">
+          <div class="feature-narrative reveal">
+            <p class="feature-tag">Telemetry &amp; Logging</p>
+            <h3>Engineered Multi-Pod Log Streamer (<code>l</code>)</h3>
+            <p>
+              Designed specifically for modern JSON and structured logging formats where single log events span
+              hundreds of characters.
+            </p>
+            <ul class="feature-bullets">
+              <li><strong>Hanging Indent Wrap:</strong> Enabled by default, long log lines wrap cleanly beneath the line number gutter (<code>│ continuation</code>) so line numbers remain readable and aligned.</li>
+              <li><strong>Log Severity Syntax Highlighting:</strong> Automatically highlights <code>FATAL</code>, <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>, and <code>DEBUG</code> levels across all log streams.</li>
+              <li><strong>Crashed Container Logs:</strong> Press <code>p</code> to instantly toggle previous container instance logs to find fatal stack traces before container termination.</li>
+              <li><strong>Horizontal Panning &amp; Filtering:</strong> Toggle wrapping off with <code>w</code> for horizontal scrolling (<code>h</code>/<code>l</code> or arrows), and filter log lines in real-time with <code>/</code>.</li>
+            </ul>
+          </div>
+          <figure class="shot reveal">
+            <img src="/assets/shots/tui-logs.webp" width="2400" height="1461" loading="lazy"
+                 alt="srelens-tui log streaming view with line numbering, hanging indent wrapping, and severity syntax highlighting">
+            <figcaption class="shot-cap" style="padding:10px 16px;"><code>l</code> · Live multi-pod log streaming with severity syntax highlighting and clean hanging indent wrapping</figcaption>
+          </figure>
+        </div>
+
+        <!-- 5. Helm 3 Inspector -->
+        <div class="feature-row" style="margin-top: 64px;">
+          <div class="feature-narrative reveal">
+            <p class="feature-tag">Release Management</p>
+            <h3>Deep Helm 3 Inspector &amp; Values Diff (<code>:helm</code>)</h3>
+            <p>
+              Inspect and operate Helm releases across all namespaces directly from your terminal without requiring
+              the <code>helm</code> CLI binary installed locally.
+            </p>
+            <ul class="feature-bullets">
+              <li><strong>3-Way Values Diff:</strong> Built-in diff engine compares <em>User-Supplied Values</em> against <em>Computed All-Values</em>, chart defaults, or the previous release revision.</li>
+              <li><strong>Revision Changelog:</strong> Complete historical release audit trail with deployed timestamps, chart versions, and status.</li>
+              <li><strong>One-Touch Rollback:</strong> Select any prior revision in the history list and press <code>r</code> to trigger a guarded, confirmation-backed rollback.</li>
+              <li><strong>Rendered Manifests:</strong> View syntax-highlighted rendered Kubernetes YAML manifests generated by the chart templates.</li>
+            </ul>
+          </div>
+          <figure class="shot reveal">
+            <img src="/assets/shots/tui-helm.webp" width="2400" height="1461" loading="lazy"
+                 alt="srelens-tui Helm 3 inspector showing release status, values diff view, revision history, and rendered manifests">
+            <figcaption class="shot-cap" style="padding:10px 16px;"><code>:helm</code> ➔ <code>Enter</code> · 5-tab Helm release inspector with 3-way values diff, changelog, and one-touch rollback</figcaption>
+          </figure>
+        </div>
+
+        <!-- 6. Pod & Workload Operations -->
+        <div class="feature-row" style="margin-top: 64px;">
+          <div class="feature-narrative reveal">
+            <p class="feature-tag">Workload Operations</p>
+            <h3>High-Density Pod &amp; Resource Operations (<code>:pods</code>)</h3>
+            <p>
+              Keyboard-optimized table views with sub-millisecond sorting, persistent regex filtering, and deep
+              operational shortcuts.
+            </p>
+            <ul class="feature-bullets">
+              <li><strong>Instant Shells (<code>s</code>):</strong> Drops straight into a container shell with automatic fallback from <code>bash</code> to <code>sh</code>.</li>
+              <li><strong>Ephemeral Debug Containers (<code>Shift + D</code>):</strong> Attach debug containers with rich troubleshooting tools to distroless or minimal production pods without restarting them.</li>
+              <li><strong>Privileged Node Shells (<code>Shift + N</code>):</strong> Launch root node diagnostic sessions with host namespace access.</li>
+              <li><strong>Background Port Forwarding (<code>Shift + F</code>):</strong> Manage port forwards with live throughput gauges and automatic reconnection.</li>
+            </ul>
+          </div>
+          <figure class="shot reveal">
+            <img src="/assets/shots/tui-pods.webp" width="2400" height="1461" loading="lazy"
+                 alt="srelens-tui pod table view showing namespaces, pod status, restart counts, node placements, and quick action bar">
+            <figcaption class="shot-cap" style="padding:10px 16px;"><code>:po</code> · High-density pod table with sub-millisecond filtering, shell exec (<code>s</code>), and debug container injection</figcaption>
+          </figure>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ COMPARISON MATRIX ============ -->
+    <section class="section" id="compare" style="background:var(--surface-2);padding: 64px 0;">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow reveal"><span class="tick">●</span> Comparison</p>
+          <h2 class="reveal">How srelens-tui compares.</h2>
+          <p class="sub reveal">
+            Built from the ground up for modern SRE workflows, cloud-native networking, and AI-assisted troubleshooting.
+          </p>
+        </div>
+
+        <div style="overflow-x:auto;margin-top:32px;">
+          <table style="width:100%;border-collapse:collapse;font-size:15px;">
+            <thead>
+              <tr style="border-bottom:2px solid var(--line-strong);text-align:left;">
+                <th style="padding:14px 16px;">Feature / Capability</th>
+                <th style="padding:14px 16px;color:var(--accent-bright);">srelens-tui</th>
+                <th style="padding:14px 16px;">k9s</th>
+                <th style="padding:14px 16px;">kubectl</th>
+                <th style="padding:14px 16px;">srelens Desktop</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:12px 16px;"><strong>Core Runtime</strong></td>
+                <td style="padding:12px 16px;color:var(--ok);">Pure Rust (kube-rs + Ratatui)</td>
+                <td style="padding:12px 16px;">Go (tview + client-go)</td>
+                <td style="padding:12px 16px;">Go (client-go)</td>
+                <td style="padding:12px 16px;">Tauri v2 + Rust Core</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:12px 16px;"><strong>Informer Cache Speed</strong></td>
+                <td style="padding:12px 16px;color:var(--ok);">0ms (Instant memory lookup)</td>
+                <td style="padding:12px 16px;">Periodic Sync / Cache</td>
+                <td style="padding:12px 16px;">No Cache (API Roundtrip)</td>
+                <td style="padding:12px 16px;">0ms (Rust Informer)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:12px 16px;"><strong>In-Process AI Assistant</strong></td>
+                <td style="padding:12px 16px;color:var(--ok);">✓ Built-in (<code>:ai</code>, <code>/crashloop</code>, MCP)</td>
+                <td style="padding:12px 16px;color:var(--crit);">✕ None</td>
+                <td style="padding:12px 16px;color:var(--crit);">✕ None</td>
+                <td style="padding:12px 16px;color:var(--ok);">✓ Built-in (Drawer + MCP)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:12px 16px;"><strong>BGP Peering Dashboard</strong></td>
+                <td style="padding:12px 16px;color:var(--ok);">✓ Built-in (<code>:bgp</code> for Cilium/MetalLB)</td>
+                <td style="padding:12px 16px;color:var(--crit);">✕ Manual CRD only</td>
+                <td style="padding:12px 16px;color:var(--crit);">✕ Manual CRD only</td>
+                <td style="padding:12px 16px;color:var(--ok);">✓ Dedicated view</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:12px 16px;"><strong>Deep Helm 3 Values Diff</strong></td>
+                <td style="padding:12px 16px;color:var(--ok);">✓ Built-in 3-way diff &amp; rollback</td>
+                <td style="padding:12px 16px;">Basic release view</td>
+                <td style="padding:12px 16px;color:var(--crit);">✕ Requires helm CLI</td>
+                <td style="padding:12px 16px;color:var(--ok);">✓ Built-in visual diff</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:12px 16px;"><strong>Resource Hierarchy Tree</strong></td>
+                <td style="padding:12px 16px;color:var(--ok);">✓ ASCII Tree (<code>t</code> key)</td>
+                <td style="padding:12px 16px;">Tree view (cron/workloads)</td>
+                <td style="padding:12px 16px;color:var(--crit);">✕ Requires krew plugin</td>
+                <td style="padding:12px 16px;color:var(--ok);">✓ Visual DAG Graph</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:12px 16px;"><strong>Ephemeral Debug Containers</strong></td>
+                <td style="padding:12px 16px;color:var(--ok);">✓ <code>Shift + D</code></td>
+                <td style="padding:12px 16px;">Manual command</td>
+                <td style="padding:12px 16px;"><code>kubectl debug</code></td>
+                <td style="padding:12px 16px;color:var(--ok);">✓ One-click action</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:12px 16px;"><strong>Idle Memory Consumption</strong></td>
+                <td style="padding:12px 16px;color:var(--ok);">&lt;25 MB</td>
+                <td style="padding:12px 16px;">~45–80 MB</td>
+                <td style="padding:12px 16px;">Transient</td>
+                <td style="padding:12px 16px;">~120 MB (WebView)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KEYBINDINGS CHEAT SHEET ============ -->
+    <section class="section" id="keybindings">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow reveal"><span class="tick">●</span> Shortcuts</p>
+          <h2 class="reveal">Keybindings cheat sheet.</h2>
+          <p class="sub reveal">
+            k9s-compatible navigation combined with high-powered operational shortcuts.
+          </p>
+        </div>
+
+        <div class="shot-grid" style="grid-template-columns: repeat(2, 1fr); margin-top:24px;">
+          <div class="dl-card" style="padding: 24px;">
+            <h3 style="font-size:18px;margin-bottom:12px;color:var(--accent-bright);">Navigation &amp; Global</h3>
+            <table style="width:100%;font-size:14px;border-collapse:collapse;">
+              <tbody>
+                <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px 0;"><code>:</code></td><td style="padding:8px 0;">Open command bar (e.g. <code>:po</code>, <code>:deploy</code>, <code>:bgp</code>, <code>:helm</code>)</td></tr>
+                <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px 0;"><code>/</code></td><td style="padding:8px 0;">Filter items (plain text substring or regex)</td></tr>
+                <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px 0;"><code>Tab</code></td><td style="padding:8px 0;">Toggle embedded AI assistant drawer</td></tr>
+                <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px 0;"><code>Esc</code></td><td style="padding:8px 0;">Clear filter, close drawer, or navigate back</td></tr>
+                <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px 0;"><code>?</code></td><td style="padding:8px 0;">Open keyboard shortcuts help overlay</td></tr>
+                <tr><td style="padding:8px 0;"><code>q</code></td><td style="padding:8px 0;">Quit application or exit current view</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="dl-card" style="padding: 24px;">
+            <h3 style="font-size:18px;margin-bottom:12px;color:var(--ok);">Resource Operations</h3>
+            <table style="width:100%;font-size:14px;border-collapse:collapse;">
+              <tbody>
+                <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px 0;"><code>Enter</code></td><td style="padding:8px 0;">Drill into resource / open details</td></tr>
+                <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px 0;"><code>l</code></td><td style="padding:8px 0;">Stream live container logs</td></tr>
+                <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px 0;"><code>s</code></td><td style="padding:8px 0;">Open container shell (bash ➔ sh)</td></tr>
+                <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px 0;"><code>Shift + D</code></td><td style="padding:8px 0;">Attach ephemeral debug container</td></tr>
+                <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px 0;"><code>Shift + N</code></td><td style="padding:8px 0;">Open privileged node shell</td></tr>
+                <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px 0;"><code>Shift + F</code></td><td style="padding:8px 0;">Start background port forward</td></tr>
+                <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px 0;"><code>t</code></td><td style="padding:8px 0;">View ASCII resource topology tree</td></tr>
+                <tr><td style="padding:8px 0;"><code>d</code> / <code>y</code></td><td style="padding:8px 0;">Describe resource / View &amp; edit live YAML</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MULTI-PLATFORM DOWNLOAD GRID ============ -->
+    <section class="section" id="download" style="background:var(--surface);padding:64px 0;">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow reveal"><span class="tick">●</span> Downloads</p>
+          <h2 class="reveal">Get srelens-tui for your platform.</h2>
+          <p class="sub reveal">
+            Compiled statically with zero runtime dependencies. Available on GitHub Releases.
+          </p>
+        </div>
+
+        <div class="dl-grid" style="margin-top:32px;">
+          <article class="dl-card reveal">
+            <h3>macOS</h3>
+            <p>Apple Silicon &amp; Intel · CLI</p>
+            <div class="dl-links">
+              <a class="btn btn-primary dl-btn" data-asset="srelens-tui-{v}-aarch64-apple-darwin.tar.gz" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-tui-0.3.0-aarch64-apple-darwin.tar.gz" rel="noopener">Apple Silicon <span>.tar.gz</span></a>
+              <a class="btn btn-ghost dl-btn" data-asset="srelens-tui-{v}-x86_64-apple-darwin.tar.gz" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-tui-0.3.0-x86_64-apple-darwin.tar.gz" rel="noopener">Intel <span>.tar.gz</span></a>
+            </div>
+          </article>
+          <article class="dl-card reveal">
+            <h3>Linux</h3>
+            <p>x86_64 &amp; ARM64 · Static glibc/musl</p>
+            <div class="dl-links">
+              <a class="btn btn-primary dl-btn" data-asset="srelens-tui-{v}-x86_64-unknown-linux-gnu.tar.gz" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-tui-0.3.0-x86_64-unknown-linux-gnu.tar.gz" rel="noopener">x86_64 <span>.tar.gz</span></a>
+              <a class="btn btn-ghost dl-btn" data-asset="srelens-tui-{v}-aarch64-unknown-linux-gnu.tar.gz" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-tui-0.3.0-aarch64-unknown-linux-gnu.tar.gz" rel="noopener">ARM64 <span>.tar.gz</span></a>
+            </div>
+          </article>
+          <article class="dl-card reveal">
+            <h3>Windows</h3>
+            <p>x64 &amp; ARM64 · Standalone CLI</p>
+            <div class="dl-links">
+              <a class="btn btn-primary dl-btn" data-asset="srelens-tui-{v}-x86_64-pc-windows-msvc.zip" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-tui-0.3.0-x86_64-pc-windows-msvc.zip" rel="noopener">x64 <span>.zip</span></a>
+              <a class="btn btn-ghost dl-btn" data-asset="srelens-tui-{v}-aarch64-pc-windows-msvc.zip" href="https://github.com/srelens/srelens/releases/download/srelens-v0.3.0/srelens-tui-0.3.0-aarch64-pc-windows-msvc.zip" rel="noopener">ARM64 <span>.zip</span></a>
+            </div>
+          </article>
+        </div>
+
+        <p class="dl-note reveal" style="text-align:center;margin-top:24px;">
+          Also installable via Cargo: <code>cargo install --git https://github.com/srelens/srelens srelens-tui</code> · View full docs at <a href="/docs/tui/">srelens.com/docs/tui</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section class="final">
+      <p class="eyebrow"><span class="tick">●</span> Control your cluster from the terminal</p>
+      <h2 class="display">Fast, reliable, <span class="grad">in-process AI.</span></h2>
+      <p>Free and open-source under the MIT license. Connects securely with your existing kubeconfig.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/download/#tui">Download srelens-tui <span data-version>v0.3.0</span></a>
+        <a class="btn btn-ghost" href="/docs/tui/">Documentation</a>
+        <a class="btn btn-ghost" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <p class="footer-brand"><img src="/assets/logo-mark.svg" alt="" width="26" height="26"> <span>sre<span class="lens">lens</span></span></p>
+          <p class="footer-tag">The Kubernetes control room · built with Rust &amp; Tauri</p>
+        </div>
+        <div class="footer-cols">
+          <div class="footer-col">
+            <h4>Product</h4>
+            <ul>
+              <li><a href="/features/">Features</a></li>
+              <li><a href="/tui/">TUI</a></li>
+              <li><a href="/mcp/">MCP</a></li>
+              <li><a href="/compare/">Compare</a></li>
+              <li><a href="/docs/">Docs</a></li>
+              <li><a href="/download/">Download</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Project</h4>
+            <ul>
+              <li><a href="https://github.com/srelens/srelens" rel="noopener">GitHub</a></li>
+              <li><a href="https://github.com/srelens/srelens/releases" rel="noopener">Releases</a></li>
+              <li><a href="/docs/tui/">TUI Docs</a></li>
+              <li><a href="/faq/">FAQ</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-meta">
+        <span>© <span id="year">2026</span> srelens. All rights reserved.</span>
+        <span>not affiliated with Mirantis (Lens) or the Freelens project</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/main.js" defer></script>
+</body>
+</html>
