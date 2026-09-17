@@ -156,99 +156,93 @@
     revealEls.forEach(function (el) { io.observe(el); });
   }
 
-  /* ---------- screenshot zoom lightbox ---------- */
-  var zoomOverlay = document.createElement("div");
-  zoomOverlay.className = "shot-zoom-overlay";
-  zoomOverlay.setAttribute("role", "dialog");
-  zoomOverlay.setAttribute("aria-modal", "true");
-  zoomOverlay.setAttribute("aria-label", "Enlarged screenshot");
+  /* ---------- screenshot zoom modal dialog ---------- */
+  var zoomDialog = document.createElement("dialog");
+  zoomDialog.className = "shot-dialog";
+  zoomDialog.setAttribute("aria-label", "Enlarged screenshot");
 
-  var closeBtn = document.createElement("button");
-  closeBtn.className = "shot-zoom-close";
-  closeBtn.setAttribute("type", "button");
-  closeBtn.setAttribute("aria-label", "Close enlarged view (Esc)");
-  closeBtn.innerHTML = '<span>Esc</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+  var zoomCloseBtn = document.createElement("button");
+  zoomCloseBtn.className = "shot-dialog-close";
+  zoomCloseBtn.setAttribute("type", "button");
+  zoomCloseBtn.setAttribute("aria-label", "Close enlarged view (Esc)");
+  zoomCloseBtn.innerHTML = '<span>Esc</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
 
-  var zoomContent = document.createElement("div");
-  zoomContent.className = "shot-zoom-content";
+  var zoomBody = document.createElement("div");
+  zoomBody.className = "shot-dialog-body";
 
   var zoomImg = document.createElement("img");
-  zoomImg.className = "shot-zoom-img";
+  zoomImg.className = "shot-dialog-img";
   zoomImg.alt = "Enlarged screenshot";
 
-  zoomContent.appendChild(zoomImg);
-  zoomOverlay.appendChild(closeBtn);
-  zoomOverlay.appendChild(zoomContent);
+  zoomBody.appendChild(zoomImg);
+  zoomDialog.appendChild(zoomCloseBtn);
+  zoomDialog.appendChild(zoomBody);
 
-  function appendOverlay() {
-    if (!document.body.contains(zoomOverlay)) {
-      document.body.appendChild(zoomOverlay);
+  function ensureDialogInBody() {
+    if (!document.body.contains(zoomDialog)) {
+      document.body.appendChild(zoomDialog);
     }
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", appendOverlay);
-  } else {
-    appendOverlay();
+  function openZoom(src, alt) {
+    ensureDialogInBody();
+    zoomImg.src = src;
+    zoomImg.alt = alt || "Enlarged screenshot";
+    if (typeof zoomDialog.showModal === "function") {
+      try {
+        zoomDialog.showModal();
+      } catch (err) {
+        /* if already open, ignore */
+      }
+    } else {
+      zoomDialog.setAttribute("open", "");
+    }
   }
 
   function closeZoom() {
-    zoomOverlay.classList.remove("active");
-    document.body.classList.remove("shot-zoom-open");
+    if (typeof zoomDialog.close === "function") {
+      try {
+        zoomDialog.close();
+      } catch (err) {}
+    } else {
+      zoomDialog.removeAttribute("open");
+    }
   }
 
-  function openZoom(src, alt) {
-    appendOverlay();
-    zoomImg.src = src;
-    zoomImg.alt = alt || "Enlarged screenshot";
-    document.body.classList.add("shot-zoom-open");
-    zoomOverlay.classList.add("active");
-  }
-
-  zoomOverlay.addEventListener("click", function (e) {
+  zoomDialog.addEventListener("click", function (e) {
     closeZoom();
   });
 
-  closeBtn.addEventListener("click", function (e) {
+  zoomCloseBtn.addEventListener("click", function (e) {
     e.stopPropagation();
     closeZoom();
   });
 
-  window.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" || e.key === "Esc") {
-      closeZoom();
+  document.addEventListener("click", function (e) {
+    var target = e.target;
+    if (target.closest("a, button, input, select, textarea, dialog")) return;
+
+    var fig = target.closest(".shot, .hero-shot, figure");
+    if (!fig) return;
+
+    var img = target.tagName === "IMG" ? target : fig.querySelector("img");
+    if (!img) return;
+
+    var visibleImg = img;
+    if (fig.querySelectorAll("img").length > 1) {
+      var isDark = document.documentElement.getAttribute("data-theme") !== "light";
+      var darkImg = fig.querySelector(".shot-dark");
+      var lightImg = fig.querySelector(".shot-light");
+      if (isDark && darkImg) visibleImg = darkImg;
+      else if (!isDark && lightImg) visibleImg = lightImg;
     }
+
+    var src = visibleImg.currentSrc || visibleImg.src || visibleImg.getAttribute("src");
+    if (!src) return;
+
+    e.preventDefault();
+    openZoom(src, visibleImg.alt);
   });
-
-  function bindShotZoom() {
-    document.querySelectorAll(".shot, .hero-shot, figure").forEach(function (fig) {
-      fig.style.cursor = "zoom-in";
-      fig.addEventListener("click", function (e) {
-        if (e.target.closest("a, button, input, select, textarea")) return;
-        var img = e.target.tagName === "IMG" ? e.target : fig.querySelector("img");
-        if (!img) return;
-
-        var visibleImg = img;
-        if (fig.querySelectorAll("img").length > 1) {
-          var isDark = document.documentElement.getAttribute("data-theme") !== "light";
-          var darkImg = fig.querySelector(".shot-dark");
-          var lightImg = fig.querySelector(".shot-light");
-          if (isDark && darkImg) visibleImg = darkImg;
-          else if (!isDark && lightImg) visibleImg = lightImg;
-        }
-
-        e.preventDefault();
-        e.stopPropagation();
-        openZoom(visibleImg.currentSrc || visibleImg.src, visibleImg.alt);
-      });
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", bindShotZoom);
-  } else {
-    bindShotZoom();
-  }
 
   if (reduced) return;
 
