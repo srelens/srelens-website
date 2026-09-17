@@ -858,12 +858,147 @@ html[data-theme="light"] .final::before { background: radial-gradient(640px 380p
   border: 1px solid var(--line-strong); border-radius: var(--radius);
   background: #0b0816; overflow: hidden;
   box-shadow: 0 24px 70px rgba(0, 0, 0, .5), 0 0 0 1px rgba(167, 139, 250, .06), 0 0 50px rgba(139, 92, 246, .08);
+  cursor: zoom-in;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.shot:hover {
+  border-color: rgba(167, 139, 250, .35);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, .6), 0 0 0 1px rgba(167, 139, 250, .15), 0 0 60px rgba(139, 92, 246, .14);
 }
 .shot img { width: 100%; height: auto; display: block; }
 .shot .shot-light { display: none; }
 html[data-theme="light"] .shot { background: #ffffff; box-shadow: 0 20px 54px rgba(46, 26, 90, .22), 0 0 0 1px rgba(124, 58, 237, .08); }
+html[data-theme="light"] .shot:hover { border-color: rgba(124, 58, 237, .4); box-shadow: 0 24px 64px rgba(46, 26, 90, .28), 0 0 0 1px rgba(124, 58, 237, .2); }
 html[data-theme="light"] .shot .shot-dark { display: none; }
 html[data-theme="light"] .shot .shot-light { display: block; }
+
+/* ---------- screenshot zoom lightbox ---------- */
+body.shot-zoom-open {
+  overflow: hidden;
+}
+
+.shot-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 3, 10, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s;
+  cursor: zoom-out;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+html[data-theme="light"] .shot-zoom-overlay {
+  background: rgba(246, 245, 252, 0.9);
+}
+
+.shot-zoom-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.shot-zoom-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 95vw;
+  max-height: 92vh;
+  position: relative;
+  transform: scale(0.94);
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: zoom-out;
+}
+
+.shot-zoom-overlay.active .shot-zoom-content {
+  transform: scale(1);
+}
+
+.shot-zoom-img {
+  max-width: min(94vw, 1721px);
+  max-height: calc(88vh - 44px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(167, 139, 250, 0.2);
+  display: block;
+}
+
+html[data-theme="light"] .shot-zoom-img {
+  box-shadow: 0 24px 70px rgba(46, 26, 90, 0.3), 0 0 0 1px rgba(124, 58, 237, 0.15);
+}
+
+.shot-zoom-caption {
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  text-align: center;
+  max-width: 900px;
+  background: rgba(18, 13, 33, 0.85);
+  border: 1px solid var(--line);
+  padding: 6px 14px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="light"] .shot-zoom-caption {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.shot-zoom-close {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  z-index: 10001;
+}
+
+.shot-zoom-close:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: scale(1.04);
+}
+
+html[data-theme="light"] .shot-zoom-close {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.14);
+  color: var(--text);
+}
+
+html[data-theme="light"] .shot-zoom-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.25);
+}
 
 .shot-cap {
   margin-top: 14px;

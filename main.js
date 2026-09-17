@@ -156,6 +156,110 @@
     revealEls.forEach(function (el) { io.observe(el); });
   }
 
+  /* ---------- screenshot zoom lightbox ---------- */
+  var zoomOverlay = null;
+  var zoomImg = null;
+  var zoomCaption = null;
+
+  function initZoomOverlay() {
+    if (zoomOverlay) return;
+    zoomOverlay = document.createElement("div");
+    zoomOverlay.className = "shot-zoom-overlay";
+    zoomOverlay.setAttribute("role", "dialog");
+    zoomOverlay.setAttribute("aria-modal", "true");
+    zoomOverlay.setAttribute("aria-label", "Enlarged screenshot");
+
+    var closeBtn = document.createElement("button");
+    closeBtn.className = "shot-zoom-close";
+    closeBtn.setAttribute("type", "button");
+    closeBtn.setAttribute("aria-label", "Close enlarged view (Esc)");
+    closeBtn.innerHTML = '<span>Esc</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+
+    var content = document.createElement("div");
+    content.className = "shot-zoom-content";
+
+    zoomImg = document.createElement("img");
+    zoomImg.className = "shot-zoom-img";
+    zoomImg.alt = "";
+
+    zoomCaption = document.createElement("div");
+    zoomCaption.className = "shot-zoom-caption";
+
+    content.appendChild(zoomImg);
+    content.appendChild(zoomCaption);
+    zoomOverlay.appendChild(closeBtn);
+    zoomOverlay.appendChild(content);
+    document.body.appendChild(zoomOverlay);
+
+    function closeZoom() {
+      if (!zoomOverlay || !zoomOverlay.classList.contains("active")) return;
+      zoomOverlay.classList.remove("active");
+      document.body.classList.remove("shot-zoom-open");
+      setTimeout(function () {
+        if (!zoomOverlay.classList.contains("active")) {
+          zoomImg.src = "";
+        }
+      }, 250);
+    }
+
+    zoomOverlay.addEventListener("click", function () {
+      closeZoom();
+    });
+
+    closeBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      closeZoom();
+    });
+
+    window.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && zoomOverlay && zoomOverlay.classList.contains("active")) {
+        closeZoom();
+      }
+    });
+  }
+
+  function openZoom(img, captionHtml) {
+    initZoomOverlay();
+    zoomImg.src = img.currentSrc || img.src;
+    zoomImg.alt = img.alt || "Enlarged screenshot";
+    if (captionHtml) {
+      zoomCaption.innerHTML = captionHtml;
+      zoomCaption.style.display = "inline-flex";
+    } else {
+      zoomCaption.style.display = "none";
+    }
+    document.body.classList.add("shot-zoom-open");
+    void zoomOverlay.offsetWidth;
+    zoomOverlay.classList.add("active");
+  }
+
+  document.addEventListener("click", function (e) {
+    var target = e.target;
+    if (target.closest("a, button, input, select, textarea, .shot-zoom-overlay")) return;
+
+    var figure = target.closest(".shot, .hero-shot, figure");
+    if (!figure) return;
+
+    var img = target.tagName === "IMG" ? target : figure.querySelector("img");
+    if (!img) return;
+
+    var visibleImg = img;
+    if (figure.querySelectorAll("img").length > 1) {
+      var isDark = document.documentElement.getAttribute("data-theme") !== "light";
+      var darkImg = figure.querySelector(".shot-dark");
+      var lightImg = figure.querySelector(".shot-light");
+      if (isDark && darkImg) visibleImg = darkImg;
+      else if (!isDark && lightImg) visibleImg = lightImg;
+    }
+
+    var cap = figure.querySelector("figcaption, .shot-cap") ||
+      (figure.nextElementSibling && figure.nextElementSibling.classList.contains("shot-cap") ? figure.nextElementSibling : null);
+    var capHtml = cap ? cap.innerHTML : "";
+
+    e.preventDefault();
+    openZoom(visibleImg, capHtml);
+  });
+
   if (reduced) return;
 
   /* ---------- hero mock: typing log line ---------- */
