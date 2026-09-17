@@ -81,13 +81,13 @@
             <li><a href="#command-palette">Command Palette Reference</a></li>
             <li><a href="#keybindings">Keybindings Reference</a></li>
             <li><a href="#ai-assistant">Embedded AI Assistant</a></li>
-            <li><a href="#bgp-dashboard">BGP Peering Dashboard</a></li>
+            <li><a href="#argocd-gitops">ArgoCD GitOps</a></li>
+            <li><a href="#pod-operations">Pod &amp; Workload Operations</a></li>
             <li><a href="#helm-inspector">Helm 3 Values Diff</a></li>
+            <li><a href="#gpu-fleet">GPU Fleet &amp; VRAM</a></li>
+            <li><a href="#bgp-dashboard">BGP Peering Dashboard</a></li>
             <li><a href="#log-streamer">Log Streaming &amp; Wrap</a></li>
             <li><a href="#resource-tree">Resource Hierarchy Tree</a></li>
-            <li><a href="#pod-operations">Pod &amp; Workload Operations</a></li>
-            <li><a href="#gpu-fleet">GPU Fleet &amp; VRAM</a></li>
-            <li><a href="#argocd-gitops">ArgoCD GitOps</a></li>
             <li><a href="#debug-shells">Shells &amp; Debug Containers</a></li>
             <li><a href="#crd-support">CRD Discovery &amp; Watches</a></li>
             <li><a href="#troubleshooting">Diagnostics</a></li>
@@ -270,65 +270,19 @@ srelens-tui update</code></pre>
             </tbody>
           </table>
 
-          <h2 id="bgp-dashboard">BGP Peering &amp; Topology Dashboard (<code>:bgp</code>)</h2>
+          <h2 id="argocd-gitops">ArgoCD Applications &amp; GitOps Sync (<code>:argo</code>)</h2>
           <p>
-            <code>srelens-tui</code> automatically detects cloud-native BGP implementations deployed in your cluster:
+            Inspect and operate GitOps deployments managed by ArgoCD across multiple target clusters and namespaces.
           </p>
 
           <figure class="shot" style="margin: 24px 0;">
-            <img src="/assets/shots/tui-bgp.webp" width="2770" height="1678" alt="srelens-tui BGP Peering and Topology dashboard">
+            <img src="/assets/shots/tui-argo.webp" width="2770" height="1674" alt="srelens-tui ArgoCD Applications GitOps view">
           </figure>
 
           <ul>
-            <li><strong>Cilium BGP Control Plane:</strong> Automatically tracks <code>CiliumBGPPeeringPolicy</code> and live peer state.</li>
-            <li><strong>MetalLB:</strong> Inspects <code>BGPPeer</code>, <code>BGPAdvertisement</code>, and <code>IPAddressPool</code> resources.</li>
-            <li><strong>Calico:</strong> Discovers <code>BGPPeer</code> and <code>BGPConfiguration</code> resources.</li>
-            <li><strong>Timers &amp; Metrics:</strong> Real-time keep-alive timers, hold-down countdowns, and received/advertised route counts.</li>
-          </ul>
-
-          <h2 id="helm-inspector">Deep Helm 3 Values Diff &amp; Rollback (<code>:helm</code>)</h2>
-          <p>
-            Press <code>Enter</code> on any Helm release to launch the 5-tab Helm Inspector without needing the <code>helm</code> CLI installed.
-          </p>
-
-          <figure class="shot" style="margin: 24px 0;">
-            <img src="/assets/shots/tui-helm.webp" width="2762" height="1692" alt="srelens-tui Helm 3 inspector and values diff">
-          </figure>
-
-          <ul>
-            <li><strong>3-Way Diff Engine:</strong> Compare user values vs. computed values, or diff current release vs. prior revision.</li>
-            <li><strong>Changelog &amp; History:</strong> Inspect release dates, revision status (<code>deployed</code>, <code>superseded</code>, <code>failed</code>).</li>
-            <li><strong>Safe Rollback (<code>r</code>):</strong> Select any prior revision and press <code>r</code> to trigger an RBAC-preflighted rollback.</li>
-          </ul>
-
-          <h2 id="log-streamer">Engineered Multi-Pod Log Streamer (<code>l</code>)</h2>
-          <p>
-            When inspecting microservices with high-volume JSON logs, standard terminals break line numbers and wrap text chaotically.
-            <code>srelens-tui</code> features engineered log wrapping:
-          </p>
-
-          <figure class="shot" style="margin: 24px 0;">
-            <img src="/assets/shots/tui-logs.webp" width="2776" height="1682" alt="srelens-tui multi-pod log streamer">
-          </figure>
-
-          <ul>
-            <li><strong>Hanging Indents:</strong> Wrapped lines wrap cleanly beneath the line number gutter (<code>│ continuation</code>). Line numbers stay pinned.</li>
-            <li><strong>Previous Container Logs (<code>p</code>):</strong> View logs from crashed or restarted containers before the fatal exit.</li>
-            <li><strong>Severity Highlighting:</strong> Automatically highlights log levels (<code>FATAL</code>, <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>).</li>
-          </ul>
-
-          <h2 id="resource-tree">Resource Hierarchy Tree (<code>t</code>)</h2>
-          <p>
-            Press <code>t</code> on any Kubernetes resource to visualize the complete owner-reference hierarchy tree from Ingress down to Pods and HPAs.
-          </p>
-
-          <figure class="shot" style="margin: 24px 0;">
-            <img src="/assets/shots/tui-tree.webp" width="2774" height="1686" alt="srelens-tui resource hierarchy tree view">
-          </figure>
-
-          <ul>
-            <li><strong>Live Health Indicators:</strong> Status dots beside every resource indicate readiness, crashes, or degraded states.</li>
-            <li><strong>Direct Drilldown:</strong> Press <code>Enter</code> on any child item in the tree to jump directly to its details.</li>
+            <li><strong>Health &amp; Sync Matrix:</strong> Instantly check <code>Synced</code> / <code>OutOfSync</code> states and <code>Healthy</code> / <code>Degraded</code> flags.</li>
+            <li><strong>Repo &amp; Revision:</strong> Inspect target git repository URLs, branches, and deployed commit SHAs.</li>
+            <li><strong>Resource Tree Integration:</strong> Seamlessly pivot from ArgoCD application to child Kubernetes resources.</li>
           </ul>
 
           <h2 id="pod-operations">Pod &amp; Workload Operations (<code>:pods</code>)</h2>
@@ -346,6 +300,21 @@ srelens-tui update</code></pre>
             <li><strong>Port Forwarding (<code>Shift + F</code>):</strong> Quick port forwarding with throughput monitoring.</li>
           </ul>
 
+          <h2 id="helm-inspector">Deep Helm 3 Values Diff &amp; Rollback (<code>:helm</code>)</h2>
+          <p>
+            Press <code>Enter</code> on any Helm release to launch the 5-tab Helm Inspector without needing the <code>helm</code> CLI installed.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-helm.webp" width="2762" height="1692" alt="srelens-tui Helm 3 inspector and values diff">
+          </figure>
+
+          <ul>
+            <li><strong>3-Way Diff Engine:</strong> Compare user values vs. computed values, or diff current release vs. prior revision.</li>
+            <li><strong>Changelog &amp; History:</strong> Inspect release dates, revision status (<code>deployed</code>, <code>superseded</code>, <code>failed</code>).</li>
+            <li><strong>Safe Rollback (<code>r</code>):</strong> Select any prior revision and press <code>r</code> to trigger an RBAC-preflighted rollback.</li>
+          </ul>
+
           <h2 id="gpu-fleet">GPU Fleet &amp; VRAM Allocation Telemetry (<code>:gpuinfo</code>)</h2>
           <p>
             View hardware GPU accelerator distribution, physical models, and live VRAM allocation gauges across nodes.
@@ -361,19 +330,50 @@ srelens-tui update</code></pre>
             <li><strong>Attached Workloads:</strong> Drill into training jobs and inference pods bound to specific GPU devices.</li>
           </ul>
 
-          <h2 id="argocd-gitops">ArgoCD Applications &amp; GitOps Sync (<code>:argo</code>)</h2>
+          <h2 id="bgp-dashboard">BGP Peering &amp; Topology Dashboard (<code>:bgp</code>)</h2>
           <p>
-            Inspect and operate GitOps deployments managed by ArgoCD across multiple target clusters and namespaces.
+            <code>srelens-tui</code> automatically detects cloud-native BGP implementations deployed in your cluster:
           </p>
 
           <figure class="shot" style="margin: 24px 0;">
-            <img src="/assets/shots/tui-argo.webp" width="2770" height="1674" alt="srelens-tui ArgoCD Applications GitOps view">
+            <img src="/assets/shots/tui-bgp.webp" width="2770" height="1678" alt="srelens-tui BGP Peering and Topology dashboard">
           </figure>
 
           <ul>
-            <li><strong>Health &amp; Sync Matrix:</strong> Instantly check <code>Synced</code> / <code>OutOfSync</code> states and <code>Healthy</code> / <code>Degraded</code> flags.</li>
-            <li><strong>Repo &amp; Revision:</strong> Inspect target git repository URLs, branches, and deployed commit SHAs.</li>
-            <li><strong>Resource Tree Integration:</strong> Seamlessly pivot from ArgoCD application to child Kubernetes resources.</li>
+            <li><strong>Cilium BGP Control Plane:</strong> Automatically tracks <code>CiliumBGPPeeringPolicy</code> and live peer state.</li>
+            <li><strong>MetalLB:</strong> Inspects <code>BGPPeer</code>, <code>BGPAdvertisement</code>, and <code>IPAddressPool</code> resources.</li>
+            <li><strong>Calico:</strong> Discovers <code>BGPPeer</code> and <code>BGPConfiguration</code> resources.</li>
+            <li><strong>Timers &amp; Metrics:</strong> Real-time keep-alive timers, hold-down countdowns, and received/advertised route counts.</li>
+          </ul>
+
+          <h2 id="log-streamer">Engineered Multi-Pod Log Streamer (<code>l</code>)</h2>
+          <p>
+            When inspecting microservices with high-volume JSON logs, standard terminals break line numbers and wrap text chaotically.
+            <code>srelens-tui</code> features engineered log wrapping:
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-logs.webp" width="2776" height="1682" alt="srelens-tui multi-pod log streamer">
+          </figure>
+
+          <ul>
+            <li><strong>Hanging Indents:</strong> Wrapped lines wrap cleanly beneath the line number gutter (<code>│ continuation</code>) so line numbers remain readable and aligned.</li>
+            <li><strong>Previous Container Logs (<code>p</code>):</strong> View logs from crashed or restarted containers before the fatal exit.</li>
+            <li><strong>Severity Highlighting:</strong> Automatically highlights log levels (<code>FATAL</code>, <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>).</li>
+          </ul>
+
+          <h2 id="resource-tree">Resource Hierarchy Tree (<code>t</code>)</h2>
+          <p>
+            Press <code>t</code> on any Kubernetes resource to visualize the complete owner-reference hierarchy tree from Ingress down to Pods and HPAs.
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-tree.webp" width="2774" height="1686" alt="srelens-tui resource hierarchy tree view">
+          </figure>
+
+          <ul>
+            <li><strong>Live Health Indicators:</strong> Status dots beside every resource indicate readiness, crashes, or degraded states.</li>
+            <li><strong>Direct Drilldown:</strong> Press <code>Enter</code> on any child item in the tree to jump directly to its details.</li>
           </ul>
 
           <h2 id="debug-shells">Shells &amp; Ephemeral Debug Containers</h2>

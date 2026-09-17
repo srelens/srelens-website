@@ -216,29 +216,8 @@
           </p>
         </div>
 
-        <!-- 1. BGP Peering -->
+        <!-- 1. Embedded SRE AI -->
         <div class="feature-row" style="margin-top: 48px;">
-          <div class="feature-narrative reveal">
-            <p class="feature-tag">Networking &amp; Control Plane</p>
-            <h3>BGP Peering &amp; Topology Dashboard (<code>:bgp</code>)</h3>
-            <p>
-              First-class visibility into cloud-native routing. Automatically discovers and inspects
-              <strong>Cilium BGP Control Plane</strong>, <strong>MetalLB</strong>, and <strong>Calico</strong> BGP peering topologies.
-            </p>
-            <ul class="feature-bullets">
-              <li><strong>Peering Sessions:</strong> Live state of all BGP neighbors with remote ASN, state (<code>Established</code>, <code>Active</code>, <code>Idle</code>), and uptime.</li>
-              <li><strong>Prefix Announcements:</strong> Track advertised Service VIPs and Pod CIDRs with real-time hold-timer and keep-alive countdowns.</li>
-              <li><strong>Multi-Router Topology:</strong> Inspect BGP node peer configurations, router IDs, and autonomous system boundaries.</li>
-            </ul>
-          </div>
-          <figure class="shot reveal">
-            <img src="/assets/shots/tui-bgp.webp" width="2770" height="1678" loading="lazy"
-                 alt="srelens-tui BGP Peering Dashboard">
-          </figure>
-        </div>
-
-        <!-- 2. AI Assistant -->
-        <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">In-Process AI Diagnostics</p>
             <h3>Embedded SRE AI Assistant (<code>:ai</code> or <code>Tab</code>)</h3>
@@ -259,72 +238,27 @@
           </figure>
         </div>
 
-        <!-- 3. Resource Hierarchy Tree -->
+        <!-- 2. ArgoCD -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
-            <p class="feature-tag">Topology &amp; Relationships</p>
-            <h3>Visual Resource Hierarchy Trees (<code>t</code>)</h3>
+            <p class="feature-tag">GitOps &amp; Continuous Delivery</p>
+            <h3>ArgoCD Applications &amp; Sync Dashboard (<code>:argo</code>)</h3>
             <p>
-              Instantly resolve the full owner-reference and dependency tree for any Kubernetes primitive without
-              manually correlating labels or selector strings.
+              Monitor and trigger GitOps deployments across multiple ArgoCD clusters and namespaces straight from the terminal.
             </p>
             <ul class="feature-bullets">
-              <li><strong>Full Stack Topology:</strong> Follows relationships from <code>Ingress</code> ➔ <code>Service</code> ➔ <code>Deployment</code> ➔ <code>ReplicaSet</code> ➔ <code>Pods</code> ➔ <code>HPA</code>.</li>
-              <li><strong>Live Health Dots:</strong> Visual status indicators beside every node in the tree show replica readiness, crash counts, and degraded states.</li>
-              <li><strong>Direct Drilldown:</strong> Press <code>Enter</code> on any sub-resource in the tree to immediately jump to its detail view or open live logs.</li>
+              <li><strong>Application Health &amp; Sync:</strong> Instant tabular overview of sync statuses (<code>Synced</code>, <code>OutOfSync</code>) and resource health (<code>Healthy</code>, <code>Degraded</code>, <code>Progressing</code>).</li>
+              <li><strong>Revision &amp; Repo Tracking:</strong> View target Git repositories, branches, commit SHAs, and destination server endpoints.</li>
+              <li><strong>Direct Drilldown:</strong> Press <code>Enter</code> to inspect application resources, conditions, and sync details.</li>
             </ul>
           </div>
           <figure class="shot reveal">
-            <img src="/assets/shots/tui-tree.webp" width="2774" height="1686" loading="lazy"
-                 alt="srelens-tui resource hierarchy tree">
+            <img src="/assets/shots/tui-argo.webp" width="2770" height="1674" loading="lazy"
+                 alt="srelens-tui ArgoCD application view">
           </figure>
         </div>
 
-        <!-- 4. Multi-Pod Logs -->
-        <div class="feature-row" style="margin-top: 64px;">
-          <div class="feature-narrative reveal">
-            <p class="feature-tag">Telemetry &amp; Logging</p>
-            <h3>Engineered Multi-Pod Log Streamer (<code>l</code>)</h3>
-            <p>
-              Designed specifically for modern JSON and structured logging formats where single log events span
-              hundreds of characters.
-            </p>
-            <ul class="feature-bullets">
-              <li><strong>Hanging Indent Wrap:</strong> Enabled by default, long log lines wrap cleanly beneath the line number gutter (<code>│ continuation</code>) so line numbers remain readable and aligned.</li>
-              <li><strong>Log Severity Syntax Highlighting:</strong> Automatically highlights <code>FATAL</code>, <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>, and <code>DEBUG</code> levels across all log streams.</li>
-              <li><strong>Crashed Container Logs:</strong> Press <code>p</code> to instantly toggle previous container instance logs to find fatal stack traces before container termination.</li>
-              <li><strong>Horizontal Panning &amp; Filtering:</strong> Toggle wrapping off with <code>w</code> for horizontal scrolling (<code>h</code>/<code>l</code> or arrows), and filter log lines in real-time with <code>/</code>.</li>
-            </ul>
-          </div>
-          <figure class="shot reveal">
-            <img src="/assets/shots/tui-logs.webp" width="2776" height="1682" loading="lazy"
-                 alt="srelens-tui log streaming view">
-          </figure>
-        </div>
-
-        <!-- 5. Helm 3 Inspector -->
-        <div class="feature-row" style="margin-top: 64px;">
-          <div class="feature-narrative reveal">
-            <p class="feature-tag">Release Management</p>
-            <h3>Deep Helm 3 Inspector &amp; Values Diff (<code>:helm</code>)</h3>
-            <p>
-              Inspect and operate Helm releases across all namespaces directly from your terminal without requiring
-              the <code>helm</code> CLI binary installed locally.
-            </p>
-            <ul class="feature-bullets">
-              <li><strong>3-Way Values Diff:</strong> Built-in diff engine compares <em>User-Supplied Values</em> against <em>Computed All-Values</em>, chart defaults, or the previous release revision.</li>
-              <li><strong>Revision Changelog:</strong> Complete historical release audit trail with deployed timestamps, chart versions, and status.</li>
-              <li><strong>One-Touch Rollback:</strong> Select any prior revision in the history list and press <code>r</code> to trigger a guarded, confirmation-backed rollback.</li>
-              <li><strong>Rendered Manifests:</strong> View syntax-highlighted rendered Kubernetes YAML manifests generated by the chart templates.</li>
-            </ul>
-          </div>
-          <figure class="shot reveal">
-            <img src="/assets/shots/tui-helm.webp" width="2762" height="1692" loading="lazy"
-                 alt="srelens-tui Helm 3 inspector">
-          </figure>
-        </div>
-
-        <!-- 6. Pod & Workload Operations -->
+        <!-- 3. High-Density Pods -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Workload Operations</p>
@@ -346,7 +280,29 @@
           </figure>
         </div>
 
-        <!-- 7. GPU Fleet & VRAM Monitoring -->
+        <!-- 4. Deep Helm Inspector -->
+        <div class="feature-row" style="margin-top: 64px;">
+          <div class="feature-narrative reveal">
+            <p class="feature-tag">Release Management</p>
+            <h3>Deep Helm 3 Inspector &amp; Values Diff (<code>:helm</code>)</h3>
+            <p>
+              Inspect and operate Helm releases across all namespaces directly from your terminal without requiring
+              the <code>helm</code> CLI binary installed locally.
+            </p>
+            <ul class="feature-bullets">
+              <li><strong>3-Way Values Diff:</strong> Built-in diff engine compares <em>User-Supplied Values</em> against <em>Computed All-Values</em>, chart defaults, or the previous release revision.</li>
+              <li><strong>Revision Changelog:</strong> Complete historical release audit trail with deployed timestamps, chart versions, and status.</li>
+              <li><strong>One-Touch Rollback:</strong> Select any prior revision in the history list and press <code>r</code> to trigger a guarded, confirmation-backed rollback.</li>
+              <li><strong>Rendered Manifests:</strong> View syntax-highlighted rendered Kubernetes YAML manifests generated by the chart templates.</li>
+            </ul>
+          </div>
+          <figure class="shot reveal">
+            <img src="/assets/shots/tui-helm.webp" width="2762" height="1692" loading="lazy"
+                 alt="srelens-tui Helm 3 inspector">
+          </figure>
+        </div>
+
+        <!-- 5. GPU Inspector -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">AI &amp; Accelerator Infrastructure</p>
@@ -366,23 +322,67 @@
           </figure>
         </div>
 
-        <!-- 8. ArgoCD GitOps Inspector -->
+        <!-- 6. BGP Peering -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
-            <p class="feature-tag">GitOps &amp; Continuous Delivery</p>
-            <h3>ArgoCD Applications &amp; Sync Dashboard (<code>:argo</code>)</h3>
+            <p class="feature-tag">Networking &amp; Control Plane</p>
+            <h3>BGP Peering &amp; Topology Dashboard (<code>:bgp</code>)</h3>
             <p>
-              Monitor and trigger GitOps deployments across multiple ArgoCD clusters and namespaces straight from the terminal.
+              First-class visibility into cloud-native routing. Automatically discovers and inspects
+              <strong>Cilium BGP Control Plane</strong>, <strong>MetalLB</strong>, and <strong>Calico</strong> BGP peering topologies.
             </p>
             <ul class="feature-bullets">
-              <li><strong>Application Health &amp; Sync:</strong> Instant tabular overview of sync statuses (<code>Synced</code>, <code>OutOfSync</code>) and resource health (<code>Healthy</code>, <code>Degraded</code>, <code>Progressing</code>).</li>
-              <li><strong>Revision &amp; Repo Tracking:</strong> View target Git repositories, branches, commit SHAs, and destination server endpoints.</li>
-              <li><strong>Direct Drilldown:</strong> Press <code>Enter</code> to inspect application resources, conditions, and sync details.</li>
+              <li><strong>Peering Sessions:</strong> Live state of all BGP neighbors with remote ASN, state (<code>Established</code>, <code>Active</code>, <code>Idle</code>), and uptime.</li>
+              <li><strong>Prefix Announcements:</strong> Track advertised Service VIPs and Pod CIDRs with real-time hold-timer and keep-alive countdowns.</li>
+              <li><strong>Multi-Router Topology:</strong> Inspect BGP node peer configurations, router IDs, and autonomous system boundaries.</li>
             </ul>
           </div>
           <figure class="shot reveal">
-            <img src="/assets/shots/tui-argo.webp" width="2770" height="1674" loading="lazy"
-                 alt="srelens-tui ArgoCD application view">
+            <img src="/assets/shots/tui-bgp.webp" width="2770" height="1678" loading="lazy"
+                 alt="srelens-tui BGP Peering Dashboard">
+          </figure>
+        </div>
+
+        <!-- 7. Logs -->
+        <div class="feature-row" style="margin-top: 64px;">
+          <div class="feature-narrative reveal">
+            <p class="feature-tag">Telemetry &amp; Logging</p>
+            <h3>Engineered Multi-Pod Log Streamer (<code>l</code>)</h3>
+            <p>
+              Designed specifically for modern JSON and structured logging formats where single log events span
+              hundreds of characters.
+            </p>
+            <ul class="feature-bullets">
+              <li><strong>Hanging Indent Wrap:</strong> Enabled by default, long log lines wrap cleanly beneath the line number gutter (<code>│ continuation</code>) so line numbers remain readable and aligned.</li>
+              <li><strong>Log Severity Syntax Highlighting:</strong> Automatically highlights <code>FATAL</code>, <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>, and <code>DEBUG</code> levels across all log streams.</li>
+              <li><strong>Crashed Container Logs:</strong> Press <code>p</code> to instantly toggle previous container instance logs to find fatal stack traces before container termination.</li>
+              <li><strong>Horizontal Panning &amp; Filtering:</strong> Toggle wrapping off with <code>w</code> for horizontal scrolling (<code>h</code>/<code>l</code> or arrows), and filter log lines in real-time with <code>/</code>.</li>
+            </ul>
+          </div>
+          <figure class="shot reveal">
+            <img src="/assets/shots/tui-logs.webp" width="2776" height="1682" loading="lazy"
+                 alt="srelens-tui log streaming view">
+          </figure>
+        </div>
+
+        <!-- 8. Resource Hierarchy Tree -->
+        <div class="feature-row" style="margin-top: 64px;">
+          <div class="feature-narrative reveal">
+            <p class="feature-tag">Topology &amp; Relationships</p>
+            <h3>Visual Resource Hierarchy Trees (<code>t</code>)</h3>
+            <p>
+              Instantly resolve the full owner-reference and dependency tree for any Kubernetes primitive without
+              manually correlating labels or selector strings.
+            </p>
+            <ul class="feature-bullets">
+              <li><strong>Full Stack Topology:</strong> Follows relationships from <code>Ingress</code> ➔ <code>Service</code> ➔ <code>Deployment</code> ➔ <code>ReplicaSet</code> ➔ <code>Pods</code> ➔ <code>HPA</code>.</li>
+              <li><strong>Live Health Dots:</strong> Visual status indicators beside every node in the tree show replica readiness, crash counts, and degraded states.</li>
+              <li><strong>Direct Drilldown:</strong> Press <code>Enter</code> on any sub-resource in the tree to jump directly to its detail view or open live logs.</li>
+            </ul>
+          </div>
+          <figure class="shot reveal">
+            <img src="/assets/shots/tui-tree.webp" width="2774" height="1686" loading="lazy"
+                 alt="srelens-tui resource hierarchy tree">
           </figure>
         </div>
 
