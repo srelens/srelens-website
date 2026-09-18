@@ -37,6 +37,49 @@
   window.addEventListener("scroll", updateScrollProgress, { passive: true });
   window.addEventListener("resize", updateScrollProgress);
 
+  /* ---------- table of contents active section scrollspy ---------- */
+  var contentNav = document.querySelector(".content-nav");
+  if (contentNav) {
+    var tocLinks = Array.from(contentNav.querySelectorAll("a[href^='#']"));
+    var headingTargets = tocLinks
+      .map(function (link) {
+        var id = link.getAttribute("href").slice(1);
+        var el = document.getElementById(id);
+        return el ? { id: id, el: el, link: link } : null;
+      })
+      .filter(Boolean);
+
+    if (headingTargets.length) {
+      function updateActiveToc() {
+        var scrollY = window.scrollY;
+        var offset = 140;
+        var current = headingTargets[0];
+
+        for (var i = 0; i < headingTargets.length; i++) {
+          var target = headingTargets[i];
+          var top = target.el.getBoundingClientRect().top + scrollY - offset;
+          if (scrollY >= top) {
+            current = target;
+          } else {
+            break;
+          }
+        }
+
+        headingTargets.forEach(function (target) {
+          if (target === current) {
+            target.link.classList.add("active");
+          } else {
+            target.link.classList.remove("active");
+          }
+        });
+      }
+
+      updateActiveToc();
+      window.addEventListener("scroll", updateActiveToc, { passive: true });
+      window.addEventListener("resize", updateActiveToc);
+    }
+  }
+
   /* ---------- latest release: rewrite version labels + download links ---------- */
   var versionEls = document.querySelectorAll("[data-version]");
   var assetLinks = document.querySelectorAll("[data-asset]");
