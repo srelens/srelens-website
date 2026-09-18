@@ -132,6 +132,9 @@ cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
 
         <h3 id="tui-features">Additional capabilities</h3>
         <ul>
+          <li><strong>ArgoCD GitOps &amp; Hub-Spoke (<a href="/docs/tui/#argocd-gitops"><code>:argo</code></a>):</strong> Inspect applications, sync drift, and health across Hub-and-Spoke cluster topologies with spoke-scoped destination filtering.</li>
+          <li><strong>Node SSH &amp; Out-of-Band Recovery (<a href="/docs/tui/#node-ssh"><code>Shift + N</code></a>):</strong> Directly triage unready nodes and failing system services (<code>kubelet</code>, <code>containerd</code>, <code>rke2</code>) when the Kubernetes API cannot schedule debug pods. Auto-resolves InternalIP and negotiates keys via SSH agent and <code>~/.ssh/</code> identities.</li>
+          <li><strong>Headless MCP Server (<a href="/docs/tui/#tui-mcp"><code>srelens-tui mcp</code></a>):</strong> Expose 80+ cluster operations to Cursor, Claude, and Gemini over stdio with explicit mutation consent gates.</li>
           <li><strong>Adaptive On-Demand Watching:</strong> An LRU-bounded stream pool watches only the active view and namespace, preventing cluster API overload while streaming live updates to the current screen.</li>
           <li><strong>First-Class CRD Support:</strong> Auto-discovers every CustomResourceDefinition, extracts server-side printer columns (evaluating JSONPaths dynamically), and live-watches CRD instances just like built-in primitives.</li>
           <li><strong>Engineered Logs Viewer:</strong> Long lines wrap with clean hanging indents under the line-number gutter (<code>│ continuation</code>) so numbers stay pinned. Toggle wrap off with <code>w</code> for horizontal scrolling (<code>h</code>/<code>l</code>, <code>0</code> to reset). True follow-mode accounts for wrapped visual rows.</li>
@@ -162,7 +165,7 @@ cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
         <table>
           <thead><tr><th>Key</th><th>Context</th><th>Action</th></tr></thead>
           <tbody>
-            <tr><td><code>:</code></td><td>Global</td><td>Open command palette (e.g. <code>:po</code>, <code>:deploy</code>, <code>:crd</code>, <code>:helm</code>, <code>:top</code>, <code>:pf</code>, <code>:ctx</code>)</td></tr>
+            <tr><td><code>:</code></td><td>Global</td><td>Open command palette (e.g. <code>:po</code>, <code>:deploy</code>, <code>:argo</code>, <code>:helm</code>, <code>:gpu</code>, <code>:bgp</code>, <code>:crd</code>, <code>:pf</code>, <code>:ctx</code>)</td></tr>
             <tr><td><code>/</code></td><td>Global</td><td>Filter table rows (plain substring or persistent regex)</td></tr>
             <tr><td><code>Enter</code></td><td>Tables</td><td>Drill into selected resource (or open CRD instances / Helm inspector)</td></tr>
             <tr><td><code>l</code></td><td>Workloads / Pods</td><td>Open live streaming logs</td></tr>

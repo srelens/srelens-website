@@ -165,31 +165,120 @@
 
     <section class="section" id="setup">
       <div class="wrap">
-        <div class="get-grid">
-          <div>
-            <div class="section-head">
-              <p class="eyebrow reveal"><span class="tick">●</span> Connect a client</p>
-              <h2 class="reveal">Two commands to an <span class="grad">agent-ready cluster.</span></h2>
-              <p class="sub reveal">
-                Install the srelens CLI from the MCP settings panel, then register srelens
-                with your MCP client. The settings panel generates the exact config for
-                Claude Code, Claude Desktop, Cursor, Codex, and generic
-                <code>mcpServers</code> JSON.
-              </p>
-            </div>
-            <p class="get-note reveal">
-              Prefer HTTP? Enable “Run MCP server” in settings and point your client at
-              <code>http://127.0.0.1:8765/mcp</code>.
-            </p>
-          </div>
-          <div class="codeblock reveal">
-            <button class="copy-btn" type="button" data-copy="claude mcp add srelens -- srelens --mcp-stdio">copy</button>
-<pre><span class="c"># register srelens with Claude Code (stdio)</span>
-<span class="p">$</span> claude mcp add srelens -- srelens --mcp-stdio
+        <div class="section-head">
+          <p class="eyebrow reveal"><span class="tick">●</span> Connect a client</p>
+          <h2 class="reveal">Ready-to-paste config for <span class="grad">every AI workspace.</span></h2>
+          <p class="sub reveal">
+            Register <code>srelens-tui mcp</code> or <code>srelens --mcp-stdio</code> with your assistant.
+            Mutating tools require confirmation; read-only diagnostics execute instantly.
+          </p>
+        </div>
 
-<span class="c"># or, with the HTTP server enabled in settings</span>
+        <div class="compare-grid reveal" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 32px;">
+          <div class="verdict">
+            <h3>Cursor</h3>
+            <p>Add to <code>~/.cursor/mcp.json</code> (or project <code>.cursor/mcp.json</code>):</p>
+            <div class="codeblock" style="margin-top: 12px;">
+              <button class="copy-btn" type="button" data-copy='{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens-tui",
+      "args": ["mcp"]
+    }
+  }
+}'>copy</button>
+<pre><code>{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens-tui",
+      "args": ["mcp"]
+    }
+  }
+}</code></pre>
+            </div>
+          </div>
+
+          <div class="verdict">
+            <h3>Claude Desktop</h3>
+            <p>Add to <code>claude_desktop_config.json</code> (Settings → Developer):</p>
+            <div class="codeblock" style="margin-top: 12px;">
+              <button class="copy-btn" type="button" data-copy='{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens-tui",
+      "args": ["mcp"]
+    }
+  }
+}'>copy</button>
+<pre><code>{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens-tui",
+      "args": ["mcp"]
+    }
+  }
+}</code></pre>
+            </div>
+          </div>
+
+          <div class="verdict">
+            <h3>Claude Code CLI</h3>
+            <p>Register via one-line terminal command:</p>
+            <div class="codeblock" style="margin-top: 12px;">
+              <button class="copy-btn" type="button" data-copy="claude mcp add srelens -- srelens-tui mcp">copy</button>
+<pre><code><span class="c"># register stdio MCP server</span>
+<span class="p">$</span> claude mcp add srelens -- srelens-tui mcp
+
+<span class="c"># or via HTTP server (when enabled)</span>
 <span class="p">$</span> claude mcp add --transport http srelens \
-    http://127.0.0.1:8765/mcp</pre>
+    http://127.0.0.1:8765/mcp</code></pre>
+            </div>
+          </div>
+
+          <div class="verdict">
+            <h3>Gemini / Antigravity</h3>
+            <p>Add to your IDE MCP configuration (<code>mcp_config.json</code>):</p>
+            <div class="codeblock" style="margin-top: 12px;">
+              <button class="copy-btn" type="button" data-copy='{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens-tui",
+      "args": ["mcp"]
+    }
+  }
+}'>copy</button>
+<pre><code>{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens-tui",
+      "args": ["mcp"]
+    }
+  }
+}</code></pre>
+            </div>
+          </div>
+
+          <div class="verdict">
+            <h3>Generic (Any MCP Client)</h3>
+            <p>Standard JSON configuration block accepted by all MCP-compliant tools:</p>
+            <div class="codeblock" style="margin-top: 12px;">
+              <button class="copy-btn" type="button" data-copy='{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens-tui",
+      "args": ["mcp"]
+    }
+  }
+}'>copy</button>
+<pre><code>{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens-tui",
+      "args": ["mcp"]
+    }
+  }
+}</code></pre>
+            </div>
           </div>
         </div>
       </div>
