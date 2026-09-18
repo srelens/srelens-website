@@ -322,7 +322,7 @@
         </div>
         <div class="answer reveal">
           <h2>Can an AI agent break my cluster through srelens?</h2>
-          <p>Mutating tools refuse to run without an explicit <code>_confirm: true</code> argument, and the MCP server only binds to stdio or loopback HTTP on your machine. Agents use the same confirmation-gated code paths as the GUI. Additional MCP security and audit controls are planned.</p>
+          <p>No. By default, the server runs in safe read-only mode with sensitive data masked. Mutating actions require the server to be launched with <code>--mcp-allow-destructive</code> <em>and</em> the agent must explicitly provide <code>"_confirm": true</code> in its tool call arguments. Reading plaintext Secrets requires launching with <code>--mcp-allow-sensitive-reads</code>.</p>
         </div>
         <div class="answer reveal">
           <h2>Do my credentials ever leave my machine?</h2>

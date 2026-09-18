@@ -273,7 +273,7 @@ srelens-tui update</code></pre>
             </tbody>
           </table>
 
-          <h2 id="argocd-gitops">ArgoCD Applications &amp; GitOps Sync (<code>:argo</code>)</h2>
+          <h2 id="argocd-gitops" class="heading-with-link"><a href="#argocd-gitops">ArgoCD Applications &amp; GitOps Sync (<code>:argo</code>)</a> <button class="copy-link-btn" type="button" data-copy="https://srelens.com/docs/tui/#argocd-gitops" title="Copy section link">copy link</button></h2>
           <p>
             Inspect and operate GitOps deployments managed by ArgoCD across multiple target clusters and namespaces.
           </p>
@@ -421,7 +421,7 @@ srelens-tui update</code></pre>
             <li><strong>Privileged Node Shell (<code>Shift + N</code>):</strong> Spawns a privileged pod on the target node with access to host namespaces and root filesystem.</li>
           </ul>
 
-          <h2 id="node-ssh">Node SSH &amp; Out-of-Band Diagnostics</h2>
+          <h2 id="node-ssh" class="heading-with-link"><a href="#node-ssh">Node SSH &amp; Out-of-Band Diagnostics</a> <button class="copy-link-btn" type="button" data-copy="https://srelens.com/docs/tui/#node-ssh" title="Copy section link">copy link</button></h2>
           <p>
             When host services like <code>kubelet</code>, <code>containerd</code>, <code>rke2-agent</code>, or <code>k3s</code> fail,
             the Kubernetes API cannot schedule debug pods or execute commands. <code>srelens-tui</code> provides out-of-band SSH capabilities
@@ -464,11 +464,40 @@ srelens-tui update</code></pre>
             <li><strong>Guarded Restarts:</strong> Safely trigger controlled service restarts with explicit preflight confirmation.</li>
           </ul>
 
-          <h2 id="tui-mcp">TUI MCP Server (<code>srelens-tui mcp</code>)</h2>
+          <h2 id="tui-mcp" class="heading-with-link"><a href="#tui-mcp">TUI MCP Server (<code>srelens-tui mcp</code>)</a> <button class="copy-link-btn" type="button" data-copy="https://srelens.com/docs/tui/#tui-mcp" title="Copy section link">copy link</button></h2>
           <p>
             <code>srelens-tui</code> includes a headless MCP (Model Context Protocol) server over standard JSON-RPC 2.0 stdio,
             exposing 80+ Kubernetes capabilities to AI agents (Cursor, Claude, Gemini, and custom agents).
           </p>
+
+          <h3>Safety &amp; Consent Flags</h3>
+          <p>
+            By default, <code>srelens-tui mcp</code> runs in safe read-only mode: queries execute immediately, Secrets are masked, and mutating tools are refused.
+            Two explicit flags control elevated permissions:
+          </p>
+          <ul>
+            <li>
+              <code>--mcp-allow-sensitive-reads</code>: Grants permission to read sensitive cluster material in plaintext, such as Secret contents (<code>k8s.getSecret</code>) and sensitive pod environments.
+            </li>
+            <li>
+              <code>--mcp-allow-destructive</code>: Grants permission to execute mutating cluster actions (e.g. scaling workloads, rollout restarts, resource deletions, applying manifests, installing plugins).
+            </li>
+          </ul>
+          <p>
+            <strong>Dual-Gate Mutation Safety:</strong> Starting the process with <code>--mcp-allow-destructive</code> unlocks mutating capabilities, but any mutating call from an agent must <em>still</em> explicitly include <code>"_confirm": true</code> in its arguments to execute. Neither flag alone permits accidental or unconfirmed cluster changes.
+          </p>
+
+          <pre><code># Safe read-only mode (default: sensitive data masked, mutations refused)
+srelens-tui mcp
+
+# Allow reading sensitive Secret data in plaintext
+srelens-tui mcp --mcp-allow-sensitive-reads
+
+# Allow guarded mutations (requires "_confirm": true in tool call)
+srelens-tui mcp --mcp-allow-destructive
+
+# Full access (sensitive reads + guarded mutations)
+srelens-tui mcp --mcp-allow-sensitive-reads --mcp-allow-destructive</code></pre>
 
           <h3>Cursor Configuration (<code>.cursor/mcp.json</code> or <code>~/.cursor/mcp.json</code>)</h3>
           <pre><code>{
@@ -491,7 +520,11 @@ srelens-tui update</code></pre>
 }</code></pre>
 
           <h3>Claude Code CLI</h3>
-          <pre><code>claude mcp add srelens -- srelens-tui mcp</code></pre>
+          <pre><code># Safe default
+claude mcp add srelens -- srelens-tui mcp
+
+# With sensitive reads and destructive mutations enabled
+claude mcp add srelens -- srelens-tui mcp --mcp-allow-sensitive-reads --mcp-allow-destructive</code></pre>
 
           <h3>Gemini / Antigravity (<code>mcp_config.json</code>)</h3>
           <pre><code>{
@@ -512,10 +545,6 @@ srelens-tui update</code></pre>
     }
   }
 }</code></pre>
-
-          <p>
-            <strong>Safety Note:</strong> All read-only cluster queries execute immediately. Any mutating operations (such as scaling, restarts, deletes, or applies) require explicit confirmation gates (<code>_confirm: true</code>).
-          </p>
 
           <h2 id="crd-support">CRD Discovery &amp; Evaluated Printer Columns</h2>
           <p>
