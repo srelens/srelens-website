@@ -694,6 +694,43 @@ html[data-theme="light"] .nav-links a.active {
   background: var(--surface-2);
 }
 
+/* heading permalinks */
+.anchor-link {
+  color: inherit;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
+.anchor-link:hover {
+  color: var(--accent);
+}
+.heading-anchor {
+  color: inherit;
+  text-decoration: none;
+  opacity: 0;
+  margin-left: 8px;
+  font-weight: normal;
+  transition: opacity 0.15s ease;
+}
+h2:hover .heading-anchor,
+h3:hover .heading-anchor {
+  opacity: 0.85;
+}
+.anchor-icon {
+  display: inline-block;
+  margin-left: 8px;
+  font-weight: 400;
+  font-size: 0.8em;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  vertical-align: middle;
+}
+.anchor-link:hover .anchor-icon {
+  opacity: 0.85;
+  transform: translateX(2px);
+}
+
 /* dense capability register, not bento cards */
 .bento {
   grid-template-columns: repeat(3, 1fr);
