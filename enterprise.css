@@ -695,9 +695,20 @@ html[data-theme="light"] .nav-links a.active {
 }
 
 /* heading permalinks */
+.feature-row h3 a,
+.feature-narrative h3 a,
+.anchor-link,
+.anchor-link:hover,
+.anchor-link:focus,
+.anchor-link:visited,
+.anchor-link:active,
+.heading-anchor,
+.heading-anchor:hover,
+.heading-anchor:focus {
+  text-decoration: none !important;
+}
 .anchor-link {
   color: inherit;
-  text-decoration: none;
   display: inline-block;
   cursor: pointer;
 }
@@ -706,7 +717,6 @@ html[data-theme="light"] .nav-links a.active {
 }
 .heading-anchor {
   color: inherit;
-  text-decoration: none;
   opacity: 0;
   margin-left: 8px;
   font-weight: normal;
