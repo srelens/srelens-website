@@ -37,6 +37,105 @@
   window.addEventListener("scroll", updateScrollProgress, { passive: true });
   window.addEventListener("resize", updateScrollProgress);
 
+  /* ---------- table of contents active section scrollspy ---------- */
+  var contentNav = document.querySelector(".content-nav");
+  if (contentNav) {
+    var tocLinks = Array.from(contentNav.querySelectorAll("a[href^='#']"));
+    var headingTargets = tocLinks
+      .map(function (link) {
+        var id = link.getAttribute("href").slice(1);
+        var el = document.getElementById(id);
+        return el ? { id: id, el: el, link: link } : null;
+      })
+      .filter(Boolean);
+
+    if (headingTargets.length) {
+      function updateActiveToc() {
+        var scrollY = window.scrollY;
+        var offset = 140;
+        var current = headingTargets[0];
+
+        for (var i = 0; i < headingTargets.length; i++) {
+          var target = headingTargets[i];
+          var top = target.el.getBoundingClientRect().top + scrollY - offset;
+          if (scrollY >= top) {
+            current = target;
+          } else {
+            break;
+          }
+        }
+
+        headingTargets.forEach(function (target) {
+          if (target === current) {
+            target.link.classList.add("active");
+          } else {
+            target.link.classList.remove("active");
+          }
+        });
+      }
+
+      updateActiveToc();
+      window.addEventListener("scroll", updateActiveToc, { passive: true });
+      window.addEventListener("resize", updateActiveToc);
+    }
+  }
+
+  /* ---------- anchor hash navigation fallback ---------- */
+  function resolveHashAnchor() {
+    if (!window.location.hash) return;
+    var hash = decodeURIComponent(window.location.hash.slice(1));
+    if (!hash) return;
+    var el = document.getElementById(hash);
+    if (!el) {
+      var lower = hash.toLowerCase();
+      el = document.getElementById(lower) ||
+           document.getElementById(lower.replace(/\s+/g, "-")) ||
+           document.querySelector('[id="' + lower + '" i]');
+    }
+    if (el) {
+      setTimeout(function () {
+        el.scrollIntoView({ behavior: "smooth" });
+      }, 50);
+    }
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", resolveHashAnchor);
+  } else {
+    resolveHashAnchor();
+  }
+  window.addEventListener("hashchange", resolveHashAnchor);
+
+  /* ---------- anchor link click handler (copy & update URL) ---------- */
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest(".anchor-link, .heading-anchor");
+    if (!link) return;
+    var href = link.getAttribute("href");
+    if (href && href.startsWith("#")) {
+      var url = window.location.origin + window.location.pathname + href;
+      if (history.pushState) {
+        history.pushState(null, null, href);
+      } else {
+        window.location.hash = href;
+      }
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).catch(function () {});
+      }
+    }
+  });
+
+  /* ---------- prose headings: add permalink icons ---------- */
+  document.querySelectorAll(".prose h2[id], .prose h3[id]").forEach(function (heading) {
+    if (!heading.querySelector(".heading-anchor")) {
+      var id = heading.getAttribute("id");
+      var a = document.createElement("a");
+      a.className = "heading-anchor";
+      a.href = "#" + id;
+      a.setAttribute("aria-label", "Link to " + heading.textContent.trim());
+      a.innerHTML = '<span class="anchor-icon" aria-hidden="true">#</span>';
+      heading.appendChild(a);
+    }
+  });
+
   /* ---------- latest release: rewrite version labels + download links ---------- */
   var versionEls = document.querySelectorAll("[data-version]");
   var assetLinks = document.querySelectorAll("[data-asset]");

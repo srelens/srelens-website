@@ -668,6 +668,7 @@ html[data-theme="light"] .nav-links a.active {
   grid-template-columns: minmax(260px, 4fr) minmax(0, 8fr);
   gap: clamp(40px, 7vw, 92px);
   align-items: start;
+  scroll-margin-top: 88px;
 }
 .feature-row:nth-child(even) .copy { order: 0; }
 .feature-row .copy {
@@ -679,6 +680,7 @@ html[data-theme="light"] .nav-links a.active {
 .feature-row h3 {
   margin: 0 0 17px;
   font-size: clamp(27px, 3vw, 38px);
+  scroll-margin-top: 88px;
 }
 .feature-row .copy p { color: var(--text-dim); font-size: 16px; }
 .feature-row .copy p + p { margin-top: 20px; }
@@ -690,6 +692,53 @@ html[data-theme="light"] .nav-links a.active {
   border-radius: 2px;
   color: var(--text);
   background: var(--surface-2);
+}
+
+/* heading permalinks */
+.feature-row h3 a,
+.feature-narrative h3 a,
+.anchor-link,
+.anchor-link:hover,
+.anchor-link:focus,
+.anchor-link:visited,
+.anchor-link:active,
+.heading-anchor,
+.heading-anchor:hover,
+.heading-anchor:focus {
+  text-decoration: none !important;
+}
+.anchor-link {
+  color: inherit;
+  display: inline-block;
+  cursor: pointer;
+}
+.anchor-link:hover {
+  color: var(--accent);
+}
+.heading-anchor {
+  color: inherit;
+  opacity: 0;
+  margin-left: 8px;
+  font-weight: normal;
+  transition: opacity 0.15s ease;
+}
+h2:hover .heading-anchor,
+h3:hover .heading-anchor {
+  opacity: 0.85;
+}
+.anchor-icon {
+  display: inline-block;
+  margin-left: 8px;
+  font-weight: 400;
+  font-size: 0.8em;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  vertical-align: middle;
+}
+.anchor-link:hover .anchor-icon {
+  opacity: 0.85;
+  transform: translateX(2px);
 }
 
 /* dense capability register, not bento cards */
@@ -902,37 +951,70 @@ html[data-theme="light"] .nav-links a.active {
   gap: clamp(42px, 7vw, 96px);
   align-items: start;
 }
+html { scroll-behavior: smooth; }
+
 .content-nav {
   position: sticky;
-  top: 102px;
-  padding: 16px;
+  top: 88px;
+  max-height: calc(100vh - 104px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 14px;
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--surface);
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+.content-nav::-webkit-scrollbar {
+  width: 3px;
+}
+.content-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+.content-nav::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 2px;
 }
 .content-nav strong {
   display: block;
-  margin-bottom: 10px;
-  color: var(--text);
-  font: 600 12px/1.3 var(--display);
+  margin-bottom: 6px;
+  color: var(--text-faint);
+  font: 600 11px/1.3 var(--display);
+  text-transform: uppercase;
+  letter-spacing: .06em;
 }
-.content-nav ul { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.content-nav ul { display: grid; gap: 1px; margin: 0; padding: 0; list-style: none; }
 .content-nav a {
   display: block;
-  padding: 7px 8px;
+  padding: 3.5px 7px;
   border-radius: 3px;
   color: var(--text-dim);
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 1.35;
   text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: color .15s, background .15s, border-color .15s;
 }
-.content-nav a:hover, .content-nav a.active { color: var(--text); background: var(--surface-2); }
+.content-nav a:hover { color: var(--text); background: var(--surface-2); }
+.content-nav a.active {
+  color: var(--accent-bright);
+  background: var(--surface-2);
+  border-left-color: var(--accent);
+  font-weight: 500;
+}
 .prose { min-width: 0; }
 .prose > :first-child { margin-top: 0; }
 .prose h2 {
   margin: 64px 0 16px;
   font-size: clamp(26px, 3vw, 36px);
+  scroll-margin-top: 88px;
 }
-.prose h3 { margin: 38px 0 12px; font-size: 21px; }
+.prose h3 {
+  margin: 38px 0 12px;
+  font-size: 21px;
+  scroll-margin-top: 88px;
+}
 .prose p, .prose li { color: var(--text-dim); }
 .prose p { max-width: 72ch; }
 .prose a { color: var(--accent); }
@@ -1100,7 +1182,7 @@ html[data-theme="light"] .nav-links a.active {
   .dl-grid { grid-template-columns: 1fr; }
   .dl-card:nth-child(n) { padding: 26px; border-right: 1px solid var(--line); }
   .content-shell { grid-template-columns: 1fr; }
-  .content-nav { position: static; }
+  .content-nav { position: static; max-height: none; overflow-y: visible; }
   .guide-grid { grid-template-columns: repeat(2, 1fr); }
   #learn .guide-grid { grid-template-columns: repeat(2, 1fr); }
 }

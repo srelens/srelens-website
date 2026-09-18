@@ -63,26 +63,15 @@
 
     <section class="section">
       <div class="wrap content-shell">
-        <aside class="content-nav" aria-label="Documentation navigation">
-          <strong>Documentation</strong>
+        <aside class="content-nav" aria-label="Table of contents">
           <ul>
-            <li><a href="/docs/">Quick start</a></li>
-            <li><a class="active" href="/docs/tui/">Terminal UI (TUI)</a></li>
-            <li><a href="/guides/">SRE guides</a></li>
-            <li><a href="/security/">Security</a></li>
-            <li><a href="/architecture/">Architecture</a></li>
-            <li><a href="/mcp/">MCP setup</a></li>
-            <li><a href="/download/">Installers</a></li>
-          </ul>
-          <strong style="margin-top:24px;display:block;">On this page</strong>
-          <ul style="font-size:13px;">
             <li><a href="#overview">Overview &amp; Architecture</a></li>
             <li><a href="#install">Installation &amp; Updates</a></li>
             <li><a href="#cli-usage">CLI Arguments &amp; Flags</a></li>
             <li><a href="#command-palette">Command Palette Reference</a></li>
             <li><a href="#keybindings">Keybindings Reference</a></li>
             <li><a href="#ai-assistant">Embedded AI Assistant</a></li>
-            <li><a href="#argocd-gitops">ArgoCD GitOps</a></li>
+            <li><a href="#argocd-gitops">ArgoCD GitOps &amp; Hub-Spoke</a></li>
             <li><a href="#pod-operations">Pod &amp; Workload Operations</a></li>
             <li><a href="#helm-inspector">Helm 3 Values Diff</a></li>
             <li><a href="#gpu-fleet">GPU Fleet &amp; VRAM</a></li>
@@ -90,6 +79,8 @@
             <li><a href="#log-streamer">Log Streaming &amp; Wrap</a></li>
             <li><a href="#resource-tree">Resource Hierarchy Tree</a></li>
             <li><a href="#debug-shells">Shells &amp; Debug Containers</a></li>
+            <li><a href="#node-ssh">Node SSH &amp; Out-of-Band Tools</a></li>
+            <li><a href="#tui-mcp">TUI MCP Server</a></li>
             <li><a href="#crd-support">CRD Discovery &amp; Watches</a></li>
             <li><a href="#troubleshooting">Diagnostics</a></li>
           </ul>
@@ -286,6 +277,41 @@ srelens-tui update</code></pre>
             <li><strong>Resource Tree Integration:</strong> Seamlessly pivot from ArgoCD application to child Kubernetes resources.</li>
           </ul>
 
+          <h3>ArgoCD Hub &amp; Spoke Architecture</h3>
+          <p>
+            In multi-cluster setups, ArgoCD separates deployment definitions from workload execution:
+          </p>
+          <ul>
+            <li><strong>Hub Cluster:</strong> The management cluster hosting ArgoCD controllers, repository secrets, and <code>Application</code> CRDs.</li>
+            <li><strong>Spoke Cluster:</strong> Target workload clusters where applications run (no ArgoCD controllers installed on spokes).</li>
+          </ul>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/argocd-hub-spoke.png" width="1200" height="743" alt="ArgoCD Hub & Spoke architecture in srelens-tui">
+          </figure>
+
+          <p><strong>How <code>srelens-tui</code> Works with Hub &amp; Spoke:</strong></p>
+          <ol>
+            <li><strong>Discover Clusters:</strong> Reads cluster registration secrets (labeled <code>argocd.argoproj.io/secret-type: cluster</code>) from the hub cluster.</li>
+            <li><strong>Match Active Cluster:</strong> Matches your current kubeconfig context with Application destinations using server URL or cluster name.</li>
+            <li><strong>Spoke-Scoped View:</strong> Running <code>:argo</code> on a spoke cluster shows only applications deployed to that target. Inspect sync status, health, and trigger reconciliations directly in context.</li>
+          </ol>
+
+          <h3>Configuring ArgoCD Hub Context (<code>:config</code>)</h3>
+          <p>
+            Press <code>:</code> and type <code>:config</code> (or <code>:settings</code>) to open the TUI configuration screen:
+          </p>
+
+          <figure class="shot" style="margin: 24px 0;">
+            <img src="/assets/shots/tui-argo-config.png" width="1920" height="1080" alt="srelens-tui TUI Configuration screen for ArgoCD Hub and Spoke">
+          </figure>
+
+          <ul>
+            <li><strong>ArgoCD Hub Context:</strong> Select or cycle (<code>h</code>/<code>l</code> or <code>e</code> to edit) the kubeconfig context where your ArgoCD control plane resides.</li>
+            <li><strong>ArgoCD Hub Kubeconfig Path:</strong> Set a custom path if your Hub cluster kubeconfig is separate from <code>$KUBECONFIG</code>.</li>
+            <li><strong>Environment Variables:</strong> You can also set <code>SRELENS_ARGO_HUB_CONTEXT</code> and <code>SRELENS_ARGO_HUB_KUBECONFIG</code> in your shell environment.</li>
+          </ul>
+
           <h2 id="pod-operations">Pod &amp; Workload Operations (<code>:pods</code>)</h2>
           <p>
             The pod table provides high-density, real-time monitoring across namespaces with instant filtering and rapid troubleshooting actions.
@@ -383,6 +409,144 @@ srelens-tui update</code></pre>
             <li><strong>Ephemeral Debug Containers (<code>Shift + D</code>):</strong> Injects a debug container with full diagnostic toolkits into distroless production pods without restarting the workload.</li>
             <li><strong>Privileged Node Shell (<code>Shift + N</code>):</strong> Spawns a privileged pod on the target node with access to host namespaces and root filesystem.</li>
           </ul>
+
+          <h2 id="node-ssh">Node SSH &amp; Out-of-Band Diagnostics</h2>
+          <p>
+            When host services like <code>kubelet</code>, <code>containerd</code>, <code>rke2-agent</code>, or <code>k3s</code> fail,
+            the Kubernetes API cannot schedule debug pods or execute commands. <code>srelens-tui</code> provides out-of-band SSH capabilities
+            to triage and recover nodes directly.
+          </p>
+
+          <h3>Target Resolution &amp; Address Selection</h3>
+          <p>
+            When targeting a node by name, <code>srelens-tui</code> resolves addresses in order of network safety:
+          </p>
+          <ol>
+            <li><code>InternalIP</code> (default preference for private VPCs and cloud clusters)</li>
+            <li><code>ExternalIP</code> (for edge, bare-metal, or public nodes)</li>
+            <li><code>Hostname</code> (fallback or direct IP address)</li>
+          </ol>
+
+          <h3>SSH Key Discovery Ladder</h3>
+          <p>
+            <code>srelens-tui</code> negotiates SSH authentication automatically using a strict discovery priority:
+          </p>
+          <ol>
+            <li><strong>SSH Agent (<code>SSH_AUTH_SOCK</code>):</strong> If an SSH agent is running with loaded keys (<code>ssh-add -l</code>), agent identities are offered first.</li>
+            <li><strong>Standard Identity Files:</strong> Checks standard keys in <code>~/.ssh/</code> sequentially:
+              <ul>
+                <li><code>~/.ssh/id_ed25519</code></li>
+                <li><code>~/.ssh/id_rsa</code></li>
+                <li><code>~/.ssh/id_ecdsa</code></li>
+                <li><code>~/.ssh/id_dsa</code></li>
+              </ul>
+            </li>
+            <li><strong>Explicit Identity File:</strong> Custom key paths can be passed via <code>-i /path/to/key.pem</code> or capability parameters.</li>
+            <li><strong>User &amp; Port:</strong> Defaults to the local system username (or custom target user like <code>ubuntu</code>, <code>ec2-user</code>, or <code>root</code>) on port <code>22</code> (or custom <code>-p</code>).</li>
+          </ol>
+
+          <h3>Out-of-Band Service Recovery</h3>
+          <ul>
+            <li><strong>Interactive Node Shell (<code>Shift + N</code>):</strong> Drops into an interactive host shell on an alternate screen with zero terminal debris on exit.</li>
+            <li><strong>Systemd Status:</strong> Check system service states (<code>systemctl status &lt;service&gt;</code>) without an operational kubelet.</li>
+            <li><strong>Journal Logs:</strong> Stream systemd journal logs (<code>journalctl -u &lt;service&gt; --since &lt;time&gt;</code>) with real-time grep filtering.</li>
+            <li><strong>Guarded Restarts:</strong> Safely trigger controlled service restarts with explicit preflight confirmation.</li>
+          </ul>
+
+          <h2 id="tui-mcp">TUI MCP Server (<code>srelens-tui mcp</code>)</h2>
+          <p>
+            <code>srelens-tui</code> includes a headless MCP (Model Context Protocol) server over standard JSON-RPC 2.0 stdio,
+            exposing 80+ Kubernetes capabilities to AI agents (Cursor, Claude, Gemini, and custom agents).
+          </p>
+
+          <h3>Safety &amp; Permission Flags</h3>
+          <p>
+            By default, <code>srelens-tui mcp</code> runs in safe read-only mode: queries execute immediately, Secrets are masked, and mutating tools are blocked.
+            Two explicit command-line flags control elevated permissions:
+          </p>
+          <ul>
+            <li>
+              <code>--mcp-allow-sensitive-reads</code>: Allows the MCP server to read sensitive cluster material in plaintext, such as Secret contents (<code>k8s.getSecret</code>) and sensitive pod environment variables.
+            </li>
+            <li>
+              <code>--mcp-allow-destructive</code>: Allows the MCP server to execute mutating/destructive operations (e.g. scaling workloads, rollout restarts, deleting resources, applying manifests, installing plugins).
+            </li>
+          </ul>
+
+          <pre><code># Safe read-only mode (default: secrets masked, mutations blocked)
+srelens-tui mcp
+
+# Allow reading sensitive Secret data in plaintext
+srelens-tui mcp --mcp-allow-sensitive-reads
+
+# Allow mutating and destructive operations
+srelens-tui mcp --mcp-allow-destructive
+
+# Full access (sensitive reads + destructive mutations)
+srelens-tui mcp --mcp-allow-sensitive-reads --mcp-allow-destructive</code></pre>
+
+          <h3>Cursor Configuration (<code>.cursor/mcp.json</code> or <code>~/.cursor/mcp.json</code>)</h3>
+          <pre><code>{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens-tui",
+      "args": [
+        "mcp",
+        "--mcp-allow-sensitive-reads",
+        "--mcp-allow-destructive"
+      ]
+    }
+  }
+}</code></pre>
+
+          <h3>Claude Desktop (<code>claude_desktop_config.json</code>)</h3>
+          <pre><code>{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens-tui",
+      "args": [
+        "mcp",
+        "--mcp-allow-sensitive-reads",
+        "--mcp-allow-destructive"
+      ]
+    }
+  }
+}</code></pre>
+
+          <h3>Claude Code CLI</h3>
+          <pre><code># Safe default (read-only)
+claude mcp add srelens -- srelens-tui mcp
+
+# With sensitive reads and destructive mutations enabled
+claude mcp add srelens -- srelens-tui mcp --mcp-allow-sensitive-reads --mcp-allow-destructive</code></pre>
+
+          <h3>Gemini / Antigravity (<code>mcp_config.json</code>)</h3>
+          <pre><code>{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens-tui",
+      "args": [
+        "mcp",
+        "--mcp-allow-sensitive-reads",
+        "--mcp-allow-destructive"
+      ]
+    }
+  }
+}</code></pre>
+
+          <h3>Generic MCP Clients</h3>
+          <pre><code>{
+  "mcpServers": {
+    "srelens": {
+      "command": "srelens-tui",
+      "args": [
+        "mcp",
+        "--mcp-allow-sensitive-reads",
+        "--mcp-allow-destructive"
+      ]
+    }
+  }
+}</code></pre>
 
           <h2 id="crd-support">CRD Discovery &amp; Evaluated Printer Columns</h2>
           <p>
