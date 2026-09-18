@@ -668,6 +668,7 @@ html[data-theme="light"] .nav-links a.active {
   grid-template-columns: minmax(260px, 4fr) minmax(0, 8fr);
   gap: clamp(40px, 7vw, 92px);
   align-items: start;
+  scroll-margin-top: 88px;
 }
 .feature-row:nth-child(even) .copy { order: 0; }
 .feature-row .copy {
@@ -679,6 +680,7 @@ html[data-theme="light"] .nav-links a.active {
 .feature-row h3 {
   margin: 0 0 17px;
   font-size: clamp(27px, 3vw, 38px);
+  scroll-margin-top: 88px;
 }
 .feature-row .copy p { color: var(--text-dim); font-size: 16px; }
 .feature-row .copy p + p { margin-top: 20px; }

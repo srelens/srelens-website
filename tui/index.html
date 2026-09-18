@@ -217,10 +217,10 @@
         </div>
 
         <!-- 1. Embedded SRE AI -->
-        <div class="feature-row" style="margin-top: 48px;">
+        <div class="feature-row" id="ai-assistant" style="margin-top: 48px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">In-Process AI Diagnostics</p>
-            <h3>Embedded SRE AI Assistant (<code>:ai</code> or <code>Tab</code>)</h3>
+            <h3 id="ai">Embedded SRE AI Assistant (<code>:ai</code> or <code>Tab</code>)</h3>
             <p>
               An intelligent troubleshooting companion embedded directly in your terminal. No external browser
               context-switching required.
@@ -239,10 +239,10 @@
         </div>
 
         <!-- 2. Headless MCP Server -->
-        <div class="feature-row" style="margin-top: 64px;">
+        <div class="feature-row" id="headless-mcp-server" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Model Context Protocol</p>
-            <h3>Headless MCP Server (<code>srelens-tui mcp</code>)</h3>
+            <h3 id="tui-mcp">Headless MCP Server (<code>srelens-tui mcp</code>)</h3>
             <p>
               Expose pure, native Kubernetes capabilities directly to your AI coding agents. Run <code>srelens-tui mcp</code>
               to let Cursor, Claude Desktop, Claude Code, and Gemini inspect, diagnose, and remediate clusters in real time.
@@ -267,10 +267,10 @@
         </div>
 
         <!-- 3. ArgoCD -->
-        <div class="feature-row" style="margin-top: 64px;">
+        <div class="feature-row" id="argocd-gitops" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">GitOps &amp; Continuous Delivery</p>
-            <h3>ArgoCD Applications &amp; Sync Dashboard (<code>:argo</code>)</h3>
+            <h3 id="argocd">ArgoCD Applications &amp; Sync Dashboard (<code>:argo</code>)</h3>
             <p>
               Monitor and trigger GitOps deployments across multiple ArgoCD clusters and namespaces straight from the terminal.
             </p>
@@ -287,10 +287,10 @@
         </div>
 
         <!-- 4. Real-Time Cluster Overview -->
-        <div class="feature-row" style="margin-top: 64px;">
+        <div class="feature-row" id="cluster-overview" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Cluster Telemetry &amp; Capacity</p>
-            <h3>Real-Time Cluster Overview &amp; Telemetry (<code>:overview</code>)</h3>
+            <h3 id="overview">Real-Time Cluster Overview &amp; Telemetry (<code>:overview</code>)</h3>
             <p>
               Instant bird's-eye view of cluster-wide resource allocation, capacity pressure, and node health
               metrics in a single high-density pane.
@@ -308,10 +308,10 @@
         </div>
 
         <!-- 5. High-Density Pods -->
-        <div class="feature-row" style="margin-top: 64px;">
+        <div class="feature-row" id="pod-operations" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Workload Operations</p>
-            <h3>High-Density Pod &amp; Resource Operations (<code>:pods</code>)</h3>
+            <h3 id="pods">High-Density Pod &amp; Resource Operations (<code>:pods</code>)</h3>
             <p>
               Keyboard-optimized table views with sub-millisecond sorting, persistent regex filtering, and deep
               operational shortcuts.
@@ -330,10 +330,10 @@
         </div>
 
         <!-- 6. Deep Helm Inspector -->
-        <div class="feature-row" style="margin-top: 64px;">
+        <div class="feature-row" id="helm-inspector" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Release Management</p>
-            <h3>Deep Helm 3 Inspector &amp; Values Diff (<code>:helm</code>)</h3>
+            <h3 id="helm">Deep Helm 3 Inspector &amp; Values Diff (<code>:helm</code>)</h3>
             <p>
               Inspect and operate Helm releases across all namespaces directly from your terminal without requiring
               the <code>helm</code> CLI binary installed locally.
@@ -352,10 +352,10 @@
         </div>
 
         <!-- 7. GPU Inspector -->
-        <div class="feature-row" style="margin-top: 64px;">
+        <div class="feature-row" id="gpu-fleet" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">AI &amp; Accelerator Infrastructure</p>
-            <h3>GPU Fleet &amp; VRAM Allocation Telemetry (<code>:gpuinfo</code>)</h3>
+            <h3 id="gpuinfo">GPU Fleet &amp; VRAM Allocation Telemetry (<code>:gpuinfo</code>)</h3>
             <p>
               First-class hardware visibility for AI/ML inference and training clusters without manual NVIDIA SMI scripting.
             </p>
@@ -372,10 +372,10 @@
         </div>
 
         <!-- 8. BGP Peering -->
-        <div class="feature-row" style="margin-top: 64px;">
+        <div class="feature-row" id="bgp-dashboard" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Networking &amp; Control Plane</p>
-            <h3>BGP Peering &amp; Topology Dashboard (<code>:bgp</code>)</h3>
+            <h3 id="bgp">BGP Peering &amp; Topology Dashboard (<code>:bgp</code>)</h3>
             <p>
               First-class visibility into cloud-native routing. Automatically discovers and inspects
               <strong>Cilium BGP Control Plane</strong>, <strong>MetalLB</strong>, and <strong>Calico</strong> BGP peering topologies.
@@ -393,10 +393,10 @@
         </div>
 
         <!-- 9. Logs -->
-        <div class="feature-row" style="margin-top: 64px;">
+        <div class="feature-row" id="log-streamer" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Telemetry &amp; Logging</p>
-            <h3>Engineered Multi-Pod Log Streamer (<code>l</code>)</h3>
+            <h3 id="logs">Engineered Multi-Pod Log Streamer (<code>l</code>)</h3>
             <p>
               Designed specifically for modern JSON and structured logging formats where single log events span
               hundreds of characters.
@@ -415,10 +415,10 @@
         </div>
 
         <!-- 10. Resource Hierarchy Tree -->
-        <div class="feature-row" style="margin-top: 64px;">
+        <div class="feature-row" id="resource-tree" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Topology &amp; Relationships</p>
-            <h3>Visual Resource Hierarchy Trees (<code>t</code>)</h3>
+            <h3 id="hierarchy-tree">Visual Resource Hierarchy Trees (<code>t</code>)</h3>
             <p>
               Instantly resolve the full owner-reference and dependency tree for any Kubernetes primitive without
               manually correlating labels or selector strings.

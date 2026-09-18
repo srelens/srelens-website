@@ -80,6 +80,31 @@
     }
   }
 
+  /* ---------- anchor hash navigation fallback ---------- */
+  function resolveHashAnchor() {
+    if (!window.location.hash) return;
+    var hash = decodeURIComponent(window.location.hash.slice(1));
+    if (!hash) return;
+    var el = document.getElementById(hash);
+    if (!el) {
+      var lower = hash.toLowerCase();
+      el = document.getElementById(lower) ||
+           document.getElementById(lower.replace(/\s+/g, "-")) ||
+           document.querySelector('[id="' + lower + '" i]');
+    }
+    if (el) {
+      setTimeout(function () {
+        el.scrollIntoView({ behavior: "smooth" });
+      }, 50);
+    }
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", resolveHashAnchor);
+  } else {
+    resolveHashAnchor();
+  }
+  window.addEventListener("hashchange", resolveHashAnchor);
+
   /* ---------- latest release: rewrite version labels + download links ---------- */
   var versionEls = document.querySelectorAll("[data-version]");
   var assetLinks = document.querySelectorAll("[data-asset]");
