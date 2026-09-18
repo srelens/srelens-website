@@ -904,11 +904,26 @@ html[data-theme="light"] .nav-links a.active {
 }
 .content-nav {
   position: sticky;
-  top: 102px;
+  top: 96px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 16px;
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--surface);
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+.content-nav::-webkit-scrollbar {
+  width: 4px;
+}
+.content-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+.content-nav::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 2px;
 }
 .content-nav strong {
   display: block;
@@ -1100,7 +1115,7 @@ html[data-theme="light"] .nav-links a.active {
   .dl-grid { grid-template-columns: 1fr; }
   .dl-card:nth-child(n) { padding: 26px; border-right: 1px solid var(--line); }
   .content-shell { grid-template-columns: 1fr; }
-  .content-nav { position: static; }
+  .content-nav { position: static; max-height: none; overflow-y: visible; }
   .guide-grid { grid-template-columns: repeat(2, 1fr); }
   #learn .guide-grid { grid-template-columns: repeat(2, 1fr); }
 }
