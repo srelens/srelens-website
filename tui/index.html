@@ -238,7 +238,29 @@
           </figure>
         </div>
 
-        <!-- 2. ArgoCD -->
+        <!-- 2. Headless MCP Server -->
+        <div class="feature-row" style="margin-top: 64px;">
+          <div class="feature-narrative reveal">
+            <p class="feature-tag">Model Context Protocol</p>
+            <h3>Headless MCP Server (<code>srelens-tui mcp</code>)</h3>
+            <p>
+              Expose pure, native Kubernetes capabilities directly to your AI coding agents. Run <code>srelens-tui mcp</code>
+              to let Cursor, Claude Desktop, Claude Code, and Gemini inspect, diagnose, and remediate clusters in real time.
+            </p>
+            <ul class="feature-bullets">
+              <li><strong>Direct Agent Integration:</strong> Plug into Cursor (<code>.cursor/mcp.json</code>), Claude Desktop, Claude Code, or Gemini CLI via stdio transport.</li>
+              <li><strong>80+ Native Kubernetes Tools:</strong> Agents invoke high-performance cluster primitives — tailing multi-pod logs, inspecting manifests, querying metrics, and analyzing topology.</li>
+              <li><strong>Granular Safety Flags:</strong> Gate sensitive reads with <code>--mcp-allow-sensitive-reads</code> and mutating actions (scale, restart, apply, delete) with <code>--mcp-allow-destructive</code>.</li>
+              <li><strong>Zero Cloud Relay:</strong> Operates 100% locally over stdio against your local kubeconfig. No cluster credentials, tokens, or telemetry leave your machine.</li>
+            </ul>
+          </div>
+          <figure class="shot reveal">
+            <img src="/assets/shots/tui-mcp-agent.png" width="1024" height="548" loading="lazy"
+                 alt="Cursor Agent driving Kubernetes cluster remediation via srelens-tui headless MCP server">
+          </figure>
+        </div>
+
+        <!-- 3. ArgoCD -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">GitOps &amp; Continuous Delivery</p>
@@ -258,7 +280,7 @@
           </figure>
         </div>
 
-        <!-- 3. Real-Time Cluster Overview -->
+        <!-- 4. Real-Time Cluster Overview -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Cluster Telemetry &amp; Capacity</p>
@@ -279,7 +301,7 @@
           </figure>
         </div>
 
-        <!-- 4. High-Density Pods -->
+        <!-- 5. High-Density Pods -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Workload Operations</p>
@@ -301,7 +323,7 @@
           </figure>
         </div>
 
-        <!-- 5. Deep Helm Inspector -->
+        <!-- 6. Deep Helm Inspector -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Release Management</p>
@@ -323,7 +345,7 @@
           </figure>
         </div>
 
-        <!-- 6. GPU Inspector -->
+        <!-- 7. GPU Inspector -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">AI &amp; Accelerator Infrastructure</p>
@@ -343,7 +365,7 @@
           </figure>
         </div>
 
-        <!-- 7. BGP Peering -->
+        <!-- 8. BGP Peering -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Networking &amp; Control Plane</p>
@@ -364,7 +386,7 @@
           </figure>
         </div>
 
-        <!-- 8. Logs -->
+        <!-- 9. Logs -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Telemetry &amp; Logging</p>
@@ -386,7 +408,7 @@
           </figure>
         </div>
 
-        <!-- 9. Resource Hierarchy Tree -->
+        <!-- 10. Resource Hierarchy Tree -->
         <div class="feature-row" style="margin-top: 64px;">
           <div class="feature-narrative reveal">
             <p class="feature-tag">Topology &amp; Relationships</p>
