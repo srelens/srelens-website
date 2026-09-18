@@ -67,7 +67,17 @@
 
         headingTargets.forEach(function (target) {
           if (target === current) {
-            target.link.classList.add("active");
+            if (!target.link.classList.contains("active")) {
+              target.link.classList.add("active");
+              if (contentNav && contentNav.scrollHeight > contentNav.clientHeight) {
+                var linkTop = target.link.offsetTop;
+                var navScroll = contentNav.scrollTop;
+                var navHeight = contentNav.clientHeight;
+                if (linkTop < navScroll + 10 || linkTop > navScroll + navHeight - 40) {
+                  target.link.scrollIntoView({ block: "nearest" });
+                }
+              }
+            }
           } else {
             target.link.classList.remove("active");
           }
