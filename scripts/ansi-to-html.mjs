@@ -28,12 +28,18 @@ function applySgr(state, codes) {
   const p = codes.length ? codes : ['0'];
   for (let i = 0; i < p.length; i += 1) {
     const part = p[i];
-    // Handle colon-separated sub-parameters: for parts like "38:2::255:0:0" or "4:3"
+    // Handle colon-separated sub-parameters: for parts like "38:2::255:0:0" or "4:3" or "4:0"
     // Extract the main code (first number before any colon)
-    let n = typeof part === 'string' && part.includes(':')
+    let n = part.includes(':')
       ? parseInt(part.split(':')[0], 10)
       : parseInt(part, 10);
     if (isNaN(n)) n = 0;
+
+    // Special case: 4:0 means underline off (treat as 24)
+    if (n === 4 && part.includes(':')) {
+      const subParam = parseInt(part.split(':')[1], 10);
+      if (subParam === 0) n = 24;
+    }
 
     if (n === 0) Object.assign(state, RESET);
     else if (n === 1) state.bold = true;
@@ -56,7 +62,7 @@ function applySgr(state, codes) {
       const key = n === 38 ? 'fg' : n === 48 ? 'bg' : null;
 
       // Parse colon-separated form: e.g., "38:5:196" or "38:2::255:0:0"
-      if (typeof part === 'string' && part.includes(':')) {
+      if (part.includes(':')) {
         const subParts = part.split(':');
         const subType = parseInt(subParts[1], 10);
 
@@ -137,9 +143,9 @@ export function ansiToHtml(input) {
     buf = '';
   };
 
-  // Enhanced regex to drop more escape sequences:
-  // SGR (with colons) | general CSI | OSC (with ST terminator) | charset designation | other escapes | carriage return
-  const re = /\x1b\[([0-9;:]*)m|\x1b\[[0-?]*[ -/]*[@-~]|\x1b\][\s\S]*?(?:\x07|\x1b\\)|\x1b[()*+][0-9A-Za-z]|\x1b[@-Z\\-_]|\r/g;
+  // Enhanced regex to drop more escape sequences (SGR first, unchanged):
+  // SGR (with colons) | general CSI (with truncation) | OSC (with ST) | charset | other two-byte | lone ESC | CR
+  const re = /\x1b\[([0-9;:]*)m|\x1b\[[0-?]*[ -/]*(?:[@-~]|$)|\x1b\][\s\S]*?(?:\x07|\x1b\\)|\x1b[()*+][0-9A-Za-z]|\x1b[0-~]|\x1b|\r/g;
   let last = 0;
   let m;
   while ((m = re.exec(input))) {

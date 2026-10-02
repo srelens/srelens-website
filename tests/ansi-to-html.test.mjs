@@ -47,3 +47,13 @@ test('private CSI, charset designation and ST-terminated OSC are dropped', () =>
 test('malformed or out-of-range extended colours are ignored without throwing', () => {
   assert.equal(ansiToHtml('\x1b[38;5mx\x1b[38;5;300my\x1b[38;2;1mz'), 'xyz');
 });
+test('4:0 turns underline off', () => {
+  assert.equal(ansiToHtml('a\x1b[4mb\x1b[4:0mc'), 'a<span style="text-decoration:underline">b</span>c');
+});
+test('no raw ESC byte survives: Fp/Fs escapes, ESC c and truncated CSI', () => {
+  for (const input of ['a\x1b7b', 'a\x1b8b', 'a\x1b=b', 'a\x1b>b', 'a\x1bcb', 'a\x1bMb']) {
+    assert.equal(ansiToHtml(input), 'ab', JSON.stringify(input));
+  }
+  assert.equal(ansiToHtml('x\x1b[38;5'), 'x');
+  assert.equal(ansiToHtml('x\x1b'), 'x');
+});
