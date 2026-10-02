@@ -7,7 +7,7 @@ import { baselineFor } from './lib/baseline.mjs';
 // Expected meta values that replace the baseline: { file: { key: value } }.
 const META_CHANGES = {};
 // Applied to every baseline JSON-LD node before comparison.
-const ldChange = (node) => node;
+const ldChange = (node) => ('softwareVersion' in node ? { ...node, softwareVersion: '0.15.0' } : node);
 
 const withoutCrumbs = (nodes) => nodes.filter((n) => n['@type'] !== 'BreadcrumbList');
 
