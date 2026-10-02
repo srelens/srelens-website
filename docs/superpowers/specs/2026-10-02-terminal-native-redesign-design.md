@@ -18,8 +18,9 @@ the review:
   quieter form: body text in a proportional face at reading width, monospace for
   headings, labels, commands and data only.
 - B's "where am I" idea becomes a path line under the nav
-  (`srelens.com / compare / k9s`). It is the restyled form of the existing
-  `.crumbs` breadcrumb, not a new bottom status bar.
+  (`srelens / compare / k9s`). It is the restyled form of the existing
+  `.crumbs` breadcrumb, keeps each page's existing crumb text, and is not a new
+  bottom status bar.
 
 ## 2. Hard constraints
 
@@ -125,9 +126,9 @@ Unchanged: same 23 files, same sitemap URLs, same section ids. Navigation:
   Below 760px the links collapse into a `<details>` menu, which works without JS.
   There is no site search. The mockup's `⌘K` search control is dropped because
   the site has no search behind it.
-- **Path line** (all subpages except `404.html`): `srelens.com / compare / k9s`, monospace, linked
-  segments, the restyled `.crumbs` element. It matches the page's BreadcrumbList
-  JSON-LD exactly (section 8.2).
+- **Path line** (all subpages except `404.html`): `srelens / compare / k9s`, monospace, linked
+  segments, the restyled `.crumbs` element. Segment text is the page's existing
+  crumb text. It matches the page's BreadcrumbList JSON-LD exactly (section 8.2).
 - **Footer** (all pages): grouped path links to every indexable page, including
   `/guides/`, `/security/` and `/architecture/`, which today are missing from the
   homepage footer. Plus license, current version, GitHub and releases links.
@@ -135,7 +136,9 @@ Unchanged: same 23 files, same sitemap URLs, same section ids. Navigation:
 ## 5. Components
 
 Each component is a class family in `site.css`. Pages use these classes only;
-inline `style=""` attributes are removed during migration.
+inline `style=""` attributes are removed during migration. The one exception is
+the generated terminal capture inside `<pre class="tui">`, whose spans carry
+inline colors (section 7.2).
 
 1. **Site header.** Section 4. Sticky, 56px, surface background, bottom rule.
 2. **Path line.** Section 4.
@@ -146,8 +149,11 @@ inline `style=""` attributes are removed during migration.
 4. **Mode switch** (homepage hero only). An ARIA tablist with two tabs,
    `1 desktop` and `2 terminal`. Arrow keys move between tabs. The `1` and `2`
    keys switch modes when focus is not in a text field and no modifier is held.
-   Each panel holds its lede, its install action and its evidence. The H1 sits
-   outside the panels and never changes. Without JS the tablist is hidden and
+   The H1, the existing lede, the hero badge and the GitHub button sit above the
+   tabs and never change, so no hero copy is rewritten. Each panel holds only its
+   install action, its evidence and a one-line mono caption (desktop: the existing
+   screenshot caption; terminal: "text capture · srelens-tui v0.15.0 on the same
+   cluster · select it"). Without JS the tablist is hidden and
    both panels render one after the other, each with a small mono label
    (`desktop`, `terminal`), so all copy stays crawlable and readable. No extra
    headings are added. Desktop is the default. The choice is not persisted.
@@ -186,7 +192,7 @@ tokens. Page-specific work:
 
 | Page | Treatment |
 |---|---|
-| `/` | Hero with mode switch (desktop screenshot / terminal capture). Sections `#workflow` (incident drill), `#features` (keycap grid), `#everything`, `#learn`, `#compare`, `#download`, `#get-started`, `#faq` and the final CTA keep their ids and copy. |
+| `/` | Hero with mode switch (desktop screenshot / terminal capture). The incident drill moves from the hero into `#workflow`. The `#everything` cells get keycap rows for verified bindings. Sections `#workflow`, `#features`, `#everything`, `#learn`, `#compare`, `#download`, `#get-started`, `#faq` and the final CTA keep their ids and copy. |
 | `/tui/` | Hero shows the terminal capture with the install command block. `#features` keeps the real `tui-*` screenshots. `#keybindings` becomes a keycap table verified against v0.15.0. `#compare` and `#download` are restyled. |
 | `/features/` | Editorial rows keep the screenshot pairs. Each feature title gets its keycap row where a binding exists. |
 | `/mcp/` | `#how`, `#setup` (config code blocks), `#example` and `#answers` are restyled. The safety flags (`--allow-destructive`, `--allow-sensitive-reads`) are shown as command blocks. |
@@ -215,13 +221,14 @@ terminal panel and in the `/tui/` hero.
    crash-looping pod and metrics-server).
 2. Run `srelens-tui` v0.15.0 inside `tmux` (macOS, Linux or WSL), navigate to the
    view, then `tmux capture-pane -p -e -t <pane> > capture.ansi`.
-3. Convert with `scripts/ansi-to-html.mjs capture.ansi > fragment.html`. The
-   converter maps SGR foreground/background/bold codes to `t-*` classes (16-color
-   and 256-color), HTML-escapes text, and preserves spacing exactly. It has its
-   own unit tests (section 9).
-4. Paste the fragment into the two pages. Commit `capture.ansi` under
-   `assets/captures/` as the source of truth; the folder is excluded from
-   publishing (section 8.4).
+3. Commit the raw capture as `assets/captures/pods.ansi`, the source of truth.
+   The folder is excluded from publishing (section 8.4).
+4. `scripts/embed-captures.mjs` fills every
+   `<!-- capture:pods:start --><!-- capture:pods:end -->` marker pair in the pages
+   with `scripts/ansi-to-html.mjs` output. The converter maps SGR codes (16-color,
+   256-color and truecolor, bold, dim, italic, underline, reverse) to inline-styled
+   spans, HTML-escapes text, drops other escapes, and preserves spacing exactly.
+   A test fails if an embedded capture differs from a fresh conversion.
 
 ### 7.3 Binding verification
 
@@ -229,6 +236,53 @@ Every key or `:command` shown on the site is checked against
 `srelens/srelens` at tag `srelens-v0.15.0` (not `origin/dev`). Bindings that
 exist only on dev, and help-screen entries that disagree with the handlers, are
 not shown.
+
+The same pass checks the numeric and capability claims already on `/tui/` and in
+`llms*.txt` (`<15ms` startup, `0ms` informer cache, `<25MB` memory, "up to 90%"
+prompt-caching savings, `Shift + D` / `Shift + N` / `Shift + F` bindings). The
+findings go to Devesh as a table before any copy changes. Claims without
+first-party evidence are removed or corrected only with his sign-off, which is
+the one exception to "copy stays".
+
+### 7.4 Fresh screenshots of every feature
+
+Added 2026-10-02 at Devesh's request. All product imagery is recaptured from
+srelens built from source at tag `srelens-v0.15.0`, run from a dedicated
+worktree of the local srelens repo (`C:\Users\vrshu\work\srelens\srelens`).
+
+- **Worktree.** `<srelens>/.claude/worktrees/site-evidence-v0.15.0`, detached at
+  the tag. Before any work in it: copy `CLAUDE.local.md` from the main checkout,
+  build its own GitNexus index
+  (`gitnexus analyze . --index-only --name srelens-site-evidence --force`), run
+  the agentmemory health check and recall. Nothing in srelens is modified or
+  committed; the worktree is removed when the evidence is done.
+- **Cluster.** `srelens-demo` is extended with what each feature needs to show
+  real state, as identified in the v0.15.0 analysis: a Helm release, Argo CD with
+  an Application, BGP resources, simulated GPU nodes (kwok), metrics-server.
+- **Desktop.** The native app is not run on this machine: its vault master key
+  lives in Windows Credential Manager and its settings path is hard-coded to the
+  real `%APPDATA%app.srelens.desktop` profile, so a dev build could overwrite
+  Devesh's real vault key and settings. Desktop views are captured in the repo's
+  own web mode instead: `srelens-server` built in the worktree serves the same
+  React UI with an isolated data dir and a dev login, and only the srelens-demo
+  kubeconfig is uploaded. A zero-dependency Node script drives headless Chrome
+  over the DevTools Protocol: it sets design, app theme and namespace, opens each
+  view, and captures it at a 1600×974 viewport with device scale 1.5.
+  Tauri-only views (assistant, Apps, toolbox installs) keep their existing images.
+  That gives 2400×1461 WebP at quality 82, the same size as today's images.
+  Existing file names are kept (`assets/shots/{dark,light}-<view>.webp`), so the
+  existing `<img>` markup, dimensions and alt text stay valid. Views that are new
+  to the site get new files with the same naming.
+- **TUI.** Every TUI feature that renders from cluster state is captured as text
+  (method in 7.2) and embedded with capture markers, replacing the `tui-*` images
+  on `/tui/` and `/docs/tui/` where a capture exists. Two images stay: the AI
+  assistant (it needs a real provider key, which Claude does not enter; Devesh
+  can capture it) and the Cursor MCP agent screenshots (a third-party app).
+- **New features.** A feature that exists in v0.15.0 but is not on the site today
+  gets a new screenshot and a short new description. That text is new copy, and
+  Devesh reviews it together with the screenshot set before merge.
+- **Honesty.** Every image shows srelens v0.15.0 against `srelens-demo`. No mocked
+  data and no pixel edits beyond cropping.
 
 ## 8. SEO and AEO
 
@@ -252,10 +306,11 @@ one is listed in the test as an explicit expected difference.
    path line item for item. `docs/tui.html` inherits it through the mirror (8.3).
 3. **OG/Twitter tags and images** for the 8 pages that have none
    (`architecture`, `docs`, `docs/tui`, `guides` + 3, `security`). New 1200×630
-   JPGs are rendered from one HTML card template in the new style with a headless
-   browser and saved to `assets/og/`. `/tui/` switches its `og:image` from a WebP
-   to a new `og-tui.jpg`, because JPG has the widest support across link-preview
-   clients. That makes 9 new cards. Existing `og-*.jpg` files stay.
+   PNGs are rendered from one HTML card template in the new style with headless
+   Chrome (`--screenshot`) and saved to `assets/og/`. `/tui/` switches its
+   `og:image` from a WebP to a new `og-tui.png`, because PNG and JPG have the
+   widest support across link-preview clients. That makes 9 new cards. Existing
+   `og-*.jpg` files stay.
 4. **Robots** are normalised to
    `index, follow, max-image-preview:large, max-snippet:-1` on every indexable
    page. Eight pages currently use plain `index, follow` (the same 8 as above).
@@ -309,7 +364,9 @@ behavior gets a failing test first.
 | `tests/shell.test.mjs` | Every page links `/site.css` and `/main.js`, has the theme-init script, the skip link, the header nav with exactly one `aria-current="page"` (none on `/` and `404.html`), the path line on subpages except `404.html`, and the footer. No inline `style=""` attributes. |
 | `tests/contrast.test.mjs` | Reads the token values from `site.css` and checks text/background pairs for 4.5:1 in both themes. |
 | `tests/jekyll.test.mjs` | `_config.yml` excludes the internal paths in section 8.4. |
-| `tests/ansi-to-html.test.mjs` | Converter: 16- and 256-color SGR, bold, reset, HTML escaping, exact spacing, box-drawing passthrough. |
+| `tests/ansi-to-html.test.mjs` | Converter: 16-color, 256-color and truecolor SGR, bold, reset, reverse, HTML escaping, exact spacing, box-drawing passthrough. |
+| `tests/captures.test.mjs` | Every embedded capture equals a fresh conversion of its `.ansi` source. |
+| `tests/copy.test.mjs` | Every baseline `id` and every baseline H2/H3 text still exists on its page, apart from changes Devesh signs off in the claims check (section 7.3). |
 
 Behavior in the browser (mode switch tabs and keys, theme toggle, copy buttons,
 TOC scrollspy, incident drill, tour dialog, 404 path fill) is verified with
@@ -327,9 +384,9 @@ reviewed by Devesh before the PR is merged.
 | 23 HTML files | Migrated to the new shell and components. |
 | `_config.yml` | New (section 8.4). |
 | `_headers` | Cache rule for `/site.css`. |
-| `assets/og/*.jpg` | 9 new cards (section 8.2.3). |
+| `assets/og/*.png` | 9 new cards (section 8.2.3). |
 | `assets/captures/` | Raw ANSI capture source (unpublished). |
-| `scripts/ansi-to-html.mjs`, `scripts/og-card.html` | Authoring tools (unpublished). |
+| `scripts/` | Authoring tools, unpublished: `pages.mjs` (page manifest), `shell.mjs` and `apply-shell.mjs` (shared header, path line, footer, head links, BreadcrumbList), `ansi-to-html.mjs`, `embed-captures.mjs`, `seo-baseline.mjs`, `og-card.html` and `og-cards.mjs`, `shots/` (desktop screenshots in web mode) and `demo/` (kind cluster, feature extras and TUI capture scripts). |
 | `tests/` | Section 9 (unpublished). |
 | `DESIGN.md`, `.impeccable/design.json` | Rewritten for the new system. |
 | `README.md` | Updated structure section, test command and capture workflow. |
