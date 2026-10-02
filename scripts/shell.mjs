@@ -109,14 +109,17 @@ export function applyShell(html, page, version) {
   // head
   out = out.replace(/<link\b[^>]*fonts\.googleapis\.com\/css2[^>]*>/, FONTS);
   out = out.replace(/<link\b[^>]*href="\/(?:styles|enterprise|site)\.css[^"]*"[^>]*>(?:\s*<link\b[^>]*href="\/(?:styles|enterprise|site)\.css[^"]*"[^>]*>)*/, STYLES);
-  out = out.replace(/<script>\s*\(function \(\) \{\s*var t = null;[\s\S]*?<\/script>/, THEME_INIT);
+  out = out.replace(/<script>\s*\(function\s*\(\)\s*\{\s*var t\s*=\s*null;[\s\S]*?<\/script>/, THEME_INIT);
   out = out.replace(/<meta name="theme-color" content="[^"]*">/, THEME_COLOR);
+  out = out.replace(/<script src="\/main\.js\?[^"]*" defer><\/script>/, '<script src="/main.js" defer></script>');
 
-  // old decorative layers and classes
+  // old decorative layers and classes; an attribute left with no classes is removed entirely
   out = out.replace(/\s*<div class="(?:bg-aurora|bg-grid|band-glow)" aria-hidden="true"><\/div>/g, '');
-  out = out.replace(/class="([^"]*)"/g, (m, cls) => {
-    const kept = cls.split(/\s+/).filter((c) => c && c !== 'reveal');
-    return kept.length === cls.split(/\s+/).filter(Boolean).length ? m : `class="${kept.join(' ')}"`;
+  out = out.replace(/(\s)class="([^"]*)"/g, (m, ws, cls) => {
+    const all = cls.split(/\s+/).filter(Boolean);
+    const kept = all.filter((c) => c !== 'reveal');
+    if (!kept.length) return '';
+    return kept.length === all.length ? m : `${ws}class="${kept.join(' ')}"`;
   });
 
   // gradient spans: a short H1 phrase becomes the accent, everything else is plain text
@@ -127,9 +130,11 @@ export function applyShell(html, page, version) {
     return inner;
   });
 
-  // eyebrow tick inside an id'd section becomes that section's permalink
+  // eyebrow tick inside an id'd section becomes that section's permalink: at most one per section, ever
   out = out.replace(/(<section\b[^>]*\sid="([^"]+)"[^>]*>)([\s\S]*?)(?=<section\b|<\/main>)/g, (m, open, id, body) => (
-    open + body.replace('<span class="tick">●</span>', `<a class="section-label anchor-link" href="#${id}">#${id}</a> ·`)
+    body.includes('class="section-label')
+      ? m
+      : open + body.replace('<span class="tick">●</span>', `<a class="section-label anchor-link" href="#${id}">#${id}</a> ·`)
   ));
 
   // skip link and its target

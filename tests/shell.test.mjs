@@ -64,6 +64,17 @@ test('applyShell turns an eyebrow tick into a section permalink', () => {
   assert.match(html, /<p class="eyebrow"><a class="section-label anchor-link" href="#workflow">#workflow<\/a> · The reliability loop<\/p>/);
 });
 
+// applyShell must produce the migrated-page contract on every real page, and be idempotent.
+for (const p of PAGES.filter((entry) => !entry.mirrorOf)) {
+  test(`applyShell on ${p.file}: theme script, main.js, no empty class, idempotent`, () => {
+    const once = applyShell(read(p.file), p, '0.15.0');
+    assert.ok(once.includes(THEME_INIT), 'theme init script swapped');
+    assert.ok(once.includes('<script src="/main.js" defer></script>'), 'main.js normalised');
+    assert.doesNotMatch(once, /\sclass=""/, 'no empty class attribute');
+    assert.equal(applyShell(once, p, '0.15.0'), once, 'idempotent');
+  });
+}
+
 // Pages moved to the new design. Each page task adds its pages here first.
 const MIGRATED = new Set([]);
 
