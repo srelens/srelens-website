@@ -11,6 +11,14 @@ test('embedCaptures fills an empty marker pair', () => {
   );
 });
 
+test('embedCaptures replaces stale content and is idempotent', () => {
+  const render = () => 'new';
+  const stale = '<!-- capture:fixture:start -->old<!-- capture:fixture:end -->';
+  const once = embedCaptures(stale, render);
+  assert.equal(once, '<!-- capture:fixture:start -->new<!-- capture:fixture:end -->');
+  assert.equal(embedCaptures(once, render), once);
+});
+
 for (const file of listPages()) {
   for (const { name, inner } of markers(read(file))) {
     test(`${file}: capture "${name}" matches assets/captures/${name}.ansi`, () => {

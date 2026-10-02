@@ -32,3 +32,18 @@ test('adjacent runs with the same style merge', () => {
 test('trailing blank lines are trimmed', () => {
   assert.equal(ansiToHtml('a\n\n\n'), 'a');
 });
+test('colon-form truecolor, 256-colour and underline style', () => {
+  assert.equal(ansiToHtml('a\x1b[38:2::255:0:0mred\x1b[0m b'), 'a<span style="color:#ff0000">red</span> b');
+  assert.equal(ansiToHtml('\x1b[38:5:196mx'), '<span style="color:#ff0000">x</span>');
+  assert.equal(ansiToHtml('\x1b[4:3mx'), '<span style="text-decoration:underline">x</span>');
+});
+test('underline colour is consumed without resetting other attributes', () => {
+  assert.equal(ansiToHtml('\x1b[1;32m\x1b[58;2;255;0;0mx'), '<span style="color:#4ade80;font-weight:700">x</span>');
+});
+test('private CSI, charset designation and ST-terminated OSC are dropped', () => {
+  assert.equal(ansiToHtml('a\x1b[>4;2mb\x1b(Bc'), 'abc');
+  assert.equal(ansiToHtml('\x1b]8;;https://srelens.com\x1b\\link\x1b]8;;\x1b\\'), 'link');
+});
+test('malformed or out-of-range extended colours are ignored without throwing', () => {
+  assert.equal(ansiToHtml('\x1b[38;5mx\x1b[38;5;300my\x1b[38;2;1mz'), 'xyz');
+});
