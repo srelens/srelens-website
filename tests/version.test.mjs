@@ -29,3 +29,9 @@ test('fallback download links point at the same release', () => {
     }
   }
 });
+
+test('no page links to a Windows ARM64 srelens-tui archive (never shipped)', () => {
+  for (const file of listPages()) {
+    assert.ok(!read(file).includes('aarch64-pc-windows-msvc'), file);
+  }
+});
