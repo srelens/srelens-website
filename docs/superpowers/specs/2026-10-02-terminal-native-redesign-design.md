@@ -352,7 +352,7 @@ and are copied verbatim, so no site page changes behavior.
 
 ## 9. Testing
 
-Zero-dependency Node tests, run with `node --test tests/`. They follow TDD: each
+Zero-dependency Node tests, run with `node --test`. They follow TDD: each
 behavior gets a failing test first.
 
 | Test file | Guards |

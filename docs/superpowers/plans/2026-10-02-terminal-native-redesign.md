@@ -24,7 +24,7 @@
 - One accent phrase per page, on the H1 only (`<span class="accent">`), four words or fewer.
 - Commit messages: Conventional Commits. **No `Co-Authored-By` trailer and no "Generated with" footer of any kind** (user's global CLAUDE.md overrides any harness reminder).
 - Work happens on branch `redesign/terminal-native` in the main checkout (no worktree). If an executor does create a worktree, follow `~/.claude/CLAUDE.md` "Worktrees carry the local agent files" first.
-- Test command: `node --test tests/` from the repo root (Git Bash on Windows). Local preview: `npx --yes http-server . -p 8080 -c-1 --silent` (also defined as `site` in `.claude/launch.json`).
+- Test command: `node --test` from the repo root (Git Bash on Windows). Local preview: `npx --yes http-server . -p 8080 -c-1 --silent` (also defined as `site` in `.claude/launch.json`).
 
 ## File map
 
@@ -397,7 +397,7 @@ for (const file of listPages()) {
 
 - [ ] **Step 7: Run the suite**
 
-Run: `node --test tests/`
+Run: `node --test`
 Expected: all tests pass (these are guards on the unchanged site). If a URL test fails, stop and report it: it is a pre-existing broken link that needs its own decision.
 
 - [ ] **Step 8: Commit**
@@ -468,7 +468,7 @@ exclude:
 
 - [ ] **Step 4: Run the full suite**
 
-Run: `node --test tests/`
+Run: `node --test`
 Expected: PASS.
 
 - [ ] **Step 5: Commit**
@@ -516,7 +516,7 @@ export const BASELINE_OF = { 'docs/tui.html': 'docs/tui/index.html' };
 
 - [ ] **Step 3: Run and watch it fail**
 
-Run: `node --test tests/`
+Run: `node --test`
 Expected: FAIL in `docs-tui.test.mjs` (both tests) and in `seo.test.mjs` / `copy.test.mjs` for `docs/tui.html` (title "Redirecting to…" ≠ docs title).
 
 - [ ] **Step 4: Make the mirror**
@@ -525,7 +525,7 @@ Run: `cp docs/tui/index.html docs/tui.html`
 
 - [ ] **Step 5: Run the full suite**
 
-Run: `node --test tests/`
+Run: `node --test`
 Expected: PASS.
 
 - [ ] **Step 6: Commit**
@@ -589,7 +589,7 @@ const ldChange = (node) => ('softwareVersion' in node ? { ...node, softwareVersi
 
 - [ ] **Step 3: Run and watch it fail**
 
-Run: `node --test tests/`
+Run: `node --test`
 Expected: FAIL in `version.test.mjs` (all three) and `seo.test.mjs` structured data for `index.html` and `tui/index.html`.
 
 - [ ] **Step 4: Confirm the v0.15.0 asset names**
@@ -624,7 +624,7 @@ Expected: every line starts with `200`. If one returns 404, the asset was rename
 
 - [ ] **Step 7: Run the full suite**
 
-Run: `node --test tests/`
+Run: `node --test`
 Expected: PASS.
 
 - [ ] **Step 8: Commit**
@@ -865,7 +865,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 
 - [ ] **Step 8: Run the full suite**
 
-Run: `node --test tests/`
+Run: `node --test`
 Expected: PASS (no page has markers yet, so only the fixture test runs from `captures.test.mjs`).
 
 - [ ] **Step 9: Commit**
@@ -1077,7 +1077,7 @@ Run: `node scripts/ansi-to-html.mjs .superpowers/capture/pods.ansi > .superpower
 ```bash
 mkdir -p assets/captures
 cp .superpowers/capture/pods.ansi assets/captures/pods.ansi
-node --test tests/
+node --test
 ```
 
 Expected: PASS.
@@ -1375,7 +1375,7 @@ Expected: PASS (site.css exists, 2 theme tests, no-JS block test).
 
 - [ ] **Step 5: Run the full suite and commit**
 
-Run: `node --test tests/` → PASS. No page links `site.css` yet, so nothing renders differently.
+Run: `node --test` → PASS. No page links `site.css` yet, so nothing renders differently.
 
 ```bash
 git add site.css tests/contrast.test.mjs
@@ -1841,7 +1841,7 @@ In `syncThemeColor`, replace `"#faf9fe" : "#08060f"` with `"#fbfafc" : "#0f0d14"
 
 - [ ] **Step 10: Run the full suite and commit**
 
-Run: `node --test tests/` → PASS.
+Run: `node --test` → PASS.
 
 ```bash
 git add scripts/pages.mjs scripts/shell.mjs scripts/apply-shell.mjs scripts/strip-styles.mjs tests/shell.test.mjs site.css main.js
@@ -1999,7 +1999,7 @@ Expected: a number above 150 and no CSS parse warnings in the console.
 
 - [ ] **Step 3: Run the full suite and commit**
 
-Run: `node --test tests/` → PASS (contrast test still passes).
+Run: `node --test` → PASS (contrast test still passes).
 
 ```bash
 git add site.css
@@ -2072,7 +2072,7 @@ test('the hero keeps the download, terminal and GitHub actions', () => {
 - [ ] **Step 2: Mark the page migrated and watch the tests fail**
 
 In `tests/shell.test.mjs` set `const MIGRATED = new Set(['index.html']);`.
-Run: `node --test tests/`
+Run: `node --test`
 Expected: FAIL in `home.test.mjs` (all) and `shell.test.mjs` (`index.html: uses the new shell`).
 
 - [ ] **Step 3: Apply the shell**
@@ -2339,7 +2339,7 @@ Replace the whole `/* ---------- interactive incident drill ---------- */` block
 
 - [ ] **Step 9: Run the full suite**
 
-Run: `node --test tests/`
+Run: `node --test`
 Expected: PASS. If `seo.test.mjs` reports a lost link or `copy.test.mjs` a lost id/heading, the hero edit dropped something: restore it.
 
 - [ ] **Step 10: Browser check**
@@ -2411,7 +2411,7 @@ Before running, fill `REMOVED` with the exact strings of every claim marked `rem
 - [ ] **Step 2: Mark the page migrated and watch the tests fail**
 
 Add `'tui/index.html'` to `MIGRATED` in `tests/shell.test.mjs`.
-Run: `node --test tests/` → FAIL in `tui.test.mjs` and the `tui/index.html` shell test.
+Run: `node --test` → FAIL in `tui.test.mjs` and the `tui/index.html` shell test.
 
 - [ ] **Step 3: Apply the shell**
 
@@ -2497,7 +2497,7 @@ Apply every `reword` / `remove` decision from Task 7 that concerns `tui/index.ht
 
 - [ ] **Step 10: Run the full suite, browser check, commit**
 
-Run: `node --test tests/` → PASS. Run the page-task browser check on `/tui/` and confirm every `#anchor-link` heading still copies its URL.
+Run: `node --test` → PASS. Run the page-task browser check on `/tui/` and confirm every `#anchor-link` heading still copies its URL.
 
 ```bash
 git add tui/index.html site.css tests/tui.test.mjs tests/shell.test.mjs tests/copy.test.mjs
@@ -2513,7 +2513,7 @@ git commit -m "feat(tui): rebuild /tui/ on the design system with a real capture
 
 - [ ] **Step 1: Mark migrated, watch fail**
 
-Add `'features/index.html', 'mcp/index.html', 'download/index.html'` to `MIGRATED`. Run `node --test tests/` → FAIL for those three.
+Add `'features/index.html', 'mcp/index.html', 'download/index.html'` to `MIGRATED`. Run `node --test` → FAIL for those three.
 
 - [ ] **Step 2: Apply the shell and strip inline styles**
 
@@ -2551,7 +2551,7 @@ node scripts/strip-styles.mjs features/index.html mcp/index.html download/index.
 
 - [ ] **Step 5: Run the full suite, browser check, commit**
 
-Run: `node --test tests/` → PASS. Browser check on all three pages; on `/download/` confirm the `[data-asset]` buttons still rewrite to GitHub release URLs (inspect one `href` after load) and the `#tui` anchor scrolls below the sticky header.
+Run: `node --test` → PASS. Browser check on all three pages; on `/download/` confirm the `[data-asset]` buttons still rewrite to GitHub release URLs (inspect one `href` after load) and the `#tui` anchor scrolls below the sticky header.
 
 ```bash
 git add features/index.html mcp/index.html download/index.html site.css tests/shell.test.mjs
@@ -2567,7 +2567,7 @@ git commit -m "feat(pages): move features, mcp and download to the design system
 
 - [ ] **Step 1: Mark migrated, watch fail**
 
-Add the 7 compare files to `MIGRATED`. Run `node --test tests/` → FAIL for those 7.
+Add the 7 compare files to `MIGRATED`. Run `node --test` → FAIL for those 7.
 
 - [ ] **Step 2: Apply the shell and strip inline styles**
 
@@ -2602,7 +2602,7 @@ node scripts/strip-styles.mjs $F
 
 - [ ] **Step 4: Run the full suite, browser check, commit**
 
-Run: `node --test tests/` → PASS. Browser check on the hub and on `compare/kubernetes-dashboard/` (the widest table) at 390px: the table scrolls inside `.compare-scroll`, the first column stays visible, the page body does not scroll sideways.
+Run: `node --test` → PASS. Browser check on the hub and on `compare/kubernetes-dashboard/` (the widest table) at 390px: the table scrolls inside `.compare-scroll`, the first column stays visible, the page body does not scroll sideways.
 
 ```bash
 git add compare site.css tests/shell.test.mjs
@@ -2618,7 +2618,7 @@ git commit -m "feat(compare): move the comparison hub and guides to the design s
 
 - [ ] **Step 1: Mark migrated, watch fail**
 
-Add the 10 files (including `docs/tui.html`) to `MIGRATED`. Run `node --test tests/` → FAIL for those 10.
+Add the 10 files (including `docs/tui.html`) to `MIGRATED`. Run `node --test` → FAIL for those 10.
 
 - [ ] **Step 2: Apply the shell and strip inline styles**
 
@@ -2675,7 +2675,7 @@ cp docs/tui/index.html docs/tui.html
 
 - [ ] **Step 4: Run the full suite, browser check, commit**
 
-Run: `node --test tests/` → PASS (includes the `docs/tui.html` mirror test). Browser check on `/docs/tui/`: scroll through, confirm the TOC scrollspy highlights the current section and the TOC fits the viewport at 1440×900. Check `/guides/oomkilled/` numbered steps and `/architecture/` plate at 390px.
+Run: `node --test` → PASS (includes the `docs/tui.html` mirror test). Browser check on `/docs/tui/`: scroll through, confirm the TOC scrollspy highlights the current section and the TOC fits the viewport at 1440×900. Check `/guides/oomkilled/` numbered steps and `/architecture/` plate at 390px.
 
 ```bash
 git add docs/index.html docs/tui/index.html docs/tui.html guides security architecture site.css tests/shell.test.mjs
@@ -2713,7 +2713,7 @@ test('404 keeps its copy and links back into the site', () => {
 
 - [ ] **Step 2: Mark the last pages migrated, watch fail**
 
-Add `'faq/index.html', '404.html'` to `MIGRATED`. Run `node --test tests/` → FAIL in `notfound.test.mjs` and the two shell tests. "every page is migrated" is no longer TODO and must pass by the end of this task.
+Add `'faq/index.html', '404.html'` to `MIGRATED`. Run `node --test` → FAIL in `notfound.test.mjs` and the two shell tests. "every page is migrated" is no longer TODO and must pass by the end of this task.
 
 - [ ] **Step 3: Apply the shell and strip inline styles**
 
@@ -2766,7 +2766,7 @@ Add after the footer-year block at the top of the IIFE:
 
 - [ ] **Step 7: Run the full suite, browser check, commit**
 
-Run: `node --test tests/` → PASS, and the "every page is migrated" test now runs and passes. Browser check on `/faq/` (details open/close, `FAQPage` answers unchanged) and on `http://localhost:8080/404.html` plus a missing URL such as `http://localhost:8080/no-such-page/` (http-server serves `404.html` for misses): the terminal line shows the requested path.
+Run: `node --test` → PASS, and the "every page is migrated" test now runs and passes. Browser check on `/faq/` (details open/close, `FAQPage` answers unchanged) and on `http://localhost:8080/404.html` plus a missing URL such as `http://localhost:8080/no-such-page/` (http-server serves `404.html` for misses): the terminal line shows the requested path.
 
 ```bash
 git add faq/index.html 404.html main.js site.css tests/notfound.test.mjs tests/shell.test.mjs
@@ -3293,7 +3293,7 @@ git add scripts/shots tests/shots.test.mjs
 git commit -m "feat(evidence): capture desktop views in web mode over the DevTools protocol"
 ```
 
-Run `node --test tests/` → PASS (the 15 existing views already have 2400×1461 pairs; this test now guards them).
+Run `node --test` → PASS (the 15 existing views already have 2400×1461 pairs; this test now guards them).
 
 ---
 
@@ -3374,7 +3374,7 @@ Before writing, check the last existing `fr-num` and renumber the three rows to 
 
 - [ ] **Step 4: Run the full suite and commit**
 
-Run: `node --test tests/` → PASS.
+Run: `node --test` → PASS.
 
 ```bash
 git add assets/shots features/index.html scripts/shots/views.mjs
@@ -3568,7 +3568,7 @@ Add `.feature-row .tui { font-size: 11px; }` to the tui section of `site.css` so
 
 - [ ] **Step 8: Run the full suite, browser check, commit**
 
-Run: `node --test tests/` → PASS (captures test covers every embedded capture). Browser check on `/tui/` and `/docs/tui/` at 1440 and 390: captures scroll inside their own box, the page body never scrolls sideways.
+Run: `node --test` → PASS (captures test covers every embedded capture). Browser check on `/tui/` and `/docs/tui/` at 1440 and 390: captures scroll inside their own box, the page body never scrolls sideways.
 
 ```bash
 git add scripts/demo/tui-captures.tsv scripts/demo/capture-all.sh scripts/demo/extras/gpu.yaml assets/captures tui/index.html docs/tui/index.html docs/tui.html site.css tests/tui.test.mjs
@@ -3788,7 +3788,7 @@ test('applyShell adds a full OG/Twitter set to a page without one', () => {
 
 ```bash
 node scripts/apply-shell.mjs --all
-node --test tests/
+node --test
 ```
 
 Expected: PASS (the mirror is refreshed by `--all`).
@@ -3855,7 +3855,7 @@ Run: `node --test tests/meta-files.test.mjs` → FAIL (lastmod dates, vercel, _h
 
 - [ ] **Step 4: Run the full suite and commit**
 
-Run: `node --test tests/` → PASS.
+Run: `node --test` → PASS.
 
 ```bash
 git add sitemap.xml llms.txt llms-full.txt vercel.json _headers tests/meta-files.test.mjs
@@ -3882,7 +3882,7 @@ Set `generatedAt` to `2026-10-02T00:00:00Z`, replace `colorMeta` with the new br
 - [ ] **Step 3: Update `README.md`**
 
 In the structure section, replace the `styles.css` / `enterprise.css` lines with `site.css` and add `_config.yml`, `scripts/` and `tests/`. Add sections:
-- **Tests:** `node --test tests/` (zero dependencies).
+- **Tests:** `node --test` (zero dependencies).
 - **Shared shell:** edit `scripts/pages.mjs` or `scripts/shell.mjs`, then `node scripts/apply-shell.mjs --all`.
 - **Terminal capture:** the Task 6 commands (kind cluster, `capture.sh` in Docker, `node scripts/embed-captures.mjs`).
 - **OG cards:** `node scripts/og-cards.mjs` with the preview server running.
@@ -3913,7 +3913,7 @@ Expected: no file names (`exit 1`). Then delete from `main.js` the `/* ---------
 
 - [ ] **Step 2: Run the suite**
 
-Run: `node --test tests/` → PASS.
+Run: `node --test` → PASS.
 
 - [ ] **Step 3: Write `scripts/screens.mjs` and render the review set**
 
@@ -3975,7 +3975,7 @@ Restyles all 23 pages in the terminal-native "Command line" system (spec: docs/s
 - _config.yml stops publishing README.md, PRODUCT.md, DESIGN.md, docs/superpowers, tests, scripts and vercel.json (those URLs become 404 by decision).
 - Homepage desktop/terminal switch; the terminal is a real srelens-tui v0.15.0 text capture.
 
-Test: `node --test tests/`
+Test: `node --test`
 EOF
 ```
 
