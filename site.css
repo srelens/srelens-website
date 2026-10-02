@@ -1,0 +1,160 @@
+/* ============================================================
+   srelens.com · site.css
+   Terminal-native design system ("Command line", direction A).
+   Spec: docs/superpowers/specs/2026-10-02-terminal-native-redesign-design.md
+   Sections: tokens · base · type · layout · shell · components · pages
+   ============================================================ */
+
+/* ---------- tokens ---------- */
+:root {
+  --bg: #fbfafc;
+  --surface: #ffffff;
+  --sunk: #f3f0f7;
+  --line: #e4dfeb;
+  --line-strong: #cfc7da;
+  --ink: #1b1524;
+  --muted: #675d74;
+  --brand: #6d44c5;
+  --brand-ink: #ffffff;
+  --hot: #c2410c;
+  --ok: #15803d;
+  --warn: #a16207;
+  --bad: #b91c1c;
+  /* terminal surfaces are dark in both themes */
+  --term-bg: #100d16;
+  --term-raised: #1d1828;
+  --term-line: #2a2433;
+  --term-fg: #d9d3e3;
+  --term-dim: #8b8398;
+  --term-ok: #4ade80;
+  --term-bad: #f87171;
+  --term-warn: #facc15;
+  --term-key: #67e8f9;
+  --term-brand: #f472b6;
+  --term-border: #7c3aed;
+  --overlay: rgba(16, 13, 22, 0.86);
+  --evidence-shadow: 0 24px 60px -24px rgba(20, 10, 40, 0.35);
+
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-body: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-term: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --wrap: 1200px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --section-y: clamp(56px, 8vw, 96px);
+  --measure: 70ch;
+  --r-control: 7px;
+  --r-card: 9px;
+  --r-frame: 10px;
+  --header-h: 56px;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f0d14;
+  --surface: #17141e;
+  --sunk: #131019;
+  --line: #2a2533;
+  --line-strong: #3a3346;
+  --ink: #ece8f3;
+  --muted: #9d94aa;
+  --brand: #a78bfa;
+  --brand-ink: #140f1f;
+  --hot: #fb923c;
+  --ok: #4ade80;
+  --warn: #facc15;
+  --bad: #f87171;
+  --evidence-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+/* Visitors without JS get no data-theme attribute; follow their OS. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #0f0d14;
+    --surface: #17141e;
+    --sunk: #131019;
+    --line: #2a2533;
+    --line-strong: #3a3346;
+    --ink: #ece8f3;
+    --muted: #9d94aa;
+    --brand: #a78bfa;
+    --brand-ink: #140f1f;
+    --hot: #fb923c;
+    --ok: #4ade80;
+    --warn: #facc15;
+    --bad: #f87171;
+    --evidence-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 16px); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 17px/1.6 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img, video, svg { max-width: 100%; height: auto; }
+a { color: var(--brand); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 2px; }
+::selection { background: color-mix(in srgb, var(--brand) 28%, transparent); }
+p { margin: 0 0 1em; }
+p:last-child { margin-bottom: 0; }
+code, kbd, pre, samp { font-family: var(--font-mono); }
+code { font-size: 0.88em; padding: 0.1em 0.35em; border-radius: 5px; background: var(--sunk); border: 1px solid var(--line); }
+pre code { padding: 0; background: none; border: 0; }
+kbd {
+  display: inline-block;
+  min-width: 1.7em;
+  padding: 1px 6px;
+  font: 500 12px/1.6 var(--font-mono);
+  text-align: center;
+  color: var(--ink);
+  background: var(--sunk);
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+}
+hr { border: 0; border-top: 1px solid var(--line); }
+table { border-collapse: collapse; }
+.skip-link {
+  position: absolute; left: 12px; top: -48px; z-index: 100;
+  padding: 8px 12px; border-radius: var(--r-control);
+  background: var(--brand); color: var(--brand-ink);
+  font: 600 14px var(--font-mono); text-decoration: none;
+}
+.skip-link:focus { top: 12px; }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- type ---------- */
+h1, h2, h3, h4 { margin: 0; font-family: var(--font-mono); font-weight: 600; color: var(--ink); text-wrap: balance; }
+h1, .display { font-size: clamp(32px, 4.5vw, 58px); line-height: 1.08; letter-spacing: -0.045em; }
+h2 { font-size: clamp(24px, 2.6vw, 32px); line-height: 1.15; letter-spacing: -0.03em; }
+h3 { font-size: 16px; line-height: 1.35; letter-spacing: -0.01em; }
+.accent { color: var(--hot); }
+.lede { font-size: clamp(17px, 1.6vw, 19px); line-height: 1.6; color: var(--muted); max-width: 64ch; }
+.sub { color: var(--muted); max-width: 62ch; }
+.eyebrow { margin: 0 0 14px; font: 500 12.5px/1.4 var(--font-mono); color: var(--muted); letter-spacing: 0.02em; }
+.tick { color: var(--brand); }
+
+/* ---------- layout ---------- */
+.wrap { width: 100%; max-width: calc(var(--wrap) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
+.section { padding-block: var(--section-y); border-top: 1px solid var(--line); }
+.page-hero + .section { padding-top: 40px; border-top: 0; }
+.section-head { display: grid; gap: 10px; max-width: 760px; margin-bottom: 36px; }
+.section-head .eyebrow { margin: 0; }
+.section-head.center { margin-inline: auto; text-align: center; justify-items: center; }
+.page-hero { padding-block: clamp(40px, 6vw, 72px) clamp(28px, 4vw, 44px); }
+.page-hero .wrap { display: grid; gap: 18px; justify-items: start; }
