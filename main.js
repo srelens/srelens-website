@@ -12,7 +12,7 @@
     if (meta) {
       meta.setAttribute(
         "content",
-        document.documentElement.getAttribute("data-theme") === "light" ? "#faf9fe" : "#08060f"
+        document.documentElement.getAttribute("data-theme") === "light" ? "#fbfafc" : "#0f0d14"
       );
     }
   }

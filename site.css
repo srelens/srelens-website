@@ -158,3 +158,72 @@ h3 { font-size: 16px; line-height: 1.35; letter-spacing: -0.01em; }
 .section-head.center { margin-inline: auto; text-align: center; justify-items: center; }
 .page-hero { padding-block: clamp(40px, 6vw, 72px) clamp(28px, 4vw, 44px); }
 .page-hero .wrap { display: grid; gap: 18px; justify-items: start; }
+
+/* ---------- shell: header ---------- */
+.site-header { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--line); }
+.nav { display: flex; align-items: center; gap: 20px; height: var(--header-h); }
+.brand { display: inline-flex; align-items: center; gap: 9px; font: 600 15px var(--font-mono); letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+.brand img { width: 24px; height: 24px; }
+.nav-main { display: flex; align-items: center; flex: 1; min-width: 0; }
+.nav-links, .nav-menu-list { margin: 0; padding: 0; list-style: none; }
+.nav-links { display: flex; gap: 2px; }
+.nav-links a, .nav-menu-list a {
+  display: inline-flex; align-items: center; height: 32px; padding: 0 8px;
+  border-radius: 6px; font: 500 13px var(--font-mono); color: var(--muted); text-decoration: none;
+}
+.nav-links a:hover, .nav-menu-list a:hover { color: var(--ink); background: var(--sunk); }
+.nav-links a[aria-current="page"], .nav-menu-list a[aria-current="page"] { color: var(--brand); }
+.slash { opacity: 0.55; }
+.nav-menu { display: none; margin-left: auto; position: relative; }
+.nav-menu summary {
+  list-style: none; cursor: pointer; padding: 6px 10px;
+  font: 500 13px var(--font-mono); color: var(--ink);
+  border: 1px solid var(--line); border-radius: var(--r-control);
+}
+.nav-menu summary::-webkit-details-marker { display: none; }
+.nav-menu[open] summary { border-color: var(--line-strong); }
+.nav-menu-list {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 60; display: grid; min-width: 200px; padding: 6px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card);
+}
+.nav-menu-list a { width: 100%; }
+.theme-toggle {
+  display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; cursor: pointer;
+  color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: var(--r-control);
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--line-strong); }
+.theme-toggle .sun { display: none; }
+[data-theme="dark"] .theme-toggle .sun { display: block; }
+[data-theme="dark"] .theme-toggle .moon { display: none; }
+.nav-cta { font: 500 13px var(--font-mono); color: var(--muted); text-decoration: none; white-space: nowrap; }
+.nav-cta:hover { color: var(--ink); }
+@media (max-width: 860px) {
+  .nav-links { display: none; }
+  .nav-menu { display: block; }
+}
+
+/* ---------- shell: path line ---------- */
+.crumbs ol { display: flex; flex-wrap: wrap; gap: 0 8px; margin: 0; padding: 0; list-style: none; font: 500 13px/1.5 var(--font-mono); color: var(--muted); }
+.crumbs li + li::before { content: "/"; margin-right: 8px; color: var(--line-strong); }
+.crumbs a { color: var(--muted); text-decoration: none; }
+.crumbs a:hover { color: var(--brand); }
+.crumbs [aria-current="page"] { color: var(--ink); }
+
+/* ---------- shell: footer ---------- */
+.site-footer { border-top: 1px solid var(--line); background: var(--surface); }
+.footer-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr); gap: 40px; padding-block: 48px 32px; }
+.footer-tag { margin: 12px 0 0; font-size: 14px; color: var(--muted); }
+.footer-version { margin: 8px 0 0; font: 500 12.5px var(--font-mono); color: var(--muted); }
+.footer-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+.footer-h { margin: 0 0 10px; font: 600 12px var(--font-mono); color: var(--ink); }
+.footer-col ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.footer-col a { font: 400 13.5px var(--font-mono); color: var(--muted); text-decoration: none; }
+.footer-col a:hover { color: var(--brand); }
+.footer-meta {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-block: 18px 28px;
+  border-top: 1px solid var(--line); font: 400 12.5px var(--font-mono); color: var(--muted);
+}
+@media (max-width: 860px) {
+  .footer-grid { grid-template-columns: minmax(0, 1fr); }
+  .footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
