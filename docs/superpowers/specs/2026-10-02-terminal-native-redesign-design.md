@@ -211,7 +211,7 @@ tokens. Page-specific work:
 
 One capture of `srelens-tui` v0.15.0 (stable tag `srelens-v0.15.0`), showing the
 pods view in all namespaces on the `srelens-demo` kind cluster, with the
-crash-looping pod selected. Terminal size 100×26. It is used in the homepage
+crash-looping pod selected. Terminal size 120×32 (100×26 truncated the STATUS and NAME columns). It is used in the homepage
 terminal panel and in the `/tui/` hero.
 
 ### 7.2 How
