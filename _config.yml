@@ -1,0 +1,12 @@
+# GitHub Pages builds this repo with Jekyll. The pages are plain HTML without
+# front matter, so Jekyll copies them unchanged. This list only keeps
+# repo-internal files off srelens.com.
+exclude:
+  - README.md
+  - PRODUCT.md
+  - DESIGN.md
+  - docs/superpowers
+  - tests
+  - scripts
+  - assets/captures
+  - vercel.json
