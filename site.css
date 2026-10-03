@@ -513,3 +513,22 @@ h2:hover .heading-anchor, h3:hover .heading-anchor, .heading-anchor:focus-visibl
 .answer p { margin: 0; color: var(--muted); }
 .answer + .answer { margin-top: 12px; }
 .get-grid .section-head { margin-bottom: 12px; }
+
+/* ---------- pages: compare ---------- */
+.verdict-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 32px; }
+.verdict h2, .verdict h3 { margin-bottom: 10px; font-size: 17px; }
+.verdict ul { display: grid; gap: 6px; margin: 0; padding-left: 18px; color: var(--muted); font-size: 15.5px; }
+.verdict.srelens-pick { border-color: color-mix(in srgb, var(--brand) 45%, var(--line)); }
+.verdict.srelens-pick h2 { color: var(--brand); }
+.compare-scroll + .answer, .compare-scroll + h2 { margin-top: 32px; }
+.source-note { margin: 24px 0 0; font-size: 14px; color: var(--muted); }
+.related-comparisons { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 16px; font: 500 13.5px var(--font-mono); }
+.related-comparisons a { text-decoration: none; }
+.compare-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.compare-card { display: grid; gap: 8px; align-content: start; color: var(--ink); text-decoration: none; }
+.compare-card:hover { border-color: var(--line-strong); }
+.tool-type { font: 500 12px var(--font-mono); color: var(--brand); }
+.compare-card h2 { font-size: 17px; }
+.compare-card p { margin: 0; font-size: 15px; color: var(--muted); }
+.card-link { font: 500 13px var(--font-mono); color: var(--brand); }
+@media (max-width: 760px) { .verdict-grid { grid-template-columns: minmax(0, 1fr); } }

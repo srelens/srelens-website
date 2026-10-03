@@ -5,7 +5,12 @@ import { baselineFor } from './lib/baseline.mjs';
 
 // ---- Deliberate changes from the spec (section 8). Everything else must match the baseline. ----
 // Expected meta values that replace the baseline: { file: { key: value } }.
-const META_CHANGES = {};
+const META_CHANGES = {
+  // C02 (claims check): "0ms" is not a measured latency. Only the description carried it; og:description and twitter:description did not.
+  'compare/k9s/index.html': {
+    description: 'Compare srelens and K9s: srelens offers both a multi-tab desktop workspace and a standalone pure-Rust terminal UI (srelens-tui) with an in-memory Informer cache, deep Helm values diff, and built-in AI MCP, compared to K9s.',
+  },
+};
 // Approved claim fixes (TUI claims check, Decision 3): exact baseline featureList entry -> replacement, per page.
 const LD_FEATURE_CHANGES = {
   'index.html': [
@@ -36,6 +41,15 @@ const ldChange = (node, file) => {
 };
 
 const withoutCrumbs = (nodes) => nodes.filter((n) => n['@type'] !== 'BreadcrumbList');
+
+test('every planned meta change replaces a baseline value that is really there', () => {
+  for (const [file, changes] of Object.entries(META_CHANGES)) {
+    for (const key of Object.keys(changes)) {
+      assert.ok(baselineFor(file).meta[key], `${file}: the baseline has no ${key}`);
+      assert.notEqual(changes[key], baselineFor(file).meta[key], `${file}: ${key} is not changed`);
+    }
+  }
+});
 
 test('every planned JSON-LD change replaces a feature that the baseline really has', () => {
   for (const [file, swaps] of Object.entries(LD_FEATURE_CHANGES)) {

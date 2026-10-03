@@ -76,7 +76,11 @@ for (const p of PAGES.filter((entry) => !entry.mirrorOf)) {
 }
 
 // Pages moved to the new design. Each page task adds its pages here first.
-const MIGRATED = new Set(['index.html', 'tui/index.html', 'features/index.html', 'mcp/index.html', 'download/index.html']);
+const MIGRATED = new Set([
+  'index.html', 'tui/index.html', 'features/index.html', 'mcp/index.html', 'download/index.html',
+  'compare/index.html', 'compare/lens/index.html', 'compare/headlamp/index.html', 'compare/k9s/index.html',
+  'compare/freelens/index.html', 'compare/aptakube/index.html', 'compare/kubernetes-dashboard/index.html',
+]);
 
 const withoutCaptures = (html) => html.replace(/<pre class="tui"[\s\S]*?<\/pre>/g, '');
 
