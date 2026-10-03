@@ -1,0 +1,247 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { read, text } from './lib/site.mjs';
+import { captureHtml } from '../scripts/embed-captures.mjs';
+
+const html = read('tui/index.html');
+// Prose checks must never be satisfied (or tripped) by the generated terminal capture.
+const bare = html.replace(/<pre class="tui"[\s\S]*?<\/pre>/g, '');
+const main = bare.slice(bare.indexOf('<main'), bare.indexOf('</main>'));
+const sectionOf = (id) => {
+  const from = html.indexOf(`id="${id}"`);
+  assert.ok(from > 0, `#${id} exists`);
+  return html.slice(from, html.indexOf('</section>', from));
+};
+
+// ---- structure -------------------------------------------------------------------------------
+
+test('the hero shows the real capture and the install command', () => {
+  const hero = html.slice(html.indexOf('<section class="page-hero">'), html.indexOf('</section>', html.indexOf('<section class="page-hero">')));
+  assert.ok(hero.includes(`<!-- capture:pods:start -->${captureHtml('pods')}<!-- capture:pods:end -->`));
+  assert.ok(hero.includes('data-copy="brew install srelens/tap/srelens-tui"'));
+});
+
+test('the hero keeps its One-Line Install eyebrow and h2 above the command row (ruling 1)', () => {
+  const hero = html.slice(html.indexOf('<section class="page-hero">'), html.indexOf('</section>', html.indexOf('<section class="page-hero">')));
+  const eyebrow = hero.indexOf('One-Line Install');
+  const h2 = hero.indexOf('<h2>Install via Homebrew or Shell Script</h2>');
+  assert.ok(eyebrow > 0 && h2 > eyebrow && hero.indexOf('class="cmd"') > h2);
+  assert.ok(hero.includes('<a class="btn btn-primary" href="/download/#tui">Install srelens-tui</a>'));
+  assert.ok(hero.includes('<a class="btn btn-ghost" href="/docs/tui/">Read Documentation</a>'));
+});
+
+test('the hero carries the capture caption and never claims CrashLoopBackOff (pods show the phase)', () => {
+  assert.ok(html.includes('<figcaption>text capture · srelens-tui v0.15.0 on the srelens-demo kind cluster · select it</figcaption>'));
+  assert.doesNotMatch(bare, /CrashLoopBackOff/);
+});
+
+test('the banner screenshot stays after the hero', () => {
+  assert.ok(html.indexOf('/assets/shots/tui-banner.webp') > html.indexOf('</section>', html.indexOf('<section class="page-hero">')));
+});
+
+test('stats are a stat grid of two cards that survive the claims check (C02, C04)', () => {
+  const grid = main.slice(main.indexOf('<div class="stat-grid">'));
+  const cards = [...grid.slice(0, grid.indexOf('</section>')).matchAll(/<article class="stat">[\s\S]*?<\/article>/g)].map((m) => m[0]);
+  assert.deepEqual(cards, [
+    '<article class="stat"><p class="stat-value">20</p><h3>Warm watches</h3><p>Views you have already opened render from the in-memory cache while up to 20 watch streams stay warm.</p></article>',
+    '<article class="stat"><p class="stat-value">Rust</p><h3>Rust core</h3><p>Built with Ratatui &amp; kube-rs. No Node, no webviews.</p></article>',
+  ]);
+});
+
+test('keybindings are keymap tables with <kbd> keys', () => {
+  const section = html.slice(html.indexOf('id="keybindings"'));
+  const grid = section.slice(0, section.indexOf('</section>'));
+  assert.match(grid, /<div class="keymap-grid">/);
+  assert.ok((grid.match(/<div class="keymap">/g) ?? []).length >= 2);
+  assert.doesNotMatch(grid, /<td><code>/, 'keys use <kbd>, not <code>');
+});
+
+test('every key cell is only <kbd> keys, and the verified bindings are what is listed (B06, B23, B28, B29)', () => {
+  const maps = [...sectionOf('keybindings').matchAll(/<div class="keymap">([\s\S]*?)<\/table>/g)].map((m) => m[1]);
+  assert.equal(maps.length, 2);
+  const keysOf = (map) => [...map.matchAll(/<tr><td>(.*?)<\/td><td>/g)].map((m) => m[1]);
+  for (const cell of maps.flatMap(keysOf)) assert.match(cell, /^<kbd>[^<]+<\/kbd>(?: [+/] <kbd>[^<]+<\/kbd>)*$/, cell);
+  assert.deepEqual(keysOf(maps[0]).map(text), [':', '/', 'Tab', 'Esc', '?', 'q']);
+  // Shift + D (debug container) is not in v0.15.0 and Shift + N is really `s` on the Nodes view.
+  assert.deepEqual(keysOf(maps[1]).map(text), ['Enter', 'l', 's', 's', 'f / Shift + F', 't', 'd / y']);
+});
+
+test('the keymap rows carry the approved wording (B06, B23, B29, C26)', () => {
+  for (const row of [
+    '<tr><td><kbd>q</kbd></td><td>Close help, dialogs and sub-views (quit with <code>:q</code> or <kbd>Ctrl</kbd>+<kbd>C</kbd>)</td></tr>',
+    '<tr><td><kbd>s</kbd></td><td>Open container shell (sh ➔ bash)</td></tr>',
+    '<tr><td><kbd>s</kbd></td><td>Open privileged node shell (from the Nodes view)</td></tr>',
+    '<tr><td><kbd>f</kbd> / <kbd>Shift</kbd> + <kbd>F</kbd></td><td>Start background port forward (Shift closes an active one)</td></tr>',
+  ]) assert.ok(html.includes(row), row);
+});
+
+test('every feature row keeps its id, its heading id and its anchor link', () => {
+  const rows = [
+    ['ai-assistant', 'ai'], ['headless-mcp-server', 'tui-mcp'], ['argocd-gitops', 'argocd'], ['cluster-overview', 'overview'],
+    ['pod-operations', 'pods'], ['helm-inspector', 'helm'], ['gpu-fleet', 'gpuinfo'], ['bgp-dashboard', 'bgp'],
+    ['log-streamer', 'logs'], ['resource-tree', 'hierarchy-tree'],
+  ];
+  for (const [row, heading] of rows) {
+    assert.ok(html.includes(`<div class="feature-row" id="${row}">`), `feature row #${row}`);
+    assert.ok(html.includes(`<h3 id="${heading}"><a href="#${row}" class="anchor-link">`), `#${heading} links to #${row}`);
+  }
+});
+
+test('every in-page #anchor-link targets an id that exists', () => {
+  const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+  const links = [...main.matchAll(/<a [^>]*class="[^"]*anchor-link[^"]*"[^>]*>/g)].map((m) => m[0].match(/href="#([^"]+)"/)[1]);
+  assert.ok(links.length >= 14, `found ${links.length} anchor links`);
+  for (const id of links) assert.ok(ids.has(id), `#${id}`);
+});
+
+test('the MCP feature stacks its two screenshots in a shot-stack', () => {
+  const row = html.slice(html.indexOf('id="headless-mcp-server"'), html.indexOf('id="argocd-gitops"'));
+  const stack = row.slice(row.indexOf('<div class="shot-stack">'));
+  assert.equal((stack.match(/<figure class="shot">/g) ?? []).length, 2);
+  assert.ok(stack.includes('/assets/shots/tui-mcp-agent.png') && stack.includes('/assets/shots/tui-mcp-tools.png'));
+});
+
+test('the compare table scrolls inside its own box with scoped headers', () => {
+  const section = sectionOf('compare');
+  assert.match(section, /<div class="compare-scroll">\s*<table>/);
+  assert.equal((section.match(/<th scope="col"/g) ?? []).length, 5);
+  assert.ok(section.includes('<th scope="col" class="srelens">srelens-tui</th>'));
+  const rows = [...section.matchAll(/<tr>\s*(<th scope="row">[\s\S]*?)<\/tr>/g)].map((m) => m[1]);
+  assert.equal(rows.length, 7, 'Idle Memory Consumption (C03) is gone, the other seven rows stay');
+  for (const row of rows) assert.equal((row.match(/<td/g) ?? []).length, 4);
+  assert.deepEqual(rows.map((r) => text(r.match(/<th scope="row">([\s\S]*?)<\/th>/)[1])), [
+    'Core Runtime', 'Informer Cache Speed', 'In-Process AI Assistant', 'BGP Peering Dashboard',
+    'Deep Helm 3 Values Diff', 'Resource Hierarchy Tree', 'Ephemeral Debug Containers',
+  ]);
+});
+
+test('the compare table carries the approved cells (B28, C02, C11, C21)', () => {
+  const section = sectionOf('compare');
+  const cells = [
+    '<td>Instant for opened views (in-memory cache)</td>', // C02
+    '<td>Live watches (Rust)</td>',                        // C02
+    '<td>✓ Built-in values diff &amp; rollback</td>',      // C11
+    '<td>✕ TUI only</td>',                                 // C21
+    '<td>✓ Via MCP with <code>--allow-destructive</code> (<code>k8s.debugPod</code>)</td>', // B28
+  ];
+  for (const cell of cells) assert.ok(section.includes(cell), cell);
+});
+
+test('the download cards use the shared dl components and the Linux card describes what it links (C10)', () => {
+  const section = sectionOf('download');
+  assert.match(section, /<div class="dl-grid">/);
+  assert.equal((section.match(/<article class="dl-card">/g) ?? []).length, 3);
+  assert.ok(section.includes('<p>x86_64 &amp; ARM64 · glibc builds</p>'));
+  assert.ok(section.includes('One self-contained binary per platform. Available on GitHub Releases.'));
+  const linux = section.slice(section.indexOf('<h3>Linux</h3>'), section.indexOf('<h3>Windows</h3>'));
+  assert.equal((linux.match(/href="[^"]*unknown-linux-gnu\.tar\.gz"/g) ?? []).length, 2);
+  assert.doesNotMatch(linux, /musl/);
+});
+
+// ---- approved claim decisions ----------------------------------------------------------------
+
+test('no stat or claim survives that Task 7 marked for removal', () => {
+  // Exact strings from docs/superpowers/plans/2026-10-02-tui-claims-check.md "## Decisions" (remove rows).
+  const REMOVED = [
+    // C01: "<15ms startup" has no measurement behind it. Whole card.
+    '&lt;15ms', 'Startup Time', 'Instant cold launch with zero Electron runtime.',
+    // C03: "<25MB" has no measurement behind it. Card and the whole "Idle Memory Consumption" compare row.
+    '&lt;25MB', 'Memory Footprint', 'Lightweight resident memory in high-density multi-pod clusters.',
+    'Idle Memory Consumption', '&lt;25 MB', '~45–80 MB', '~120 MB (WebView)',
+    // C02: "0ms Informer cache" card sentence. C04: "100% Pure Rust" card heading (now "Rust core").
+    'Sub-millisecond view transitions without network roundtrips.', 'Pure Rust Core',
+    // B28: Shift + D (debug container key) is not in v0.15.0; B65: /network does not exist.
+    'Ephemeral Debug Containers (', 'Attach debug containers with rich troubleshooting tools',
+  ];
+  for (const claim of REMOVED) assert.ok(!bare.includes(claim), claim);
+});
+
+test('rewritten claims are gone from the page, its head and its structured data', () => {
+  const GONE = [
+    ['C02', /(?<![\d.])0ms/], ['C02', /zero-latency/i], ['C28', /sub-millisecond/i],
+    ['C05', /prompt caching/i], ['C05', /\b90%/], ['C05', /token caching/i],
+    ['C06', /\b80\+/],
+    ['C11', /3-way/i],
+    ['C12', /without requiring/i],
+    ['C14', /throughput/i],
+    ['C15', /storage utilization/i],
+    ['C16', /\bHPA\b/],
+    ['C17', /FATAL/], ['C17', /filter log lines/i],
+    ['C18', /kubectl describe/], ['C18', /confirmation gates/],
+    ['C26', /fallback from bash to sh/],
+    ['C10', /Static glibc/i], ['C10', /Compiled statically/i],
+    ['C21', /Dedicated view/],
+    ['B28', /debug containers/], ['B28', /Shift\s*\+\s*D\b/],
+    ['B29', /Shift\s*\+\s*N\b/],
+    ['B65', /\/network/],
+    ['B69', /--mcp-allow-/],
+  ];
+  const page = text(bare.replace(/<script(?! type="application\/ld\+json")[\s\S]*?<\/script>/g, ''));
+  for (const [row, pattern] of GONE) assert.doesNotMatch(page, pattern, `${row}: ${pattern}`);
+});
+
+test('the approved copy replaces each reworded claim, exactly', () => {
+  const REPLACED = [
+    // C28 badge
+    ['C28', '<span class="dot"></span> pure Rust · in-memory watch cache · in-process AI assistant · zero Electron</p>'],
+    // B65 /network -> /endpoints
+    ['B65', '<li><strong>Incident Playbooks:</strong> Run <code>/crashloop</code>, <code>/oom</code>, <code>/rollout</code>, or <code>/endpoints</code> to diagnose failing workloads with grounded root cause analysis.</li>'],
+    // C18
+    ['C18', '<li><strong>Tool Badges &amp; Execution:</strong> Transparently runs diagnostic tools (manifest and event reads, log tailing, metrics). Tools that change the cluster are blocked in the assistant; MCP clients can use them by launching <code>srelens-tui mcp --allow-destructive</code>.</li>'],
+    // C05
+    ['C05', '<li><strong>Multi-Provider &amp; Token Estimates:</strong> Each reply shows an estimated token count and the reply time. Connect Anthropic Claude, OpenAI, Google Gemini, or any OpenAI-compatible endpoint such as local <strong>Ollama</strong>.</li>'],
+    // C06
+    ['C06', '<li><strong>100+ Native Tools:</strong> Agents invoke high-performance cluster primitives — tailing multi-pod logs, inspecting manifests, querying metrics, and analyzing topology.</li>'],
+    // B69 / B70: the subcommand spelling
+    ['B69', '<li><strong>Granular Safety Flags:</strong> Gate sensitive reads with <code>--allow-sensitive-reads</code> and mutating actions (scale, restart, apply, delete) with <code>--allow-destructive</code>.</li>'],
+    // C15
+    ['C15', '<li><strong>Live Resource Gauges:</strong> Real-time visual progress bars for cluster-wide CPU and memory utilization, plus GPU when present.</li>'],
+    // C02
+    ['C02', '<li><strong>Cached Refresh:</strong> The in-memory Informer cache keeps opened views current from live watches; pod and node metrics refresh about every 4 seconds.</li>'],
+    // C26
+    ['C26', '<li><strong>Instant Shells (<code>s</code>):</strong> Drops straight into a container shell, trying <code>/bin/sh</code>, then <code>bash</code>, through your local <code>kubectl</code>.</li>'],
+    // B29
+    ['B29', '<li><strong>Privileged Node Shells (<code>s</code> on Nodes):</strong> Launch a root debug shell on a node with host namespace access via <code>kubectl debug</code>.</li>'],
+    // C14
+    ['C14', '<li><strong>Background Port Forwarding (<code>Shift + F</code>):</strong> Manage port forwards with live byte counters and automatic reconnection.</li>'],
+    // C12
+    ['C12', 'Inspect Helm releases across all namespaces directly from your terminal. Releases, history, values and manifests are read from the cluster without the <code>helm</code> CLI; rollback uses your local <code>helm</code>.'],
+    // C11
+    ['C11', '<li><strong>Three Diff Modes:</strong> Built-in diff engine compares <em>User-Supplied Values</em> against <em>Computed All-Values</em>, chart defaults, or the previous release revision (press <code>m</code> to cycle).</li>'],
+    // C17
+    ['C17', '<li><strong>Log Severity Highlighting:</strong> Colors error and fatal lines red, warnings yellow, and debug lines dim across all log streams.</li>'],
+    ['C17', '<li><strong>Horizontal Panning &amp; Search:</strong> Toggle wrapping off with <code>w</code> for horizontal scrolling (<code>h</code>/<code>l</code> or arrows), and search log lines in real time with <code>/</code> (<code>n</code>/<code>N</code> jump between matches).</li>'],
+    // C16
+    ['C16', '<li><strong>Full Stack Topology:</strong> Follows relationships from <code>Ingress</code> ➔ <code>Service</code> ➔ <code>Deployment</code> ➔ <code>ReplicaSet</code> ➔ <code>Pods</code>, plus mounted ConfigMaps, Secrets, PVCs and the hosting Node.</li>'],
+  ];
+  for (const [row, snippet] of REPLACED) assert.ok(html.includes(snippet), `${row}: ${snippet}`);
+});
+
+test('the approved prose replaces the lede and the section copy (C02, C05, C11, C28)', () => {
+  const prose = text(main);
+  for (const [row, sentence] of [
+    ['C02/C05', 'Featuring an in-memory Informer cache that redraws views you have already opened without a new request, live streaming watches, BGP network peering dashboards, Helm 3 values diffs, auto-wrapped logs, and an embedded AI assistant with per-reply token estimates.'],
+    ['C11', 'Everything you need during on-call incidents: live peering states, instant AI triage playbooks, smart auto-wrapped logs, Helm values diffs, and hierarchy trees.'],
+    ['C28', 'Keyboard-optimized table views with in-memory sorting, persistent regex filtering, and deep operational shortcuts.'],
+  ]) assert.ok(prose.includes(sentence), `${row}: ${sentence}`);
+});
+
+// ---- styles ----------------------------------------------------------------------------------
+
+test('.stat-value is scoped under .stat so ".stat p" cannot shrink or mute it', () => {
+  const css = read('site.css');
+  const tui = css.slice(css.indexOf('/* ---------- pages: tui ---------- */'));
+  assert.match(tui, /^\.stat \.stat-value \{[^}]*font: 600 clamp\(26px, 3vw, 36px\)\/1 var\(--font-mono\)[^}]*color: var\(--ink\)/m);
+});
+
+test('.page-hero .wrap pins its single grid column so the wide capture scrolls in its own box instead of widening the page', () => {
+  const css = read('site.css');
+  const tui = css.slice(css.indexOf('/* ---------- pages: tui ---------- */'));
+  assert.match(tui, /^\.page-hero \.wrap \{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/m);
+});
+
+test('.page-hero .hero-actions is capped at its column so the nowrap install command cannot widen a phone page', () => {
+  const css = read('site.css');
+  const tui = css.slice(css.indexOf('/* ---------- pages: tui ---------- */'));
+  assert.match(tui, /^\.page-hero \.hero-actions \{[^}]*max-width:\s*100%/m);
+});

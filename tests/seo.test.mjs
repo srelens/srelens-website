@@ -15,11 +15,23 @@ const LD_FEATURE_CHANGES = {
     ['Live streaming resource watches and 0ms Informer cache', 'Live streaming resource watches and an in-memory Informer cache'],
   ],
 };
+// Approved claim fixes: exact baseline JSON-LD `description` -> replacement, per page.
+const LD_DESCRIPTION_CHANGES = {
+  'tui/index.html': [
+    // C02: "0ms" is not a measured latency. B28: Shift + D (debug containers) is not in v0.15.0.
+    [
+      'srelens-tui is a standalone pure-Rust terminal user interface for Kubernetes operators, built with Ratatui and kube-rs. It provides 0ms Informer cache browsing, live stream watches, BGP peering dashboard, deep Helm 3 values diff and rollback, auto-wrapped logs, debug containers, and an in-process AI assistant drawer.',
+      'srelens-tui is a standalone pure-Rust terminal user interface for Kubernetes operators, built with Ratatui and kube-rs. It provides in-memory Informer cache browsing, live stream watches, BGP peering dashboard, deep Helm 3 values diff and rollback, auto-wrapped logs, and an in-process AI assistant drawer.',
+    ],
+  ],
+};
 // Applied to every baseline JSON-LD node of `file` before comparison.
 const ldChange = (node, file) => {
   let out = 'softwareVersion' in node ? { ...node, softwareVersion: '0.15.0' } : node;
   const swaps = new Map(LD_FEATURE_CHANGES[file] ?? []);
   if (Array.isArray(out.featureList)) out = { ...out, featureList: out.featureList.map((f) => swaps.get(f) ?? f) };
+  const described = new Map(LD_DESCRIPTION_CHANGES[file] ?? []);
+  if (typeof out.description === 'string') out = { ...out, description: described.get(out.description) ?? out.description };
   return out;
 };
 
@@ -29,6 +41,13 @@ test('every planned JSON-LD change replaces a feature that the baseline really h
   for (const [file, swaps] of Object.entries(LD_FEATURE_CHANGES)) {
     const features = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).flatMap((n) => n.featureList ?? []);
     for (const [from] of swaps) assert.ok(features.includes(from), `${file}: "${from}" is not in the baseline`);
+  }
+});
+
+test('every planned JSON-LD description change replaces a description that the baseline really has', () => {
+  for (const [file, swaps] of Object.entries(LD_DESCRIPTION_CHANGES)) {
+    const descriptions = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).map((n) => n.description);
+    for (const [from] of swaps) assert.ok(descriptions.includes(from), `${file}: "${from}" is not in the baseline`);
   }
 });
 

@@ -8,6 +8,9 @@ import { baselineFor } from './lib/baseline.mjs';
 const REMOVED_HEADINGS = {
   // C07 (claims check): "40+ resource kinds" is reworded to "35 resource kinds + CRDs".
   'index.html': ['40+ resource kinds'],
+  // C01/C03: the "Startup Time" and "Memory Footprint" stat cards are removed (no measurement behind <15ms / <25MB).
+  // C02/C04: the "Informer Cache" and "Pure Rust Core" stat cards are reworded to "Warm watches" and "Rust core".
+  'tui/index.html': ['Startup Time', 'Informer Cache', 'Memory Footprint', 'Pure Rust Core'],
 };
 const REMOVED_IDS = {};
 

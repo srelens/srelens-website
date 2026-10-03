@@ -76,7 +76,7 @@ for (const p of PAGES.filter((entry) => !entry.mirrorOf)) {
 }
 
 // Pages moved to the new design. Each page task adds its pages here first.
-const MIGRATED = new Set(['index.html']);
+const MIGRATED = new Set(['index.html', 'tui/index.html']);
 
 const withoutCaptures = (html) => html.replace(/<pre class="tui"[\s\S]*?<\/pre>/g, '');
 
