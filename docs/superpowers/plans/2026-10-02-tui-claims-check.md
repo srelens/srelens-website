@@ -199,4 +199,9 @@ Excluded on purpose (not verified): `Shift+D`, `Shift+N`, `/network`, `/explain`
 
 ## Decisions
 
-Pending Devesh.
+Recorded 2026-10-03 from Devesh's answers in the session.
+
+1. **All rows: approved as proposed.** Apply every `wrong key` correction, drop every `not in v0.15.0` binding (B28 `Shift+D`, B65 `/network`, B67 `/explain`), apply both removals (C01 `<15ms` card, C03 `<25MB` card and the "Idle Memory Consumption" compare row), and apply every `reword` with its exact replacement text, including C34 (`mcp/index.html`) and C09 (`llms*.txt`). `keep` rows stay as they are.
+2. **Everywhere the wording appears.** Apply each decision on every page listed in the preamble's "Same wording outside the six scanned files" paragraph (Tasks 13–16 for those pages; Task 23 for `llms*.txt`), not only on the six scanned files.
+3. **SEO-pinned strings.** Where an approved change touches a pinned meta description, JSON-LD value or H2/H3 (for example C07 "40+ resource kinds"), the page task adds an explicit, listed allowance to `tests/seo.test.mjs` (`META_CHANGES` / `ldChange`) or `tests/copy.test.mjs` (`REMOVED_HEADINGS`) in the same commit.
+4. **Homepage keycaps: the six verified rows, plus the tabs cell.** The "Browser-style tabs" cell gets `<p class="keys"><kbd>⌘W</kbd> close tab (macOS)</p>`. The command-palette cell uses the first variant (`<kbd>⌘K</kbd> desktop · tui <kbd>:</kbd>`). The "40+ resource kinds" (reworded per C07), "Streaming watches" and "Local-first" cells get no keys row.
