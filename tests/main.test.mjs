@@ -31,7 +31,7 @@ class El {
   removeAttribute(name) { delete this.attrs[name]; }
   addEventListener(type, fn) { (this.listeners[type] ??= []).push(fn); }
   appendChild(child) { this.children.push(child); return child; }
-  contains() { return false; }
+  contains(node) { return Boolean(node) && (node === this || this.children.some((child) => child.contains(node))); }
   focus() { this.focused = true; this.ownerDocument.activeElement = this; }
   dispatch(type, event = {}) {
     const e = { preventDefault() { e.prevented = true; }, target: this, ...event };
@@ -62,10 +62,13 @@ class El {
 const el = (tag, attrs, children) => new El(tag, attrs, children);
 
 // The homepage's switch and drill, as served (no JS has run: every panel of the switch is visible).
-function fixture({ withModes = true, withDrill = true } = {}) {
+function fixture({ withModes = true, withDrill = true, fieldInTablist = false } = {}) {
   const tabs = ['desktop', 'terminal'].map((m, i) => el('button', { id: `mode-tab-${m}`, role: 'tab', 'aria-selected': String(i === 0), 'data-mode-tab': m, tabindex: i === 0 ? undefined : '-1' }));
-  const panels = ['desktop', 'terminal'].map((m) => el('div', { id: `mode-${m}`, role: 'tabpanel', 'data-mode-panel': m }));
+  const download = el('a', { id: 'mode-download' }); // a control inside the switch's container but outside its tab bar
+  const panels = ['desktop', 'terminal'].map((m, i) => el('div', { id: `mode-${m}`, role: 'tabpanel', 'data-mode-panel': m }, i === 0 ? [download] : []));
   const tablist = el('div', { class: 'mode-tabs', role: 'tablist', hidden: true }, tabs);
+  const field = el('input', { id: 'mode-field' }); // not in the real markup: lets a test put a text field inside the tab bar
+  if (fieldInTablist) tablist.children.push(field);
   const modes = el('div', { class: 'modes', 'data-modes': '' }, [tablist, ...panels]);
 
   const steps = ['signal', 'diagnose', 'act'];
@@ -94,7 +97,7 @@ function fixture({ withModes = true, withDrill = true } = {}) {
     innerHeight: 800,
   };
   vm.runInNewContext(source, { document, window, navigator: {}, history: {}, localStorage: { setItem() {} }, setTimeout() {} });
-  return { document, modes, tablist, tabs, panels, drillTabs, drillPanels, nexts };
+  return { document, modes, tablist, tabs, panels, download, field, drillTabs, drillPanels, nexts };
 }
 
 const state = (nodes) => nodes.map((n) => n.hidden);
@@ -109,8 +112,9 @@ test('the mode switch is enhanced on load: tab bar revealed, desktop shown, term
   assert.deepEqual(tabs.map((t) => t.tabIndex), [0, -1]);
 });
 
-test('keys 1 and 2 switch the mode', () => {
+test('keys 1 and 2 switch the mode while focus is on a tab of the switch', () => {
   const { document, panels, tabs } = fixture();
+  tabs[0].focus();
   document.dispatch('keydown', { key: '2' });
   assert.deepEqual(state(panels), [true, false]);
   assert.deepEqual(selected(tabs), ['false', 'true']);
@@ -118,11 +122,25 @@ test('keys 1 and 2 switch the mode', () => {
   assert.deepEqual(state(panels), [false, true]);
 });
 
-test('the number keys are ignored with a modifier and while typing in a field', () => {
-  const { document, panels } = fixture();
+test('the number keys do nothing unless a tab of the switch has focus (WCAG 2.1.4)', () => {
+  const { document, panels, tabs, drillTabs, download } = fixture();
+  // outside the page widget, and inside the switch's container but not on a tab (e.g. the Download link)
+  for (const elsewhere of [null, drillTabs[0], el('input'), download]) {
+    document.activeElement = elsewhere;
+    document.dispatch('keydown', { key: '2' });
+    assert.deepEqual(state(panels), [false, true], 'focus not on a tab');
+  }
+  tabs[0].focus();
+  document.dispatch('keydown', { key: '2' });
+  assert.deepEqual(state(panels), [true, false], 'focus on a tab of the switch');
+});
+
+test('on a tab the number keys are still ignored with a modifier and while typing in a field', () => {
+  const { document, panels, tabs, field } = fixture({ fieldInTablist: true });
+  tabs[0].focus();
   for (const modifier of ['altKey', 'ctrlKey', 'metaKey', 'shiftKey']) document.dispatch('keydown', { key: '2', [modifier]: true });
   assert.deepEqual(state(panels), [false, true], 'modifiers');
-  document.activeElement = el('input');
+  field.focus();
   document.dispatch('keydown', { key: '2' });
   assert.deepEqual(state(panels), [false, true], 'typing in an input');
 });
@@ -148,7 +166,7 @@ test('arrow keys move between the tabs, wrap around and focus the new tab', () =
 });
 
 test('the incident drill still steps through its three panels, independently of the mode switch', () => {
-  const { document, drillTabs, drillPanels, nexts, panels } = fixture();
+  const { document, drillTabs, drillPanels, nexts, panels, tabs } = fixture();
   assert.deepEqual(state(drillPanels), [false, true, true]);
   nexts[0].dispatch('click');
   assert.deepEqual(state(drillPanels), [true, false, true]);
@@ -157,6 +175,7 @@ test('the incident drill still steps through its three panels, independently of 
   assert.deepEqual(state(drillPanels), [true, true, false]);
   nexts[2].dispatch('click');
   assert.deepEqual(state(drillPanels), [false, true, true]);
+  tabs[0].focus();
   document.dispatch('keydown', { key: '2' });
   assert.deepEqual(state(drillPanels), [false, true, true], 'the mode keys do not touch the drill');
   assert.deepEqual(state(panels), [true, false]);

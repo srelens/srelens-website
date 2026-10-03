@@ -258,10 +258,13 @@
       Array.from(modes.querySelectorAll("[data-mode-panel]")),
       "data-mode-tab", "data-mode-panel"
     );
-    modes.querySelector("[role='tablist']").hidden = false;
+    var modeTabs = modes.querySelector("[role='tablist']");
+    modeTabs.hidden = false;
     modes.classList.add("is-enhanced");
     showMode("desktop", false);
+    /* Single-character shortcuts are only live while a tab of the switch has focus (WCAG 2.1.4). */
     document.addEventListener("keydown", function (event) {
+      if (!modeTabs.contains(document.activeElement)) return;
       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
       var el = document.activeElement;
       if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;

@@ -58,7 +58,8 @@ test('the desktop panel keeps both real screenshots and the walkthrough trigger'
   assert.match(desktop, /<button class="text-action" type="button" data-tour-open>play walkthrough<\/button>/);
 });
 
-// ---- Verified keycaps (claims check, Decision 4). Cells without a verified binding carry no keys row. ----
+// ---- Verified keycaps (claims check, Decision 4). Cells without a verified binding carry no keys row;
+// the row is the LAST child so kickers and headings line up across a row and the keycaps sit at the bottom. ----
 const KEYS = {
   '35 resource kinds + CRDs': null,
   'Streaming watches': null,
@@ -78,13 +79,48 @@ test('#everything has the ten cells, in order', () => {
 });
 
 for (const [heading, keys] of Object.entries(KEYS)) {
-  test(`bento cell "${heading}": ${keys ? 'keys row is the first child' : 'no keys row'}`, () => {
+  test(`bento cell "${heading}": ${keys ? 'keys row is the last child' : 'no keys row'}`, () => {
     const cell = cells.find((c) => c.includes(`<h3>${heading}</h3>`));
     assert.ok(cell, `a cell headed "${heading}"`);
-    if (keys) assert.ok(cell.startsWith(keys), `starts with ${keys}`);
-    else assert.doesNotMatch(cell, /class="keys"/);
+    if (keys) {
+      assert.ok(cell.endsWith(keys), `ends with ${keys}`);
+      assert.ok(cell.startsWith('<span class="kicker">'), 'the kicker stays first');
+      assert.equal((cell.match(/class="keys"/g) ?? []).length, 1, 'exactly one keys row');
+    } else assert.doesNotMatch(cell, /class="keys"/);
   });
 }
+
+// The keys row is a <p>, so `.bento-cell p` (0,1,1) would set it to 15px; the more specific rule must win.
+// Declaration block of a standalone rule that starts a line, e.g. rule('.bento-cell .keys'); null when absent.
+const rule = (selector) => {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return read('site.css').match(new RegExp(`(?:^|\\n)${escaped}\\s*\\{([^}]*)\\}`))?.[1] ?? null;
+};
+
+test('.bento-cell .keys is sized 11px and out-specifies .bento-cell p', () => {
+  const body = rule('.bento-cell .keys');
+  assert.ok(body, '.bento-cell .keys rule exists');
+  assert.match(body, /font-size:\s*11px/);
+  assert.match(body, /color:\s*var\(--muted\)/);
+});
+
+test('bento cells are flex columns and the keys row is pushed to the bottom', () => {
+  const cell = rule('.bento-cell');
+  assert.ok(cell, 'standalone .bento-cell rule exists');
+  assert.match(cell, /display:\s*flex/);
+  assert.match(cell, /flex-direction:\s*column/);
+  assert.match(cell, /gap:\s*8px/);
+  const keysRule = rule('.bento-cell .keys');
+  assert.ok(keysRule, '.bento-cell .keys rule exists');
+  assert.match(keysRule, /margin:\s*auto 0 0/);
+  assert.match(keysRule, /padding-top:\s*4px/);
+});
+
+// ---- Single-character shortcuts must be discoverable and scoped (WCAG 2.1.4); main.test.mjs covers the scoping. ----
+test('the mode tabs declare their single-key shortcuts', () => {
+  assert.match(html, /id="mode-tab-desktop"[^>]*aria-keyshortcuts="1"/);
+  assert.match(html, /id="mode-tab-terminal"[^>]*aria-keyshortcuts="2"/);
+});
 
 // ---- Approved copy fixes (claims check C02, C07). Nothing on this page may still say "0ms" or "40+". ----
 test('the page no longer claims "0ms" or "40+" anywhere, including structured data', () => {

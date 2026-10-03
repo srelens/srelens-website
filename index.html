@@ -181,8 +181,8 @@
         <div class="modes" data-modes>
           <div class="mode-bar">
             <div class="mode-tabs" role="tablist" aria-label="Choose an app" hidden>
-              <button id="mode-tab-desktop" type="button" role="tab" aria-selected="true" aria-controls="mode-desktop" data-mode-tab="desktop"><kbd>1</kbd> desktop</button>
-              <button id="mode-tab-terminal" type="button" role="tab" aria-selected="false" aria-controls="mode-terminal" data-mode-tab="terminal" tabindex="-1"><kbd>2</kbd> terminal</button>
+              <button id="mode-tab-desktop" type="button" role="tab" aria-selected="true" aria-controls="mode-desktop" data-mode-tab="desktop" aria-keyshortcuts="1"><kbd>1</kbd> desktop</button>
+              <button id="mode-tab-terminal" type="button" role="tab" aria-selected="false" aria-controls="mode-terminal" data-mode-tab="terminal" aria-keyshortcuts="2" tabindex="-1"><kbd>2</kbd> terminal</button>
             </div>
             <a class="btn btn-ghost" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
           </div>
@@ -427,40 +427,40 @@
             <p>Tables update in place as the cluster changes, backed by shared kube-rs watch streams instead of polling.</p>
           </article>
           <article class="bento-cell">
-            <p class="keys"><kbd>⌘K</kbd> desktop · tui <kbd>:</kbd></p>
             <span class="kicker">speed</span>
             <h3>Command palette</h3>
             <p>Hit <code>⌘K</code> to jump to any resource in any cluster using global search with deep links into detail views.</p>
+            <p class="keys"><kbd>⌘K</kbd> desktop · tui <kbd>:</kbd></p>
           </article>
           <article class="bento-cell">
-            <p class="keys">tui <kbd>:helm</kbd> <kbd>:crds</kbd></p>
             <span class="kicker">ecosystem</span>
             <h3>Helm &amp; CRDs</h3>
             <p>Inspect Helm releases and browse custom resources grouped by API group. CRDs are first-class citizens.</p>
+            <p class="keys">tui <kbd>:helm</kbd> <kbd>:crds</kbd></p>
           </article>
           <article class="bento-cell">
-            <p class="keys">tui <kbd>:top</kbd> <kbd>:overview</kbd></p>
             <span class="kicker">metrics</span>
             <h3>Cluster usage</h3>
             <p>CPU and memory for nodes and pods via metrics-server provide health at a glance.</p>
+            <p class="keys">tui <kbd>:top</kbd> <kbd>:overview</kbd></p>
           </article>
           <article class="bento-cell">
-            <p class="keys">tui <kbd>Ctrl</kbd>+<kbd>s</kbd> scale · <kbd>Ctrl</kbd>+<kbd>r</kbd> restart · <kbd>Ctrl</kbd>+<kbd>d</kbd> delete</p>
             <span class="kicker">node ops</span>
             <h3>Safe cluster actions</h3>
             <p>Scale, rollout-restart, evict, cordon, and drain. Every destructive action is flagged and confirmation-gated.</p>
+            <p class="keys">tui <kbd>Ctrl</kbd>+<kbd>s</kbd> scale · <kbd>Ctrl</kbd>+<kbd>r</kbd> restart · <kbd>Ctrl</kbd>+<kbd>d</kbd> delete</p>
           </article>
           <article class="bento-cell">
-            <p class="keys">tui <kbd>F1</kbd>-<kbd>F10</kbd> switch · <kbd>Ctrl</kbd>+<kbd>x</kbd> picker</p>
             <span class="kicker">contexts</span>
             <h3>Multi-kubeconfig</h3>
             <p>Add kubeconfig files or paste one in. Context profiles, custom ordering, and a hotbar for the clusters you live in.</p>
+            <p class="keys">tui <kbd>F1</kbd>-<kbd>F10</kbd> switch · <kbd>Ctrl</kbd>+<kbd>x</kbd> picker</p>
           </article>
           <article class="bento-cell">
-            <p class="keys"><kbd>⌘W</kbd> close tab (macOS)</p>
             <span class="kicker">tabs</span>
             <h3>Browser-style tabs</h3>
             <p>Each tab is a cluster and resource view. Close others or close to the right without losing investigation state.</p>
+            <p class="keys"><kbd>⌘W</kbd> close tab (macOS)</p>
           </article>
           <article class="bento-cell">
             <span class="kicker">privacy</span>
@@ -468,10 +468,10 @@
             <p>Talks directly to your API servers with your kubeconfig credentials. No cloud service in between.</p>
           </article>
           <article class="bento-cell">
-            <p class="keys"><kbd>l</kbd> logs · <kbd>s</kbd> shell · <kbd>t</kbd> tree · <kbd>Tab</kbd> assistant</p>
             <span class="kicker">terminal UI</span>
             <h3>srelens-tui in your shell</h3>
             <p>Standalone pure-Rust Ratatui interface with an in-memory Informer cache, deep Helm values diff, live topology, and embedded AI over SSH or locally.</p>
+            <p class="keys"><kbd>l</kbd> logs · <kbd>s</kbd> shell · <kbd>t</kbd> tree · <kbd>Tab</kbd> assistant</p>
           </article>
         </div>
       </div>

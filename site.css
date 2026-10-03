@@ -434,10 +434,10 @@ h2:hover .heading-anchor, h3:hover .heading-anchor, .heading-anchor:focus-visibl
 .incident-next:hover { border-color: var(--term-border); }
 
 .bento { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
-.bento-cell { display: grid; gap: 8px; align-content: start; }
+.bento-cell { display: flex; flex-direction: column; gap: 8px; }
 .kicker { font: 500 12px var(--font-mono); color: var(--brand); }
 .bento-cell p { margin: 0; font-size: 15px; color: var(--muted); }
-.bento-cell .keys { margin: 0; }
+.bento-cell .keys { margin: auto 0 0; padding-top: 4px; font-size: 11px; color: var(--muted); }
 
 .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 14px; }
 .guide-card { display: grid; gap: 8px; align-content: start; color: var(--ink); text-decoration: none; }
