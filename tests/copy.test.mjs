@@ -5,7 +5,10 @@ import { baselineFor } from './lib/baseline.mjs';
 
 // Headings and ids removed on purpose. Only Task 7 decisions may add entries.
 // Format: { 'tui/index.html': ['Heading text', ...] }
-const REMOVED_HEADINGS = {};
+const REMOVED_HEADINGS = {
+  // C07 (claims check): "40+ resource kinds" is reworded to "35 resource kinds + CRDs".
+  'index.html': ['40+ resource kinds'],
+};
 const REMOVED_IDS = {};
 
 for (const file of listPages()) {

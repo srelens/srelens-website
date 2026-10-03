@@ -215,37 +215,60 @@
     });
   }
 
-  /* ---------- interactive incident drill ---------- */
-  var incidentTabs = Array.from(document.querySelectorAll("[data-incident-tab]"));
-  var incidentPanels = Array.from(document.querySelectorAll("[data-incident-panel]"));
-  function showIncidentStep(step, focusTab) {
-    incidentTabs.forEach(function (tab) {
-      var selected = tab.getAttribute("data-incident-tab") === step;
-      tab.setAttribute("aria-selected", String(selected));
-      tab.tabIndex = selected ? 0 : -1;
-      if (selected && focusTab) tab.focus();
+  /* ---------- tabs: incident drill and homepage desktop / terminal switch ---------- */
+  function bindTabs(tabs, panels, tabAttr, panelAttr) {
+    function show(name, focusTab) {
+      tabs.forEach(function (tab) {
+        var selected = tab.getAttribute(tabAttr) === name;
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        if (selected && focusTab) tab.focus();
+      });
+      panels.forEach(function (panel) {
+        panel.hidden = panel.getAttribute(panelAttr) !== name;
+      });
+    }
+    tabs.forEach(function (tab, index) {
+      tab.addEventListener("click", function () { show(tab.getAttribute(tabAttr), false); });
+      tab.addEventListener("keydown", function (event) {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        var next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+        show(tabs[next].getAttribute(tabAttr), true);
+      });
     });
-    incidentPanels.forEach(function (panel) {
-      panel.hidden = panel.getAttribute("data-incident-panel") !== step;
-    });
+    return show;
   }
-  incidentTabs.forEach(function (tab, index) {
-    tab.addEventListener("click", function () {
-      showIncidentStep(tab.getAttribute("data-incident-tab"), false);
-    });
-    tab.addEventListener("keydown", function (event) {
-      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-      event.preventDefault();
-      var delta = event.key === "ArrowRight" ? 1 : -1;
-      var next = (index + delta + incidentTabs.length) % incidentTabs.length;
-      showIncidentStep(incidentTabs[next].getAttribute("data-incident-tab"), true);
-    });
-  });
+
+  var showIncidentStep = bindTabs(
+    Array.from(document.querySelectorAll("[data-incident-tab]")),
+    Array.from(document.querySelectorAll("[data-incident-panel]")),
+    "data-incident-tab", "data-incident-panel"
+  );
   document.querySelectorAll("[data-incident-next]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       showIncidentStep(btn.getAttribute("data-incident-next"), false);
     });
   });
+
+  var modes = document.querySelector("[data-modes]");
+  if (modes) {
+    var showMode = bindTabs(
+      Array.from(modes.querySelectorAll("[data-mode-tab]")),
+      Array.from(modes.querySelectorAll("[data-mode-panel]")),
+      "data-mode-tab", "data-mode-panel"
+    );
+    modes.querySelector("[role='tablist']").hidden = false;
+    modes.classList.add("is-enhanced");
+    showMode("desktop", false);
+    document.addEventListener("keydown", function (event) {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      var el = document.activeElement;
+      if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;
+      if (event.key === "1") showMode("desktop", false);
+      if (event.key === "2") showMode("terminal", false);
+    });
+  }
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 

@@ -6,10 +6,31 @@ import { baselineFor } from './lib/baseline.mjs';
 // ---- Deliberate changes from the spec (section 8). Everything else must match the baseline. ----
 // Expected meta values that replace the baseline: { file: { key: value } }.
 const META_CHANGES = {};
-// Applied to every baseline JSON-LD node before comparison.
-const ldChange = (node) => ('softwareVersion' in node ? { ...node, softwareVersion: '0.15.0' } : node);
+// Approved claim fixes (TUI claims check, Decision 3): exact baseline featureList entry -> replacement, per page.
+const LD_FEATURE_CHANGES = {
+  'index.html': [
+    // C07: the desktop resource browser covers 35 built-in kinds, not "40+".
+    ['Resource browser covering 40+ Kubernetes resource kinds', 'Resource browser covering 35 built-in Kubernetes resource kinds plus custom resources'],
+    // C02: "0ms" is not a measured latency.
+    ['Live streaming resource watches and 0ms Informer cache', 'Live streaming resource watches and an in-memory Informer cache'],
+  ],
+};
+// Applied to every baseline JSON-LD node of `file` before comparison.
+const ldChange = (node, file) => {
+  let out = 'softwareVersion' in node ? { ...node, softwareVersion: '0.15.0' } : node;
+  const swaps = new Map(LD_FEATURE_CHANGES[file] ?? []);
+  if (Array.isArray(out.featureList)) out = { ...out, featureList: out.featureList.map((f) => swaps.get(f) ?? f) };
+  return out;
+};
 
 const withoutCrumbs = (nodes) => nodes.filter((n) => n['@type'] !== 'BreadcrumbList');
+
+test('every planned JSON-LD change replaces a feature that the baseline really has', () => {
+  for (const [file, swaps] of Object.entries(LD_FEATURE_CHANGES)) {
+    const features = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).flatMap((n) => n.featureList ?? []);
+    for (const [from] of swaps) assert.ok(features.includes(from), `${file}: "${from}" is not in the baseline`);
+  }
+});
 
 for (const file of listPages()) {
   const html = read(file);
@@ -31,7 +52,7 @@ for (const file of listPages()) {
   });
 
   test(`${file}: structured data matches the baseline plus planned changes`, () => {
-    const expected = withoutCrumbs(base.jsonLd.flatMap((j) => j['@graph'] ?? [j])).map(ldChange);
+    const expected = withoutCrumbs(base.jsonLd.flatMap((j) => j['@graph'] ?? [j])).map((node) => ldChange(node, file));
     assert.deepEqual(withoutCrumbs(ldNodes(html)), expected);
   });
 
