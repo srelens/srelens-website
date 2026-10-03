@@ -521,6 +521,7 @@ h2:hover .heading-anchor, h3:hover .heading-anchor, .heading-anchor:focus-visibl
 .verdict.srelens-pick { border-color: color-mix(in srgb, var(--brand) 45%, var(--line)); }
 .verdict.srelens-pick h2 { color: var(--brand); }
 .compare-scroll + .answer, .compare-scroll + h2 { margin-top: 32px; }
+.compare-scroll thead th:first-child { position: sticky; left: 0; z-index: 1; }
 .source-note { margin: 24px 0 0; font-size: 14px; color: var(--muted); }
 .related-comparisons { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 16px; font: 500 13.5px var(--font-mono); }
 .related-comparisons a { text-decoration: none; }

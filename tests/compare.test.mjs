@@ -119,3 +119,18 @@ test('/compare/k9s/ says "in-memory Informer cache" with the approved wording at
     'in minimal cloud bastions, with instant navigation between cluster views already opened.',
   ]) assert.ok(body.includes(sentence), sentence);
 });
+
+// ---- fix round 1 -----------------------------------------------------------------------------
+
+test('the old per-guide footer disclaimers that the canonical footer does not cover stay on the page (Aptakube)', () => {
+  // The canonical footer names Mirantis (Lens) and the Freelens project only; the Aptakube guide's old footer said
+  // "not affiliated with Aptakube", so that sentence now lives in <main>, right after the sources note.
+  const main = mainOf(pages.get('compare/aptakube/index.html'));
+  assert.match(main, /<p class="source-note">Sources checked:[^]*?<\/p>\s*<p class="source-note">srelens is not affiliated with Aptakube\.<\/p>/);
+  assert.ok(text(main).includes('not affiliated with Aptakube'));
+});
+
+test('the table corner cell is pinned with the row labels, so a column header never slides over them', () => {
+  assert.match(css, /\.compare-scroll thead th:first-child \{ position: sticky; left: 0; z-index: 1; \}/);
+  assert.match(css, /\.compare-scroll thead th \{[^}]*background: var\(--sunk\)/);
+});
