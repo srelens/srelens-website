@@ -82,6 +82,7 @@ const MIGRATED = new Set([
   'compare/freelens/index.html', 'compare/aptakube/index.html', 'compare/kubernetes-dashboard/index.html',
   'docs/index.html', 'docs/tui/index.html', 'docs/tui.html', 'guides/index.html', 'guides/crashloopbackoff/index.html',
   'guides/oomkilled/index.html', 'guides/failed-deployment/index.html', 'security/index.html', 'architecture/index.html',
+  'faq/index.html', '404.html',
 ]);
 
 const withoutCaptures = (html) => html.replace(/<pre class="tui"[\s\S]*?<\/pre>/g, '');

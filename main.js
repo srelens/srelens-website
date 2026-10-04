@@ -6,6 +6,10 @@
   var year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
+  /* ---------- 404: show the requested path ---------- */
+  var errPath = document.querySelector("[data-err-path]");
+  if (errPath) errPath.textContent = window.location.pathname;
+
   /* ---------- theme toggle ---------- */
   function syncThemeColor() {
     var meta = document.querySelector('meta[name="theme-color"]');

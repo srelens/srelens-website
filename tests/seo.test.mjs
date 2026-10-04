@@ -30,6 +30,16 @@ const LD_DESCRIPTION_CHANGES = {
     ],
   ],
 };
+// Approved claim fixes: exact baseline FAQPage answer text -> replacement, per page. The visible answer changes with it (tests/faq.test.mjs).
+const LD_ANSWER_CHANGES = {
+  'faq/index.html': [
+    // C07: the desktop resource browser covers 35 built-in kinds, not "40+".
+    [
+      'srelens is a Kubernetes desktop workspace — a native GUI app for browsing, inspecting, and operating Kubernetes clusters. It reads the contexts in your local kubeconfig and gives you resource browsing across 40+ kinds, live watches, log streaming, in-pod terminals, port forwarding, Helm release views, and a schema-aware YAML editor, all in one window. It is built on Tauri v2 with a pure-Rust core.',
+      'srelens is a Kubernetes desktop workspace — a native GUI app for browsing, inspecting, and operating Kubernetes clusters. It reads the contexts in your local kubeconfig and gives you resource browsing across 35 built-in kinds plus any CRD, live watches, log streaming, in-pod terminals, port forwarding, Helm release views, and a schema-aware YAML editor, all in one window. It is built on Tauri v2 with a pure-Rust core.',
+    ],
+  ],
+};
 // Applied to every baseline JSON-LD node of `file` before comparison.
 const ldChange = (node, file) => {
   let out = 'softwareVersion' in node ? { ...node, softwareVersion: '0.15.0' } : node;
@@ -37,6 +47,10 @@ const ldChange = (node, file) => {
   if (Array.isArray(out.featureList)) out = { ...out, featureList: out.featureList.map((f) => swaps.get(f) ?? f) };
   const described = new Map(LD_DESCRIPTION_CHANGES[file] ?? []);
   if (typeof out.description === 'string') out = { ...out, description: described.get(out.description) ?? out.description };
+  const answers = new Map(LD_ANSWER_CHANGES[file] ?? []);
+  if (Array.isArray(out.mainEntity)) {
+    out = { ...out, mainEntity: out.mainEntity.map((q) => ({ ...q, acceptedAnswer: { ...q.acceptedAnswer, text: answers.get(q.acceptedAnswer.text) ?? q.acceptedAnswer.text } })) };
+  }
   return out;
 };
 
@@ -62,6 +76,13 @@ test('every planned JSON-LD description change replaces a description that the b
   for (const [file, swaps] of Object.entries(LD_DESCRIPTION_CHANGES)) {
     const descriptions = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).map((n) => n.description);
     for (const [from] of swaps) assert.ok(descriptions.includes(from), `${file}: "${from}" is not in the baseline`);
+  }
+});
+
+test('every planned FAQPage answer change replaces an answer that the baseline really has', () => {
+  for (const [file, swaps] of Object.entries(LD_ANSWER_CHANGES)) {
+    const answers = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).flatMap((n) => n.mainEntity ?? []).map((q) => q.acceptedAnswer.text);
+    for (const [from] of swaps) assert.ok(answers.includes(from), `${file}: "${from}" is not in the baseline`);
   }
 });
 

@@ -62,7 +62,7 @@ class El {
 const el = (tag, attrs, children) => new El(tag, attrs, children);
 
 // The homepage's switch and drill, as served (no JS has run: every panel of the switch is visible).
-function fixture({ withModes = true, withDrill = true, fieldInTablist = false } = {}) {
+function fixture({ withModes = true, withDrill = true, fieldInTablist = false, errPath = null } = {}) {
   const tabs = ['desktop', 'terminal'].map((m, i) => el('button', { id: `mode-tab-${m}`, role: 'tab', 'aria-selected': String(i === 0), 'data-mode-tab': m, tabindex: i === 0 ? undefined : '-1' }));
   const download = el('a', { id: 'mode-download' }); // a control inside the switch's container but outside its tab bar
   const panels = ['desktop', 'terminal'].map((m, i) => el('div', { id: `mode-${m}`, role: 'tabpanel', 'data-mode-panel': m }, i === 0 ? [download] : []));
@@ -76,7 +76,9 @@ function fixture({ withModes = true, withDrill = true, fieldInTablist = false } 
   const drillPanels = steps.map((s, i) => el('section', { id: `incident-${s}`, role: 'tabpanel', 'data-incident-panel': s, hidden: i > 0 }));
   const nexts = steps.map((s, i) => el('button', { 'data-incident-next': steps[(i + 1) % steps.length] }));
 
-  const body = el('body', {}, [...(withModes ? [modes] : []), ...(withDrill ? [...drillTabs, ...drillPanels, ...nexts] : [])]);
+  const errSpan = errPath === null ? null : el('span', { 'data-err-path': '' }); // the 404 page's terminal line
+  if (errSpan) Object.defineProperty(errSpan, 'innerHTML', { set() { throw new Error('innerHTML must not be used for the path'); } });
+  const body = el('body', {}, [...(withModes ? [modes] : []), ...(withDrill ? [...drillTabs, ...drillPanels, ...nexts] : []), ...(errSpan ? [errSpan] : [])]);
   const root = el('html', { 'data-theme': 'dark' }, [body]);
   const document = el('#document', {}, [root]);
   document.documentElement = root;
@@ -92,12 +94,12 @@ function fixture({ withModes = true, withDrill = true, fieldInTablist = false } 
   const window = {
     matchMedia: () => ({ matches: true }),
     addEventListener() {},
-    location: { hash: '', origin: 'http://localhost', pathname: '/' },
+    location: { hash: '', origin: 'http://localhost', pathname: errPath ?? '/' },
     scrollY: 0,
     innerHeight: 800,
   };
   vm.runInNewContext(source, { document, window, navigator: {}, history: {}, localStorage: { setItem() {} }, setTimeout() {} });
-  return { document, modes, tablist, tabs, panels, download, field, drillTabs, drillPanels, nexts };
+  return { document, modes, tablist, tabs, panels, download, field, drillTabs, drillPanels, nexts, errSpan };
 }
 
 const state = (nodes) => nodes.map((n) => n.hidden);
@@ -184,4 +186,15 @@ test('the incident drill still steps through its three panels, independently of 
 test('pages without the switch or the drill load without error', () => {
   assert.doesNotThrow(() => fixture({ withModes: false, withDrill: false }));
   assert.doesNotThrow(() => fixture({ withModes: false }));
+});
+
+test('the 404 terminal line shows the requested path', () => {
+  const { errSpan } = fixture({ withModes: false, withDrill: false, errPath: '/no-such-page/' });
+  assert.equal(errSpan.textContent, '/no-such-page/');
+});
+
+test('the 404 path is written as text, never as markup', () => {
+  const hostile = '/<img src=x onerror=alert(1)>/';
+  const { errSpan } = fixture({ withModes: false, withDrill: false, errPath: hostile });
+  assert.equal(errSpan.textContent, hostile);
 });
