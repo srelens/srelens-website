@@ -4,7 +4,14 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT, read } from './lib/site.mjs';
 
-const listed = (cfg, path) => new RegExp(`^\\s*-\\s*${path.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}\\s*$`, 'm').test(cfg);
+// A path is listed as `- path` or `- path/`; Jekyll treats both the same.
+const listed = (cfg, path) => new RegExp(`^\\s*-\\s*${path.replace(/\/$/, '').replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}/?\\s*$`, 'm').test(cfg);
+
+test('listed() sees an exclude entry with or without a trailing slash, and only the whole path', () => {
+  const cfg = 'exclude:\n  - tests/\n  - scripts\n  - docs/superpowers/\n';
+  for (const path of ['tests', 'tests/', 'scripts', 'docs/superpowers']) assert.ok(listed(cfg, path), path);
+  for (const path of ['docs', 'docs/', 'test', 'assets']) assert.ok(!listed(cfg, path), path);
+});
 
 test('_config.yml exists', () => {
   assert.ok(existsSync(join(ROOT, '_config.yml')));
