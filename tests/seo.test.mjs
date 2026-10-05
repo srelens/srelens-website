@@ -67,9 +67,18 @@ const LD_ANSWER_CHANGES = {
     ],
   ],
 };
+// Exact baseline JSON-LD `image` -> replacement, per page.
+const LD_IMAGE_CHANGES = {
+  'tui/index.html': [
+    // Devesh 2026-10: use the new UI images; the old one shows a real cluster.
+    ['https://srelens.com/assets/shots/tui-overview.webp', 'https://srelens.com/assets/og/og-tui.png'],
+  ],
+};
 // Applied to every baseline JSON-LD node of `file` before comparison.
 const ldChange = (node, file) => {
   let out = 'softwareVersion' in node ? { ...node, softwareVersion: '0.15.0' } : node;
+  const pictured = new Map(LD_IMAGE_CHANGES[file] ?? []);
+  if (typeof out.image === 'string') out = { ...out, image: pictured.get(out.image) ?? out.image };
   const swaps = new Map(LD_FEATURE_CHANGES[file] ?? []);
   if (Array.isArray(out.featureList)) out = { ...out, featureList: out.featureList.map((f) => swaps.get(f) ?? f) };
   const described = new Map(LD_DESCRIPTION_CHANGES[file] ?? []);
@@ -104,6 +113,16 @@ test('every planned JSON-LD description change replaces a description that the b
   for (const [file, swaps] of Object.entries(LD_DESCRIPTION_CHANGES)) {
     const descriptions = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).map((n) => n.description);
     for (const [from] of swaps) assert.ok(descriptions.includes(from), `${file}: "${from}" is not in the baseline`);
+  }
+});
+
+test('every planned JSON-LD image change replaces an image that the baseline really has, with the page\'s og:image', () => {
+  for (const [file, swaps] of Object.entries(LD_IMAGE_CHANGES)) {
+    const images = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).map((n) => n.image);
+    for (const [from, to] of swaps) {
+      assert.ok(images.includes(from), `${file}: "${from}" is not in the baseline`);
+      assert.equal(to, META_CHANGES[file]['og:image'], `${file}: the JSON-LD image is the og:image`);
+    }
   }
 });
 

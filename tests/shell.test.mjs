@@ -140,7 +140,8 @@ test('applyShell leaves the 404 noindex', () => {
 test('applyShell swaps tui/ from its old screenshot tags to the card', () => {
   const p = page('tui/index.html');
   const now = read(p.file);
-  const old = now.replaceAll('https://srelens.com/assets/og/og-tui.png', 'https://srelens.com/assets/shots/tui-overview.webp')
+  // Only the meta tags go back: the JSON-LD image is not applyShell's to rewrite.
+  const old = now.replace(/(<meta [^>]*content=")https:\/\/srelens\.com\/assets\/og\/og-tui\.png/g, '$1https://srelens.com/assets/shots/tui-overview.webp')
     .replace('content="1200"', 'content="2400"').replace('content="630"', 'content="1461"')
     .replace(/(og:image:alt" content=")[^"]*/, '$1old alt');
   assert.notEqual(old, now);

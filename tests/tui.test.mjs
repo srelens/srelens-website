@@ -266,10 +266,9 @@ const PLACED = {
 
 for (const file of TUI_PAGES) {
   test(`${file}: TUI screenshots that now have a text capture are replaced`, () => {
-    // Only the body: tui-overview.webp stays as the og:image and JSON-LD image in the head until Task 22.
+    // The whole page, head included: the og:image and the JSON-LD image are the card too (the old shot shows a real cluster).
     const page = read(file);
-    const body = page.slice(page.indexOf('<main'), page.indexOf('</main>'));
-    for (const image of REPLACED) assert.ok(!body.includes(`/assets/shots/${image}`), `${file} still uses ${image}`);
+    for (const image of REPLACED) assert.ok(!page.includes(`/assets/shots/${image}`), `${file} still uses ${image}`);
   });
 
   test(`${file}: the screenshots without a capture stay images, and every old image file stays published`, () => {
