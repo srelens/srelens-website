@@ -127,7 +127,8 @@ export function ogTags(page, html) {
 
 function replaceOne(html, pattern, replacement, what) {
   if (!pattern.test(html)) throw new Error(`applyShell: no ${what} found`);
-  return html.replace(pattern, replacement);
+  // A string replacement is literal: $&, $1 and friends in page text must not expand.
+  return html.replace(pattern, typeof replacement === 'function' ? replacement : () => replacement);
 }
 
 export function applyShell(html, page, version) {
@@ -161,7 +162,7 @@ export function applyShell(html, page, version) {
   out = out.replace(/(<section\b[^>]*\sid="([^"]+)"[^>]*>)([\s\S]*?)(?=<section\b|<\/main>)/g, (m, open, id, body) => (
     body.includes('class="section-label')
       ? m
-      : open + body.replace('<span class="tick">●</span>', `<a class="section-label anchor-link" href="#${id}">#${id}</a> ·`)
+      : open + body.replace('<span class="tick">●</span>', () => `<a class="section-label anchor-link" href="#${id}">#${id}</a> ·`)
   ));
 
   // skip link and its target
@@ -172,14 +173,14 @@ export function applyShell(html, page, version) {
   out = replaceOne(out, /<header class="site-header">[\s\S]*?<\/header>/, renderHeader(page), 'site header');
   if (page.crumbs) out = replaceOne(out, /<(nav|div) class="crumbs"[^>]*>[\s\S]*?<\/\1>/, renderPathLine(page), 'crumbs');
   if (/<footer class="site-footer">/.test(out)) {
-    out = out.replace(/<footer class="site-footer">[\s\S]*?<\/footer>/, renderFooter(version));
+    out = out.replace(/<footer class="site-footer">[\s\S]*?<\/footer>/, () => renderFooter(version));
   } else {
-    out = replaceOne(out, /(\s*)<script src="\/main\.js" defer><\/script>/, `\n  ${renderFooter(version)}$1<script src="/main.js" defer></script>`, 'main.js script');
+    out = replaceOne(out, /(\s*)<script src="\/main\.js" defer><\/script>/, (m, ws) => `\n  ${renderFooter(version)}${ws}<script src="/main.js" defer></script>`, 'main.js script');
   }
 
   // breadcrumb structured data for pages that have none
   if (page.crumbs && !ldNodes(out).some((n) => n['@type'] === 'BreadcrumbList')) {
-    out = out.replace('</head>', `  <script type="application/ld+json">\n${JSON.stringify(breadcrumbLd(page), null, 2)}\n  </script>\n</head>`);
+    out = out.replace('</head>', () => `  <script type="application/ld+json">\n${JSON.stringify(breadcrumbLd(page), null, 2)}\n  </script>\n</head>`);
   }
 
   // robots: full directive on every indexable page
@@ -194,13 +195,13 @@ export function applyShell(html, page, version) {
       const image = `${ORIGIN}/assets/og/${page.ogCard}`;
       const alt = esc(`srelens.com${new URL(canonical(out)).pathname}: ${h1s(out)[0]}`);
       out = out
-        .replace(/<meta property="og:image" content="[^"]*">/, `<meta property="og:image" content="${image}">`)
-        .replace(/<meta property="og:image:width" content="[^"]*">/, '<meta property="og:image:width" content="1200">')
-        .replace(/<meta property="og:image:height" content="[^"]*">/, '<meta property="og:image:height" content="630">')
-        .replace(/<meta property="og:image:alt" content="[^"]*">/, `<meta property="og:image:alt" content="${alt}">`)
-        .replace(/<meta name="twitter:image" content="[^"]*">/, `<meta name="twitter:image" content="${image}">`);
+        .replace(/<meta property="og:image" content="[^"]*">/, () => `<meta property="og:image" content="${image}">`)
+        .replace(/<meta property="og:image:width" content="[^"]*">/, () => '<meta property="og:image:width" content="1200">')
+        .replace(/<meta property="og:image:height" content="[^"]*">/, () => '<meta property="og:image:height" content="630">')
+        .replace(/<meta property="og:image:alt" content="[^"]*">/, () => `<meta property="og:image:alt" content="${alt}">`)
+        .replace(/<meta name="twitter:image" content="[^"]*">/, () => `<meta name="twitter:image" content="${image}">`);
     } else {
-      out = replaceOne(out, /(<link rel="canonical" href="[^"]*">)/, `$1\n${ogTags(page, out)}`, 'canonical link');
+      out = replaceOne(out, /(<link rel="canonical" href="[^"]*">)/, (m, link) => `${link}\n${ogTags(page, out)}`, 'canonical link');
     }
   }
   return out;

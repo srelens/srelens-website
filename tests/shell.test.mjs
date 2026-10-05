@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { read, ldNodes, siteVersion, listPages } from './lib/site.mjs';
+import { read, ldNodes, siteVersion, listPages, meta, canonical, h1s } from './lib/site.mjs';
 import { baselineFor } from './lib/baseline.mjs';
 import { PAGES, page } from '../scripts/pages.mjs';
 import {
@@ -151,4 +151,47 @@ test('applyShell names the missing canonical link instead of failing on an inval
   const p = page('security/index.html');
   const html = preOg(read(p.file)).replace(/<link rel="canonical" href="[^"]*">/, '');
   assert.throws(() => applyShell(html, p, '0.15.0'), /no canonical link/);
+});
+
+// ---- $-patterns in page text must stay literal ($&, $1, $', $` are special in a replacement string) ----
+
+const HOSTILE = "A $& B $1 C $' D $` E";
+const asHtml = (s) => s.replace(/&/g, '&amp;');
+const swapIn = (html, pattern, inner) => html.replace(pattern, (m, open, close) => open + inner + close);
+
+test('applyShell keeps $-patterns in an H1 literal when it swaps the card on a page that has an OG set', () => {
+  const p = page('tui/index.html');
+  const html = swapIn(read(p.file), /(<h1[^>]*>)[\s\S]*?(<\/h1>)/, asHtml(HOSTILE));
+  const out = applyShell(html, p, '0.15.0');
+  assert.equal(meta(out, 'og:image:alt'), `srelens.com/tui/: ${HOSTILE}`);
+  assert.equal(out.match(/og:image:alt/g).length, 1);
+  assert.equal(h1s(out)[0], HOSTILE);
+});
+
+test('applyShell keeps $-patterns in the title, description and H1 literal when it adds the OG set', () => {
+  const p = PAGES.find((e) => e.ogCard && !baselineFor(e.file).meta['og:image']);
+  let html = preOg(read(p.file));
+  html = swapIn(html, /(<title>)[\s\S]*?(<\/title>)/, asHtml(HOSTILE));
+  html = swapIn(html, /(<meta name="description" content=")[^"]*(">)/, asHtml(HOSTILE));
+  html = swapIn(html, /(<h1[^>]*>)[\s\S]*?(<\/h1>)/, asHtml(HOSTILE));
+  const out = applyShell(html, p, '0.15.0');
+  for (const key of ['og:title', 'og:description', 'twitter:title', 'twitter:description']) assert.equal(meta(out, key), HOSTILE, key);
+  assert.equal(meta(out, 'og:image:alt'), `${new URL(canonical(out)).host}${new URL(canonical(out)).pathname}: ${HOSTILE}`);
+  assert.equal(out.match(/<meta property="og:image"/g).length, 1);
+});
+
+test('applyShell keeps $-patterns in a crumb literal in the path line and the BreadcrumbList', () => {
+  const p = { ...page('security/index.html'), crumbs: [['srelens', '/'], [HOSTILE, '/security/']] };
+  const html = read(p.file).replace(/\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, (m) => (m.includes('"BreadcrumbList"') ? '' : m));
+  assert.ok(!ldNodes(html).some((n) => n['@type'] === 'BreadcrumbList'), 'the page starts with no BreadcrumbList');
+  const out = applyShell(html, p, '0.15.0');
+  assert.ok(out.includes(renderPathLine(p)), 'path line');
+  assert.equal(ldNodes(out).find((n) => n['@type'] === 'BreadcrumbList').itemListElement[1].name, HOSTILE);
+});
+
+test('applyShell keeps a $-pattern in the version literal in the footer, inserted or replaced', () => {
+  const p = page('index.html');
+  const inserted = applyShell(doc(''), p, '1.$&');
+  assert.ok(inserted.includes('<span data-version>v1.$&</span>'));
+  assert.equal(applyShell(inserted, p, '1.$&'), inserted);
 });
