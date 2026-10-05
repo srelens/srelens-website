@@ -2,6 +2,7 @@
 // Serve the repo first:  npx --yes http-server . -p 8080 -c-1 --silent
 //   node scripts/og-cards.mjs [http://localhost:8080]
 // Chrome runs with a throwaway profile, never the user's own.
+// Fonts come from Google Fonts; offline, the cards silently fall back, so look at a card after rendering.
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';

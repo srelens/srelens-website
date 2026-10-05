@@ -189,6 +189,7 @@ export function applyShell(html, page, version) {
 
   // Open Graph card: swap the image on a page that already has an OG set, else add the whole set
   if (page.ogCard) {
+    if (!canonical(out)) throw new Error(`applyShell: no canonical link found in ${page.file}`);
     if (meta(out, 'og:image')) {
       const image = `${ORIGIN}/assets/og/${page.ogCard}`;
       const alt = esc(`srelens.com${new URL(canonical(out)).pathname}: ${h1s(out)[0]}`);

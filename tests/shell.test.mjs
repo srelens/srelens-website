@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { read, ldNodes, siteVersion, listPages } from './lib/site.mjs';
+import { baselineFor } from './lib/baseline.mjs';
 import { PAGES, page } from '../scripts/pages.mjs';
 import {
   renderHeader, renderPathLine, renderFooter, breadcrumbLd, applyShell, THEME_INIT, STYLES, FONTS,
@@ -118,26 +119,36 @@ test('every page is migrated', { todo: MIGRATED.size < PAGES.length }, () => {
   assert.equal(MIGRATED.size, PAGES.length);
 });
 
-test('applyShell adds a full OG/Twitter set to a page without one', () => {
-  const p = page('security/index.html');
-  const html = applyShell(read(p.file), p, '0.15.0');
-  assert.match(html, /<meta property="og:image" content="https:\/\/srelens\.com\/assets\/og\/og-security\.png">/);
-  assert.match(html, /<meta name="twitter:card" content="summary_large_image">/);
-  assert.equal(applyShell(html, p, '0.15.0'), html);
+// The pages as they were before Task 22: no OG/Twitter tags, robots "index, follow".
+const preOg = (html) => html
+  .replace(/\n\s*<meta (?:property="og:|name="twitter:)[^>]*>/g, '')
+  .replace(/(<meta name="robots" content=")[^"]*/, '$1index, follow');
+
+test('applyShell rebuilds the OG set and robots on pages that had none', () => {
+  for (const p of PAGES.filter((e) => e.ogCard && !baselineFor(e.file).meta['og:image'])) {
+    const now = read(p.file);
+    assert.notEqual(preOg(now), now, p.file);
+    assert.equal(applyShell(preOg(now), p, '0.15.0'), now, p.file);
+  }
 });
 
-test('applyShell normalises robots on indexable pages and leaves the 404 noindex', () => {
-  const robots = 'index, follow, max-image-preview:large, max-snippet:-1';
-  const sec = page('security/index.html');
-  assert.match(applyShell(read(sec.file), sec, '0.15.0'), new RegExp(`<meta name="robots" content="${robots}">`));
+test('applyShell leaves the 404 noindex', () => {
   const nf = page('404.html');
   assert.match(applyShell(read(nf.file), nf, '0.15.0'), /<meta name="robots" content="noindex">/);
 });
 
-test('applyShell swaps only the image on a page that already has an OG set', () => {
+test('applyShell swaps tui/ from its old screenshot tags to the card', () => {
   const p = page('tui/index.html');
-  const html = applyShell(read(p.file), p, '0.15.0');
-  assert.match(html, /<meta property="og:image" content="https:\/\/srelens\.com\/assets\/og\/og-tui\.png">/);
-  assert.match(html, /<meta name="twitter:image" content="https:\/\/srelens\.com\/assets\/og\/og-tui\.png">/);
-  assert.equal((html.match(/<meta property="og:title"/g) ?? []).length, 1);
+  const now = read(p.file);
+  const old = now.replaceAll('https://srelens.com/assets/og/og-tui.png', 'https://srelens.com/assets/shots/tui-overview.webp')
+    .replace('content="1200"', 'content="2400"').replace('content="630"', 'content="1461"')
+    .replace(/(og:image:alt" content=")[^"]*/, '$1old alt');
+  assert.notEqual(old, now);
+  assert.equal(applyShell(old, p, '0.15.0'), now);
+});
+
+test('applyShell names the missing canonical link instead of failing on an invalid URL', () => {
+  const p = page('security/index.html');
+  const html = preOg(read(p.file)).replace(/<link rel="canonical" href="[^"]*">/, '');
+  assert.throws(() => applyShell(html, p, '0.15.0'), /no canonical link/);
 });
