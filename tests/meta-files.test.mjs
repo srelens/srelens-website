@@ -134,3 +134,11 @@ test('the demo cluster paragraph matches the demo files and the captures', () =>
     'v1.36.1', 'ledger-worker', 'podinfo', 'two revisions', 'Argo CD', 'guestbook', 'MetalLB', 'FRR', 'kwok',
   ]) assert.ok(demo.includes(needle), `demo paragraph mentions ${needle}`);
 });
+
+test('both llms files list every page in the sitemap', () => {
+  const locs = [...read('sitemap.xml').matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  for (const file of LLMS) {
+    const body = read(file);
+    for (const loc of locs) assert.ok(body.includes(`: ${loc}\n`), `${file} lists ${loc}`);
+  }
+});

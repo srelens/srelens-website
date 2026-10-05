@@ -26,7 +26,14 @@ Key facts:
 - Kubernetes Dashboard alternatives: https://srelens.com/compare/kubernetes-dashboard/
 - Download for macOS, Windows, Linux: https://srelens.com/download/
 - FAQ: https://srelens.com/faq/
+- Documentation and quick start: https://srelens.com/docs/
 - Terminal UI (srelens-tui) documentation: https://srelens.com/docs/tui/
+- Security and privacy model: https://srelens.com/security/
+- Architecture: https://srelens.com/architecture/
+- Kubernetes troubleshooting guides: https://srelens.com/guides/
+- Debug CrashLoopBackOff: https://srelens.com/guides/crashloopbackoff/
+- Investigate OOMKilled pods: https://srelens.com/guides/oomkilled/
+- Diagnose failed Deployments: https://srelens.com/guides/failed-deployment/
 
 ## Features
 
