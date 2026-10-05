@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT } from './lib/site.mjs';
-import { VIEWS, APP_DESIGN, workspaceDoc } from '../scripts/shots/views.mjs';
-import { connect } from '../scripts/shots/cdp.mjs';
+import { VIEWS, APP_DESIGN, APP_THEME, workspaceDoc, seen, selectViews, selectThemes } from '../scripts/shots/views.mjs';
+import { connect, navigate } from '../scripts/shots/cdp.mjs';
 
 export function webpSize(buf) {
   assert.equal(buf.toString('ascii', 0, 4), 'RIFF');
@@ -116,4 +116,87 @@ test('views web mode cannot show faithfully name the reason they keep their exis
   const kept = VIEWS.filter((v) => v.keep);
   assert.deepEqual(kept.map((v) => v.name), ['port-forwards', 'mcp']);
   for (const v of kept) assert.ok(v.keep.length > 40, `${v.name} needs a reason`);
+});
+
+// --- fix round 1 -----------------------------------------------------------------------------
+
+test('cdp rejects the in-flight and every later request once the socket closes', () => withFakeSocket(async (cdp, ws) => {
+  const inflight = cdp.send('Runtime.evaluate');
+  ws.onclose({ code: 1006 });
+  await assert.rejects(inflight, /closed/);
+  await assert.rejects(cdp.send('Page.enable'), /closed/);
+}));
+
+test('cdp rejects pending requests when the socket errors after it opened', () => withFakeSocket(async (cdp, ws) => {
+  const inflight = cdp.send('Runtime.evaluate');
+  ws.onerror({ message: 'boom' });
+  await assert.rejects(inflight, /socket error: boom/);
+}));
+
+test('cdp listeners stop once the socket is gone', () => withFakeSocket(async (cdp, ws) => {
+  const seenEvents = [];
+  cdp.on('Page.loadEventFired', (p) => seenEvents.push(p));
+  ws.onclose({ code: 1006 });
+  ws.reply({ method: 'Page.loadEventFired', params: { timestamp: 1 } });
+  assert.deepEqual(seenEvents, []);
+}));
+
+test('navigate resolves on the load event', () => withFakeSocket(async (cdp, ws) => {
+  const done = navigate(cdp, 'http://x/', 1000);
+  assert.deepEqual(ws.sent.map((m) => [m.method, m.params.url]), [['Page.navigate', 'http://x/']]);
+  ws.reply({ id: 1, result: { frameId: 'f' } });
+  ws.reply({ method: 'Page.loadEventFired', params: {} });
+  await done;
+}));
+
+test('navigate fails on the errorText Page.navigate reports', () => withFakeSocket(async (cdp, ws) => {
+  const done = navigate(cdp, 'http://x/', 1000);
+  ws.reply({ id: 1, result: { frameId: 'f', errorText: 'net::ERR_CONNECTION_REFUSED' } });
+  await assert.rejects(done, /ERR_CONNECTION_REFUSED/);
+}));
+
+test('navigate fails instead of waiting forever when no load event comes', () => withFakeSocket(async (cdp, ws) => {
+  const done = navigate(cdp, 'http://x/', 30);
+  ws.reply({ id: 1, result: { frameId: 'f' } });
+  await assert.rejects(done, /timed out/);
+}));
+
+test('seen matches a string by inclusion, a RegExp by test, and no expectation always', () => {
+  assert.equal(seen('a podinfo row', 'podinfo'), true);
+  assert.equal(seen('nothing here', 'podinfo'), false);
+  assert.equal(seen('1 not ready', /Degraded|not ready/), true);
+  assert.equal(seen('all ready', /Degraded|not ready/), false);
+  assert.equal(seen('anything', undefined), true);
+});
+
+test('every view waits for something an empty or unsynced screen cannot show', () => {
+  for (const v of VIEWS) assert.ok(v.expect !== undefined, `${v.name} has no expect`);
+  const unhealthy = ['overview', 'pods', 'pods-payments'].map((n) => VIEWS.find((v) => v.name === n));
+  for (const v of unhealthy) {
+    for (const text of ['Degraded', 'CrashLoopBackOff', 'NotReady', '1 not ready']) assert.equal(seen(text, v.expect), true, `${v.name} should accept ${text}`);
+    // the screen the dark overview was captured on before the app had synced
+    assert.equal(seen('NODES 3 all ready PODS 38 all ready Nothing is unhealthy', v.expect), false, `${v.name} accepts an unsynced screen`);
+  }
+  assert.equal(seen('Releases 0 in this cluster', VIEWS.find((v) => v.name === 'helm').expect), false);
+  assert.equal(seen('podinfo checkout podinfo-6.7.1', VIEWS.find((v) => v.name === 'helm').expect), true);
+});
+
+test('selectViews skips the keep views unless they are asked for by name', () => {
+  assert.deepEqual(selectViews(undefined).map((v) => v.name), VIEWS.filter((v) => !v.keep).map((v) => v.name));
+  assert.deepEqual(selectViews('mcp,pods').map((v) => v.name), ['pods', 'mcp']);
+});
+
+test('selectViews and selectThemes refuse a name they do not know', () => {
+  assert.throws(() => selectViews('pods,nope'), /unknown view "nope".*overview/);
+  assert.throws(() => selectViews(true), /unknown view "true"/);
+  assert.deepEqual(selectThemes(undefined), ['dark', 'light']);
+  assert.deepEqual(selectThemes('light'), ['light']);
+  assert.throws(() => selectThemes('dark,sepia'), /unknown theme "sepia".*dark/);
+  assert.deepEqual(Object.keys(APP_THEME), ['dark', 'light']);
+});
+
+test('the terminal view waits for the nslookup answer, not for the typed command', () => {
+  const { expect } = VIEWS.find((v) => v.name === 'terminal');
+  assert.equal(seen('/ # hostname && nslookup redis.payments.svc.cluster.local', expect), false);
+  assert.equal(seen('Server:\t10.96.0.10\nAddress:\t10.96.0.10:53\n\nName:\tredis.payments.svc.cluster.local\nAddress: 10.244.1.5', expect), true);
 });

@@ -12,15 +12,22 @@
 //   srelens.next.workspaces    the workspace document with one tab at the view's route
 //   srelens.next.appearance    { theme: "dark" | "light" }
 //   srelens.next.namespaces    { <stableId>: [namespace, ...] }, [] being all namespaces
+//
+// A shot is only taken once the view's `expect` text is on the page (views.mjs), and the first
+// load of a run is a throwaway warm-up: the first load after the server starts can paint
+// before the app has synced. Whatever fails, the server, Chrome and the data dir are cleaned up.
 import { execFileSync, spawn } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
-import { existsSync, mkdirSync, mkdtempSync, openSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { isDeepStrictEqual } from 'node:util';
 import { ROOT } from '../../tests/lib/site.mjs';
-import { connect } from './cdp.mjs';
-import { VIEWS, APP_DESIGN, APP_THEME, workspaceDoc } from './views.mjs';
+import { connect, navigate } from './cdp.mjs';
+import { APP_DESIGN, APP_THEME, VIEWS, seen, selectThemes, selectViews, workspaceDoc } from './views.mjs';
+
+const USAGE = 'usage: node scripts/shots/desktop-shots.mjs --srelens=<srelens worktree with a built server> --kubeconfig=<srelens-demo kubeconfig> [--context=NAME] [--only=a,b] [--themes=dark,light] [--out=DIR]';
+const usageError = (message) => { console.error(`${message}\n${USAGE}`); process.exit(2); };
 
 const flags = {};
 for (const arg of process.argv.slice(2)) {
@@ -30,19 +37,20 @@ for (const arg of process.argv.slice(2)) {
 const SRELENS = resolve(String(flags.srelens ?? ''));
 const KUBECONFIG = resolve(String(flags.kubeconfig ?? ''));
 const SERVER_BIN = join(SRELENS, 'target', 'debug', 'srelens-server.exe');
-if (!existsSync(SERVER_BIN) || !existsSync(KUBECONFIG)) {
-  console.error('usage: node scripts/shots/desktop-shots.mjs --srelens=<srelens worktree with a built server> --kubeconfig=<srelens-demo kubeconfig>');
-  process.exit(2);
-}
-const CONTEXT = String(flags.context ?? 'kind-srelens-demo');
-const ONLY = flags.only ? new Set(String(flags.only).split(',')) : null;
-const THEMES = String(flags.themes ?? 'dark,light').split(',');
-const OUT = resolve(ROOT, String(flags.out ?? 'assets/shots'));
 const CHROME = process.env.CHROME ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+for (const [what, path] of [['srelens-server', SERVER_BIN], ['kubeconfig', KUBECONFIG], ['Chrome (set CHROME)', CHROME]]) {
+  if (!existsSync(path)) usageError(`${what} not found: ${path}`);
+}
+let RUN_VIEWS;
+let THEMES;
+try { RUN_VIEWS = selectViews(flags.only); THEMES = selectThemes(flags.themes); } catch (err) { usageError(err.message); }
+const CONTEXT = String(flags.context ?? 'kind-srelens-demo');
+const OUT = resolve(ROOT, String(flags.out ?? 'assets/shots'));
 const PORT = 8791;
 const CDP_PORT = 9333;
 const ORIGIN = `http://127.0.0.1:${PORT}`;
 const SETTLE = Number(flags.settle ?? 2500);
+const EXPECT_MS = 20000;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function isUp(url) {
@@ -54,7 +62,7 @@ async function waitFor(url) {
 }
 // Stop a child we started, by its own PID, and wait for it to be gone.
 async function stop(child) {
-  if (!child || child.exitCode !== null) return;
+  if (!child || child.pid === undefined || child.exitCode !== null) return;
   const gone = new Promise((done) => child.once('exit', done));
   child.kill();
   await Promise.race([gone, sleep(5000)]);
@@ -76,17 +84,27 @@ const pod = (prefix) => {
 
 // A fresh data dir per run: the only kubeconfig the server ever sees is the one uploaded below.
 const DATA = mkdtempSync(join(tmpdir(), 'srelens-site-shots-'));
-const log = openSync(join(DATA, 'server.log'), 'a');
-const { KUBECONFIG: _ignored, ...inherited } = process.env;
-const server = spawn(SERVER_BIN, ['serve', `127.0.0.1:${PORT}`, '--data', DATA], {
-  cwd: SRELENS,
-  stdio: ['ignore', log, log],
-  env: { ...inherited, SRELENS_DEV_LOGIN: 'site-shots@localhost', SRELENS_MASTER_KEY: randomBytes(32).toString('hex'), SRELENS_PUBLIC_URL: ORIGIN },
-});
-const chrome = spawn(CHROME, ['--headless=new', `--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${join(DATA, 'chrome')}`, '--hide-scrollbars', '--no-first-run', '--no-default-browser-check', 'about:blank'], { stdio: 'ignore' });
-
+let log;
+let server;
+let chrome;
 let cdp;
-try {
+let cleaning;
+// Idempotent: the finally block, a signal and the exit hook can all ask for it.
+const cleanup = () => cleaning ??= (async () => {
+  try { cdp?.close(); } catch { /* already gone */ }
+  await stop(chrome);
+  await stop(server);
+  try { if (log !== undefined) closeSync(log); } catch { /* already closed */ }
+  try {
+    rmSync(DATA, { recursive: true, force: true, maxRetries: 10, retryDelay: 300 });
+  } catch (err) {
+    console.warn(`could not remove ${DATA}: ${err.message}`);
+  }
+})();
+for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => { cleanup().finally(() => process.exit(130)); });
+process.on('exit', () => { chrome?.kill(); server?.kill(); }); // an uncaught error must not leave them running
+
+async function capture() {
   await waitFor(`${ORIGIN}/healthz`);
   const login = await fetch(`${ORIGIN}/auth/dev-login`, { method: 'POST', redirect: 'manual' });
   const session = login.headers.getSetCookie().map((c) => /(?:^|;\s*)srelens_session=([^;]+)/.exec(c)?.[1]).find(Boolean);
@@ -127,11 +145,6 @@ try {
     if (exceptionDetails) throw new Error(exceptionDetails.exception?.description ?? exceptionDetails.text);
     return result.value;
   };
-  const navigate = async (url) => {
-    const loaded = new Promise((done) => { const off = cdp.on('Page.loadEventFired', () => { off(); done(); }); });
-    await cdp.send('Page.navigate', { url });
-    await loaded;
-  };
   // The shell boots in a few hundred ms, but a resource list then opens a watch and takes seconds more
   // to show a row: wait for both, or the shot is a spinner that looks like a working app.
   const waitForApp = async () => {
@@ -143,6 +156,17 @@ try {
     }
     for (let i = 0; i < 200 && /Loading\b|Loading…/.test(await text()); i += 1) await sleep(100);
     await sleep(SETTLE);
+  };
+  // "Not loading" is not "synced": a view says what its synced screen shows (`expect`) and the shot waits for it.
+  const waitForExpect = async (view) => {
+    let text = '';
+    const started = Date.now();
+    while (Date.now() - started < EXPECT_MS) {
+      text = await evaluate('document.body.innerText');
+      if (seen(text, view.expect)) { await sleep(600); return; }
+      await sleep(250);
+    }
+    throw new Error(`${view.expect} never appeared within ${EXPECT_MS / 1000}s; the page said: ${text.replace(/\s+/g, ' ').slice(0, 300)}`);
   };
 
   const KEYS = { Enter: 13, Escape: 27, Tab: 9, ArrowDown: 40, ArrowUp: 38 };
@@ -180,32 +204,58 @@ try {
     await sleep(step.wait ?? 1200);
   };
 
+  // Park the browser, write the view's settings, load the app on its route, wait for it to stop loading.
+  const open = async (view, theme) => {
+    const route = typeof view.route === 'function' ? view.route({ context: CONTEXT, pod }) : view.route;
+    // Park first: a page unloading while we write could flush its own old state over ours.
+    await navigate(cdp, 'about:blank');
+    await putSetting('srelens.design', APP_DESIGN);
+    await putSetting('srelens.next.appearance', { theme: APP_THEME[theme] });
+    await putSetting('srelens.next.namespaces', { [stableId]: view.namespaces ?? [] });
+    await putSetting('srelens.next.workspaces', workspaceDoc(contexts, CONTEXT, route));
+    await navigate(cdp, `${ORIGIN}/`);
+    await waitForApp();
+    return route;
+  };
+
   mkdirSync(OUT, { recursive: true });
-  if (!ONLY) for (const v of VIEWS.filter((x) => x.keep)) console.log(`kept ${v.name}: ${v.keep}`);
+  if (flags.only === undefined) for (const v of VIEWS.filter((x) => x.keep)) console.log(`kept ${v.name}: ${v.keep}`);
+  // Throwaway: the first load after the server starts can paint before the app has synced.
+  try { await open(RUN_VIEWS[0], THEMES[0]); } catch (err) { throw new Error(`warm-up: ${err.message}`); }
   for (const theme of THEMES) {
-    for (const view of VIEWS.filter((v) => (ONLY ? ONLY.has(v.name) : !v.keep))) {
-      const route = typeof view.route === 'function' ? view.route({ context: CONTEXT, pod }) : view.route;
-      // Park the browser first: a page unloading while we write could flush its own old state over ours.
-      await navigate('about:blank');
-      await putSetting('srelens.design', APP_DESIGN);
-      await putSetting('srelens.next.appearance', { theme: APP_THEME[theme] });
-      await putSetting('srelens.next.namespaces', { [stableId]: view.namespaces ?? [] });
-      await putSetting('srelens.next.workspaces', workspaceDoc(contexts, CONTEXT, route));
-      await navigate(`${ORIGIN}/`);
-      await waitForApp();
+    for (const view of RUN_VIEWS) {
       try {
+        const route = await open(view, theme);
         for (const step of view.steps ?? []) await run(step);
+        await waitForExpect(view);
+        const shot = await cdp.send('Page.captureScreenshot', { format: 'webp', quality: 82 });
+        writeFileSync(join(OUT, `${theme}-${view.name}.webp`), Buffer.from(shot.data, 'base64'));
+        console.log(`captured ${theme}-${view.name}.webp (${route})`);
       } catch (err) {
         throw new Error(`${theme}-${view.name}: ${err.message}`);
       }
-      const shot = await cdp.send('Page.captureScreenshot', { format: 'webp', quality: 82 });
-      writeFileSync(join(OUT, `${theme}-${view.name}.webp`), Buffer.from(shot.data, 'base64'));
-      console.log(`captured ${theme}-${view.name}.webp (${route})`);
     }
   }
+}
+
+try {
+  log = openSync(join(DATA, 'server.log'), 'a');
+  const { KUBECONFIG: _ignored, ...inherited } = process.env;
+  server = spawn(SERVER_BIN, ['serve', `127.0.0.1:${PORT}`, '--data', DATA], {
+    cwd: SRELENS,
+    stdio: ['ignore', log, log],
+    env: { ...inherited, SRELENS_DEV_LOGIN: 'site-shots@localhost', SRELENS_MASTER_KEY: randomBytes(32).toString('hex'), SRELENS_PUBLIC_URL: ORIGIN },
+  });
+  chrome = spawn(CHROME, ['--headless=new', `--remote-debugging-port=${CDP_PORT}`, `--user-data-dir=${join(DATA, 'chrome')}`, '--hide-scrollbars', '--no-first-run', '--no-default-browser-check', 'about:blank'], { stdio: 'ignore' });
+  // A child that cannot start emits 'error' (and would be an uncaught exception without a listener):
+  // make it fail the run, which still reaches the finally below.
+  const failedToStart = new Promise((_, reject) => {
+    for (const [name, child] of [['srelens-server', server], ['Chrome', chrome]]) child.on('error', (err) => reject(new Error(`${name} failed to start: ${err.message}`)));
+  });
+  failedToStart.catch(() => {}); // reported through the race below
+  const capturing = capture();
+  capturing.catch(() => {}); // when failedToStart wins, a later failure of the run is not a second report
+  await Promise.race([capturing, failedToStart]);
 } finally {
-  cdp?.close();
-  await stop(chrome);
-  await stop(server);
-  rmSync(DATA, { recursive: true, force: true, maxRetries: 10, retryDelay: 300 });
+  await cleanup();
 }
