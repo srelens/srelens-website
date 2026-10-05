@@ -62,7 +62,8 @@ class El {
 const el = (tag, attrs, children) => new El(tag, attrs, children);
 
 // The homepage's switch and drill, as served (no JS has run: every panel of the switch is visible).
-function fixture({ withModes = true, withDrill = true, fieldInTablist = false, errPath = null } = {}) {
+// `extras` adds elements to <body>; `reduced` is what prefers-reduced-motion reports.
+function fixture({ withModes = true, withDrill = true, fieldInTablist = false, errPath = null, extras = [], reduced = true } = {}) {
   const tabs = ['desktop', 'terminal'].map((m, i) => el('button', { id: `mode-tab-${m}`, role: 'tab', 'aria-selected': String(i === 0), 'data-mode-tab': m, tabindex: i === 0 ? undefined : '-1' }));
   const download = el('a', { id: 'mode-download' }); // a control inside the switch's container but outside its tab bar
   const panels = ['desktop', 'terminal'].map((m, i) => el('div', { id: `mode-${m}`, role: 'tabpanel', 'data-mode-panel': m }, i === 0 ? [download] : []));
@@ -78,12 +79,13 @@ function fixture({ withModes = true, withDrill = true, fieldInTablist = false, e
 
   const errSpan = errPath === null ? null : el('span', { 'data-err-path': '' }); // the 404 page's terminal line
   if (errSpan) Object.defineProperty(errSpan, 'innerHTML', { set() { throw new Error('innerHTML must not be used for the path'); } });
-  const body = el('body', {}, [...(withModes ? [modes] : []), ...(withDrill ? [...drillTabs, ...drillPanels, ...nexts] : []), ...(errSpan ? [errSpan] : [])]);
+  const body = el('body', {}, [...(withModes ? [modes] : []), ...(withDrill ? [...drillTabs, ...drillPanels, ...nexts] : []), ...(errSpan ? [errSpan] : []), ...extras]);
   const root = el('html', { 'data-theme': 'dark' }, [body]);
   const document = el('#document', {}, [root]);
   document.documentElement = root;
   document.body = body;
-  document.body.style = { setProperty() {} };
+  const styleCalls = []; // body.style.setProperty(...) calls
+  document.body.style = { setProperty: (...args) => styleCalls.push(args) };
   document.readyState = 'complete';
   document.activeElement = null;
   document.getElementById = (id) => document.querySelectorAll(`[id='${id}']`)[0] ?? null;
@@ -91,15 +93,26 @@ function fixture({ withModes = true, withDrill = true, fieldInTablist = false, e
   const all = [document, root, body, ...document.querySelectorAll('[id]'), ...body.querySelectorAll('[role]'), ...nexts];
   for (const node of all) node.ownerDocument = document;
 
+  const windowEvents = []; // event types main.js listens for on window
+  const timers = []; // setTimeout calls, never fired
+  const observers = []; // IntersectionObserver instances
+  const stored = {}; // localStorage writes
+  const copied = []; // clipboard writes
+  const IntersectionObserver = class { constructor() { observers.push(this); } observe() {} unobserve() {} };
   const window = {
-    matchMedia: () => ({ matches: true }),
-    addEventListener() {},
+    matchMedia: () => ({ matches: reduced }),
+    addEventListener: (type) => windowEvents.push(type),
     location: { hash: '', origin: 'http://localhost', pathname: errPath ?? '/' },
     scrollY: 0,
-    innerHeight: 800,
+    IntersectionObserver,
   };
-  vm.runInNewContext(source, { document, window, navigator: {}, history: {}, localStorage: { setItem() {} }, setTimeout() {} });
-  return { document, modes, tablist, tabs, panels, download, field, drillTabs, drillPanels, nexts, errSpan };
+  vm.runInNewContext(source, {
+    document, window, history: {}, IntersectionObserver,
+    navigator: { clipboard: { writeText: (text) => { copied.push(text); return Promise.resolve(); } } },
+    localStorage: { setItem: (key, value) => { stored[key] = value; } },
+    setTimeout: (fn, ms) => timers.push({ fn, ms }),
+  });
+  return { document, modes, tablist, tabs, panels, download, field, drillTabs, drillPanels, nexts, errSpan, windowEvents, timers, observers, styleCalls, stored, copied };
 }
 
 const state = (nodes) => nodes.map((n) => n.hidden);
@@ -197,4 +210,78 @@ test('the 404 path is written as text, never as markup', () => {
   const hostile = '/<img src=x onerror=alert(1)>/';
   const { errSpan } = fixture({ withModes: false, withDrill: false, errPath: hostile });
   assert.equal(errSpan.textContent, hostile);
+});
+
+// ---- no scroll progress, scroll reveal, typing log line or pod flip: the terminal-native pages have none of them ----
+
+test('main.js has no scroll-progress, scroll-reveal, typing-line or pod-flip block, and no reduced-motion branch', () => {
+  const dead = [
+    ['navigation scroll progress', '--scroll-progress'],
+    ['scroll reveal', 'IntersectionObserver'],
+    ['hero mock: typing log line', 'type-line'],
+    ['hero mock: pending pod flips to running', 'flip-status'],
+  ];
+  for (const [block, hook] of dead) {
+    assert.ok(!source.includes(block), `main.js still has the "${block}" block`);
+    assert.ok(!source.includes(hook), `main.js still reads ${hook}`);
+  }
+  assert.ok(!source.includes('.reveal'), 'main.js still selects .reveal');
+  assert.ok(!/\breduced\b/.test(source), 'main.js still has a reduced-motion branch, and nothing is left to animate');
+});
+
+test('nothing is wired to scrolling or resizing on a page without a table of contents', () => {
+  for (const reduced of [true, false]) {
+    const { windowEvents, styleCalls } = fixture({ reduced });
+    assert.ok(!windowEvents.includes('scroll') && !windowEvents.includes('resize'), `reduced=${reduced}: window listens for ${windowEvents}`);
+    assert.deepEqual(styleCalls, [], `reduced=${reduced}: body.style.setProperty was called`);
+  }
+});
+
+test('.reveal elements are left as served: no observer, no "in" class', () => {
+  for (const reduced of [true, false]) {
+    const reveal = el('div', { class: 'reveal' });
+    const { observers } = fixture({ reduced, extras: [reveal] });
+    assert.equal(observers.length, 0, `reduced=${reduced}: an IntersectionObserver was created`);
+    assert.ok(!reveal.classList.contains('in'), `reduced=${reduced}: .reveal got the "in" class`);
+  }
+});
+
+test('the hero log line and the pending pod are left as served: nothing is typed, nothing is scheduled', () => {
+  for (const reduced of [true, false]) {
+    const typeLine = el('span', { id: 'type-line' });
+    typeLine.textContent = 'payment gateway recovered — 200 OK (1.2s)';
+    const flip = el('td', { id: 'flip-status' });
+    flip.innerHTML = '<span class="status pending"><i></i>Pending</span>';
+    const { timers } = fixture({ reduced, extras: [typeLine, flip] });
+    assert.equal(timers.length, 0, `reduced=${reduced}: main.js scheduled ${timers.length} timer(s) at load`);
+    assert.equal(typeLine.textContent, 'payment gateway recovered — 200 OK (1.2s)');
+    assert.equal(flip.innerHTML, '<span class="status pending"><i></i>Pending</span>');
+  }
+});
+
+// ---- what the pages still use, kept ----
+
+test('the theme toggle flips data-theme and remembers the choice', () => {
+  const toggle = el('button', { class: 'theme-toggle' });
+  const { document, stored } = fixture({ extras: [toggle] });
+  toggle.dispatch('click');
+  assert.equal(document.documentElement.getAttribute('data-theme'), 'light');
+  assert.equal(stored.theme, 'light');
+  toggle.dispatch('click');
+  assert.equal(document.documentElement.getAttribute('data-theme'), 'dark');
+  assert.equal(stored.theme, 'dark');
+});
+
+test('a copy button copies its data-copy text and says so', () => {
+  const button = el('button', { 'data-copy': 'brew install srelens' });
+  button.textContent = 'copy';
+  const { copied } = fixture({ extras: [button] });
+  button.dispatch('click');
+  assert.deepEqual(copied, ['brew install srelens']);
+});
+
+test('the footer year is filled in', () => {
+  const year = el('span', { id: 'year' });
+  fixture({ extras: [year] });
+  assert.equal(year.textContent, String(new Date().getFullYear()));
 });

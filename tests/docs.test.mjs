@@ -167,18 +167,50 @@ test('every structure entry and every scripts/, tests/, docs/ or assets/ path th
   }
 });
 
-test('README documents the test run, shared shell, captures, OG cards and screenshots', () => {
+test('README documents the test run, shared shell, captures, OG cards, screenshots and the review set', () => {
   for (const cmd of [
     '`node --test`',
     'node scripts/apply-shell.mjs --all',
     'node scripts/embed-captures.mjs',
     'node scripts/og-cards.mjs',
+    'node scripts/screens.mjs',
+    '.superpowers/screens/final',
     'node scripts/shots/desktop-shots.mjs',
     'scripts/demo/capture-all.sh',
     'scripts/demo/capture.sh',
     'scripts/pages.mjs',
     'scripts/shell.mjs',
   ]) assert.ok(readme.includes(cmd), `README does not mention ${cmd}`);
+});
+
+test('the scripts that drive headless Chrome use a throwaway profile, never the user\'s own', () => {
+  for (const file of ['scripts/og-cards.mjs', 'scripts/screens.mjs']) {
+    const src = read(file);
+    assert.match(src, /mkdtempSync\(join\(tmpdir\(\)/, `${file} does not make a temp profile directory`);
+    assert.match(src, /--user-data-dir=\$\{profile\}/, `${file} does not pass --user-data-dir`);
+    assert.match(src, /finally\s*\{[^}]*rmSync\(profile/, `${file} does not remove the profile in finally`);
+  }
+});
+
+test('the review screenshots go to a fresh directory and cover every page at three widths in both themes', () => {
+  const src = read('scripts/screens.mjs');
+  assert.match(src, /'\.superpowers', 'screens', 'final'/);
+  assert.match(src, /rmSync\(out, \{ recursive: true, force: true \}\)/, 'stale shots from an earlier run would mix in');
+  assert.match(src, /WIDTHS = \[1440, 768, 390\]/);
+  assert.match(src, /\['light', 'dark'\]/);
+  assert.match(src, /listPages\(\)/);
+});
+
+test('each review screenshot is as tall as its page: the height is read from the loaded page, never a fixed number that truncates long pages', () => {
+  const src = read('scripts/screens.mjs');
+  // A frame or a short window leaves lazy images unloaded and misreads the page (/features/ is 10100px at 390, not 9819),
+  // so each page loads in a window taller than any page, its own height is read, and the shot is clipped to that.
+  assert.match(src, /import \{ connect, navigate \} from '\.\/shots\/cdp\.mjs'/, 'reuse the CDP client');
+  assert.match(src, /TALL = \d{5,}/, 'the loading window must be taller than every page');
+  assert.match(src, /Emulation\.setDeviceMetricsOverride/);
+  assert.match(src, /documentElement\.getBoundingClientRect\(\)\.height/);
+  assert.match(src, /clip: \{ x: 0, y: 0, width: w, height: pageHeight, scale: 1 \}/);
+  assert.ok(!/\[\d{4}, \d{4,}\]/.test(src) && !/--window-size/.test(src), 'a fixed window height is back');
 });
 
 test('README warns that node --test tests/ fails on Node 24', () => {

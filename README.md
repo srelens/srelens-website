@@ -35,7 +35,7 @@ assets/shots/       product screenshots (webp, 2400w, desktop dark-*/light-* and
 assets/captures/    raw ANSI sources of the srelens-tui text captures (not published)
 assets/og/          1200x630 OG cards per page (jpg and png)
 assets/media/       17-second product walkthrough in MP4 and GIF formats
-scripts/            authoring tools: shared shell, captures, screenshots, OG cards (not published)
+scripts/            authoring tools: shared shell, captures, screenshots, OG cards, review shots (not published)
 tests/              zero-dependency tests for URLs, SEO, shell, contrast, captures, docs (not published)
 docs/superpowers/   design spec and plans for the terminal-native redesign (not published)
 PRODUCT.md          durable product truth for future site work
@@ -120,6 +120,15 @@ node scripts/og-cards.mjs                         # in another; optional argumen
 ```
 
 Renders a 1200×630 PNG with headless Chrome (a throwaway profile; set `CHROME` if it is not at the default path) from `scripts/og-card.html` into `assets/og/` for every page in `scripts/pages.mjs` that names an `ogCard`. The title and path come from each page's H1 and canonical URL, so re-run it after an H1 changes.
+
+## Review screenshots
+
+```sh
+npx --yes http-server . -p 8080 -c-1 --silent     # in one shell
+node scripts/screens.mjs                          # in another; optional argument: the base URL
+```
+
+Renders every page at 1440, 768 and 390 px wide in both themes (`?theme=light|dark`) with headless Chrome (a throwaway profile; set `CHROME` if it is not at the default path) into `.superpowers/screens/final/<page>-<width>-<theme>.png`: 23 pages × 3 widths × 2 themes = 138 files. Each shot is as tall as its page, so long pages (`/docs/tui/` runs past 25,000 px at 390) are not cut off: Chrome is driven over DevTools (`scripts/shots/cdp.mjs`), the page loads in a window taller than any page so every lazy image has loaded, its own height is read, and the shot is clipped to it. The folder is emptied at the start of each run, is not part of the site, and nothing is committed. It is for a human to page through before a release; nothing asserts on the pixels.
 
 ## Deploy
 
