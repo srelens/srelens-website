@@ -97,7 +97,7 @@ All body-text pairs meet WCAG AA (4.5:1). A test enforces this (section 9).
 |---|---|---|
 | Display / headings / nav / labels / keycaps / commands | Geist Mono 500–700 | H1–H3, nav, path line, section labels, buttons, `kbd`, `code` |
 | Body | Geist 400–600 | paragraphs, lists, table cells, FAQ answers |
-| Terminal blocks | JetBrains Mono 500/700 | text-rendered TUI only (complete box-drawing coverage keeps columns aligned) |
+| Terminal blocks | `--font-term` JetBrains Mono 500/700; `--font-grid` Cascadia Mono, Menlo, Consolas for `.tui` captures | The Google Fonts JetBrains Mono subsets have no U+2500–25FF, so box borders would fall back at another advance (Consolas 0.55em vs 0.6em) and drift; `--font-grid` draws letters and borders in one system font so columns align |
 
 Scale: H1 `clamp(32px, 4.5vw, 58px)`, weight 600, line-height 1.08, tracking
 -0.045em. H2 `clamp(24px, 2.6vw, 32px)`, weight 600. H3 16px. Body 17px / 1.6.

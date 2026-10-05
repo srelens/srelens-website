@@ -70,6 +70,21 @@ test('every TSV row has a stored capture, and no capture shows loading, errors, 
     const plain = readFileSync(file, 'utf8').replace(/\x1b\[[0-9;:]*m/g, '');
     assert.doesNotMatch(plain, /[\x00-\x08\x0b-\x1f\x7f]/, `${name}: control characters left after the colors`);
     assert.doesNotMatch(plain, /Connecting\.\.\.|Loading\b|\berror:|Cluster unreachable|update available/i, `${name}: loading, error or update banner`);
-    assert.doesNotMatch(plain, /\[● 2:|kind-srelens(?!-demo)|\/Users\/|\/home\/|C:\|vrshu|Devesh|gmail|@[a-z0-9.-]+\.[a-z]{2,}|token|password/i, `${name}: other context or host data`);
+    assert.doesNotMatch(plain, /\[● 2:|kind-srelens(?!-demo)|\/Users\/|\/home\/|C:\\|vrshu|Devesh|gmail|@[a-z0-9.-]+\.[a-z]{2,}|token|password/i, `${name}: other context or host data`);
   }
+});
+
+// ---- Task 21 fix round 1: the hero pods capture matches the rest of the evidence ------------------
+
+test('the hero pods capture shows the same pod count as the overview capture, with ledger-worker selected', () => {
+  const raw = read('assets/captures/pods.ansi');
+  const plain = (s) => s.replace(/\x1b\[[0-9;:]*m/g, '');
+  const total = plain(read('assets/captures/overview.ansi')).match(/Total Pods:\s+(\d+)/)?.[1];
+  assert.ok(total, 'the overview capture states Total Pods');
+  assert.match(plain(raw), new RegExp(`Nodes: 3 Pods: ${total}\\b`), 'header pod count');
+  assert.match(plain(raw), new RegExp(`Pods \\[${total}\\]`), 'table title pod count');
+  // The selected row is the only one with the selection background (#2d3748).
+  const selected = raw.split('\n').filter((line) => line.includes('48;2;45;55;72'));
+  assert.equal(selected.length, 1, 'exactly one selected row');
+  assert.match(plain(selected[0]), /\bledger-worker-/, 'the selected row is ledger-worker');
 });

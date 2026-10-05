@@ -258,8 +258,8 @@ const KEPT = { 'tui/index.html': ['tui-assistant.webp', 'tui-mcp-agent.png', 'tu
 // Where each capture sits: [text that opens its section, capture name]. The section's first figure is the capture.
 const PLACED = {
   'tui/index.html': [['id="cluster-overview"', 'overview'], ['id="pod-operations"', 'pods'], ['id="argocd-gitops"', 'argo'], ['id="helm-inspector"', 'helm-detail'],
-    ['id="gpu-fleet"', 'gpu'], ['id="bgp-dashboard"', 'bgp'], ['id="log-streamer"', 'logs'], ['id="resource-tree"', 'tree'], ['<!-- ============ HERO SCREENSHOT', 'features']],
-  'docs/tui/index.html': [['<h2 id="overview">', 'overview'], ['<h2 id="keybindings">', 'features'], ['<h2 id="argocd-gitops">', 'argo'], ['<h2 id="pod-operations">', 'pods'],
+    ['id="gpu-fleet"', 'gpu'], ['id="bgp-dashboard"', 'bgp'], ['id="log-streamer"', 'logs'], ['id="resource-tree"', 'tree'], ['<!-- ============ STARTUP FEATURE GUIDE CAPTURE', 'features']],
+  'docs/tui/index.html': [['<h2 id="overview">', 'overview'], ['<h2 id="keybindings">', 'help'], ['<h2 id="argocd-gitops">', 'argo'], ['<h2 id="pod-operations">', 'pods'],
     ['<h2 id="helm-inspector">', 'helm-detail'], ['<h2 id="gpu-fleet">', 'gpu'], ['<h2 id="bgp-dashboard">', 'bgp'], ['<h2 id="log-streamer">', 'logs'], ['<h2 id="resource-tree">', 'tree']],
 };
 
@@ -313,4 +313,21 @@ test('120-column captures get the whole row in feature rows, and room around fig
   assert.match(tui, /^\.feature-row:has\(> \.tui-figure\) \{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/m);
   assert.match(tui, /^\.feature-row:has\(> \.tui-figure\) \.feature-narrative \{[^}]*max-width:\s*var\(--measure\)/m);
   assert.match(css, /^\.prose \.tui-figure \{[^}]*margin:\s*24px 0/m);
+});
+
+// ---- Task 21 fix round 1: box-drawing alignment -----------------------------------------------
+
+test('.tui draws box and block glyphs in --font-grid, whose first family is not the webfont that lacks them', () => {
+  // The Google Fonts JetBrains Mono subsets have no U+2500-25FF. Those glyphs then fall back to another
+  // font (Consolas is 0.55em, JetBrains Mono 0.6em), so borders drift. --font-grid starts with a
+  // system font that has the glyphs at the same advance as its own letters.
+  const css = read('site.css');
+  const grid = css.match(/^\s*--font-grid:\s*([^;]+);/m);
+  assert.ok(grid, ':root defines --font-grid');
+  const first = grid[1].split(',')[0].trim().replace(/^"|"$/g, '');
+  assert.ok(first && !/jetbrains|geist/i.test(first), `--font-grid starts with ${first}`);
+  const rule = css.match(/^\.tui \{[^}]*\}/m)?.[0];
+  assert.ok(rule, '.tui rule exists');
+  assert.match(rule, /font:[^;]*var\(--font-grid\)/, '.tui font uses --font-grid');
+  assert.doesNotMatch(rule, /var\(--font-term\)/, '.tui no longer uses --font-term');
 });
