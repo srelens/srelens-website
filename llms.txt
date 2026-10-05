@@ -1,11 +1,11 @@
 # srelens
 
-> srelens is a Kubernetes workspace — available as a native desktop GUI app and an ultra-fast standalone pure-Rust Terminal UI (`srelens-tui`) for browsing, inspecting, and operating Kubernetes clusters. It is built with a pure-Rust core (kube-rs), features 0ms Informer caching, deep Helm inspection, and includes a built-in MCP (Model Context Protocol) server and embedded AI assistant that exposes supported backend capabilities as AI-callable tools.
+> srelens is a Kubernetes workspace — available as a native desktop GUI app and an ultra-fast standalone pure-Rust Terminal UI (`srelens-tui`) for browsing, inspecting, and operating Kubernetes clusters. It is built with a pure-Rust core (kube-rs), features an in-memory Informer cache, deep Helm inspection, and includes a built-in MCP (Model Context Protocol) server and embedded AI assistant that exposes supported backend capabilities as AI-callable tools.
 
 Key facts:
 - Product type: desktop application (Kubernetes IDE / cluster workspace) & standalone Terminal UI (srelens-tui)
 - Platforms: macOS, Windows, Linux (Tauri v2 desktop app; standalone binary CLI / TUI)
-- Status: available — desktop installers and srelens-tui CLI archives published on GitHub Releases for macOS (Apple Silicon + Intel), Windows (x64 + ARM64), and Linux (x86_64 + aarch64); srelens-tui also installable via Homebrew (`brew install srelens/tap/srelens-tui`)
+- Status: available — desktop installers on GitHub Releases for macOS (Apple Silicon + Intel), Windows (x64), and Linux (x86_64); srelens-tui CLI archives for macOS (Apple Silicon + Intel), Windows (x64), and Linux (x86_64 + aarch64, glibc and static musl); srelens-tui also installable via Homebrew (`brew install srelens/tap/srelens-tui`)
 - Price: free, open source under the MIT license
 - Architecture: Rust core using kube-rs to talk to the Kubernetes API directly — no Electron, no Node.js in the core app runtime
 - Lineage: inspired by Lens / Freelens (Electron-based Kubernetes IDEs); srelens is a clean-room rebuild of that workflow, not a fork. Not affiliated with Mirantis (Lens) or the Freelens project.
@@ -37,9 +37,9 @@ Key facts:
 
 ## Features
 
-- Standalone pure-Rust Terminal UI (`srelens-tui`): in-memory Informer cache (0ms instant screen switching), Tab-completed command bar (`:po`, `:svc`, `:deploy`, `:helm`, `:workloads`, `:topology`, `:gpuinfo`, `:top`, `:ctx`), deep Helm inspector & values diff, interactive themes, and embedded AI assistant
+- Standalone pure-Rust Terminal UI (`srelens-tui`): in-memory Informer cache (instant screen switching for views already opened), Tab-completed command bar (`:po`, `:svc`, `:deploy`, `:helm`, `:workloads`, `:topology`, `:gpuinfo`, `:top`, `:ctx`), deep Helm inspector & values diff, interactive themes, and embedded AI assistant
 - Multi-cluster management: every context in your local kubeconfig, cluster hotbar, multiple kubeconfig files, context profiles and custom ordering
-- Resource browser covering 40+ Kubernetes kinds: workloads (Pods, Deployments, StatefulSets, DaemonSets, Jobs, CronJobs), config and storage (ConfigMaps, Secrets, PVCs, PVs, StorageClasses), networking (Services, Ingresses, NetworkPolicies, EndpointSlices), RBAC (Roles, ClusterRoles, bindings, ServiceAccounts), admission webhooks, autoscaling, Namespaces, Nodes, Events
+- Resource browser covering 35 built-in Kubernetes kinds plus any CRD: workloads (Pods, Deployments, StatefulSets, DaemonSets, Jobs, CronJobs), config and storage (ConfigMaps, Secrets, PVCs, PVs, StorageClasses), networking (Services, Ingresses, NetworkPolicies, EndpointSlices), RBAC (Roles, ClusterRoles, bindings, ServiceAccounts), admission webhooks, autoscaling, Namespaces, Nodes, Events
 - Live streaming resource watches (kube-rs watch streams, not polling)
 - Browser-style tabs: each tab is a (cluster, resource-kind) view
 - Schema-aware YAML editor with autocomplete and linting driven by the cluster's OpenAPI schema; create resources from templates and apply
@@ -59,7 +59,7 @@ Supported backend capabilities are registered in a shared capability registry an
 
 ## Common questions
 
-- Does srelens replace kubectl? No — it complements it. It doesn't require kubectl (it uses kube-rs directly) but is a workspace for investigation and operations, not a scripting/automation tool.
+- Does srelens replace kubectl? No — it complements it. srelens talks to the Kubernetes API directly through kube-rs and doesn't need kubectl for that; srelens-tui uses your local kubectl for pod and node shells and your local helm for rollbacks. It is a workspace for investigation and operations, not a scripting/automation tool.
 - Is it free? Yes, free and MIT-licensed.
 - Where does cluster data go? Nowhere — the app runs locally and talks directly to your clusters.
 
