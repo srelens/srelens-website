@@ -2,3 +2,5 @@
 *.sh text eol=lf
 # Raw terminal captures are byte-exact source files.
 assets/captures/*.ansi -text
+# FRR config is bind-mounted into a Linux container; keep LF on every checkout.
+scripts/demo/extras/frr/* text eol=lf
