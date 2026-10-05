@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { read, text } from './lib/site.mjs';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { ROOT, read, text } from './lib/site.mjs';
 import { captureHtml } from '../scripts/embed-captures.mjs';
 
 const html = read('tui/index.html');
@@ -35,8 +37,10 @@ test('the hero carries the capture caption and never claims CrashLoopBackOff (po
   assert.doesNotMatch(bare, /CrashLoopBackOff/);
 });
 
-test('the banner screenshot stays after the hero', () => {
-  assert.ok(html.indexOf('/assets/shots/tui-banner.webp') > html.indexOf('</section>', html.indexOf('<section class="page-hero">')));
+test('the startup feature guide is a text capture after the hero (it replaced the banner screenshot)', () => {
+  const heroEnd = html.indexOf('</section>', html.indexOf('<section class="page-hero">'));
+  assert.ok(html.indexOf('<!-- capture:features:start -->') > heroEnd);
+  assert.ok(!html.includes('/assets/shots/tui-banner.webp'));
 });
 
 test('stats are a stat grid of two cards that survive the claims check (C02, C04)', () => {
@@ -244,4 +248,69 @@ test('.page-hero .hero-actions is capped at its column so the nowrap install com
   const css = read('site.css');
   const tui = css.slice(css.indexOf('/* ---------- pages: tui ---------- */'));
   assert.match(tui, /^\.page-hero \.hero-actions \{[^}]*max-width:\s*100%/m);
+});
+
+// ---- Task 21: TUI screenshots that now have a text capture ------------------------------------
+
+const TUI_PAGES = ['tui/index.html', 'docs/tui/index.html'];
+const REPLACED = ['tui-overview.webp', 'tui-pods.webp', 'tui-argo.webp', 'tui-helm.webp', 'tui-bgp.webp', 'tui-gpuinfo.webp', 'tui-logs.webp', 'tui-tree.webp', 'tui-banner.webp'];
+const KEPT = { 'tui/index.html': ['tui-assistant.webp', 'tui-mcp-agent.png', 'tui-mcp-tools.png'], 'docs/tui/index.html': ['tui-assistant.webp', 'argocd-hub-spoke.png', 'tui-argo-config.png'] };
+// Where each capture sits: [text that opens its section, capture name]. The section's first figure is the capture.
+const PLACED = {
+  'tui/index.html': [['id="cluster-overview"', 'overview'], ['id="pod-operations"', 'pods'], ['id="argocd-gitops"', 'argo'], ['id="helm-inspector"', 'helm-detail'],
+    ['id="gpu-fleet"', 'gpu'], ['id="bgp-dashboard"', 'bgp'], ['id="log-streamer"', 'logs'], ['id="resource-tree"', 'tree'], ['<!-- ============ HERO SCREENSHOT', 'features']],
+  'docs/tui/index.html': [['<h2 id="overview">', 'overview'], ['<h2 id="keybindings">', 'features'], ['<h2 id="argocd-gitops">', 'argo'], ['<h2 id="pod-operations">', 'pods'],
+    ['<h2 id="helm-inspector">', 'helm-detail'], ['<h2 id="gpu-fleet">', 'gpu'], ['<h2 id="bgp-dashboard">', 'bgp'], ['<h2 id="log-streamer">', 'logs'], ['<h2 id="resource-tree">', 'tree']],
+};
+
+for (const file of TUI_PAGES) {
+  test(`${file}: TUI screenshots that now have a text capture are replaced`, () => {
+    // Only the body: tui-overview.webp stays as the og:image and JSON-LD image in the head until Task 22.
+    const page = read(file);
+    const body = page.slice(page.indexOf('<main'), page.indexOf('</main>'));
+    for (const image of REPLACED) assert.ok(!body.includes(`/assets/shots/${image}`), `${file} still uses ${image}`);
+  });
+
+  test(`${file}: the screenshots without a capture stay images, and every old image file stays published`, () => {
+    const page = read(file);
+    for (const image of KEPT[file]) assert.ok(page.includes(`/assets/shots/${image}`), `${file} lost ${image}`);
+    for (const image of [...REPLACED, ...KEPT[file]]) assert.ok(existsSync(join(ROOT, 'assets', 'shots', image)), `assets/shots/${image} was deleted`);
+  });
+
+  test(`${file}: each replaced screenshot is now a tui-figure holding its capture, with a truthful caption`, () => {
+    const page = read(file);
+    for (const [anchor, name] of PLACED[file]) {
+      const from = page.indexOf(anchor);
+      assert.ok(from > 0, `${anchor} exists`);
+      const section = page.slice(from, page.indexOf('</figure>', from) + '</figure>'.length);
+      assert.ok(section.includes(`<!-- capture:${name}:start -->`), `${anchor} holds capture "${name}"`);
+      assert.equal((section.match(/<figure/g) ?? []).length, 1, `${anchor}: the capture is the section's first figure`);
+      const figure = section.slice(section.indexOf('<figure class="tui-figure">'));
+      assert.match(figure, new RegExp(`<figure class="tui-figure">\\s*<pre class="tui" tabindex="0" role="region" aria-label="srelens-tui [^"]+, text capture"><!-- capture:${name}:start -->`), name);
+      const caption = figure.match(/<figcaption>([^<]+)<\/figcaption>/)?.[1];
+      assert.ok(caption, `${name}: figcaption`);
+      assert.match(caption, name === 'gpu'
+        ? /^srelens-tui [^·]+ · text capture from v0\.15\.0 · simulated GPU node \(kwok\)$/
+        : /^srelens-tui [^·]+ · text capture from v0\.15\.0$/, `${name}: ${caption}`);
+      assert.doesNotMatch(figure.replace(/<pre class="tui"[^>]*>[\s\S]*?<\/pre>/, ''), /CrashLoopBackOff/, `${name}: pods show the phase, not CrashLoopBackOff`);
+    }
+  });
+}
+
+test('the GPU capture says the node is simulated', () => {
+  for (const file of TUI_PAGES) {
+    const page = read(file);
+    const i = page.indexOf('<!-- capture:gpu:start -->');
+    assert.ok(i > 0, `${file} embeds the gpu capture`);
+    const figure = page.slice(i, page.indexOf('</figure>', i));
+    assert.match(figure, /simulated GPU node \(kwok\)/);
+  }
+});
+
+test('120-column captures get the whole row in feature rows, and room around figures in prose', () => {
+  const css = read('site.css');
+  const tui = css.slice(css.indexOf('/* ---------- pages: tui ---------- */'));
+  assert.match(tui, /^\.feature-row:has\(> \.tui-figure\) \{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/m);
+  assert.match(tui, /^\.feature-row:has\(> \.tui-figure\) \.feature-narrative \{[^}]*max-width:\s*var\(--measure\)/m);
+  assert.match(css, /^\.prose \.tui-figure \{[^}]*margin:\s*24px 0/m);
 });

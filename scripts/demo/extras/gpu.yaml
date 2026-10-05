@@ -1,0 +1,39 @@
+# Simulated GPU node for the :gpuinfo capture. kwok runs the node and its pods; no GPU exists.
+# Install kwok first (kwok.yaml and stage-fast.yaml from the kubernetes-sigs/kwok v0.6.1 release),
+# apply this file, capture, then delete this file and the kwok manifests.
+apiVersion: v1
+kind: Node
+metadata:
+  name: gpu-node-a100
+  annotations: { kwok.x-k8s.io/node: fake, node.alpha.kubernetes.io/ttl: "0" }
+  labels:
+    type: kwok
+    kubernetes.io/hostname: gpu-node-a100
+    nvidia.com/gpu.product: NVIDIA-A100-SXM4-80GB
+    nvidia.com/gpu.count: "8"
+    nvidia.com/gpu.memory: "81920"
+spec:
+  taints: [{ key: kwok.x-k8s.io/node, value: fake, effect: NoSchedule }]
+status:
+  allocatable: { cpu: "96", memory: 1Ti, pods: "110", nvidia.com/gpu: "8" }
+  capacity: { cpu: "96", memory: 1Ti, pods: "110", nvidia.com/gpu: "8" }
+---
+apiVersion: v1
+kind: Namespace
+metadata: { name: ml }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: trainer, namespace: ml }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: trainer } }
+  template:
+    metadata: { labels: { app: trainer } }
+    spec:
+      nodeSelector: { type: kwok }
+      tolerations: [{ key: kwok.x-k8s.io/node, operator: Exists, effect: NoSchedule }]
+      containers:
+        - name: trainer
+          image: busybox:1.36
+          resources: { limits: { nvidia.com/gpu: 2 } }

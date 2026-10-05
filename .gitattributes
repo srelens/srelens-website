@@ -4,3 +4,5 @@
 assets/captures/*.ansi -text
 # FRR config is bind-mounted into a Linux container; keep LF on every checkout.
 scripts/demo/extras/frr/* text eol=lf
+# The capture container reads this TSV with read -r, so a CRLF checkout would put a CR in the key list.
+scripts/demo/*.tsv text eol=lf

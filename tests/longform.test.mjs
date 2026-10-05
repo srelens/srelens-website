@@ -15,7 +15,9 @@ const pages = new Map(FILES.map((f) => [f, read(f)]));
 const tui = pages.get('docs/tui/index.html');
 const docs = pages.get('docs/index.html');
 const mainOf = (html) => html.slice(html.indexOf('<main'), html.indexOf('</main>'));
-const prose = (html) => text(mainOf(html));
+// The generated terminal captures (<pre class="tui">) are real product output, not page copy: prose checks skip them.
+const bare = (html) => html.replace(/<pre class="tui"[\s\S]*?<\/pre>/g, '');
+const prose = (html) => text(bare(mainOf(html)));
 // Compare markup without caring how a page wraps or indents it.
 const squash = (s) => s.replace(/\s+/g, ' ').replace(/> </g, '><');
 // Failure messages name what was found; they never dump a whole page.
@@ -65,7 +67,7 @@ test('every page with a table of contents lays it out as .content-shell: sticky 
 
 test('every <pre> is a .codeblock (terminal font, scrolls in its box) and each copy button copies exactly its code', () => {
   for (const [file, html] of pages) {
-    const body = mainOf(html);
+    const body = bare(mainOf(html));
     const pres = (body.match(/<pre[\s>]/g) ?? []).length;
     const blocks = [...body.matchAll(/<div class="codeblock">([\s\S]*?)<\/div>/g)].map((m) => m[1]);
     assert.equal(blocks.length, pres, `${file}: every <pre> sits in a .codeblock`);
@@ -109,12 +111,10 @@ test('/docs/tui/ keeps its 18-entry table of contents, in document order (the sc
   assert.deepEqual(h2s(tui).map((h) => h.id), TUI_TOC);
 });
 
-test('/docs/tui/ keeps its twelve real screenshots as images (a later task swaps in text captures)', () => {
+test('/docs/tui/ keeps three real screenshots as images; the other nine are text captures (Task 21)', () => {
   const shots = [...mainOf(tui).matchAll(/<figure class="shot">\s*<img src="([^"]+)" width="(\d+)" height="(\d+)" alt="([^"]{10,})">\s*<\/figure>/g)];
-  assert.deepEqual(shots.map((m) => m[1].replace('/assets/shots/', '')), [
-    'tui-overview.webp', 'tui-banner.webp', 'tui-assistant.webp', 'tui-argo.webp', 'argocd-hub-spoke.png', 'tui-argo-config.png',
-    'tui-pods.webp', 'tui-helm.webp', 'tui-gpuinfo.webp', 'tui-bgp.webp', 'tui-logs.webp', 'tui-tree.webp',
-  ]);
+  assert.deepEqual(shots.map((m) => m[1].replace('/assets/shots/', '')), ['tui-assistant.webp', 'argocd-hub-spoke.png', 'tui-argo-config.png']);
+  assert.equal((mainOf(tui).match(/<figure class="tui-figure">/g) ?? []).length, 9);
 });
 
 // ---- /docs/tui/ claim fixes ------------------------------------------------------------------
