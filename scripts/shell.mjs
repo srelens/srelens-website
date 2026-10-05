@@ -70,7 +70,7 @@ export function breadcrumbLd(page) {
 
 const FOOTER_GROUPS = [
   ['product', [['/features/', 'features'], ['/tui/', 'tui'], ['/mcp/', 'mcp'], ['/download/', 'download']]],
-  ['learn', [['/docs/', 'docs'], ['/docs/tui/', 'tui docs'], ['/guides/', 'sre guides'], ['/faq/', 'faq']]],
+  ['learn', [['/docs/', 'docs'], ['/docs/tui/', 'tui docs'], ['/guides/', 'sre guides'], ['/guides/crashloopbackoff/', 'CrashLoopBackOff'], ['/guides/oomkilled/', 'OOMKilled'], ['/guides/failed-deployment/', 'Failed deployment'], ['/faq/', 'faq']]],
   ['compare', [['/compare/', 'all comparisons'], ['/compare/lens/', 'lens'], ['/compare/k9s/', 'k9s'], ['/compare/headlamp/', 'headlamp'], ['/compare/freelens/', 'freelens'], ['/compare/aptakube/', 'aptakube'], ['/compare/kubernetes-dashboard/', 'kubernetes dashboard']]],
   ['project', [['/security/', 'security'], ['/architecture/', 'architecture'], ['https://github.com/srelens/srelens', 'github'], ['https://github.com/srelens/srelens/releases', 'releases']]],
 ];

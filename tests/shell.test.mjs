@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { read, ldNodes, siteVersion, listPages, meta, canonical, h1s } from './lib/site.mjs';
+import { read, ldNodes, siteVersion, listPages, meta, canonical, h1s, refs } from './lib/site.mjs';
 import { baselineFor } from './lib/baseline.mjs';
 import { PAGES, page } from '../scripts/pages.mjs';
 import {
@@ -194,4 +194,24 @@ test('applyShell keeps a $-pattern in the version literal in the footer, inserte
   const inserted = applyShell(doc(''), p, '1.$&');
   assert.ok(inserted.includes('<span data-version>v1.$&</span>'));
   assert.equal(applyShell(inserted, p, '1.$&'), inserted);
+});
+
+// ---- the footer lists every indexable page (spec section 4) ----
+
+test('footer links every indexable page: all published pages except the 404 and mirrors', () => {
+  const hrefs = new Set(refs(renderFooter('0.15.0')));
+  for (const p of PAGES.filter((e) => e.file !== '404.html' && !e.mirrorOf)) {
+    const path = new URL(canonical(read(p.file))).pathname;
+    assert.ok(hrefs.has(path), `the footer does not link ${path}`);
+  }
+});
+
+test('footer lists each guide in the learn column under its crumb label', () => {
+  const learn = renderFooter('0.15.0').match(/<p class="footer-h">learn<\/p><ul>(.*?)<\/ul>/)[1];
+  const guides = PAGES.filter((e) => e.file.startsWith('guides/') && e.file !== 'guides/index.html');
+  assert.equal(guides.length, 3);
+  for (const p of guides) {
+    const [label, href] = p.crumbs.at(-1);
+    assert.ok(learn.includes(`<li><a href="${href}">${label}</a></li>`), href);
+  }
 });

@@ -34,7 +34,8 @@ test('the hero keeps its One-Line Install eyebrow and h2 above the command row (
 
 test('the hero carries the capture caption and never claims CrashLoopBackOff (pods show the phase)', () => {
   assert.ok(html.includes('<figcaption>text capture · srelens-tui v0.15.0 on the srelens-demo kind cluster · select it</figcaption>'));
-  assert.doesNotMatch(bare, /CrashLoopBackOff/);
+  // The shared footer links the CrashLoopBackOff guide; that is a page title, not a claim about the TUI.
+  assert.doesNotMatch(bare.replace(/<footer class="site-footer">[\s\S]*?<\/footer>/, ''), /CrashLoopBackOff/);
 });
 
 test('the startup feature guide is a text capture after the hero (it replaced the banner screenshot)', () => {
