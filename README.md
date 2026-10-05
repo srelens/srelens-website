@@ -2,13 +2,13 @@
 
 Marketing site for [srelens](https://srelens.com) — the Kubernetes desktop workspace built in Rust.
 
-Pure static HTML/CSS/JS. No build step, no framework, no dependencies. Deploy the directory as-is to any static host.
+Pure static HTML/CSS/JS. No build step, no framework, no dependencies. Deploy the directory as-is to any static host. The authoring tools in `scripts/` and the tests in `tests/` are plain Node scripts with no npm dependencies, and neither is published.
 
 ## Structure
 
 ```
 index.html          landing page (SoftwareApplication + WebSite + Organization JSON-LD)
-features/           feature deep-dive with 14 real workflows in both themes
+features/           feature deep-dive with 17 real workflows in both themes
 tui/                dedicated landing page for the pure-Rust Terminal UI (srelens-tui)
 mcp/                the built-in MCP server for AI agents (setup + example)
 compare/            comparison hub + Lens, Headlamp, K9s, Freelens/OpenLens,
@@ -20,9 +20,9 @@ guides/             SRE runbooks for CrashLoopBackOff, OOMKilled, and failed rol
 security/           desktop, MCP, package, and web-deployment security boundaries
 architecture/       React, Tauri, Rust capability registry, kube-rs, and MCP system map
 404.html            not-found page
-styles.css          all styles (design tokens at the top; .shot = screenshot frame)
-enterprise.css      enterprise operations-brief visual system shared by every page
+site.css            the whole design system: tokens, base, components, page sections
 main.js             progressive enhancement only — pages work without JS
+_config.yml         Jekyll excludes that keep repo-internal files off srelens.com
 robots.txt          crawler policy + sitemap pointer
 sitemap.xml         all public pages
 llms.txt            AI/answer-engine summary of the product (AEO)
@@ -32,25 +32,94 @@ _headers            security + cache headers (Netlify / Cloudflare Pages)
 vercel.json         same headers for Vercel
 assets/             logos, favicons, OG sources
 assets/shots/       product screenshots (webp, 2400w, desktop dark-*/light-* and tui-*)
-assets/og/          1200x630 OG images per page (jpg)
+assets/captures/    raw ANSI sources of the srelens-tui text captures (not published)
+assets/og/          1200x630 OG cards per page (jpg and png)
 assets/media/       17-second product walkthrough in MP4 and GIF formats
+scripts/            authoring tools: shared shell, captures, screenshots, OG cards (not published)
+tests/              zero-dependency tests for URLs, SEO, shell, contrast, captures, docs (not published)
+docs/superpowers/   design spec and plans for the terminal-native redesign (not published)
 PRODUCT.md          durable product truth for future site work
-DESIGN.md           enterprise design tokens, patterns, and guardrails
+DESIGN.md           the design system: tokens, rules, components, evidence
+.impeccable/        design.json, the machine-readable design system
 ```
+
+## Tests
+
+```sh
+node --test
+```
+
+Zero dependencies. Run it bare from the repo root: `node --test tests/` fails on Node 24 (it looks for a module called `tests`). The tests guard the published page set, every internal link and fragment, the SEO baseline, version agreement, the shared shell, WCAG contrast of the `site.css` tokens, the embedded terminal captures, and the design docs against `site.css` (`tests/docs.test.mjs`).
+
+## Shared shell
+
+The header, path line, footer, head links, `BreadcrumbList` JSON-LD, robots tag and Open Graph tags are generated, not hand-edited. To change them, edit `scripts/pages.mjs` (the page manifest: current nav link, crumb text, OG card) or `scripts/shell.mjs` (the markup), then run:
+
+```sh
+node scripts/apply-shell.mjs --all
+```
+
+or name pages: `node scripts/apply-shell.mjs index.html tui/index.html`. It also refreshes `docs/tui.html`, which is a byte-identical copy of `docs/tui/index.html` (a test fails if they differ).
 
 ## Screenshots
 
-Every product image is a real capture of srelens connected to a live 3-node kind
-cluster (`srelens-demo`: 1 control-plane + 2 workers) with demo workloads across
-`payments` / `checkout` / `monitoring` namespaces, including a deliberately
-crash-looping pod and metrics-server for live usage numbers. Captured as an
-app-only 3456×2168 window in both themes, cropped below the 64px title bar, and
-encoded as 2400×1461 WebP (`cwebp -q 82`).
-The site's theme toggle swaps `.shot-dark` / `.shot-light` images.
+Desktop screenshots show srelens v0.15.0 connected to a live 3-node kind cluster (`srelens-demo`: 1 control-plane + 2 workers). The demo workloads (`scripts/demo/workloads.yaml`) span `payments` / `checkout` / `monitoring` and include a deliberately crash-looping pod (`ledger-worker`) and metrics-server for live usage numbers. `scripts/demo/extras.sh` adds a Helm release with two revisions, Argo CD with an Application, and MetalLB peering with an FRR router for BGP.
 
-To refresh: recreate a kind cluster with similar workloads, capture with
-`screencapture`, crop the top 64px, resample to 2400×1461, encode with cwebp, and
-regenerate the OG crops (1200×630 jpg) from the dark PNGs.
+They are captured in web mode, not from the native app. `srelens-server`, built from the srelens repo at the release tag, serves the same React UI ("next" design) with an isolated data directory and a dev login, and only the `srelens-demo` kubeconfig is uploaded. The native app is never run for this, because its settings and vault key live in the real user profile and OS credential store.
+
+```sh
+node scripts/shots/desktop-shots.mjs \
+  --srelens=<srelens worktree with target/debug/srelens-server.exe built> \
+  --kubeconfig=.superpowers/capture/kubeconfig-host \
+  [--context=kind-srelens-demo] [--only=overview,pods] [--themes=dark,light] [--out=assets/shots]
+```
+
+It drives headless Chrome over the DevTools Protocol (set `CHROME` if it is not at the default path) at a 1600×974 viewport with device scale 1.5, and writes `assets/shots/{dark,light}-<view>.webp` at 2400×1461, quality 82. Each view's route, the text that proves it has synced, and any click steps live in `scripts/shots/views.mjs`. Add a view there to capture a new one.
+
+Two views carry a `keep` field and are skipped by a full run: `mcp` and `port-forwards`. Web mode cannot show them faithfully (the MCP server pane exists only in the desktop app, and the port-forward Local column shows the server proxy URL, not the desktop `127.0.0.1:8080`), so their existing images, captured by hand from the desktop app, stay. `--only=mcp` still captures them. Two more kinds of image are kept on purpose: the `srelens-tui` AI assistant screenshot (it needs a real provider key) and the Cursor MCP agent screenshots (a third-party app).
+
+## Terminal capture
+
+The terminal blocks are real `srelens-tui` v0.15.0 text, not mock-ups. Everything uses an isolated kubeconfig, `.superpowers/capture/kubeconfig-host` (context `kind-srelens-demo`). `~/.kube/config` is never read or written, and no other cluster is touched. The `.superpowers/capture/` folder is working space and is not part of the site.
+
+```sh
+# 1. the cluster, with its own kubeconfig
+kind create cluster --config scripts/demo/kind.yaml --kubeconfig .superpowers/capture/kubeconfig-host
+K="kubectl --kubeconfig .superpowers/capture/kubeconfig-host --context kind-srelens-demo"
+$K apply -f scripts/demo/workloads.yaml
+$K apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+$K -n kube-system patch deployment metrics-server --type=json \
+  -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+bash scripts/demo/extras.sh        # Helm, Argo CD, BGP
+
+# 2. an in-network kubeconfig and the capture scripts, for the container
+kind get kubeconfig --name srelens-demo --internal > .superpowers/capture/kubeconfig
+cp scripts/demo/capture.sh scripts/demo/capture-all.sh scripts/demo/tui-captures.tsv .superpowers/capture/
+
+# 3. capture inside Docker on the kind network (MSYS_NO_PATHCONV=1 keeps Git Bash from rewriting /work)
+MSYS_NO_PATHCONV=1 docker run --rm --network kind -v "$(pwd -W 2>/dev/null || pwd)/.superpowers/capture:/work" \
+  -e KUBECONFIG=/work/kubeconfig ubuntu:24.04 bash /work/capture-all.sh
+```
+
+`scripts/demo/capture-all.sh` installs the pinned `srelens-tui` (`VERSION=0.15.0`) in the container, then captures every row of `scripts/demo/tui-captures.tsv` in tmux at 120×32 (100 columns truncated the STATUS and NAME columns), writing `.superpowers/capture/out/<name>.ansi`. Add `-e ONLY=overview,helm` to the `docker run` to capture only those rows. The homepage and `/tui/` hero capture, the pods view with `ledger-worker` selected, comes from `scripts/demo/capture.sh` the same way (`-e JUMP=<n>` moves the selection down n rows; the TUI sorts pods by name) and writes `pods.ansi`. The `gpu` row needs a simulated node: install kwok v0.6.1, apply `scripts/demo/extras/gpu.yaml`, capture with `ONLY=gpu`, then remove them again. Its caption says the node is simulated.
+
+Copy the `.ansi` files into `assets/captures/`, then embed them:
+
+```sh
+node scripts/embed-captures.mjs
+node --test
+```
+
+Pages hold `<!-- capture:NAME:start --><!-- capture:NAME:end -->` marker pairs. The embed script fills each one from the `.ansi` file of the same name in `assets/captures/`, through `scripts/ansi-to-html.mjs`, and `tests/captures.test.mjs` fails if an embedded capture differs from a fresh conversion or shows a loading screen, an update banner or a stray host path.
+
+## OG cards
+
+```sh
+npx --yes http-server . -p 8080 -c-1 --silent     # in one shell
+node scripts/og-cards.mjs                         # in another; optional argument: the base URL
+```
+
+Renders a 1200×630 PNG with headless Chrome (a throwaway profile; set `CHROME` if it is not at the default path) from `scripts/og-card.html` into `assets/og/` for every page in `scripts/pages.mjs` that names an `ogCard`. The title and path come from each page's H1 and canonical URL, so re-run it after an H1 changes.
 
 ## Deploy
 
@@ -59,7 +128,7 @@ Any of these work with zero config:
 - **Netlify**: drag the folder into the dashboard, or `netlify deploy --prod --dir .`
 - **Vercel**: `vercel --prod`
 - **Cloudflare Pages**: create a project, upload the directory
-- **GitHub Pages**: push to a repo, enable Pages on the root
+- **GitHub Pages**: push to a repo, enable Pages on the root. Pages builds with Jekyll, so `_config.yml` excludes `README.md`, `PRODUCT.md`, `DESIGN.md`, `docs/superpowers`, `tests`, `scripts`, `assets/captures` and `vercel.json`, which would otherwise be published.
 
 ## Installation script
 
@@ -70,12 +139,16 @@ static shell script. `install.sh` is copied verbatim from
 when the upstream installer changes; GitHub Pages cannot proxy the upstream URL.
 Run `sh -n install.sh` before publishing an update.
 
-## Release hygiene
+## Release bump
 
-- `main.js` rewrites `[data-version]` labels and `[data-asset]` hrefs from the
-  GitHub Releases API at load; the hardcoded links are the no-JS fallback —
-  bump them (and the `softwareVersion` in index.html JSON-LD) when releases advance.
-- Bump `lastmod` in `sitemap.xml` when content changes.
+`main.js` rewrites `[data-version]` labels and `[data-asset]` hrefs from the GitHub Releases API at load; the hardcoded values are the no-JS fallback. When a new stable release (`srelens-vX.Y.Z`) ships:
+
+1. Update `RELEASE` in `tests/version.test.mjs`.
+2. Update `softwareVersion` in the JSON-LD on `/` and `/tui/`.
+3. Update the `<span data-version>` fallback labels and the fallback download URLs (`releases/download/srelens-vX.Y.Z/…`; the asset names carry the version too). `node scripts/apply-shell.mjs --all` re-renders the footer's version from the homepage JSON-LD.
+4. Re-capture the evidence for the new version: the desktop screenshots (`node scripts/shots/desktop-shots.mjs`), then the terminal captures (run `capture.sh` and `capture-all.sh` with `VERSION=X.Y.Z`, then `node scripts/embed-captures.mjs`). Update the captions that name the version.
+5. Run `node --test`. Every `softwareVersion`, `data-version` label and download URL must agree with `RELEASE`.
+6. Bump `lastmod` in `sitemap.xml`.
 
 ## SEO / AEO checklist (already included)
 
@@ -91,6 +164,6 @@ Run `sh -n install.sh` before publishing an update.
 ## Local preview
 
 ```sh
-python3 -m http.server 8080
+npx --yes http-server . -p 8080 -c-1 --silent
 # open http://localhost:8080
 ```

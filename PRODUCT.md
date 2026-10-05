@@ -54,7 +54,9 @@ and a downloadable release.
 
 ## Evidence on Hand
 
-- Fourteen real product workflows captured in light and dark themes.
+- Seventeen real product workflows on /features/, captured in light and dark themes.
+- Real `srelens-tui` v0.15.0 text captures of the demo cluster, embedded as
+  selectable text from `assets/captures/`.
 - Current feature inventory, MCP setup instructions, download details, FAQs, and
   source links in the existing public pages.
 - Six current comparison guides backed by first-party project sources.
