@@ -88,14 +88,14 @@ test('/mcp/ lays its client configs out in a compare-grid with no inline styling
 test('/mcp/ code blocks are <pre><code> inside .codeblock, so they take the terminal font', () => {
   const blocks = [...mainOf(mcp).matchAll(/<div class="codeblock">([\s\S]*?)<\/div>/g)].map((m) => m[1]);
   assert.equal(blocks.length, 5);
-  for (const block of blocks) assert.match(block, /<pre><code>[\s\S]*<\/code><\/pre>/);
+  for (const block of blocks) assert.match(block, /<pre[^>]*><code>[\s\S]*<\/code><\/pre>/);
   assert.match(css, /\.codeblock pre code \{ font: inherit;/);
 });
 
 test('/mcp/ keeps the screenshot, its caption and the example tool call', () => {
   assert.ok(mcp.includes('<p class="shot-cap">real screenshot · the MCP panel in srelens settings, server listening on loopback</p>'));
   const example = sectionOf(mcp, 'example');
-  assert.match(example, /<div class="mini" aria-label="Example MCP tool call">\s*<div class="mini-bar">[\s\S]*<div class="mini-body">\s*<pre>/);
+  assert.match(example, /<div class="mini" aria-label="Example MCP tool call">\s*<div class="mini-bar">[\s\S]*<div class="mini-body">\s*<pre[^>]*>/);
 });
 
 test('/mcp/ gives the MCP flags per binary and says where the server runs (C34)', () => {
@@ -162,7 +162,7 @@ test('the Homebrew and from-source headings sit close to their notes (the old in
 });
 
 test('/mcp/ example: every key line of the JSON body is indented alike, "_confirm" included', () => {
-  const pre = sectionOf(mcp, 'example').match(/<div class="mini-body">\s*<pre>([\s\S]*?)<\/pre>/)[1];
+  const pre = sectionOf(mcp, 'example').match(/<div class="mini-body">\s*<pre[^>]*>([\s\S]*?)<\/pre>/)[1];
   const keyed = pre.split('\n').filter((line) => /^\s*<span class="tk-key">"/.test(line));
   assert.equal(keyed.length, 6);
   for (const line of keyed) assert.match(line, /^ {2}<span class="tk-key">"/, line);

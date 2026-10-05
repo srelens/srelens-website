@@ -27,7 +27,7 @@ const never = (html, re, label) => {
 };
 const has = (html, snippet) => assert.ok(squash(html).includes(squash(snippet)), `missing: ${snippet}`);
 // The text of every code block on a page, so a test does not care how a block is highlighted.
-const codeOf = (html) => [...mainOf(html).matchAll(/<pre><code>([\s\S]*?)<\/code><\/pre>/g)].map((m) => decode(m[1].replace(/<[^>]+>/g, ''))).join('\n');
+const codeOf = (html) => [...mainOf(html).matchAll(/<pre[^>]*><code>([\s\S]*?)<\/code><\/pre>/g)].map((m) => decode(m[1].replace(/<[^>]+>/g, ''))).join('\n');
 const hasCode = (html, snippet) => assert.ok(squash(codeOf(html)).includes(squash(snippet)), `missing in a code block: ${snippet}`);
 const classesIn = (html) => {
   const used = new Set();
@@ -72,7 +72,7 @@ test('every <pre> is a .codeblock (terminal font, scrolls in its box) and each c
     const blocks = [...body.matchAll(/<div class="codeblock">([\s\S]*?)<\/div>/g)].map((m) => m[1]);
     assert.equal(blocks.length, pres, `${file}: every <pre> sits in a .codeblock`);
     for (const block of blocks) {
-      const code = block.match(/<pre><code>([\s\S]*?)<\/code><\/pre>/);
+      const code = block.match(/<pre[^>]*><code>([\s\S]*?)<\/code><\/pre>/);
       assert.ok(code, `${file}: pre > code`);
       const btn = block.match(/<button class="copy-btn" type="button" data-copy=(?:"([^"]*)"|'([^']*)')>copy<\/button>/);
       if (btn) assert.equal(decode(btn[1] ?? btn[2]), decode(code[1].replace(/<[^>]+>/g, '')), `${file}: copy payload`);
