@@ -7,7 +7,8 @@ import { baselineFor } from './lib/baseline.mjs';
 // Format: { 'tui/index.html': ['Heading text', ...] }
 const REMOVED_HEADINGS = {
   // C07 (claims check): "40+ resource kinds" is reworded to "35 resource kinds + CRDs".
-  'index.html': ['40+ resource kinds'],
+  // Devesh 2026-10-05 owner review (A2, A5): the pod page shows current metrics with YAML a tab away; logs, shells and forwards open as tabs.
+  'index.html': ['40+ resource kinds', 'Live metrics beside the manifest', 'Logs, shells & forwards in the dock'],
   // C01/C03: the "Startup Time" and "Memory Footprint" stat cards are removed (no measurement behind <15ms / <25MB).
   // C02/C04: the "Informer Cache" and "Pure Rust Core" stat cards are reworded to "Warm watches" and "Rust core".
   'tui/index.html': ['Startup Time', 'Informer Cache', 'Memory Footprint', 'Pure Rust Core'],

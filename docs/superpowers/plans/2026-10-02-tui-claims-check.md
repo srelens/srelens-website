@@ -269,8 +269,9 @@ Devesh approved every recommendation in `.superpowers/sdd/2026-10-02-terminal-na
 
 **Allowances added to `tests/seo.test.mjs`** (each carries `// Devesh 2026-10-05 owner review: <item>`): `META_CHANGES` for `tui/index.html` (`description`, `og:description`, `twitter:description`, C9) and `download/index.html` (`description`, C11); `LD_DESCRIPTION_CHANGES` for `tui/index.html` (C10, replacing the earlier replacement text); `LD_ANSWER_CHANGES` for `faq/index.html` (C13, eight entries, the first one's replacement text changed).
 
+**Homepage headings (A2, A5, applied after the review):** the H3s "Live metrics beside the manifest" and "Logs, shells & forwards in the dock" became "Metrics on the pod page" and "Logs, shells & forwards in tabs", with `REMOVED_HEADINGS` allowances in `tests/copy.test.mjs`.
+
 **Open (not decided here)**
 
-- The homepage H3 "Logs, shells & forwards in the dock" still says "dock".
 - `og:image:alt` on `/features/` ("pod detail drawer with live metrics beside the pods table") and the `og-*.jpg` cards for the homepage, features, FAQ, MCP, download and compare pages still show the old UI. They are consistent with each other, so they were left until the cards are regenerated.
 - The FAQ answer "Every product image on this site is an unedited capture ... three-node kind cluster" has the same 3-node problem as llms line 12 (C14) for the TUI GPU capture.

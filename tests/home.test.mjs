@@ -168,3 +168,12 @@ test('A5: logs, shells and forwards open as tabs; nothing is docked', () => {
 test('C9: the hero lede says "fast terminal UI", not "ultra-fast"', () => {
   assert.ok(text(afterHead).includes('high-performance desktop workspace or a fast terminal UI (srelens-tui)'));
 });
+
+// Owner review 2026-10-05 (A2, A5): the pod page shows current metrics with YAML one tab away, and logs, shells
+// and forwards open as tabs, so the feature-row headings no longer promise a manifest side by side or a dock.
+test('the homepage feature rows name the pod page and tabs, not a dock or a side-by-side manifest', () => {
+  const h3s = [...html.matchAll(/<h3>([\s\S]*?)<\/h3>/g)].map((m) => text(m[1]));
+  assert.ok(h3s.includes('Metrics on the pod page'), 'pod metrics heading');
+  assert.ok(h3s.includes('Logs, shells & forwards in tabs'), 'tabs heading');
+  assert.ok(!h3s.some((h) => /\bdock\b|beside the manifest/i.test(h)), h3s.join(' | '));
+});
