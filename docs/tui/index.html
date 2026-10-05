@@ -171,7 +171,7 @@ brew install srelens/tap/srelens-tui
 
 # Launch
 srelens-tui'>copy</button>
-<pre tabindex="0" role="region" aria-label="Code example"><code><span class="c"># Tap and install srelens-tui</span>
+<pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Tap and install srelens-tui</span>
 brew install srelens/tap/srelens-tui
 
 <span class="c"># Launch</span>
@@ -182,13 +182,13 @@ srelens-tui</code></pre>
           <p>Download and install the latest static binary for your architecture automatically:</p>
           <div class="codeblock">
             <button class="copy-btn" type="button" data-copy='curl -fsSL https://srelens.com/install.sh | bash'>copy</button>
-<pre tabindex="0" role="region" aria-label="Code example"><code>curl -fsSL https://srelens.com/install.sh | bash</code></pre>
+<pre tabindex="0" role="group" aria-label="Code example"><code>curl -fsSL https://srelens.com/install.sh | bash</code></pre>
           </div>
 
           <h3>Cargo (From Source)</h3>
           <div class="codeblock">
             <button class="copy-btn" type="button" data-copy='cargo install --git https://github.com/srelens/srelens srelens-tui'>copy</button>
-<pre tabindex="0" role="region" aria-label="Code example"><code>cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
+<pre tabindex="0" role="group" aria-label="Code example"><code>cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
           </div>
 
           <h3>Updating in-place</h3>
@@ -201,7 +201,7 @@ srelens-tui update --check
 
 # Download and apply update in-place
 srelens-tui update'>copy</button>
-<pre tabindex="0" role="region" aria-label="Code example"><code><span class="c"># Check for available updates without installing</span>
+<pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Check for available updates without installing</span>
 srelens-tui update --check
 
 <span class="c"># Download and apply update in-place</span>
@@ -210,7 +210,7 @@ srelens-tui update</code></pre>
 
           <h2 id="cli-usage">CLI Arguments &amp; Flags</h2>
           <div class="codeblock">
-<pre tabindex="0" role="region" aria-label="Code example"><code>srelens-tui [TARGET] [-n NAMESPACE] [-A] [-c CONTEXT] [-k KUBECONFIG] [SUBCOMMAND]</code></pre>
+<pre tabindex="0" role="group" aria-label="Code example"><code>srelens-tui [TARGET] [-n NAMESPACE] [-A] [-c CONTEXT] [-k KUBECONFIG] [SUBCOMMAND]</code></pre>
           </div>
 
           <table>
@@ -829,7 +829,7 @@ srelens-tui mcp --allow-destructive
 
 # Full access (sensitive reads + destructive mutations)
 srelens-tui mcp --allow-sensitive-reads --allow-destructive'>copy</button>
-<pre tabindex="0" role="region" aria-label="Code example"><code><span class="c"># Safe read-only mode (default: secrets masked, mutations blocked)</span>
+<pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Safe read-only mode (default: secrets masked, mutations blocked)</span>
 srelens-tui mcp
 
 <span class="c"># Allow reading sensitive Secret data in plaintext</span>
@@ -856,7 +856,7 @@ srelens-tui mcp --allow-sensitive-reads --allow-destructive</code></pre>
     }
   }
 }'>copy</button>
-<pre tabindex="0" role="region" aria-label="Code example"><code>{
+<pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
       "command": "srelens-tui",
@@ -884,7 +884,7 @@ srelens-tui mcp --allow-sensitive-reads --allow-destructive</code></pre>
     }
   }
 }'>copy</button>
-<pre tabindex="0" role="region" aria-label="Code example"><code>{
+<pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
       "command": "srelens-tui",
@@ -905,7 +905,7 @@ claude mcp add srelens -- srelens-tui mcp
 
 # With sensitive reads and destructive mutations enabled
 claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destructive'>copy</button>
-<pre tabindex="0" role="region" aria-label="Code example"><code><span class="c"># Safe default (read-only)</span>
+<pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Safe default (read-only)</span>
 claude mcp add srelens -- srelens-tui mcp
 
 <span class="c"># With sensitive reads and destructive mutations enabled</span>
@@ -926,7 +926,7 @@ claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destru
     }
   }
 }'>copy</button>
-<pre tabindex="0" role="region" aria-label="Code example"><code>{
+<pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
       "command": "srelens-tui",
@@ -954,7 +954,7 @@ claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destru
     }
   }
 }'>copy</button>
-<pre tabindex="0" role="region" aria-label="Code example"><code>{
+<pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
       "command": "srelens-tui",
@@ -985,7 +985,7 @@ srelens-tui info
 
 # Check local CLI toolchains
 srelens-tui toolbox'>copy</button>
-<pre tabindex="0" role="region" aria-label="Code example"><code><span class="c"># Run cluster reachability diagnostics</span>
+<pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Run cluster reachability diagnostics</span>
 srelens-tui info
 
 <span class="c"># Check local CLI toolchains</span>

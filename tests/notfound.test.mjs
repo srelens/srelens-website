@@ -9,7 +9,7 @@ const html = read('404.html');
 test('404 stays out of the index', () => assert.equal(meta(html, 'robots'), 'noindex'));
 
 test('404 shows the requested path in a terminal line, with a static fallback', () => {
-  assert.match(html, /<pre class="err-term" tabindex="0" role="region" aria-label="Terminal output"><span class="cmd-p">\$<\/span> curl -I https:\/\/srelens\.com<span data-err-path>\/missing-page<\/span>\n<span class="err-status">HTTP\/2 404<\/span><\/pre>/);
+  assert.match(html, /<pre class="err-term" tabindex="0" role="group" aria-label="Terminal output"><span class="cmd-p">\$<\/span> curl -I https:\/\/srelens\.com<span data-err-path>\/missing-page<\/span>\n<span class="err-status">HTTP\/2 404<\/span><\/pre>/);
 });
 
 test('404 keeps its copy and links back into the site', () => {

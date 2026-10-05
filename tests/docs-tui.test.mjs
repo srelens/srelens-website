@@ -22,10 +22,12 @@ const publishedScripts = () => execFileSync('git', ['ls-files', '*.js', '*.mjs',
 
 // The one allowed statement: when <dialog> is unsupported, the walkthrough button (a click, never a page load)
 // opens the MP4 itself. It redirects nobody and no URL changes meaning.
-const ALLOWED_NAVIGATION = ['window.location.href = "/assets/media/srelens-product-tour.mp4";'];
+const ALLOWED_NAVIGATION = { 'main.js': ['window.location.href = "/assets/media/srelens-product-tour.mp4";'] };
 
-test('the allowed navigation is still in main.js (drop the allowance when it goes)', () => {
-  for (const statement of ALLOWED_NAVIGATION) assert.equal(read('main.js').split(statement).length - 1, 1, statement);
+test('the allowed navigation is still in its file (drop the allowance when it goes)', () => {
+  for (const [file, statements] of Object.entries(ALLOWED_NAVIGATION)) {
+    for (const statement of statements) assert.equal(read(file).split(statement).length - 1, 1, `${file}: ${statement}`);
+  }
 });
 
 test('no page or published script redirects with JavaScript', () => {
@@ -34,7 +36,7 @@ test('no page or published script redirects with JavaScript', () => {
   const hits = [];
   for (const file of [...listPages(), ...scripts]) {
     read(file).split('\n').forEach((line, i) => {
-      if (JS_REDIRECT.test(line) && !ALLOWED_NAVIGATION.includes(line.trim())) hits.push(`${file}:${i + 1}: ${line.trim().slice(0, 100)}`);
+      if (JS_REDIRECT.test(line) && !ALLOWED_NAVIGATION[file]?.includes(line.trim())) hits.push(`${file}:${i + 1}: ${line.trim().slice(0, 100)}`);
     });
   }
   assert.deepEqual(hits, []);
