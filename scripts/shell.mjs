@@ -1,6 +1,6 @@
 // The shared page shell: head links, header, path line, footer and BreadcrumbList.
 // Pure functions; scripts/apply-shell.mjs writes the results into the pages.
-import { ORIGIN, ldNodes, text } from '../tests/lib/site.mjs';
+import { ORIGIN, ldNodes, text, title, meta, canonical, h1s } from '../tests/lib/site.mjs';
 
 export const NAV = ['/features/', '/tui/', '/mcp/', '/compare/', '/docs/', '/download/', '/faq/'];
 
@@ -98,6 +98,33 @@ export function renderFooter(version) {
   ].join('\n');
 }
 
+const ROBOTS = 'index, follow, max-image-preview:large, max-snippet:-1';
+
+// The full Open Graph + Twitter set for a page that has none; the card is assets/og/<page.ogCard>.
+export function ogTags(page, html) {
+  const image = `${ORIGIN}/assets/og/${page.ogCard}`;
+  const t = esc(title(html));
+  const d = esc(meta(html, 'description'));
+  const url = canonical(html);
+  const alt = esc(`srelens.com${new URL(url).pathname}: ${h1s(html)[0]}`);
+  return [
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:url" content="${url}">`,
+    `<meta property="og:site_name" content="srelens">`,
+    `<meta property="og:title" content="${t}">`,
+    `<meta property="og:description" content="${d}">`,
+    `<meta property="og:image" content="${image}">`,
+    `<meta property="og:image:width" content="1200">`,
+    `<meta property="og:image:height" content="630">`,
+    `<meta property="og:image:alt" content="${alt}">`,
+    `<meta property="og:locale" content="en_US">`,
+    `<meta name="twitter:card" content="summary_large_image">`,
+    `<meta name="twitter:title" content="${t}">`,
+    `<meta name="twitter:description" content="${d}">`,
+    `<meta name="twitter:image" content="${image}">`,
+  ].map((line) => `  ${line}`).join('\n');
+}
+
 function replaceOne(html, pattern, replacement, what) {
   if (!pattern.test(html)) throw new Error(`applyShell: no ${what} found`);
   return html.replace(pattern, replacement);
@@ -153,6 +180,27 @@ export function applyShell(html, page, version) {
   // breadcrumb structured data for pages that have none
   if (page.crumbs && !ldNodes(out).some((n) => n['@type'] === 'BreadcrumbList')) {
     out = out.replace('</head>', `  <script type="application/ld+json">\n${JSON.stringify(breadcrumbLd(page), null, 2)}\n  </script>\n</head>`);
+  }
+
+  // robots: full directive on every indexable page
+  if (page.file !== '404.html') {
+    out = out.replace(/<meta name="robots" content="[^"]*">/, `<meta name="robots" content="${ROBOTS}">`);
+  }
+
+  // Open Graph card: swap the image on a page that already has an OG set, else add the whole set
+  if (page.ogCard) {
+    if (meta(out, 'og:image')) {
+      const image = `${ORIGIN}/assets/og/${page.ogCard}`;
+      const alt = esc(`srelens.com${new URL(canonical(out)).pathname}: ${h1s(out)[0]}`);
+      out = out
+        .replace(/<meta property="og:image" content="[^"]*">/, `<meta property="og:image" content="${image}">`)
+        .replace(/<meta property="og:image:width" content="[^"]*">/, '<meta property="og:image:width" content="1200">')
+        .replace(/<meta property="og:image:height" content="[^"]*">/, '<meta property="og:image:height" content="630">')
+        .replace(/<meta property="og:image:alt" content="[^"]*">/, `<meta property="og:image:alt" content="${alt}">`)
+        .replace(/<meta name="twitter:image" content="[^"]*">/, `<meta name="twitter:image" content="${image}">`);
+    } else {
+      out = replaceOne(out, /(<link rel="canonical" href="[^"]*">)/, `$1\n${ogTags(page, out)}`, 'canonical link');
+    }
   }
   return out;
 }

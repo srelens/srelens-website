@@ -117,3 +117,27 @@ for (const p of PAGES.filter((entry) => MIGRATED.has(entry.file))) {
 test('every page is migrated', { todo: MIGRATED.size < PAGES.length }, () => {
   assert.equal(MIGRATED.size, PAGES.length);
 });
+
+test('applyShell adds a full OG/Twitter set to a page without one', () => {
+  const p = page('security/index.html');
+  const html = applyShell(read(p.file), p, '0.15.0');
+  assert.match(html, /<meta property="og:image" content="https:\/\/srelens\.com\/assets\/og\/og-security\.png">/);
+  assert.match(html, /<meta name="twitter:card" content="summary_large_image">/);
+  assert.equal(applyShell(html, p, '0.15.0'), html);
+});
+
+test('applyShell normalises robots on indexable pages and leaves the 404 noindex', () => {
+  const robots = 'index, follow, max-image-preview:large, max-snippet:-1';
+  const sec = page('security/index.html');
+  assert.match(applyShell(read(sec.file), sec, '0.15.0'), new RegExp(`<meta name="robots" content="${robots}">`));
+  const nf = page('404.html');
+  assert.match(applyShell(read(nf.file), nf, '0.15.0'), /<meta name="robots" content="noindex">/);
+});
+
+test('applyShell swaps only the image on a page that already has an OG set', () => {
+  const p = page('tui/index.html');
+  const html = applyShell(read(p.file), p, '0.15.0');
+  assert.match(html, /<meta property="og:image" content="https:\/\/srelens\.com\/assets\/og\/og-tui\.png">/);
+  assert.match(html, /<meta name="twitter:image" content="https:\/\/srelens\.com\/assets\/og\/og-tui\.png">/);
+  assert.equal((html.match(/<meta property="og:title"/g) ?? []).length, 1);
+});

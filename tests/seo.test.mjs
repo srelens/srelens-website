@@ -1,7 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SEO_META, listPages, read, title, meta, canonical, h1s, ldNodes, pageLinks } from './lib/site.mjs';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { ROOT, SEO_META, listPages, read, title, meta, canonical, h1s, ldNodes, pageLinks } from './lib/site.mjs';
 import { baselineFor } from './lib/baseline.mjs';
+import { PAGES, page as pageEntry } from '../scripts/pages.mjs';
 
 // ---- Deliberate changes from the spec (section 8). Everything else must match the baseline. ----
 // Expected meta values that replace the baseline: { file: { key: value } }.
@@ -11,6 +14,30 @@ const META_CHANGES = {
     description: 'Compare srelens and K9s: srelens offers both a multi-tab desktop workspace and a standalone pure-Rust terminal UI (srelens-tui) with an in-memory Informer cache, deep Helm values diff, and built-in AI MCP, compared to K9s.',
   },
 };
+
+// Task 22: full robots directive everywhere except 404, and an OG/Twitter card on every page the manifest gives one
+// (the mirror docs/tui.html follows docs/tui/index.html). A page that already has og:image only swaps the image.
+const baseOf = baselineFor;
+const ROBOTS = 'index, follow, max-image-preview:large, max-snippet:-1';
+for (const p of PAGES) {
+  const src = p.mirrorOf ? pageEntry(p.mirrorOf) : p;
+  const b = baseOf(p.file);
+  const changes = {};
+  if (p.file !== '404.html' && b.meta.robots !== ROBOTS) changes.robots = ROBOTS;
+  if (src.ogCard) {
+    const image = `https://srelens.com/assets/og/${src.ogCard}`;
+    const alt = `srelens.com${new URL(b.canonical).pathname}: ${b.h1[0]}`;
+    Object.assign(changes, b.meta['og:image'] ? {
+      'og:image': image, 'og:image:width': '1200', 'og:image:height': '630', 'og:image:alt': alt, 'twitter:image': image,
+    } : {
+      'og:type': 'website', 'og:url': b.canonical, 'og:site_name': 'srelens', 'og:title': b.title,
+      'og:description': b.meta.description, 'og:image': image, 'og:image:width': '1200', 'og:image:height': '630',
+      'og:image:alt': alt, 'og:locale': 'en_US', 'twitter:card': 'summary_large_image', 'twitter:title': b.title,
+      'twitter:description': b.meta.description, 'twitter:image': image,
+    });
+  }
+  if (Object.keys(changes).length) META_CHANGES[p.file] = { ...META_CHANGES[p.file], ...changes };
+}
 // Approved claim fixes (TUI claims check, Decision 3): exact baseline featureList entry -> replacement, per page.
 const LD_FEATURE_CHANGES = {
   'index.html': [
@@ -56,10 +83,11 @@ const ldChange = (node, file) => {
 
 const withoutCrumbs = (nodes) => nodes.filter((n) => n['@type'] !== 'BreadcrumbList');
 
-test('every planned meta change replaces a baseline value that is really there', () => {
+test('every planned meta change replaces or adds a tracked baseline value', () => {
   for (const [file, changes] of Object.entries(META_CHANGES)) {
     for (const key of Object.keys(changes)) {
-      assert.ok(baselineFor(file).meta[key], `${file}: the baseline has no ${key}`);
+      assert.ok(SEO_META.includes(key), `${file}: ${key} is not a tracked meta key`);
+      assert.ok(changes[key], `${file}: ${key} has no planned value`);
       assert.notEqual(changes[key], baselineFor(file).meta[key], `${file}: ${key} is not changed`);
     }
   }
@@ -115,3 +143,25 @@ for (const file of listPages()) {
     for (const link of base.pageLinks) assert.ok(now.has(link), `lost link to ${link}`);
   });
 }
+
+// PNG header: 8-byte signature, then the IHDR chunk (length, "IHDR", width, height as big-endian uint32).
+const pngSize = (rel) => {
+  const buf = readFileSync(join(ROOT, rel));
+  assert.equal(buf.toString('latin1', 12, 16), 'IHDR', `${rel} is not a PNG`);
+  return [buf.readUInt32BE(16), buf.readUInt32BE(20)];
+};
+
+test('every indexable page has an og:image that exists on disk', () => {
+  for (const file of listPages().filter((f) => f !== '404.html')) {
+    const image = meta(read(file), 'og:image');
+    assert.ok(image, `${file} has no og:image`);
+    const local = image.replace('https://srelens.com/', '');
+    assert.ok(existsSync(join(ROOT, local)), `${file}: ${local} is missing`);
+  }
+});
+
+test('every OG card in the manifest is a 1200x630 PNG', () => {
+  const cards = PAGES.filter((p) => p.ogCard);
+  assert.equal(cards.length, 9);
+  for (const { ogCard } of cards) assert.deepEqual(pngSize(`assets/og/${ogCard}`), [1200, 630], ogCard);
+});
