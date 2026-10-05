@@ -1,8 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT, listPages, read } from './lib/site.mjs';
+import { HOME_PATH, OWNER } from './lib/privacy.mjs';
 import { captureHtml, markers, embedCaptures } from '../scripts/embed-captures.mjs';
 
 test('embedCaptures fills an empty marker pair', () => {
@@ -32,6 +33,7 @@ for (const file of listPages()) {
 // ---- Task 21: every srelens-tui feature is captured from the demo cluster -----------------------
 
 const TSV = 'scripts/demo/tui-captures.tsv';
+const CAPTURES = join(ROOT, 'assets', 'captures');
 const rowsOf = () => read(TSV).split('\n').filter((l) => l.trim() && !l.startsWith('#')).map((l) => l.split('\t'));
 const ROW_NAMES = ['features', 'overview', 'deployments', 'helm', 'helm-detail', 'argo', 'bgp', 'gpu', 'top', 'topology', 'warnings', 'tree', 'logs', 'themes', 'help'];
 
@@ -63,14 +65,21 @@ test('the simulated GPU node is a kwok node with the NVIDIA labels srelens-tui r
   for (const needle of ['kwok.x-k8s.io/node: fake', 'nvidia.com/gpu.product: NVIDIA-A100-SXM4-80GB', 'nvidia.com/gpu: "8"', 'name: gpu-node-a100', 'namespace: ml']) assert.ok(yaml.includes(needle), needle);
 });
 
-test('every TSV row has a stored capture, and no capture shows loading, errors, updates, other contexts or host data', () => {
-  for (const name of ROW_NAMES) {
-    const file = join(ROOT, 'assets', 'captures', `${name}.ansi`);
-    assert.ok(existsSync(file), `assets/captures/${name}.ansi`);
-    const plain = readFileSync(file, 'utf8').replace(/\x1b\[[0-9;:]*m/g, '');
+test('every TSV row has a stored capture', () => {
+  for (const name of ROW_NAMES) assert.ok(existsSync(join(CAPTURES, `${name}.ansi`)), `assets/captures/${name}.ansi`);
+});
+
+// Every stored capture, the hero `pods` one included (it is not a TSV row).
+test('no capture shows loading, errors, updates, other contexts or host data', () => {
+  const names = readdirSync(CAPTURES).filter((f) => f.endsWith('.ansi')).map((f) => f.slice(0, -'.ansi'.length));
+  assert.ok(names.includes('pods'), 'the hero capture is scanned');
+  for (const name of names) {
+    const plain = readFileSync(join(CAPTURES, `${name}.ansi`), 'utf8').replace(/\x1b\[[0-9;:]*m/g, '');
     assert.doesNotMatch(plain, /[\x00-\x08\x0b-\x1f\x7f]/, `${name}: control characters left after the colors`);
     assert.doesNotMatch(plain, /Connecting\.\.\.|Loading\b|\berror:|Cluster unreachable|update available/i, `${name}: loading, error or update banner`);
-    assert.doesNotMatch(plain, /\[● 2:|kind-srelens(?!-demo)|\/Users\/|\/home\/|C:\\|vrshu|Devesh|gmail|@[a-z0-9.-]+\.[a-z]{2,}|token|password/i, `${name}: other context or host data`);
+    assert.doesNotMatch(plain, /\[● 2:|kind-srelens(?!-demo)|\/Users\/|\/home\/|C:\\|gmail|@[a-z0-9.-]+\.[a-z]{2,}|token|password/i, `${name}: other context or host data`);
+    assert.doesNotMatch(plain, HOME_PATH, `${name}: a personal home path`);
+    assert.doesNotMatch(plain, OWNER, `${name}: the name of whoever took the capture`);
   }
 });
 

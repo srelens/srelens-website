@@ -248,7 +248,7 @@ the one exception to "copy stays".
 
 Added 2026-10-02 at Devesh's request. All product imagery is recaptured from
 srelens built from source at tag `srelens-v0.15.0`, run from a dedicated
-worktree of the local srelens repo (`C:\Users\vrshu\work\srelens\srelens`).
+worktree of the local srelens repo (`<srelens checkout>`).
 
 - **Worktree.** `<srelens>/.claude/worktrees/site-evidence-v0.15.0`, detached at
   the tag. Before any work in it: copy `CLAUDE.local.md` from the main checkout,

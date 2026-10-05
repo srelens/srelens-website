@@ -2787,12 +2787,12 @@ All desktop screenshots and TUI captures are retaken from srelens **v0.15.0**. S
 
 ### Task 17: srelens worktree at v0.15.0 and the web-mode build
 
-**Files:** none in this repo. Creates the worktree `C:/Users/vrshu/work/srelens/srelens/.claude/worktrees/site-evidence-v0.15.0`.
+**Files:** none in this repo. Creates the worktree `$SRELENS/.claude/worktrees/site-evidence-v0.15.0`, where `$SRELENS` is your local srelens checkout.
 
 - [ ] **Step 1: Create the worktree, detached at the tag**
 
 ```bash
-SRELENS=/c/Users/vrshu/work/srelens/srelens
+SRELENS=<srelens checkout>   # path of your local srelens repo
 WT=$SRELENS/.claude/worktrees/site-evidence-v0.15.0
 git -C "$SRELENS" fetch origin --tags
 git -C "$SRELENS" worktree add --detach "$WT" srelens-v0.15.0
@@ -3993,11 +3993,12 @@ Expected: every line of the first loop `200`; every line of the second loop `404
 - [ ] **Step 8: Remove the evidence environment**
 
 ```bash
+SRELENS=<srelens checkout>   # same path as in Task 17
 docker rm -f srelens-demo-frr
 kind delete cluster --name srelens-demo
-git -C /c/Users/vrshu/work/srelens/srelens worktree remove /c/Users/vrshu/work/srelens/srelens/.claude/worktrees/site-evidence-v0.15.0
+git -C "$SRELENS" worktree remove "$SRELENS/.claude/worktrees/site-evidence-v0.15.0"
 rm -rf "$TEMP/srelens-site-shots" .superpowers/capture
-git -C /c/Users/vrshu/work/srelens/srelens worktree list | grep -c site-evidence
+git -C "$SRELENS" worktree list | grep -c site-evidence
 ```
 
-Expected: the last command prints `0`. The srelens repo has no new commits or branches from this work (`git -C /c/Users/vrshu/work/srelens/srelens status --short` shows only what was there before).
+Expected: the last command prints `0`. The srelens repo has no new commits or branches from this work (`git -C "$SRELENS" status --short` shows only what was there before).
