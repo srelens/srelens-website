@@ -62,6 +62,15 @@ test('/features/ has 17 numbered rows, each with the current dark and light scre
   });
 });
 
+// Task 20 review: only deletes are shown confirming (row /04 says shell commands are not gated),
+// and the Helm diff needs a revision before the current one (ReleasePane.tsx previous = revision - 1).
+test('/features/ claims a confirmation for deletes only, and a Helm diff only from the second revision', () => {
+  const main = mainOf(features);
+  assert.doesNotMatch(main, /Destructive actions ask first/);
+  assert.match(main, /<h3>Deletes name their target first<\/h3>/);
+  assert.match(main, /once a release has a second revision/);
+});
+
 test('/features/ shows no key or :command (B73), so nothing there needs a binding fix', () => {
   assert.doesNotMatch(mainOf(features), /<kbd|⌘|Ctrl|Shift|<code>:[a-z]/);
 });

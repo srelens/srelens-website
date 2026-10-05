@@ -262,6 +262,8 @@ for (const page of ['index.html', 'features/index.html', 'download/index.html'])
         assert.doesNotMatch(alt, /\b(image|picture|screenshot) of\b/i, name);
       }
       assert.equal(sansTheme(light), sansTheme(dark), `${name}: dark and light alts differ beyond the theme`);
+      assert.doesNotMatch(dark, /\btheme\b/i, `${name}: the dark alt names a theme`);
+      assert.match(light, /, light theme$/, `${name}: the light alt does not end with ", light theme"`);
     }
   });
 }
