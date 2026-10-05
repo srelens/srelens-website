@@ -45,11 +45,12 @@ test('each page has one H1 with one accent phrase of four words or fewer', () =>
 const FEATURE_SHOTS = [
   'pods', 'pod-detail', 'yaml', 'terminal', 'logs', 'nodes', 'overview',
   'namespaces', 'events', 'deployments', 'services', 'port-forwards', 'helm', 'mcp',
+  'confirm-delete', 'helm-detail', 'topology',
 ];
 
-test('/features/ keeps its 14 numbered rows, each with the current dark and light screenshot', () => {
+test('/features/ has 17 numbered rows, each with the current dark and light screenshot', () => {
   const rows = [...mainOf(features).matchAll(/<div class="feature-row">([\s\S]*?)<\/figure>/g)].map((m) => m[1]);
-  assert.equal(rows.length, 14);
+  assert.equal(rows.length, FEATURE_SHOTS.length);
   rows.forEach((row, i) => {
     assert.ok(row.includes(`<span class="fr-num">/ ${String(i + 1).padStart(2, '0')}</span>`), `row ${i + 1} number`);
     for (const mode of ['dark', 'light']) {

@@ -112,9 +112,9 @@
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-pods.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens pods table showing live CPU, memory, readiness, phases, nodes, and restart counts across the demo cluster">
+                   alt="srelens pods table across all namespaces with live status, restarts, CPU and memory, ledger-worker in payments crash-looping">
               <img class="shot-light" src="/assets/shots/light-pods.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens pods table in light theme showing workloads across namespaces with live phase and restart data">
+                   alt="srelens pods table across all namespaces with live status, restarts, CPU and memory, ledger-worker in payments crash-looping, light theme">
             </figure>
           </div>
 
@@ -126,9 +126,9 @@
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-pod-detail.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens pod detail drawer with live CPU and memory charts, properties, and conditions">
+                   alt="srelens pod detail for payments-api in payments: 1/1 ready, Running, nginx:1.27-alpine, with Logs, Shell and Forward actions">
               <img class="shot-light" src="/assets/shots/light-pod-detail.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens pod detail drawer in light theme with metrics and pod properties">
+                   alt="srelens pod detail for payments-api in payments: 1/1 ready, Running, nginx:1.27-alpine, with Logs, Shell and Forward actions, light theme">
             </figure>
           </div>
 
@@ -140,9 +140,9 @@
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-yaml.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens YAML editor showing the live manifest of a payments worker pod with syntax highlighting and apply controls">
+                   alt="srelens YAML editor on the payments-api Deployment, checked by a server dry run, with schema-aware key hints">
               <img class="shot-light" src="/assets/shots/light-yaml.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens YAML editor in light theme with a pod manifest open beside the pods table">
+                   alt="srelens YAML editor on the payments-api Deployment, checked by a server dry run, with schema-aware key hints, light theme">
             </figure>
           </div>
 
@@ -154,9 +154,9 @@
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-terminal.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens in-pod exec terminal running hostname and nslookup against cluster DNS">
+                   alt="srelens shell session inside a payments-api pod running hostname and nslookup for the redis service">
               <img class="shot-light" src="/assets/shots/light-terminal.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens exec terminal in light theme resolving a headless Redis service from inside a pod">
+                   alt="srelens shell session inside a payments-api pod running hostname and nslookup for the redis service, light theme">
             </figure>
           </div>
 
@@ -168,9 +168,9 @@
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-logs.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens streaming live logs from a payments worker pod under the pods table">
+                   alt="srelens log stream for the crash-looping ledger-worker pod: connecting to ledger-db, then fatal: connection refused">
               <img class="shot-light" src="/assets/shots/light-logs.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens log streaming in light theme with search and container filter">
+                   alt="srelens log stream for the crash-looping ledger-worker pod: connecting to ledger-db, then fatal: connection refused, light theme">
             </figure>
           </div>
 
@@ -182,9 +182,9 @@
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-nodes.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens nodes table showing a control-plane and two workers with live CPU and memory usage">
+                   alt="srelens nodes table for the three demo cluster nodes with readiness, roles, CPU and memory usage and Kubernetes version">
               <img class="shot-light" src="/assets/shots/light-nodes.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens nodes table in light theme with roles, versions, and usage for three kind nodes">
+                   alt="srelens nodes table for the three demo cluster nodes with readiness, roles, CPU and memory usage and Kubernetes version, light theme">
             </figure>
           </div>
 
@@ -196,9 +196,9 @@
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-overview.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens dark cluster overview with health summaries, pod distribution, and recent warnings for kind-srelens-demo">
+                   alt="srelens cluster overview of the three-node kind-srelens-demo cluster, flagging the crash-looping ledger-worker in payments as not ready">
               <img class="shot-light" src="/assets/shots/light-overview.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens light cluster overview showing nodes, pods, workloads, services, namespaces, and warning health">
+                   alt="srelens cluster overview of the three-node kind-srelens-demo cluster, flagging the crash-looping ledger-worker in payments as not ready, light theme">
             </figure>
           </div>
 
@@ -210,9 +210,9 @@
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-namespaces.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens namespaces table in dark theme with status, age, labels, and resource counts">
+                   alt="srelens namespaces list for the demo cluster with status, labels and age">
               <img class="shot-light" src="/assets/shots/light-namespaces.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens namespaces table in light theme for the three-node demo cluster">
+                   alt="srelens namespaces list for the demo cluster with status, labels and age, light theme">
             </figure>
           </div>
 
@@ -224,9 +224,9 @@
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-events.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens events view in dark theme showing Kubernetes warnings and normal events">
+                   alt="srelens cluster events with all, warnings and normal filters and a by-reason count that includes one BackOff warning">
               <img class="shot-light" src="/assets/shots/light-events.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens events view in light theme with namespace, reason, object, message, and age columns">
+                   alt="srelens cluster events with all, warnings and normal filters and a by-reason count that includes one BackOff warning, light theme">
             </figure>
           </div>
 
@@ -238,9 +238,9 @@
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-deployments.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens deployments table in dark theme with replicas, images, selectors, and live usage">
+                   alt="srelens deployments across all namespaces with ready, up-to-date and available counts, ledger-worker at 0/1 ready">
               <img class="shot-light" src="/assets/shots/light-deployments.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens deployments table in light theme across checkout, monitoring, and payments namespaces">
+                   alt="srelens deployments across all namespaces with ready, up-to-date and available counts, ledger-worker at 0/1 ready, light theme">
             </figure>
           </div>
 
@@ -252,9 +252,9 @@
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-services.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens services table in dark theme with cluster IPs, ports, selectors, and endpoint readiness">
+                   alt="srelens services across namespaces with type, cluster IP and ports, and the external IP of the payments-api-lb load balancer">
               <img class="shot-light" src="/assets/shots/light-services.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens services table in light theme for the demo workloads">
+                   alt="srelens services across namespaces with type, cluster IP and ports, and the external IP of the payments-api-lb load balancer, light theme">
             </figure>
           </div>
 
@@ -280,9 +280,9 @@
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-helm.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens Helm releases view in dark theme with release actions and namespace filtering">
+                   alt="srelens Helm releases list with podinfo deployed in checkout at revision 2 and its Upgrade, Roll back and Uninstall actions">
               <img class="shot-light" src="/assets/shots/light-helm.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens Helm releases view in light theme">
+                   alt="srelens Helm releases list with podinfo deployed in checkout at revision 2 and its Upgrade, Roll back and Uninstall actions, light theme">
             </figure>
           </div>
 
@@ -297,6 +297,48 @@
                    alt="srelens MCP settings in dark theme with server transport, CLI, and client configuration">
               <img class="shot-light" src="/assets/shots/light-mcp.webp" width="2400" height="1461" loading="lazy"
                    alt="srelens MCP settings in light theme with loopback server and client setup controls">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 15</span>
+              <h3>Destructive actions ask first</h3>
+              <p>Deleting a pod opens a confirmation that names the pod and its namespace and shows the equivalent kubectl command. Nothing changes in the cluster until you confirm.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-confirm-delete.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens Delete Pod? confirmation for the crash-looping ledger-worker pod in payments, with the equivalent kubectl command">
+              <img class="shot-light" src="/assets/shots/light-confirm-delete.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens Delete Pod? confirmation for the crash-looping ledger-worker pod in payments, with the equivalent kubectl command, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 16</span>
+              <h3>See what a Helm upgrade changed</h3>
+              <p>Select a release and the side pane renders the manifest diff between its current revision and the one before, with Roll back and the values editor beside it.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-helm-detail.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens Helm pane for podinfo with the rendered manifest diff from revision 1 to 2, replicas going from 1 to 2">
+              <img class="shot-light" src="/assets/shots/light-helm-detail.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens Helm pane for podinfo with the rendered manifest diff from revision 1 to 2, replicas going from 1 to 2, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 17</span>
+              <h3>Trace how traffic reaches a workload</h3>
+              <p>Topology lays a namespace out by hops from where traffic enters, from Service to workload to whatever it calls. Dependencies read from environment variables, arguments and ConfigMaps are drawn as declared, apart from routes, and selecting a node lists what it reaches.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-topology.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens topology of the payments namespace with the failing ledger-worker selected and its declared call to ledger-db">
+              <img class="shot-light" src="/assets/shots/light-topology.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens topology of the payments namespace with the failing ledger-worker selected and its declared call to ledger-db, light theme">
             </figure>
           </div>
 

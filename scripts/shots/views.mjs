@@ -49,6 +49,34 @@ export const VIEWS = [
   { name: 'namespaces', route: '/k/namespaces', expect: 'monitoring' },
   { name: 'events', route: '/events', expect: 'BackOff' },
   { name: 'helm', route: '/helm', expect: 'podinfo' },
+  // Not here, because web mode cannot show them faithfully: the Mod+K command palette (the console
+  // dock renders nothing outside Tauri, Console.tsx) and /connections (it prints the server's temp
+  // kubeconfig path and "on the server's host" headings the desktop app does not have).
+  {
+    name: 'confirm-delete',
+    route: ({ pod }) => `/k/Pod/payments/${pod('ledger-worker')}`,
+    namespaces: PAYMENTS,
+    expect: /Delete ledger-worker-\S+ in payments\? This cannot be undone/,
+    // Delete sits in the header's overflow. The dialog is photographed, never confirmed: nothing may follow the step that opens it.
+    steps: [{ text: 'More actions' }, { label: 'Delete' }],
+  },
+  {
+    name: 'helm-detail',
+    route: '/helm',
+    // Only revision 2's rendered manifest says this (scripts/demo/extras.sh), so the diff has loaded.
+    expect: 'srelens demo',
+    // The pane opens on unchanged context; scroll it so the replicas change is near the top.
+    steps: [{ row: 'podinfo' }, { wait: 3000 }, { focus: '[data-slot="pane-body"]' }, ...Array.from({ length: 15 }, () => ({ key: 'ArrowDown', wait: 80 }))],
+  },
+  {
+    name: 'topology',
+    route: '/topology',
+    namespaces: PAYMENTS,
+    // innerText is uppercased by CSS, hence /i. Only the inspector of a selected node says what it reaches.
+    expect: /reaches\s+ledger-db/i,
+    // Nodes are SVG <g role="button">, which has no click(): select one from the keyboard.
+    steps: [{ wait: 1500 }, { focus: 'g[aria-label="Deployment ledger-worker"]' }, { key: 'Enter' }],
+  },
   {
     name: 'port-forwards',
     route: ({ pod }) => `/k/Pod/payments/${pod('payments-api')}`,
@@ -91,6 +119,7 @@ const FIXED = {
   '/overview': ['Cluster overview', 'control'],
   '/events': ['Events', 'events'],
   '/helm': ['Helm', 'helm'],
+  '/topology': ['Topology', 'topology'],
   '/forwards': ['Port forwards', 'forwards'],
   '/terminals': ['Shell', 'terminal'],
   '/settings': ['Settings', 'settings'],

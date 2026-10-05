@@ -200,3 +200,68 @@ test('the terminal view waits for the nslookup answer, not for the typed command
   assert.equal(seen('/ # hostname && nslookup redis.payments.svc.cluster.local', expect), false);
   assert.equal(seen('Server:\t10.96.0.10\nAddress:\t10.96.0.10:53\n\nName:\tredis.payments.svc.cluster.local\nAddress: 10.244.1.5', expect), true);
 });
+
+// --- Task 20: the views new on the site ---------------------------------------------------------
+// The command palette and Connections are not among them: web mode cannot show either faithfully
+// (see the note above VIEWS in views.mjs).
+const view = (name) => VIEWS.find((v) => v.name === name);
+
+test('the views new on the site are captured', () => {
+  for (const name of ['confirm-delete', 'helm-detail', 'topology']) assert.ok(view(name), `${name} is not in VIEWS`);
+});
+
+test('each new view waits for what only its finished screen shows', () => {
+  const del = view('confirm-delete').expect;
+  assert.equal(seen('Delete Pod?\nDelete ledger-worker-7f8847c54d-qvqmz in payments? This cannot be undone.', del), true);
+  assert.equal(seen('ledger-worker-7f8847c54d-qvqmz KIND-SRELENS-DEMO / PAYMENTS / POD Ask Logs Shell Forward Edit More actions', del), false, 'the pod page before the dialog opens');
+  assert.equal(seen('Delete Pod?\nDelete payments-api-6ddc974bf-9gmq4 in payments? This cannot be undone.', del), false, 'a dialog for another pod');
+
+  const helm = view('helm-detail').expect;
+  assert.equal(seen('PODINFO · 1 → 2 · RENDERED DIFF\n- name: PODINFO_UI_MESSAGE\n  value: "srelens demo"', helm), true);
+  assert.equal(seen('RELEASE No release selected Pick a release to see what its last revision changed.', helm), false, 'no release selected');
+  assert.equal(seen('PODINFO · 1 → 2 · RENDERED DIFF Rendering podinfo', helm), false, 'the diff still loading');
+
+  const topo = view('topology').expect;
+  assert.equal(seen('DEPLOYMENT · PAYMENTS\nledger-worker\nfailing\nREVISIONS\nrev 1\nREACHES\nledger-db\nDECLARED', topo), true);
+  assert.equal(seen('ENTRY HOP 1 DEPLOYMENT REV 1 ledger-worker EXTERNAL ledger-db No node selected Pick a node to trace what it reaches, and what reaches it.', topo), false, 'nothing selected');
+  assert.equal(seen('KIND-SRELENS-DEMO Topology Reading the cluster…', topo), false, 'the graph still loading');
+});
+
+test('workspaceDoc titles /topology the way the tab strip does', () => {
+  assert.deepEqual(tabAt('/topology'), { id: 'shot-route', route: '/topology', title: 'Topology', kind: 'topology', sub: 'kind-srelens-demo' });
+});
+
+test('confirm-delete opens the delete confirmation for ledger-worker and never confirms it', () => {
+  const v = view('confirm-delete');
+  assert.equal(v.route({ pod: (prefix) => `${prefix}-7f8847c54d-qvqmz`, context: 'kind-srelens-demo' }), '/k/Pod/payments/ledger-worker-7f8847c54d-qvqmz');
+  const steps = v.steps ?? [];
+  const clicks = (s) => s.text ?? s.label ?? '';
+  const CONFIRMING = /^(Delete|Confirm|Yes)/i;
+  const opener = steps.findIndex((s) => CONFIRMING.test(clicks(s)));
+  assert.ok(opener > 0, 'a step opens the dialog');
+  // The Delete clicked is the overflow menu's row: the dialog's own Delete is not on screen yet.
+  assert.equal(clicks(steps[opener - 1]), 'More actions');
+  for (const s of steps.slice(opener + 1)) {
+    assert.doesNotMatch(clicks(s), CONFIRMING, 'a step after the dialog opened clicks a confirming control');
+    assert.deepEqual(Object.keys(s), ['wait'], 'only waits after the dialog opened (Enter would press its focused button)');
+  }
+});
+
+// Every replaced screenshot's alt describes the new capture; a dark and light pair says the same thing.
+const KEPT = new Set(VIEWS.filter((v) => v.keep).map((v) => v.name));
+const sansTheme = (alt) => alt.replace(/,? (in )?(the )?(dark|light) theme/gi, '');
+for (const page of ['index.html', 'features/index.html', 'download/index.html']) {
+  test(`${page}: replaced screenshots have short alts that differ only by theme`, () => {
+    const html = readFileSync(join(ROOT, page), 'utf8');
+    const pairs = [...html.matchAll(/<img class="shot-dark" src="\/assets\/shots\/dark-([a-z-]+)\.webp"[^>]*?alt="([^"]*)">\s*<img class="shot-light" src="\/assets\/shots\/light-\1\.webp"[^>]*?alt="([^"]*)">/g)];
+    assert.ok(pairs.length > 0, 'no screenshot pairs found');
+    for (const [, name, dark, light] of pairs) {
+      if (KEPT.has(name)) continue;
+      for (const alt of [dark, light]) {
+        assert.ok(alt.length >= 20 && alt.length < 150, `${name}: alt is ${alt.length} chars: ${alt}`);
+        assert.doesNotMatch(alt, /\b(image|picture|screenshot) of\b/i, name);
+      }
+      assert.equal(sansTheme(light), sansTheme(dark), `${name}: dark and light alts differ beyond the theme`);
+    }
+  });
+}
