@@ -205,3 +205,72 @@ Recorded 2026-10-03 from Devesh's answers in the session.
 2. **Everywhere the wording appears.** Apply each decision on every page listed in the preamble's "Same wording outside the six scanned files" paragraph (Tasks 13–16 for those pages; Task 23 for `llms*.txt`), not only on the six scanned files.
 3. **SEO-pinned strings.** Where an approved change touches a pinned meta description, JSON-LD value or H2/H3 (for example C07 "40+ resource kinds"), the page task adds an explicit, listed allowance to `tests/seo.test.mjs` (`META_CHANGES` / `ldChange`) or `tests/copy.test.mjs` (`REMOVED_HEADINGS`) in the same commit.
 4. **Homepage keycaps: the six verified rows, plus the tabs cell.** The "Browser-style tabs" cell gets `<p class="keys"><kbd>⌘W</kbd> close tab (macOS)</p>`. The command-palette cell uses the first variant (`<kbd>⌘K</kbd> desktop · tui <kbd>:</kbd>`). The "40+ resource kinds" (reworded per C07), "Streaming watches" and "Local-first" cells get no keys row.
+
+### Decisions (2026-10-05, owner review)
+
+Devesh approved every recommendation in `.superpowers/sdd/2026-10-02-terminal-native-redesign/owner-questions.md` ("apply your recommendations"). Item ids are that file's. Source paths are in the srelens checkout at tag `srelens-v0.15.0`. Every new sentence was checked against that source and the shipped captures.
+
+**A. Wording that described the old UI**
+
+- **A1** `features/index.html` row /01: `legacy-adapter` becomes `ledger-worker` (the shot's pod).
+- **A2** the "detail drawer" is gone. In v0.15.0 a pod opens as a full page with Overview, YAML and Events tabs and a strip of tiles including CPU ("current") and Memory ("working set"), fetched once per pod from the Metrics Server (`packages/ui-next/src/screens/detail/ResourceTabView.tsx:74-75, 200-203, 218, 316`; `crates/kube/src/metrics.rs:1-2, 49`). No kind opts into a Metrics tab (`detailData.tsx:161`). The tiles stay above every tab.
+  - `features/index.html` row /02: "The detail drawer streams CPU and memory from the Kubernetes Metrics Server next to properties, conditions, controller references, and events. See the whole picture of a pod without leaving the table." becomes "The pod page shows current CPU and memory from the Kubernetes Metrics Server above its properties, conditions, and controller references, with YAML and Events one tab away. See the whole picture of a pod on one page."
+  - `index.html` first feature row: "Select a pod and the drawer shows CPU and memory streamed from the Kubernetes Metrics Server, next to properties, conditions, events, and the full YAML. No tab-hopping between dashboards and manifests." becomes "Open a pod and its page shows current CPU and memory from the Kubernetes Metrics Server, above its properties and conditions, with events and the full YAML one tab away. No hopping between dashboards and manifests."
+- **A3** `features/index.html` terminal row: "from inside a worker pod" becomes "from inside a pod".
+- **A4** kept: the product-tour video stays until a new tour is recorded.
+- **A5** every "docked" claim was about the desktop app; none is TUI-true, so none is pinned. In v0.15.0 logs, shells and port forwards are routes that open as tabs (`packages/ui-next/src/lib/routes.ts:78-80, 138-139`) and a tab is kept mounted while hidden, so a log stream keeps running (`shell/TabSurface.tsx:5-12`). `openTab` appends at the end of the strip (`lib/tabsStore.ts:211`), so "beside the resource" was not used (it is not always adjacent). The words are "tabs" and "their own tab".
+
+  | Place | Old | New |
+  | --- | --- | --- |
+  | `features/index.html` /04 | "A full interactive terminal, docked in the workspace." | "A full interactive terminal, opened as a tab in the workspace." |
+  | `features/index.html` /05 | "docked beside the resource and still running when you switch tabs" | "opened as a tab of its own and still running when you switch tabs" |
+  | `index.html` loop step 02 | "all docked next to the evidence" | "all as tabs in the same workspace" |
+  | `index.html` feature row /02 | "Everything stays docked beside the resource you are debugging, even when you switch tabs." | "Logs, shells and forwards each open as their own tab and keep running even when you switch tabs." |
+  | `compare/aptakube/` verdict | "Tabbed investigations and a docked control-room workflow" | "Tabbed investigations, with logs and terminals in their own tabs," |
+  | `compare/aptakube/` table | "Persistent tabs plus docked logs, terminals, and forwards" | "Persistent tabs for resources, logs, terminals, and forwards" |
+  | `compare/freelens/` table | "Tabbed resources, rich inspectors, docked tools" | "Tabbed resources, rich inspectors, logs and terminals in tabs" |
+  | `compare/headlamp/` lede | "a Rust core, docked tools, and MCP" | "a Rust core, logs and terminals in tabs, and MCP" |
+  | `compare/headlamp/` verdict | "browser-style tabs, docked logs and terminals" | "browser-style tabs that include logs and terminals" |
+  | `compare/lens/` answer | "browser-style resource tabs and a docked investigation workflow" | "browser-style tabs for resources, logs, and terminals" |
+  | `llms.txt:46`, `llms-full.txt:46` | "docked in the app" | "opened as tabs in the app" |
+
+  Left alone on purpose: the homepage H3 "Logs, shells & forwards in the dock" (`index.html:382`). It is a heading and the brief forbids heading changes; it needs a decision of its own (see "Open" below).
+
+**B. Claims the captures do not back**
+
+- **B6** `/tui/` BGP bullets and `/docs/tui/` (plus the `docs/tui.html` mirror): v0.15.0 shows `Configured` for peers without live status (`crates/kube/src/bgp.rs:1057, 1182, 1593, 1746`) and an uptime only from Cilium live status (`bgp.rs:1327-1328, 1380`); the timers are configured values with "(default)" fallbacks (`apps/tui/src/views/bgp_view.rs:1107, 1111`); nothing counts down.
+  - `/tui/` Peering Sessions: "Live state of all BGP neighbors with remote ASN, state (Established, Active, Idle), and uptime." becomes "BGP neighbors with remote ASN, session state (Established when the CNI reports it, otherwise Configured), and uptime for Cilium."
+  - `/tui/` Prefix Announcements: "with real-time hold-timer and keep-alive countdowns" becomes ", plus the configured hold and keep-alive timers for each peer".
+  - `/docs/tui/` Timers & Metrics: "Real-time keep-alive timers, hold-down countdowns, and received/advertised route counts." becomes "Configured hold and keep-alive timers (defaults are labelled as such), and received/advertised route counts."
+- **B7** the v0.15.0 overview does not show or flag node pressure. It prints `Nodes: <ready>/<total> Ready` (`apps/tui/src/views/overview_view.rs:45, 142-143`, counted at `apps/tui/src/app.rs:1620`) and its key handler has no drilldown (`app.rs:5694-5731`). `MemoryPressure`, `DiskPressure` and `PIDPressure` occur in the TUI source only inside the `/node` AI playbook prompt (`ai_skills.rs:78`), and the Node inspector lists conditions generically (`views/node_inspector_view.rs:743`). The bullet becomes "Node Fleet Health: See how many nodes are Ready at a glance." (the "instant drilldown" went with it, for the same reason).
+- **B8** kept: "driver versions" stays (the caption already says the node is simulated).
+
+**C. Tone and unverified claims**
+
+- **C9** "blazing-fast" and "ultra-fast" become "fast" in every published place; `grep -rn -i "blazing\|ultra-fast"` finds nothing outside `docs/superpowers/**`, `.superpowers/**` and the tests that assert it. Places: `/tui/` lede ("a single, blazing-fast native binary" becomes "a single, fast native binary"), `/tui/` meta, `og:` and `twitter:` descriptions ("an ultra-fast" becomes "a fast"), `/download/` ("a blazing-fast Ratatui interface" becomes "a fast Ratatui interface"), the homepage lede ("an ultra-fast terminal UI" becomes "a fast terminal UI"), the `/compare/k9s/` lede ("an ultra-fast, pure-Rust terminal UI" becomes "a fast, pure-Rust terminal UI"), and both llms ledes.
+- **C10** "pure-Rust" becomes "Rust" only where the brief scoped it. `llms.txt` and `llms-full.txt` lede: "an ultra-fast standalone pure-Rust Terminal UI" becomes "a fast standalone Terminal UI written in Rust", and "a pure-Rust core (kube-rs)" becomes "a Rust core (kube-rs)". `/tui/`: hero badge "pure Rust ·" becomes "Rust core ·"; compare cell "Pure Rust (kube-rs + Ratatui)" becomes "Rust (kube-rs + Ratatui)"; JSON-LD description "standalone pure-Rust terminal user interface" becomes "standalone Rust terminal user interface". Kept: "Pure-Rust" in the `/tui/` `<title>`, `og:title` and `twitter:title` (C04: SEO-locked shorthand), and "pure-Rust" on the other pages (architecture, compare, docs, download, FAQ, homepage) and in the body line `llms*.txt:40` (not a lede).
+- **C11** `/download/` meta description: "or install via Cargo." becomes "or build from source with Cargo." The `og:` and `twitter:` descriptions did not carry it. A Cargo build of `srelens-tui` from source is real: `apps/tui` is a workspace member (`Cargo.toml:3`) and the package and binary are both named `srelens-tui` (`apps/tui/Cargo.toml:2, 13`); the Makefile builds it with `cargo build --release -p srelens-tui` (`Makefile:8`). Not touched: `cargo install --git ... srelens-tui` on `/tui/`, `/docs/` and `/docs/tui/` (a separate, unverified command).
+- **C12** `/docs/` items, each checked in the v0.15.0 source:
+  - `m` metrics panel: confirmed, rephrased. `m` opens a metrics modal on Pods, Nodes and Pod rows of Workloads (`app.rs:4557-4609`) with CPU and memory line charts over 5m, 10m, 30m or 1h (`views/metrics_panel_view.rs:16-27, 440, 557`). The `Sparkline` widget is only imported there, never drawn, and the key does nothing on other tables. Row: "Tables / Open metrics panel with sparklines & canvas charts" becomes "Pods / Nodes / Open a metrics panel with CPU and memory line charts (5m to 1h)".
+  - Shift+F "Workloads / Pods": rephrased. `F` works on the Pods and Services tables and on Pod rows of Workloads, and closes an active forward on the selection (`app.rs:4418-4468`). Row: "Workloads / Pods / Start background port-forward" becomes "Pods / Services / Start a background port-forward (closes the active one on the selected row)".
+  - "failing system services": rephrased. `S` on Nodes opens an SSH session (claims-check B13); service status and journal reads are assistant and MCP tools (`crates/kube/src/node_ssh.rs:337`; `crates/registry/src/lib.rs:414-423`; the assistant allows sensitive reads, `apps/tui/src/agent.rs:129, 345`). `containerd` and `kubelet` are valid service names (`node_ssh.rs:735-737`); `rke2` alone is not a unit, so it is now `rke2-server`.
+  - "smart shell detection": rephrased to "automatic shell fallback". There is no detection; a failing `/bin/sh` is retried as `sh`, `bash`, `/bin/bash` (`apps/tui/src/views/exec_view.rs:150-165`).
+  - "negotiates keys via SSH agent": rephrased, same wording as `/docs/tui/` (C23): srelens hands authentication to the system `ssh`, which offers agent identities first and then the standard keys in `~/.ssh/` (`node_ssh.rs:209-221`). "Auto-resolves InternalIP" is kept (`node_ssh.rs:172-176`).
+  - "diagnostic lookups with confirmation gates": rephrased. The assistant runs read tools and denies cluster-changing tools (`FlagGated::new(false, true)`, `agent.rs:129, 345`; `crates/mcp/src/policy.rs:61`; test `apps/tui/tests/core_logic_tests.rs:334-353`). There is no confirmation dialog in the TUI. New text: "...safely query cluster APIs and run diagnostic lookups. Tools that change the cluster are blocked in the assistant."
+  - "automatic fallback" (`/docs/tui/` "Instant Shells", `docs/tui/index.html:508`): kept. It is real, `run_pod_shell` tries `/bin/sh`, `sh`, `bash`, `/bin/bash` in turn and moves on only when the shell is missing (`exec_view.rs:138-170`, `is_missing_shell_err` at `:49`).
+  - Not asked, left as is: the `l` and `s` rows say "Workloads / Pods", which is true (`app.rs:4612-4660, 4760-4790`).
+- **C13** the FAQPage JSON-LD on `/faq/` is now the visible answer text, word for word (tags stripped, entities decoded, whitespace collapsed). 8 of 9 answers changed ("It's", "There's", "Yes — installers ...", the trailing link sentences, "macOS, Windows, and Linux desktops via Tauri v2."). `/faq/` is the only page with FAQPage JSON-LD (a test pins that); a new test compares every visible answer with its JSON-LD answer.
+- **C14** `llms.txt` and `llms-full.txt` line 12: "All product screenshots on srelens.com are real captures of srelens connected to a live 3-node kind cluster, in both dark and light app themes." becomes "Desktop screenshots in both app themes and srelens-tui text captures, all from a live kind cluster."
+
+**D and E**
+
+- **D15, D16** unchanged: Devesh's own captures.
+- **E17** (incident drill card) and **E18** (`/docs/tui/` capture scrolling): kept.
+
+**Allowances added to `tests/seo.test.mjs`** (each carries `// Devesh 2026-10-05 owner review: <item>`): `META_CHANGES` for `tui/index.html` (`description`, `og:description`, `twitter:description`, C9) and `download/index.html` (`description`, C11); `LD_DESCRIPTION_CHANGES` for `tui/index.html` (C10, replacing the earlier replacement text); `LD_ANSWER_CHANGES` for `faq/index.html` (C13, eight entries, the first one's replacement text changed).
+
+**Open (not decided here)**
+
+- The homepage H3 "Logs, shells & forwards in the dock" still says "dock".
+- `og:image:alt` on `/features/` ("pod detail drawer with live metrics beside the pods table") and the `og-*.jpg` cards for the homepage, features, FAQ, MCP, download and compare pages still show the old UI. They are consistent with each other, so they were left until the cards are regenerated.
+- The FAQ answer "Every product image on this site is an unedited capture ... three-node kind cluster" has the same 3-node problem as llms line 12 (C14) for the TUI GPU capture.
