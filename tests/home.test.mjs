@@ -148,3 +148,23 @@ test('.mode-panel pins its single grid column to the panel width so the install 
   assert.ok(rule, '.mode-panel rule exists');
   assert.match(rule[1], /grid-template-columns:\s*minmax\(0,\s*1fr\)/);
 });
+
+// ---- Owner copy fixes (Devesh 2026-10-05): copy matches the new pod page and tab-based logs and shells ----
+// JSON-LD in the head says "embedded AI assistant drawer" (the TUI's); the pod "drawer" claim lives in the body.
+const afterHead = html.slice(html.indexOf('</head>'));
+
+test('A2: the first feature row describes the pod page, not a detail drawer', () => {
+  assert.doesNotMatch(afterHead, /drawer/i);
+  assert.doesNotMatch(text(afterHead), /tab-hopping/);
+  assert.ok(text(afterHead).includes('Open a pod and its page shows current CPU and memory from the Kubernetes Metrics Server, above its properties and conditions, with events and the full YAML one tab away. No hopping between dashboards and manifests.'));
+});
+
+test('A5: logs, shells and forwards open as tabs; nothing is docked', () => {
+  const body = text(afterHead);
+  assert.ok(body.includes('Follow logs, exec into containers, and forward ports, all as tabs in the same workspace.'));
+  assert.ok(body.includes('Logs, shells and forwards each open as their own tab and keep running even when you switch tabs.'));
+});
+
+test('C9: the hero lede says "fast terminal UI", not "ultra-fast"', () => {
+  assert.ok(text(afterHead).includes('high-performance desktop workspace or a fast terminal UI (srelens-tui)'));
+});

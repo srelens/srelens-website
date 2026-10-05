@@ -188,7 +188,8 @@ test('rewritten claims are gone from the page, its head and its structured data'
 test('the approved copy replaces each reworded claim, exactly', () => {
   const REPLACED = [
     // C28 badge
-    ['C28', '<span class="dot"></span> pure Rust · in-memory watch cache · in-process AI assistant · zero Electron</p>'],
+    // C28 badge, then C10 (owner review 2026-10-05): "pure Rust" becomes "Rust core"
+    ['C10', '<span class="dot"></span> Rust core · in-memory watch cache · in-process AI assistant · zero Electron</p>'],
     // B65 /network -> /endpoints
     ['B65', '<li><strong>Incident Playbooks:</strong> Run <code>/crashloop</code>, <code>/oom</code>, <code>/rollout</code>, or <code>/endpoints</code> to diagnose failing workloads with grounded root cause analysis.</li>'],
     // C18
@@ -330,4 +331,38 @@ test('.tui draws box and block glyphs in --font-grid, whose first family is not 
   assert.ok(rule, '.tui rule exists');
   assert.match(rule, /font:[^;]*var\(--font-grid\)/, '.tui font uses --font-grid');
   assert.doesNotMatch(rule, /var\(--font-term\)/, '.tui no longer uses --font-term');
+});
+
+// ---- Owner copy fixes (Devesh 2026-10-05) ----------------------------------------------------------
+// v0.15.0: MetalLB and Calico peers read "Configured" with no uptime (crates/kube/src/bgp.rs:1593,1611 and 1746,1762); only
+// Cilium live status gives Established and an uptime (bgp.rs:1328-1329, 1380); timers are configured values with "(default)"
+// fallbacks (apps/tui/src/views/bgp_view.rs:1107,1111); nothing counts down.
+
+test('B6: the BGP bullets promise no countdowns and no live Established/Active/Idle states', () => {
+  assert.doesNotMatch(main, /countdown/i);
+  assert.doesNotMatch(main, /<code>Established<\/code>, <code>Active<\/code>, <code>Idle<\/code>/);
+  assert.ok(html.includes('<li><strong>Peering Sessions:</strong> BGP neighbors with remote ASN, session state (<code>Established</code> when the CNI reports it, otherwise <code>Configured</code>), and uptime for Cilium.</li>'));
+  assert.ok(html.includes('<li><strong>Prefix Announcements:</strong> Track advertised Service VIPs and Pod CIDRs, plus the configured hold and keep-alive timers for each peer.</li>'));
+});
+
+// The v0.15.0 TUI overview prints "Nodes: ready/total Ready" (apps/tui/src/views/overview_view.rs:45,142-143, counted at
+// apps/tui/src/app.rs:1620) and has no pressure conditions or drilldown; conditions live in the Node inspector only.
+test('B7: the cluster overview bullet says node readiness, not pressure conditions or drilldown', () => {
+  const overview = sectionOf('cluster-overview');
+  assert.doesNotMatch(overview, /MemoryPressure|DiskPressure|PIDPressure/);
+  const bullet = overview.match(/<li><strong>Node Fleet Health:<\/strong>[\s\S]*?<\/li>/)?.[0];
+  assert.equal(bullet, '<li><strong>Node Fleet Health:</strong> See how many nodes are <code>Ready</code> at a glance.</li>');
+});
+
+test('C9: the /tui/ lede and its meta, Open Graph and Twitter descriptions say "fast", not "ultra-fast" or "blazing-fast"', () => {
+  assert.doesNotMatch(html, /blazing|ultra-?fast/i);
+  assert.ok(text(main).includes('inside a single, fast native binary.'));
+});
+
+test('C10: "pure Rust" is gone from the /tui/ body, badge, compare cell and JSON-LD; titles keep "Pure-Rust"', () => {
+  const titles = html.match(/<(?:title>|meta (?:property="og:title"|name="twitter:title") content=")srelens-tui — Pure-Rust Terminal UI for Kubernetes/g) ?? [];
+  assert.equal(titles.length, 3, 'title, og:title and twitter:title keep "Pure-Rust"');
+  const rest = html.replace(/srelens-tui — Pure-Rust Terminal UI for Kubernetes/g, '');
+  assert.doesNotMatch(rest, /pure[- ]rust/i);
+  assert.ok(html.includes('<td>Rust (kube-rs + Ratatui)</td>'));
 });

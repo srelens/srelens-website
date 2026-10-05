@@ -277,3 +277,28 @@ test('the architecture plate keeps its flow: six nodes, three arrows, the last r
   assert.equal((plate[2].match(/class="architecture-arrow"/g) ?? []).length, 3);
   assert.ok(/<div class="architecture-split">(?:\s*<div class="architecture-node">[\s\S]*?<\/div>){3}\s*<\/div>/.test(plate[2]), 'last row of three');
 });
+
+// ---- Owner copy fixes (Devesh 2026-10-05) ----------------------------------------------------------
+
+test('B6: /docs/tui/ (and its mirror) promise no timer countdowns; the timers are configured values', () => {
+  const timers = '<li><strong>Timers &amp; Metrics:</strong> Configured hold and keep-alive timers (defaults are labelled as such), and received/advertised route counts.</li>';
+  for (const html of [tui, read('docs/tui.html')]) {
+    never(prose(html), /countdown|real-time keep-alive/i, 'BGP timers');
+    has(html, timers);
+  }
+});
+
+// C12: items on /docs/ that the v0.15.0 source does not back. Source citations are in the claims-check decisions.
+test('C12: /docs/ drops or rewrites the TUI phrases the source does not confirm', () => {
+  never(prose(docs), /smart shell detection|negotiates keys via SSH agent|diagnostic lookups with confirmation gates|failing system services|sparklines/, 'unverified phrase');
+  has(docs, 'interactive logs with hanging indent, automatic shell fallback, and embedded AI diagnostics—right in your terminal.');
+  has(docs, "<li><strong>Model Context Protocol (MCP) Tools:</strong> Integrated with srelens's native MCP tool registry, allowing the AI to safely query cluster APIs and run diagnostic lookups. Tools that change the cluster are blocked in the assistant.</li>");
+  has(docs, '<li><strong>Node SSH &amp; Out-of-Band Recovery (<a href="/docs/tui/#node-ssh"><code>S</code> on the Nodes view</a>):</strong> Open an interactive SSH session to triage unready nodes when the Kubernetes API cannot schedule debug pods. The AI assistant can also read service status and journal logs for services such as <code>kubelet</code>, <code>containerd</code> and <code>rke2-server</code>. Auto-resolves InternalIP and hands authentication to your system <code>ssh</code>, which offers agent identities first and then the standard keys in <code>~/.ssh/</code>.</li>');
+});
+
+test('C12: /docs/ keybinding table scopes Shift + F and m to the views that handle them', () => {
+  // Shift + F: Pods and Services tables, plus Pod rows of Workloads; it closes an active forward (apps/tui/src/app.rs:4418-4468).
+  has(docs, '<tr><td><code>Shift + F</code></td><td>Pods / Services</td><td>Start a background port-forward (closes the active one on the selected row)</td></tr>');
+  // m: Pods, Nodes and Pod rows of Workloads open a CPU and memory line-chart panel (app.rs:4557-4609, views/metrics_panel_view.rs).
+  has(docs, '<tr><td><code>m</code></td><td>Pods / Nodes</td><td>Open a metrics panel with CPU and memory line charts (5m to 1h)</td></tr>');
+});

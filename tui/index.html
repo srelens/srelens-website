@@ -6,7 +6,7 @@
 
   <!-- Primary SEO -->
   <title>srelens-tui — Pure-Rust Terminal UI for Kubernetes</title>
-  <meta name="description" content="srelens-tui is an ultra-fast, keyboard-driven terminal UI for Kubernetes built in Rust with Ratatui and kube-rs. Live stream watches, BGP peering dashboard, Helm 3 inspector, interactive logs, and in-process AI diagnostics.">
+  <meta name="description" content="srelens-tui is a fast, keyboard-driven terminal UI for Kubernetes built in Rust with Ratatui and kube-rs. Live stream watches, BGP peering dashboard, Helm 3 inspector, interactive logs, and in-process AI diagnostics.">
   <link rel="canonical" href="https://srelens.com/tui/">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="author" content="srelens">
@@ -29,7 +29,7 @@
   <meta property="og:url" content="https://srelens.com/tui/">
   <meta property="og:site_name" content="srelens">
   <meta property="og:title" content="srelens-tui — Pure-Rust Terminal UI for Kubernetes">
-  <meta property="og:description" content="An ultra-fast, keyboard-driven terminal workspace for Kubernetes operators. Live stream watches, BGP peering dashboard, Helm 3 diffs, and embedded AI diagnostics.">
+  <meta property="og:description" content="A fast, keyboard-driven terminal workspace for Kubernetes operators. Live stream watches, BGP peering dashboard, Helm 3 diffs, and embedded AI diagnostics.">
   <meta property="og:image" content="https://srelens.com/assets/og/og-tui.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -39,7 +39,7 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="srelens-tui — Pure-Rust Terminal UI for Kubernetes">
-  <meta name="twitter:description" content="An ultra-fast, keyboard-driven terminal workspace for Kubernetes operators. Live stream watches, BGP peering dashboard, Helm 3 diffs, and embedded AI diagnostics.">
+  <meta name="twitter:description" content="A fast, keyboard-driven terminal workspace for Kubernetes operators. Live stream watches, BGP peering dashboard, Helm 3 diffs, and embedded AI diagnostics.">
   <meta name="twitter:image" content="https://srelens.com/assets/og/og-tui.png">
 
   <!-- Icons / PWA -->
@@ -63,7 +63,7 @@
     "@type": "SoftwareApplication",
     "name": "srelens-tui",
     "url": "https://srelens.com/tui/",
-    "description": "srelens-tui is a standalone pure-Rust terminal user interface for Kubernetes operators, built with Ratatui and kube-rs. It provides in-memory Informer cache browsing, live stream watches, BGP peering dashboard, deep Helm 3 values diff and rollback, auto-wrapped logs, and an in-process AI assistant drawer.",
+    "description": "srelens-tui is a standalone Rust terminal user interface for Kubernetes operators, built with Ratatui and kube-rs. It provides in-memory Informer cache browsing, live stream watches, BGP peering dashboard, deep Helm 3 values diff and rollback, auto-wrapped logs, and an in-process AI assistant drawer.",
     "applicationCategory": "DeveloperApplication",
     "applicationSubCategory": "Kubernetes Terminal UI",
     "operatingSystem": "macOS, Linux, Windows",
@@ -125,11 +125,11 @@
     <section class="page-hero">
       <div class="wrap">
         <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/">srelens</a></li><li><span aria-current="page">tui</span></li></ol></nav>
-        <p class="hero-badge"><span class="dot"></span> pure Rust · in-memory watch cache · in-process AI assistant · zero Electron</p>
+        <p class="hero-badge"><span class="dot"></span> Rust core · in-memory watch cache · in-process AI assistant · zero Electron</p>
         <h1 class="display">The terminal control room <br><span class="accent">for Kubernetes.</span></h1>
         <p class="lede">
           Built on <code>ratatui</code> and <code>kube-rs</code>, <strong>srelens-tui</strong> delivers the full operational
-          power of srelens inside a single, blazing-fast native binary. Featuring an in-memory Informer cache that redraws
+          power of srelens inside a single, fast native binary. Featuring an in-memory Informer cache that redraws
           views you have already opened without a new request, live streaming watches, BGP network peering dashboards,
           Helm 3 values diffs, auto-wrapped logs, and an embedded AI assistant with per-reply token estimates.
         </p>
@@ -365,7 +365,7 @@
               </p>
               <ul class="feature-bullets">
                 <li><strong>Live Resource Gauges:</strong> Real-time visual progress bars for cluster-wide CPU and memory utilization, plus GPU when present.</li>
-                <li><strong>Node Fleet Health:</strong> Monitor node conditions (<code>Ready</code>, <code>MemoryPressure</code>, <code>DiskPressure</code>, <code>PIDPressure</code>) with instant drilldown.</li>
+                <li><strong>Node Fleet Health:</strong> See how many nodes are <code>Ready</code> at a glance.</li>
                 <li><strong>Cached Refresh:</strong> The in-memory Informer cache keeps opened views current from live watches; pod and node metrics refresh about every 4 seconds.</li>
               </ul>
             </div>
@@ -572,8 +572,8 @@
                 <strong>Cilium BGP Control Plane</strong>, <strong>MetalLB</strong>, and <strong>Calico</strong> BGP peering topologies.
               </p>
               <ul class="feature-bullets">
-                <li><strong>Peering Sessions:</strong> Live state of all BGP neighbors with remote ASN, state (<code>Established</code>, <code>Active</code>, <code>Idle</code>), and uptime.</li>
-                <li><strong>Prefix Announcements:</strong> Track advertised Service VIPs and Pod CIDRs with real-time hold-timer and keep-alive countdowns.</li>
+                <li><strong>Peering Sessions:</strong> BGP neighbors with remote ASN, session state (<code>Established</code> when the CNI reports it, otherwise <code>Configured</code>), and uptime for Cilium.</li>
+                <li><strong>Prefix Announcements:</strong> Track advertised Service VIPs and Pod CIDRs, plus the configured hold and keep-alive timers for each peer.</li>
                 <li><strong>Multi-Router Topology:</strong> Inspect BGP node peer configurations, router IDs, and autonomous system boundaries.</li>
               </ul>
             </div>
@@ -750,7 +750,7 @@
             <tbody>
               <tr>
                 <th scope="row">Core Runtime</th>
-                <td>Pure Rust (kube-rs + Ratatui)</td>
+                <td>Rust (kube-rs + Ratatui)</td>
                 <td>Go (tview + client-go)</td>
                 <td>Go (client-go)</td>
                 <td>Tauri v2 + Rust Core</td>

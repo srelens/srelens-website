@@ -108,7 +108,7 @@ test('/compare/k9s/ says "in-memory Informer cache" with the approved wording at
   );
   for (const sentence of [
     // hero lede
-    'srelens gives operators both a multi-tab desktop workspace and an ultra-fast, pure-Rust terminal UI (srelens-tui) featuring an in-memory Informer cache, deep Helm values diff, live topology, and embedded AI.',
+    'srelens gives operators both a multi-tab desktop workspace and a fast, pure-Rust terminal UI (srelens-tui) featuring an in-memory Informer cache, deep Helm values diff, live topology, and embedded AI.',
     // "Choose srelens when" bullet
     'You want instant screen switching for views already opened, with an in-memory Informer cache.',
     // table, "Investigation model" and "Caching & Speed" rows
@@ -133,4 +133,29 @@ test('the old per-guide footer disclaimers that the canonical footer does not co
 test('the table corner cell is pinned with the row labels, so a column header never slides over them', () => {
   assert.match(css, /\.compare-scroll thead th:first-child \{ position: sticky; left: 0; z-index: 1; \}/);
   assert.match(css, /\.compare-scroll thead th \{[^}]*background: var\(--sunk\)/);
+});
+
+// ---- Owner copy fixes (Devesh 2026-10-05): the desktop app opens logs, shells and forwards as tabs; nothing is "docked" ----
+test('A5: the compare pages say logs and terminals open in tabs instead of "docked"', () => {
+  const NEW = {
+    'compare/aptakube/index.html': [
+      'Tabbed investigations, with logs and terminals in their own tabs, fit your incidents.',
+      'Persistent tabs for resources, logs, terminals, and forwards',
+    ],
+    'compare/freelens/index.html': ['Tabbed resources, rich inspectors, logs and terminals in tabs'],
+    'compare/headlamp/index.html': [
+      'srelens focuses on a native local investigation workspace with a Rust core, logs and terminals in tabs, and MCP for AI agents.',
+      'You want browser-style tabs that include logs and terminals, and built-in MCP.',
+    ],
+    'compare/lens/index.html': ['srelens adds browser-style tabs for resources, logs, and terminals while keeping credentials local.'],
+  };
+  for (const [file, sentences] of Object.entries(NEW)) {
+    const body = text(mainOf(pages.get(file)));
+    assert.doesNotMatch(body, /docked/i, file);
+    for (const sentence of sentences) assert.ok(body.includes(sentence), `${file}: ${sentence}`);
+  }
+});
+
+test('C9: /compare/k9s/ says "a fast, pure-Rust terminal UI", not "ultra-fast"', () => {
+  assert.doesNotMatch(pages.get('compare/k9s/index.html'), /blazing|ultra-?fast/i);
 });

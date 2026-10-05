@@ -142,3 +142,27 @@ test('both llms files list every page in the sitemap', () => {
     for (const loc of locs) assert.ok(body.includes(`: ${loc}\n`), `${file} lists ${loc}`);
   }
 });
+
+// ---- Owner copy fixes (Devesh 2026-10-05) ----------------------------------------------------------
+
+test('C9, C10: the llms ledes say "a fast standalone Terminal UI written in Rust" and "a Rust core (kube-rs)"', () => {
+  const lede = '> srelens is a Kubernetes workspace — available as a native desktop GUI app and a fast standalone Terminal UI written in Rust (`srelens-tui`) for browsing, inspecting, and operating Kubernetes clusters. It is built with a Rust core (kube-rs), features an in-memory Informer cache,';
+  for (const file of LLMS) {
+    const first = read(file).split('\n')[2];
+    assert.ok(first.startsWith(lede), `${file}: ${first.slice(0, 160)}`);
+    assert.doesNotMatch(first, /pure[- ]rust|ultra-?fast|blazing/i, file);
+  }
+});
+
+test('C14: the llms screenshot line names desktop screenshots and srelens-tui text captures, not "3-node"', () => {
+  const line = '- Desktop screenshots in both app themes and srelens-tui text captures, all from a live kind cluster.';
+  for (const file of LLMS) {
+    const body = read(file);
+    assert.ok(body.split('\n').slice(0, 14).includes(line), file);
+    assert.doesNotMatch(body.split('\n').slice(0, 14).join('\n'), /3-node/, file);
+  }
+});
+
+test('A5: the llms files say terminals open as tabs, not "docked"', () => {
+  for (const file of LLMS) assert.ok(read(file).split('\n').includes('- In-pod interactive terminals (exec), opened as tabs in the app'), file);
+});

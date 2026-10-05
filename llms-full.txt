@@ -1,6 +1,6 @@
 # srelens
 
-> srelens is a Kubernetes workspace — available as a native desktop GUI app and an ultra-fast standalone pure-Rust Terminal UI (`srelens-tui`) for browsing, inspecting, and operating Kubernetes clusters. It is built with a pure-Rust core (kube-rs), features an in-memory Informer cache, deep Helm inspection, and includes a built-in MCP (Model Context Protocol) server and embedded AI assistant that exposes supported backend capabilities as AI-callable tools.
+> srelens is a Kubernetes workspace — available as a native desktop GUI app and a fast standalone Terminal UI written in Rust (`srelens-tui`) for browsing, inspecting, and operating Kubernetes clusters. It is built with a Rust core (kube-rs), features an in-memory Informer cache, deep Helm inspection, and includes a built-in MCP (Model Context Protocol) server and embedded AI assistant that exposes supported backend capabilities as AI-callable tools.
 
 Key facts:
 - Product type: desktop application (Kubernetes IDE / cluster workspace) & standalone Terminal UI (srelens-tui)
@@ -9,7 +9,7 @@ Key facts:
 - Price: free, open source under the MIT license
 - Architecture: Rust core using kube-rs to talk to the Kubernetes API directly — no Electron, no Node.js in the core app runtime
 - Lineage: inspired by Lens / Freelens (Electron-based Kubernetes IDEs); srelens is a clean-room rebuild of that workflow, not a fork. Not affiliated with Mirantis (Lens) or the Freelens project.
-- All product screenshots on srelens.com are real captures of srelens connected to a live 3-node kind cluster, in both dark and light app themes.
+- Desktop screenshots in both app themes and srelens-tui text captures, all from a live kind cluster.
 
 ## Pages
 
@@ -43,7 +43,7 @@ Key facts:
 - Live streaming resource watches (kube-rs watch streams, not polling)
 - Browser-style tabs: each tab is a (cluster, resource-kind) view
 - Schema-aware YAML editor with autocomplete and linting driven by the cluster's OpenAPI schema; create resources from templates and apply
-- In-pod interactive terminals (exec), docked in the app
+- In-pod interactive terminals (exec), opened as tabs in the app
 - Pod and workload log streaming with container filtering and search
 - Port forwarding: start/stop/monitor forwards with a status indicator
 - Helm release inspection

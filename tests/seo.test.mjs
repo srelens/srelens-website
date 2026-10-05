@@ -13,6 +13,16 @@ const META_CHANGES = {
   'compare/k9s/index.html': {
     description: 'Compare srelens and K9s: srelens offers both a multi-tab desktop workspace and a standalone pure-Rust terminal UI (srelens-tui) with an in-memory Informer cache, deep Helm values diff, and built-in AI MCP, compared to K9s.',
   },
+  // Devesh 2026-10-05 owner review: C9 ("ultra-fast" becomes "fast"; the description, og:description and twitter:description all carried it).
+  'tui/index.html': {
+    description: 'srelens-tui is a fast, keyboard-driven terminal UI for Kubernetes built in Rust with Ratatui and kube-rs. Live stream watches, BGP peering dashboard, Helm 3 inspector, interactive logs, and in-process AI diagnostics.',
+    'og:description': 'A fast, keyboard-driven terminal workspace for Kubernetes operators. Live stream watches, BGP peering dashboard, Helm 3 diffs, and embedded AI diagnostics.',
+    'twitter:description': 'A fast, keyboard-driven terminal workspace for Kubernetes operators. Live stream watches, BGP peering dashboard, Helm 3 diffs, and embedded AI diagnostics.',
+  },
+  // Devesh 2026-10-05 owner review: C11 (a Cargo build of srelens-tui is from source, not an install: Makefile builds it with `cargo build --release -p srelens-tui`).
+  'download/index.html': {
+    description: 'Download srelens free: Kubernetes desktop client and pure-Rust terminal UI (srelens-tui) for macOS, Windows, and Linux — direct from GitHub Releases, or build from source with Cargo.',
+  },
 };
 
 // Task 22: full robots directive everywhere except 404, and an OG/Twitter card on every page the manifest gives one
@@ -53,17 +63,48 @@ const LD_DESCRIPTION_CHANGES = {
     // C02: "0ms" is not a measured latency. B28: Shift + D (debug containers) is not in v0.15.0.
     [
       'srelens-tui is a standalone pure-Rust terminal user interface for Kubernetes operators, built with Ratatui and kube-rs. It provides 0ms Informer cache browsing, live stream watches, BGP peering dashboard, deep Helm 3 values diff and rollback, auto-wrapped logs, debug containers, and an in-process AI assistant drawer.',
-      'srelens-tui is a standalone pure-Rust terminal user interface for Kubernetes operators, built with Ratatui and kube-rs. It provides in-memory Informer cache browsing, live stream watches, BGP peering dashboard, deep Helm 3 values diff and rollback, auto-wrapped logs, and an in-process AI assistant drawer.',
+      // Devesh 2026-10-05 owner review: C10 ("pure-Rust" becomes "Rust" in the JSON-LD description; the titles keep "Pure-Rust").
+      'srelens-tui is a standalone Rust terminal user interface for Kubernetes operators, built with Ratatui and kube-rs. It provides in-memory Informer cache browsing, live stream watches, BGP peering dashboard, deep Helm 3 values diff and rollback, auto-wrapped logs, and an in-process AI assistant drawer.',
     ],
   ],
 };
 // Approved claim fixes: exact baseline FAQPage answer text -> replacement, per page. The visible answer changes with it (tests/faq.test.mjs).
 const LD_ANSWER_CHANGES = {
   'faq/index.html': [
-    // C07: the desktop resource browser covers 35 built-in kinds, not "40+".
+    // C07: the desktop resource browser covers 35 built-in kinds, not "40+" (first answer).
+    // Devesh 2026-10-05 owner review: C13. The visible answer is the source of truth, so each JSON-LD answer is the visible
+    // text word for word ("It's", the trailing link sentences, "Yes — installers ...").
     [
-      'srelens is a Kubernetes desktop workspace — a native GUI app for browsing, inspecting, and operating Kubernetes clusters. It reads the contexts in your local kubeconfig and gives you resource browsing across 40+ kinds, live watches, log streaming, in-pod terminals, port forwarding, Helm release views, and a schema-aware YAML editor, all in one window. It is built on Tauri v2 with a pure-Rust core.',
-      'srelens is a Kubernetes desktop workspace — a native GUI app for browsing, inspecting, and operating Kubernetes clusters. It reads the contexts in your local kubeconfig and gives you resource browsing across 35 built-in kinds plus any CRD, live watches, log streaming, in-pod terminals, port forwarding, Helm release views, and a schema-aware YAML editor, all in one window. It is built on Tauri v2 with a pure-Rust core.',
+      "srelens is a Kubernetes desktop workspace — a native GUI app for browsing, inspecting, and operating Kubernetes clusters. It reads the contexts in your local kubeconfig and gives you resource browsing across 40+ kinds, live watches, log streaming, in-pod terminals, port forwarding, Helm release views, and a schema-aware YAML editor, all in one window. It is built on Tauri v2 with a pure-Rust core.",
+      "srelens is a Kubernetes desktop workspace — a native GUI app for browsing, inspecting, and operating Kubernetes clusters. It reads the contexts in your local kubeconfig and gives you resource browsing across 35 built-in kinds plus any CRD, live watches, log streaming, in-pod terminals, port forwarding, Helm release views, and a schema-aware YAML editor, all in one window. It's built on Tauri v2 with a pure-Rust core. See it in action on the features page.",
+    ],
+    [
+      "srelens uses Tauri v2 with a pure-Rust core and connects directly to Kubernetes API servers through kube-rs. It follows a familiar Kubernetes desktop workflow while providing local-first operation and MCP access for supported backend capabilities. srelens is independently developed and is not affiliated with Mirantis Lens or the Freelens project.",
+      "srelens uses Tauri v2 with a pure-Rust core and connects directly to Kubernetes API servers through kube-rs. It follows a familiar Kubernetes desktop workflow while providing local-first operation and MCP access for supported backend capabilities. srelens is independently developed and is not affiliated with Mirantis Lens or the Freelens project. The comparison page covers the architecture in detail.",
+    ],
+    [
+      "srelens targets macOS, Windows, and Linux desktops via Tauri v2.",
+      "macOS, Windows, and Linux desktops via Tauri v2.",
+    ],
+    [
+      "Supported backend capabilities in srelens are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned.",
+      "Supported backend capabilities are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned. The MCP page shows the setup with real screenshots.",
+    ],
+    [
+      "Nowhere. srelens runs entirely on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There is no intermediary cloud service between the app and your API servers.",
+      "Nowhere. srelens runs entirely on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There's no intermediary cloud service between the app and your API servers.",
+    ],
+    [
+      "Yes. Installers for macOS (Apple Silicon and Intel), Windows, and Linux are published on GitHub Releases. The latest build is always available there, and you can also build srelens from source.",
+      "Yes — installers for macOS (Apple Silicon and Intel), Windows, and Linux are available on the download page and on GitHub Releases. You can also build srelens from source.",
+    ],
+    [
+      "Yes. Every product image on srelens.com is an unedited capture of srelens connected to a live three-node kind Kubernetes cluster (one control-plane and two workers) running real workloads, in both the dark and light themes of the app.",
+      "Yes. Every product image on this site is an unedited capture of srelens connected to a live three-node kind cluster (one control-plane and two workers) running real workloads — deployments, a StatefulSet, CronJobs, and one deliberately crash-looping pod — in both the dark and light themes of the app.",
+    ],
+    [
+      "Yes. srelens is open source under the MIT license and free to download. There is no account, license key, or paid tier.",
+      "Yes. srelens is open source under the MIT license and free to download. There's no account, license key, or paid tier.",
     ],
   ],
 };

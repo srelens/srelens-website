@@ -113,7 +113,7 @@
 
         <div class="operator-callout">
           <strong>Fast, keyboard-driven investigation</strong>
-          <p>Instant view switching for opened views, powered by an in-memory Informer cache, live on-demand watch streams, deep Helm and hardware inspection, interactive logs with hanging indent, smart shell detection, and embedded AI diagnostics—right in your terminal.</p>
+          <p>Instant view switching for opened views, powered by an in-memory Informer cache, live on-demand watch streams, deep Helm and hardware inspection, interactive logs with hanging indent, automatic shell fallback, and embedded AI diagnostics—right in your terminal.</p>
         </div>
 
         <h3 id="tui-install">Installation</h3>
@@ -182,13 +182,13 @@ cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
           <li><strong>Built-in Slash Commands:</strong> Run quick investigation macros like <code>/crashloop</code>, <code>/oom</code>, <code>/rollout</code>, or <code>/endpoints</code> to trigger standardized diagnostic workflows.</li>
           <li><strong>Multi-Provider &amp; Local LLMs:</strong> Configure Anthropic (Claude), OpenAI, Google, or local Ollama models via <code>:ai-settings</code> (or <code>:settings</code>). No proprietary lock-in.</li>
           <li><strong>High-Density "Caveman Mode":</strong> Enable terse, high-information-density output (<code>/caveman</code>) designed specifically for rapid operational debugging with minimal token overhead.</li>
-          <li><strong>Model Context Protocol (MCP) Tools:</strong> Integrated with srelens's native MCP tool registry, allowing the AI to safely query cluster APIs and execute diagnostic lookups with confirmation gates.</li>
+          <li><strong>Model Context Protocol (MCP) Tools:</strong> Integrated with srelens's native MCP tool registry, allowing the AI to safely query cluster APIs and run diagnostic lookups. Tools that change the cluster are blocked in the assistant.</li>
         </ul>
 
         <h3 id="tui-features">Additional capabilities</h3>
         <ul>
           <li><strong>ArgoCD GitOps &amp; Hub-Spoke (<a href="/docs/tui/#argocd-gitops"><code>:argo</code></a>):</strong> Inspect applications, sync drift, and health across Hub-and-Spoke cluster topologies with spoke-scoped destination filtering.</li>
-          <li><strong>Node SSH &amp; Out-of-Band Recovery (<a href="/docs/tui/#node-ssh"><code>S</code> on the Nodes view</a>):</strong> Directly triage unready nodes and failing system services (<code>kubelet</code>, <code>containerd</code>, <code>rke2</code>) when the Kubernetes API cannot schedule debug pods. Auto-resolves InternalIP and negotiates keys via SSH agent and <code>~/.ssh/</code> identities.</li>
+          <li><strong>Node SSH &amp; Out-of-Band Recovery (<a href="/docs/tui/#node-ssh"><code>S</code> on the Nodes view</a>):</strong> Open an interactive SSH session to triage unready nodes when the Kubernetes API cannot schedule debug pods. The AI assistant can also read service status and journal logs for services such as <code>kubelet</code>, <code>containerd</code> and <code>rke2-server</code>. Auto-resolves InternalIP and hands authentication to your system <code>ssh</code>, which offers agent identities first and then the standard keys in <code>~/.ssh/</code>.</li>
           <li><strong>Headless MCP Server (<a href="/docs/tui/#tui-mcp"><code>srelens-tui mcp</code></a>):</strong> Expose 100+ cluster tools to Cursor, Claude, and Gemini over stdio with explicit mutation consent gates.</li>
           <li><strong>Adaptive On-Demand Watching:</strong> An LRU-bounded stream pool watches only the active view and namespace, preventing cluster API overload while streaming live updates to the current screen.</li>
           <li><strong>First-Class CRD Support:</strong> Auto-discovers every CustomResourceDefinition, extracts server-side printer columns (evaluating JSONPaths dynamically), and live-watches CRD instances just like built-in primitives.</li>
@@ -228,9 +228,9 @@ cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
             <tr><td><code>l</code></td><td>Workloads / Pods</td><td>Open live streaming logs</td></tr>
             <tr><td><code>s</code></td><td>Workloads / Pods</td><td>Open container shell (tries <code>/bin/sh</code>, then <code>bash</code>)</td></tr>
             <tr><td><code>s</code></td><td>Nodes</td><td>Launch root node debug shell</td></tr>
-            <tr><td><code>Shift + F</code></td><td>Workloads / Pods</td><td>Start background port-forward</td></tr>
+            <tr><td><code>Shift + F</code></td><td>Pods / Services</td><td>Start a background port-forward (closes the active one on the selected row)</td></tr>
             <tr><td><code>t</code></td><td>Tables</td><td>Show ASCII resource tree &amp; owner topology</td></tr>
-            <tr><td><code>m</code></td><td>Tables</td><td>Open metrics panel with sparklines &amp; canvas charts</td></tr>
+            <tr><td><code>m</code></td><td>Pods / Nodes</td><td>Open a metrics panel with CPU and memory line charts (5m to 1h)</td></tr>
             <tr><td><code>d</code> / <code>y</code></td><td>Tables</td><td>Describe resource / View &amp; edit live YAML</td></tr>
             <tr><td><code>Space</code></td><td>Tables</td><td>Mark / unmark row for bulk operations</td></tr>
             <tr><td><code>w</code></td><td>Logs</td><td>Toggle line wrapping with hanging indent</td></tr>

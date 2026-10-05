@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { read, text } from './lib/site.mjs';
+import { read, text, meta } from './lib/site.mjs';
 
 // Task 13: /features/, /mcp/ and /download/ on the design system, plus the approved claim fixes
 // (docs/superpowers/plans/2026-10-02-tui-claims-check.md, Decisions 1 and 2) that appear on them.
@@ -151,7 +151,7 @@ test('/download/ no longer claims a "0ms Informer cache" (C02)', () => {
   assert.doesNotMatch(download, /\b0ms\b/);
   assert.equal(
     text(sectionOf(download, 'tui').match(/<p class="sub">[\s\S]*?<\/p>/)[0]),
-    'Prefer the terminal or working over remote SSH sessions? srelens-tui brings the full srelens control room into a blazing-fast Ratatui interface with an in-memory Informer cache, live stream watches, deep Helm values diff, interactive themes, and an embedded AI assistant.',
+    'Prefer the terminal or working over remote SSH sessions? srelens-tui brings the full srelens control room into a fast Ratatui interface with an in-memory Informer cache, live stream watches, deep Helm values diff, interactive themes, and an embedded AI assistant.',
   );
 });
 
@@ -166,4 +166,39 @@ test('/mcp/ example: every key line of the JSON body is indented alike, "_confir
   const keyed = pre.split('\n').filter((line) => /^\s*<span class="tk-key">"/.test(line));
   assert.equal(keyed.length, 6);
   for (const line of keyed) assert.match(line, /^ {2}<span class="tk-key">"/, line);
+});
+
+// ---- Owner copy fixes (Devesh 2026-10-05): the feature rows describe the new UI the screenshots show ----
+// The og:image:alt in the head describes og-features.jpg, an old-UI card that is not part of this change, so the
+// "drawer" check reads the page after </head>.
+const featureCopy = text(mainOf(features));
+const afterHead = (html) => html.slice(html.indexOf('</head>'));
+
+test('A1: /features/ row 01 names the crash-looping pod ledger-worker, as the screenshot does', () => {
+  assert.doesNotMatch(features, /legacy-adapter/);
+  assert.ok(featureCopy.includes('The crash-looping ledger-worker pod shows its restart count climbing in real time.'));
+});
+
+test('A2: /features/ row 02 describes the pod page, not a detail drawer', () => {
+  assert.doesNotMatch(afterHead(features), /drawer/i);
+  assert.doesNotMatch(featureCopy, /without leaving the table/);
+  assert.ok(featureCopy.includes('The pod page shows current CPU and memory from the Kubernetes Metrics Server above its properties, conditions, and controller references, with YAML and Events one tab away. See the whole picture of a pod on one page.'));
+});
+
+test('A3: /features/ terminal row says "from inside a pod" (the shot shows payments-api)', () => {
+  // Not /worker pod/ alone: the delete-confirmation alt text rightly says "the crash-looping ledger-worker pod".
+  assert.doesNotMatch(featureCopy, /inside a worker pod/);
+  assert.ok(featureCopy.includes('A full interactive terminal, opened as a tab in the workspace. Here it resolves a headless Redis service with nslookup from inside a pod and receives DNS answers straight from the cluster.'));
+});
+
+test('A5: /features/ logs row says the stream opens as a tab, not docked', () => {
+  assert.ok(featureCopy.includes('Stream logs from any pod or whole workload with container filtering and search, opened as a tab of its own and still running when you switch tabs to check the nodes.'));
+});
+
+test('C11: /download/ meta description says "build from source with Cargo", not "install via Cargo"', () => {
+  assert.equal(
+    meta(download, 'description'),
+    'Download srelens free: Kubernetes desktop client and pure-Rust terminal UI (srelens-tui) for macOS, Windows, and Linux — direct from GitHub Releases, or build from source with Cargo.',
+  );
+  assert.doesNotMatch(download, /install via Cargo/i);
 });

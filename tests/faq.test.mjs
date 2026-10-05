@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { read, ldNodes, text } from './lib/site.mjs';
+import { read, ldNodes, text, listPages } from './lib/site.mjs';
 
 const html = read('faq/index.html');
 const faq = ldNodes(html).find((n) => n['@type'] === 'FAQPage');
@@ -30,3 +30,14 @@ test('C07: the "What is srelens?" answer says 35 built-in kinds plus any CRD, vi
 });
 
 test('nothing on the FAQ page still says "40+"', () => assert.doesNotMatch(html, /40\+/));
+
+// ---- Owner copy fixes (Devesh 2026-10-05, C13): the FAQPage JSON-LD is the visible text, word for word ----
+test('C13: every FAQPage answer equals its visible answer (tags stripped, entities decoded, whitespace collapsed)', () => {
+  assert.equal(faq.mainEntity.length, visible.length);
+  faq.mainEntity.forEach((q, i) => assert.equal(q.acceptedAnswer.text, visible[i].answer, q.name));
+});
+
+test('C13: /faq/ is the only page with FAQPage JSON-LD (a second one needs the same visible-text check)', () => {
+  const withFaq = listPages().filter((file) => ldNodes(read(file)).some((n) => n['@type'] === 'FAQPage'));
+  assert.deepEqual(withFaq, ['faq/index.html']);
+});

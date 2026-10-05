@@ -30,3 +30,17 @@ for (const file of listPages()) {
     for (const h of base.headings) if (!removed.has(h)) assert.ok(now.has(h), `lost heading "${h}"`);
   });
 }
+
+// ---- Owner copy fixes (Devesh 2026-10-05, docs/superpowers/plans/2026-10-02-tui-claims-check.md "Decisions (2026-10-05, owner review)") ----
+// Whole files, so meta tags, Open Graph / Twitter descriptions and JSON-LD are covered as well as the body.
+const PUBLISHED = [...listPages(), 'llms.txt', 'llms-full.txt'];
+
+test('C9: no published page or llms file says "blazing-fast" or "ultra-fast"', () => {
+  for (const file of PUBLISHED) assert.doesNotMatch(read(file), /blazing|ultra-?fast/i, file);
+});
+
+// A5: the desktop app opens logs, shells and forwards as tabs; it does not dock them. srelens-tui has no docked panes either,
+// so no "docked" hit survives anywhere and none is pinned as TUI-true.
+test('A5: no published page or llms file says logs, shells or tools are "docked"', () => {
+  for (const file of PUBLISHED) assert.doesNotMatch(read(file), /\bdocked\b/i, file);
+});

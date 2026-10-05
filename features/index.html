@@ -108,7 +108,7 @@
             <div class="copy">
               <span class="fr-num">/ 01</span>
               <h3>A live pods table, not a refresh button</h3>
-              <p>Filter by namespace and watch phase, readiness, restarts, CPU, and memory update in place as the cluster changes through kube-rs watches. The crash-looping <code>legacy-adapter</code> pod shows its restart count climbing in real time.</p>
+              <p>Filter by namespace and watch phase, readiness, restarts, CPU, and memory update in place as the cluster changes through kube-rs watches. The crash-looping <code>ledger-worker</code> pod shows its restart count climbing in real time.</p>
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-pods.webp" width="2400" height="1461" loading="lazy"
@@ -122,7 +122,7 @@
             <div class="copy">
               <span class="fr-num">/ 02</span>
               <h3>Metrics and manifest, side by side</h3>
-              <p>The detail drawer streams CPU and memory from the Kubernetes Metrics Server next to properties, conditions, controller references, and events. See the whole picture of a pod without leaving the table.</p>
+              <p>The pod page shows current CPU and memory from the Kubernetes Metrics Server above its properties, conditions, and controller references, with YAML and Events one tab away. See the whole picture of a pod on one page.</p>
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-pod-detail.webp" width="2400" height="1461" loading="lazy"
@@ -150,7 +150,7 @@
             <div class="copy">
               <span class="fr-num">/ 04</span>
               <h3>Exec into any container</h3>
-              <p>A full interactive terminal, docked in the workspace. Here it resolves a headless Redis service with <code>nslookup</code> from inside a worker pod and receives DNS answers straight from the cluster.</p>
+              <p>A full interactive terminal, opened as a tab in the workspace. Here it resolves a headless Redis service with <code>nslookup</code> from inside a pod and receives DNS answers straight from the cluster.</p>
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-terminal.webp" width="2400" height="1461" loading="lazy"
@@ -164,7 +164,7 @@
             <div class="copy">
               <span class="fr-num">/ 05</span>
               <h3>Logs that follow the investigation</h3>
-              <p>Stream logs from any pod or whole workload with container filtering and search, docked beside the resource and still running when you switch tabs to check the nodes.</p>
+              <p>Stream logs from any pod or whole workload with container filtering and search, opened as a tab of its own and still running when you switch tabs to check the nodes.</p>
             </div>
             <figure class="shot">
               <img class="shot-dark" src="/assets/shots/dark-logs.webp" width="2400" height="1461" loading="lazy"
