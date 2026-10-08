@@ -2,6 +2,10 @@
 *.sh text eol=lf
 # Raw terminal captures are byte-exact source files.
 assets/captures/*.ansi -text
+# The recorded MCP session is byte-exact too (tests parse it line by line).
+assets/captures/*.jsonl -text
+# The demo manifests are applied from Git Bash on Windows and read in Linux containers; keep LF.
+scripts/demo/mcp/* text eol=lf
 # FRR config is bind-mounted into a Linux container; keep LF on every checkout.
 scripts/demo/extras/frr/* text eol=lf
 # The capture container reads this TSV with read -r, so a CRLF checkout would put a CR in the key list.

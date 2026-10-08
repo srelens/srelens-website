@@ -43,3 +43,28 @@ test('embedMcpDemo replaces only the marked block and is idempotent', () => {
   assert.equal(embedMcpDemo(once, 'NEW $& $1'), once);
   assert.throws(() => embedMcpDemo('no markers', 'x'), /mcp-demo markers/);
 });
+
+const transcriptPath = join(ROOT, 'assets/captures/mcp-rollouts.jsonl');
+const CONTEXTS = ['kind-demo-eu', 'kind-demo-us', 'kind-demo-ap'];
+
+test('the committed transcript is one real session: initialize, listContexts, then listDeployments per demo cluster', () => {
+  const { server, calls } = parseTranscript(readFileSync(transcriptPath, 'utf8'));
+  assert.equal(server?.name, 'srelens');
+  assert.equal(calls[0].tool, 'k8s.listContexts');
+  assert.deepEqual(calls[0].result.contexts.map((c) => c.name).sort(), [...CONTEXTS].sort());
+  const deps = calls.filter((c) => c.tool === 'k8s.listDeployments');
+  assert.deepEqual(deps.map((c) => [c.args.context, c.args.namespace]), CONTEXTS.map((c) => [c, 'default']));
+  for (const c of deps) assert.ok(c.result?.deployments?.length, `${c.args.context} returned deployments`);
+});
+
+test('the transcript tells the rollout story the page describes', () => {
+  const { calls } = parseTranscript(readFileSync(transcriptPath, 'utf8'));
+  const by = (ctx, name) => calls.find((c) => c.args.context === ctx)?.result.deployments.find((d) => d.name === name);
+  for (const ctx of ['kind-demo-eu', 'kind-demo-us']) assert.equal(by(ctx, 'checkout').upToDate, 3, `${ctx} checkout rolled out`);
+  assert.ok(by('kind-demo-ap', 'checkout').upToDate < 3, 'ap checkout rollout is stuck');
+  assert.equal(by('kind-demo-us', 'ledger').ready, '1/2', 'us ledger has an unavailable replica');
+});
+
+test('the transcript comes from srelens-tui 0.15.0', () => {
+  assert.match(readFileSync(join(ROOT, 'assets/captures/mcp-rollouts.version'), 'utf8'), /\bv?0\.15\.0\b/);
+});

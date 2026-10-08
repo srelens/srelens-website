@@ -69,17 +69,32 @@ test('every TSV row has a stored capture', () => {
   for (const name of ROW_NAMES) assert.ok(existsSync(join(CAPTURES, `${name}.ansi`)), `assets/captures/${name}.ansi`);
 });
 
-// Every stored capture, the hero `pods` one included (it is not a TSV row).
+// Every stored capture, the hero `pods` one included (it is not a TSV row), and every MCP transcript.
+// Only the demo contexts may appear: the TUI demo cluster and the three MCP demo clusters.
+const FOREIGN_CONTEXT = /kind-(?!srelens-demo\b|demo-(?:eu|us|ap)\b)[\w-]+/;
+const HOST_DATA = /\/Users\/|\/home\/|C:\\|gmail|@[a-z0-9.-]+\.[a-z]{2,}/i;
+// The bare words token and password are legitimate inside tool output, so the transcript rule names key material instead.
+const KEY_MATERIAL = ['client-key-data', 'client-certificate-data', '-----BEGIN'];
+
 test('no capture shows loading, errors, updates, other contexts or host data', () => {
-  const names = readdirSync(CAPTURES).filter((f) => f.endsWith('.ansi')).map((f) => f.slice(0, -'.ansi'.length));
-  assert.ok(names.includes('pods'), 'the hero capture is scanned');
-  for (const name of names) {
-    const plain = readFileSync(join(CAPTURES, `${name}.ansi`), 'utf8').replace(/\x1b\[[0-9;:]*m/g, '');
-    assert.doesNotMatch(plain, /[\x00-\x08\x0b-\x1f\x7f]/, `${name}: control characters left after the colors`);
-    assert.doesNotMatch(plain, /Connecting\.\.\.|Loading\b|\berror:|Cluster unreachable|update available/i, `${name}: loading, error or update banner`);
-    assert.doesNotMatch(plain, /\[● 2:|kind-srelens(?!-demo)|\/Users\/|\/home\/|C:\\|gmail|@[a-z0-9.-]+\.[a-z]{2,}|token|password/i, `${name}: other context or host data`);
-    assert.doesNotMatch(plain, HOME_PATH, `${name}: a personal home path`);
-    assert.doesNotMatch(plain, OWNER, `${name}: the name of whoever took the capture`);
+  const files = readdirSync(CAPTURES).filter((f) => /\.(ansi|jsonl)$/.test(f));
+  assert.ok(files.includes('pods.ansi'), 'the hero capture is scanned');
+  assert.ok(files.some((f) => f.endsWith('.jsonl')), 'at least one MCP transcript is scanned');
+  for (const file of files) {
+    const raw = readFileSync(join(CAPTURES, file), 'utf8');
+    const ansi = file.endsWith('.ansi');
+    const plain = ansi ? raw.replace(/\x1b\[[0-9;:]*m/g, '') : raw;
+    if (ansi) {
+      assert.doesNotMatch(plain, /[\x00-\x08\x0b-\x1f\x7f]/, `${file}: control characters left after the colors`);
+      assert.doesNotMatch(plain, /Connecting\.\.\.|Loading\b|\berror:|Cluster unreachable|update available/i, `${file}: loading, error or update banner`);
+      assert.doesNotMatch(plain, /\[● 2:|token|password/i, `${file}: second context or credential word`);
+    } else {
+      for (const needle of KEY_MATERIAL) assert.ok(!plain.includes(needle), `${file}: carries ${needle}`);
+    }
+    assert.doesNotMatch(plain, FOREIGN_CONTEXT, `${file}: a context other than the demo ones`);
+    assert.doesNotMatch(plain, HOST_DATA, `${file}: host data`);
+    assert.doesNotMatch(plain, HOME_PATH, `${file}: a personal home path`);
+    assert.doesNotMatch(plain, OWNER, `${file}: the name of whoever took the capture`);
   }
 });
 

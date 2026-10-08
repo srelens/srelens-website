@@ -112,6 +112,19 @@ node --test
 
 Pages hold `<!-- capture:NAME:start --><!-- capture:NAME:end -->` marker pairs. The embed script fills each one from the `.ansi` file of the same name in `assets/captures/`, through `scripts/ansi-to-html.mjs`, and `tests/captures.test.mjs` fails if an embedded capture differs from a fresh conversion or shows a loading screen, an update banner or a stray host path.
 
+### MCP demo
+
+The "Talk to your clusters" panel on the homepage is one real `srelens-tui --mcp-stdio` session, recorded as JSON-RPC lines in `assets/captures/mcp-rollouts.jsonl` (and the version it ran in `mcp-rollouts.version`). It needs three throwaway kind clusters, `kind-demo-eu`, `kind-demo-us` and `kind-demo-ap`, all in the isolated kubeconfig `.superpowers/capture/kubeconfig-mcp-host`. In `ap` the `checkout` rollout is stuck at 1 of 3 up to date, and in `us` one `ledger` replica stays Pending. The transcript is never edited by hand; if a call fails, fix the script and re-run.
+
+```sh
+bash scripts/demo/mcp-clusters.sh create     # three kind clusters, workloads, and the in-network kubeconfig-mcp
+cp scripts/demo/mcp-demo.sh .superpowers/capture/
+MSYS_NO_PATHCONV=1 docker run --rm --network kind -v "$(pwd -W 2>/dev/null || pwd)/.superpowers/capture:/work" ubuntu:24.04 bash /work/mcp-demo.sh
+cp .superpowers/capture/out/mcp-rollouts.jsonl .superpowers/capture/out/mcp-rollouts.version assets/captures/
+node scripts/embed-mcp-demo.mjs              # render the transcript into index.html
+bash scripts/demo/mcp-clusters.sh delete     # remove the three clusters
+```
+
 ## OG cards
 
 ```sh
