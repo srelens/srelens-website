@@ -48,7 +48,7 @@ The draft copy below goes to Devesh's review in the PR. Every claim in it has to
 - **Section label:** `#talk-to-your-clusters` · Talk to your clusters
 - **H2:** The Kubernetes kernel for AI.
 - **Lead:** "Install srelens once and you will rarely open it, because your agents do. Point any MCP client at it and ask in plain language: the answers come live from your clusters, through typed tools that are read-only unless you allow more."
-  - Backed by the `--mcp-stdio` flags: destructive capabilities need `--allow-destructive`, and secret reads need their own flag (`apps/tui/src/cli.rs`).
+  - Backed by the `--mcp-stdio` flags (`apps/tui/src/cli.rs`): destructive tools need `--mcp-allow-destructive` (together with `_confirm: true` on the call), and secret reads need `--mcp-allow-sensitive-reads`.
 - **/mcp/ lede:** append one sentence, "srelens is the Kubernetes kernel for AI: your agents use it so you don't have to." Meta descriptions do not change.
 
 The `prompt` line is the example question the session answers. It is shown as the question, not as model output. The tool calls and the table come only from the recorded transcript.
