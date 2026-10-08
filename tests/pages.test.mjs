@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { read, text, meta } from './lib/site.mjs';
+import { read, text, meta, listPages } from './lib/site.mjs';
 
 // Task 13: /features/, /mcp/ and /download/ on the design system, plus the approved claim fixes
 // (docs/superpowers/plans/2026-10-02-tui-claims-check.md, Decisions 1 and 2) that appear on them.
@@ -135,11 +135,19 @@ test('/download/ keeps every [data-asset] button with its template and release f
   ]);
 });
 
-test('/download/ keeps its four anchored sections and the x64 Windows CLI card', () => {
-  for (const id of ['platforms', 'tui', 'first-run', 'get-started']) {
+test('/download/ keeps its three anchored sections and the x64 Windows CLI card', () => {
+  for (const id of ['platforms', 'tui', 'get-started']) {
     assert.match(download, new RegExp(`<section class="section" id="${id}">`), `#${id}`);
   }
   assert.ok(download.includes('<h3>Windows (CLI)</h3>\n            <p>x64 · CLI</p>'));
+});
+
+// Shubham/Devesh 2026-10-08 review: the "From installer to cluster in a minute." section is removed; "Or run it from source." follows #tui.
+test('/download/ has no first-run section, and nothing on the site links to #first-run', () => {
+  assert.doesNotMatch(download, /id="first-run"|From installer to cluster in a minute/);
+  assert.ok(download.indexOf('id="tui"') < download.indexOf('id="get-started"'), '#get-started follows #tui');
+  assert.ok(text(sectionOf(download, 'get-started')).includes('Or run it from source.'));
+  for (const file of listPages()) assert.doesNotMatch(read(file), /#first-run/, file);
 });
 
 test('/download/ homebrew heading is a plain h2 in a plain section-head', () => {

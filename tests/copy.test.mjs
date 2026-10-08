@@ -12,8 +12,13 @@ const REMOVED_HEADINGS = {
   // C01/C03: the "Startup Time" and "Memory Footprint" stat cards are removed (no measurement behind <15ms / <25MB).
   // C02/C04: the "Informer Cache" and "Pure Rust Core" stat cards are reworded to "Warm watches" and "Rust core".
   'tui/index.html': ['Startup Time', 'Informer Cache', 'Memory Footprint', 'Pure Rust Core'],
+  // Shubham/Devesh 2026-10-08 review: remove the first-run section
+  'download/index.html': ['From installer to cluster in a minute.'],
 };
-const REMOVED_IDS = {};
+const REMOVED_IDS = {
+  // Shubham/Devesh 2026-10-08 review: remove the first-run section
+  'download/index.html': ['first-run'],
+};
 
 for (const file of listPages()) {
   const html = read(file);

@@ -250,7 +250,8 @@ test('confirm-delete opens the delete confirmation for ledger-worker and never c
 // Every replaced screenshot's alt describes the new capture; a dark and light pair says the same thing.
 const KEPT = new Set(VIEWS.filter((v) => v.keep).map((v) => v.name));
 const sansTheme = (alt) => alt.replace(/,? (in )?(the )?(dark|light) theme/gi, '');
-for (const page of ['index.html', 'features/index.html', 'download/index.html']) {
+// /download/ is not listed: its only screenshot pair sat in the #first-run section, removed on 2026-10-08.
+for (const page of ['index.html', 'features/index.html']) {
   test(`${page}: replaced screenshots have short alts that differ only by theme`, () => {
     const html = readFileSync(join(ROOT, page), 'utf8');
     const pairs = [...html.matchAll(/<img class="shot-dark" src="\/assets\/shots\/dark-([a-z-]+)\.webp"[^>]*?alt="([^"]*)">\s*<img class="shot-light" src="\/assets\/shots\/light-\1\.webp"[^>]*?alt="([^"]*)">/g)];
