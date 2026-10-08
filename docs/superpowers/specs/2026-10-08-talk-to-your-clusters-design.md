@@ -36,7 +36,7 @@ The Kubernetes kernel for AI.                          (H2)
 │ → k8s.listDeployments  kind-demo-us  default      │
 │ → k8s.listDeployments  kind-demo-ap  default      │
 ├───────────────────────────────────────────────────┤
-│ table: cluster · deployment · ready · up to date · image │  (from the returned JSON only)
+│ table: cluster · deployment · ready · up to date · available · age │ (returned JSON only)
 └───────────────────────────────────────────────────┘
 caption: Real tool calls and results: srelens-tui v0.15.0 --mcp-stdio,
          three local kind clusters. Any MCP client (Cursor, Claude Code,
@@ -58,10 +58,10 @@ The `prompt` line is the example question the session answers. It is shown as th
 - **Clusters:** three new single-node kind clusters, `demo-eu`, `demo-us` and `demo-ap`, created with an isolated kubeconfig, `.superpowers/capture/kubeconfig-mcp-host` (git-ignored).
   - The existing `srelens-demo` cluster, the user's own `srelens` cluster and `~/.kube/config` are never touched.
 - **Workloads:** in `default` only, from committed manifests under `scripts/demo/mcp/`. They give a true rollout story the table shows at a glance:
-  - `checkout` runs a newer image tag in eu and us than in ap, where its rollout is still in progress or partially available;
+  - `checkout` is fully rolled out in eu and us, but in ap its rollout is stuck: only 1 of 3 replicas is up to date, because the new pods never become ready;
   - `storefront` is fully available everywhere;
   - one Deployment has an unavailable replica, for example a resource request no node can fit.
-  - Every image is a real public image and tag; the table shows the names exactly.
+  - Every image is a real public image and tag. (`k8s.listDeployments` returns no image, so the table cannot show one.)
 - **Container kubeconfig:** the three internal kubeconfigs (`kind get kubeconfig --internal`), merged into `.superpowers/capture/kubeconfig-mcp`, with contexts `kind-demo-eu`, `kind-demo-us` and `kind-demo-ap`.
 - **Cleanup:** after the capture is committed, the three clusters are deleted with the same `--kubeconfig`.
 
@@ -71,7 +71,7 @@ The `prompt` line is the example question the session answers. It is shown as th
   - Runs in `ubuntu:24.04` on the `kind` Docker network, like `capture.sh`.
   - Installs the published `srelens-tui` v0.15.0 with the project's own installer.
   - Runs `srelens-tui --mcp-stdio` with `KUBECONFIG=/work/kubeconfig-mcp`.
-  - Feeds it newline-delimited JSON-RPC: `initialize`, the `initialized` notification, `tools/list`, `tools/call` for `k8s.listContexts`, then `k8s.listDeployments` `{context, namespace: "default"}` for each context. Use the exact tool names `tools/list` reports.
+  - Feeds it newline-delimited JSON-RPC: `initialize`, the `initialized` notification, `tools/call` for `k8s.listContexts`, then `k8s.listDeployments` `{context, namespace: "default"}` for each context. A wrong tool name shows up as a failed call, and the transcript is never hand-edited.
   - If a context must be connected first, the script makes the real call that does it, and that call shows in the transcript.
   - Writes every request and response line to `/work/out/mcp-rollouts.jsonl`.
 - **`assets/captures/mcp-rollouts.jsonl`:** the committed transcript. It is not published (`assets/captures` is excluded), the same as the `.ansi` files.
@@ -79,7 +79,7 @@ The `prompt` line is the example question the session answers. It is shown as th
   - Exports a pure function `renderMcpDemo(transcriptLines) → html`.
   - Its CLI replaces the content between `<!-- mcp-demo:start -->` and `<!-- mcp-demo:end -->` in `index.html`. It is idempotent.
   - The table rows are built only from the `listDeployments` results.
-  - Every text node is escaped. Columns: cluster (context), deployment, ready (`ready/desired`), up to date, image (first container).
+  - Every text node is escaped. Columns: cluster (context), deployment, ready (`ready/desired`), up to date, available, age. These are the fields `DeploymentSummary` returns (`crates/kube/src/deployments.rs`).
   - A failed call renders as a failed call. It is never hidden.
 - **Markup:**
   - the existing `.mini` / `.mini-bar` / `.mini-body` panel;
