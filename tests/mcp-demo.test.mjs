@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT } from './lib/site.mjs';
+import { ROOT, read, listPages } from './lib/site.mjs';
 import { PROMPT, parseTranscript, renderMcpDemo, embedMcpDemo } from '../scripts/embed-mcp-demo.mjs';
 
 const fixture = readFileSync(join(ROOT, 'tests/fixtures/mcp-demo.fixture.jsonl'), 'utf8');
@@ -67,4 +67,32 @@ test('the transcript tells the rollout story the page describes', () => {
 
 test('the transcript comes from srelens-tui 0.15.0', () => {
   assert.match(readFileSync(join(ROOT, 'assets/captures/mcp-rollouts.version'), 'utf8'), /\bv?0\.15\.0\b/);
+});
+
+const home = read('index.html');
+
+test('the homepage section right after the hero is "Talk to your clusters"', () => {
+  const heroEnd = home.indexOf('</section>', home.indexOf('<section class="hero">'));
+  const next = home.slice(heroEnd).match(/<section class="section" id="([\w-]+)">/);
+  assert.equal(next?.[1], 'talk-to-your-clusters');
+  assert.match(home, /<h2>The Kubernetes kernel for AI\.<\/h2>/);
+});
+
+test('the committed panel is exactly the render of the committed transcript', () => {
+  const transcript = readFileSync(join(ROOT, 'assets/captures/mcp-rollouts.jsonl'), 'utf8');
+  const version = readFileSync(join(ROOT, 'assets/captures/mcp-rollouts.version'), 'utf8').match(/\d+\.\d+\.\d+/)[0];
+  const block = home.slice(home.indexOf('<!-- mcp-demo:start -->') + '<!-- mcp-demo:start -->'.length, home.indexOf('<!-- mcp-demo:end -->'));
+  assert.equal(block, renderMcpDemo(transcript, version));
+});
+
+test('the table caption does not draw its <code> as a light chip inside the dark terminal', () => {
+  assert.match(read('site.css'), /\.mcp-table caption code \{[^}]*background: none;[^}]*border: 0;/);
+});
+
+test('/mcp/ calls srelens the Kubernetes kernel for AI', () => {
+  assert.match(read('mcp/index.html'), /srelens is the Kubernetes kernel for AI: your agents use it so you don’t have to\./);
+});
+
+test('no page and no llms file names srectl before the release that ships it', () => {
+  for (const file of [...listPages(), 'llms.txt', 'llms-full.txt']) assert.doesNotMatch(read(file), /srectl/i, file);
 });
