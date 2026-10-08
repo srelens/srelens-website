@@ -194,6 +194,14 @@ test('A2: /features/ metrics row (03) describes the pod page, not a detail drawe
   assert.ok(featureCopy.includes('The pod page shows current CPU and memory from the Kubernetes Metrics Server above its properties, conditions, and controller references, with YAML and Events one tab away. See the whole picture of a pod on one page.'));
 });
 
+// Devesh 2026-10-05 owner review (A2), applied to the features heading on 2026-10-08: the pod page shows current CPU and memory with
+// the YAML one tab away, the claim the homepage heading made until c2dc7a2. The row's copy already says so.
+test('A2: the /features/ metrics row is headed "Metrics on the pod page", with no side-by-side manifest anywhere on the page', () => {
+  const h3s = [...mainOf(features).matchAll(/<h3>([\s\S]*?)<\/h3>/g)].map((m) => text(m[1]));
+  assert.ok(h3s.includes('Metrics on the pod page'), h3s.join(' | '));
+  assert.doesNotMatch(features, /side[- ]by[- ]side/i);
+});
+
 test('A3: /features/ terminal row says "from inside a pod" (the shot shows payments-api)', () => {
   // Not /worker pod/ alone: the delete-confirmation alt text rightly says "the crash-looping ledger-worker pod".
   assert.doesNotMatch(featureCopy, /inside a worker pod/);

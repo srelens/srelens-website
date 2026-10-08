@@ -14,6 +14,8 @@ const REMOVED_HEADINGS = {
   'tui/index.html': ['Startup Time', 'Informer Cache', 'Memory Footprint', 'Pure Rust Core'],
   // Shubham/Devesh 2026-10-08 review: remove the first-run section
   'download/index.html': ['From installer to cluster in a minute.'],
+  // Devesh 2026-10-05 owner review (A2)
+  'features/index.html': ['Metrics and manifest, side by side'],
 };
 const REMOVED_IDS = {
   // Shubham/Devesh 2026-10-08 review: remove the first-run section
