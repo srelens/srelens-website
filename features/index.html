@@ -107,6 +107,20 @@
           <div class="feature-row">
             <div class="copy">
               <span class="fr-num">/ 01</span>
+              <h3>Built-in MCP for AI agents</h3>
+              <p>Start the loopback MCP server, install the stdio CLI, and copy client configuration from Settings. The same Rust capability registry powers the desktop and agent surfaces, with explicit confirmation required for mutations.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-mcp.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens MCP settings in dark theme with server transport, CLI, and client configuration">
+              <img class="shot-light" src="/assets/shots/light-mcp.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens MCP settings in light theme with loopback server and client setup controls">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 02</span>
               <h3>A live pods table, not a refresh button</h3>
               <p>Filter by namespace and watch phase, readiness, restarts, CPU, and memory update in place as the cluster changes through kube-rs watches. The crash-looping <code>ledger-worker</code> pod shows its restart count climbing in real time.</p>
             </div>
@@ -120,7 +134,7 @@
 
           <div class="feature-row">
             <div class="copy">
-              <span class="fr-num">/ 02</span>
+              <span class="fr-num">/ 03</span>
               <h3>Metrics and manifest, side by side</h3>
               <p>The pod page shows current CPU and memory from the Kubernetes Metrics Server above its properties, conditions, and controller references, with YAML and Events one tab away. See the whole picture of a pod on one page.</p>
             </div>
@@ -134,7 +148,7 @@
 
           <div class="feature-row">
             <div class="copy">
-              <span class="fr-num">/ 03</span>
+              <span class="fr-num">/ 04</span>
               <h3>Schema-aware YAML editing</h3>
               <p>Open the YAML tab and edit the live manifest with syntax highlighting, line numbers, and apply/reset, driven by your cluster's own OpenAPI schema with CRDs included.</p>
             </div>
@@ -148,7 +162,7 @@
 
           <div class="feature-row">
             <div class="copy">
-              <span class="fr-num">/ 04</span>
+              <span class="fr-num">/ 05</span>
               <h3>Exec into any container</h3>
               <p>A full interactive terminal, opened as a tab in the workspace. Here it resolves a headless Redis service with <code>nslookup</code> from inside a pod and receives DNS answers straight from the cluster.</p>
             </div>
@@ -162,7 +176,7 @@
 
           <div class="feature-row">
             <div class="copy">
-              <span class="fr-num">/ 05</span>
+              <span class="fr-num">/ 06</span>
               <h3>Logs that follow the investigation</h3>
               <p>Stream logs from any pod or whole workload with container filtering and search, opened as a tab of its own and still running when you switch tabs to check the nodes.</p>
             </div>
@@ -176,7 +190,7 @@
 
           <div class="feature-row">
             <div class="copy">
-              <span class="fr-num">/ 06</span>
+              <span class="fr-num">/ 07</span>
               <h3>Nodes with real usage numbers</h3>
               <p>Roles, taints, versions, and live CPU/memory from metrics-server for every node. Cordon, drain, and evict are one action away and always confirmation-gated.</p>
             </div>
@@ -190,7 +204,7 @@
 
           <div class="feature-row">
             <div class="copy">
-              <span class="fr-num">/ 07</span>
+              <span class="fr-num">/ 08</span>
               <h3>Cluster health at a glance</h3>
               <p>The overview turns live API data into a compact operational summary: node readiness, pod health, workload and service counts, namespace coverage, and the warnings worth investigating first.</p>
             </div>
@@ -204,7 +218,7 @@
 
           <div class="feature-row">
             <div class="copy">
-              <span class="fr-num">/ 08</span>
+              <span class="fr-num">/ 09</span>
               <h3>Namespaces without losing the cluster view</h3>
               <p>See every namespace, its status, age, labels, and live resource totals in one table, then open a namespace directly to continue the investigation with the right scope.</p>
             </div>
@@ -218,7 +232,7 @@
 
           <div class="feature-row">
             <div class="copy">
-              <span class="fr-num">/ 09</span>
+              <span class="fr-num">/ 10</span>
               <h3>Events are an investigation surface</h3>
               <p>Search and filter Kubernetes events across namespaces, sort by severity and time, and jump from a warning to the object that emitted it instead of reconstructing the trail from CLI output.</p>
             </div>
@@ -232,7 +246,7 @@
 
           <div class="feature-row">
             <div class="copy">
-              <span class="fr-num">/ 10</span>
+              <span class="fr-num">/ 11</span>
               <h3>Workloads with rollout context</h3>
               <p>Deployments expose desired and available replicas, update strategy, images, selectors, age, and live usage. Scale or restart a rollout from the same view, with confirmation before the action runs.</p>
             </div>
@@ -246,7 +260,7 @@
 
           <div class="feature-row">
             <div class="copy">
-              <span class="fr-num">/ 11</span>
+              <span class="fr-num">/ 12</span>
               <h3>Services and endpoints in context</h3>
               <p>Inspect service type, cluster IP, ports, selectors, and endpoint readiness alongside the workloads they route to. Networking stays part of the same tabbed workspace.</p>
             </div>
@@ -260,7 +274,7 @@
 
           <div class="feature-row">
             <div class="copy">
-              <span class="fr-num">/ 12</span>
+              <span class="fr-num">/ 13</span>
               <h3>Port forwards, managed centrally</h3>
               <p>Create, inspect, copy, and stop forwards for resources across the open cluster. The dedicated view keeps active tunnels visible instead of burying them in background terminal processes.</p>
             </div>
@@ -274,7 +288,7 @@
 
           <div class="feature-row">
             <div class="copy">
-              <span class="fr-num">/ 13</span>
+              <span class="fr-num">/ 14</span>
               <h3>Helm releases in the same workspace</h3>
               <p>List and inspect releases, then install, upgrade, roll back, or uninstall with values and rendered-diff context—without switching to a separate Helm dashboard.</p>
             </div>
@@ -283,20 +297,6 @@
                    alt="srelens Helm releases list with podinfo deployed in checkout at revision 2 and its Upgrade, Roll back and Uninstall actions">
               <img class="shot-light" src="/assets/shots/light-helm.webp" width="2400" height="1461" loading="lazy"
                    alt="srelens Helm releases list with podinfo deployed in checkout at revision 2 and its Upgrade, Roll back and Uninstall actions, light theme">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy">
-              <span class="fr-num">/ 14</span>
-              <h3>Built-in MCP for AI agents</h3>
-              <p>Start the loopback MCP server, install the stdio CLI, and copy client configuration from Settings. The same Rust capability registry powers the desktop and agent surfaces, with explicit confirmation required for mutations.</p>
-            </div>
-            <figure class="shot">
-              <img class="shot-dark" src="/assets/shots/dark-mcp.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens MCP settings in dark theme with server transport, CLI, and client configuration">
-              <img class="shot-light" src="/assets/shots/light-mcp.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens MCP settings in light theme with loopback server and client setup controls">
             </figure>
           </div>
 

@@ -42,9 +42,10 @@ test('each page has one H1 with one accent phrase of four words or fewer', () =>
 
 // ---- /features/ ------------------------------------------------------------------------------
 
+// Devesh 2026-10-08 review: the MCP row leads the page; the other sixteen keep their order, one place down.
 const FEATURE_SHOTS = [
-  'pods', 'pod-detail', 'yaml', 'terminal', 'logs', 'nodes', 'overview',
-  'namespaces', 'events', 'deployments', 'services', 'port-forwards', 'helm', 'mcp',
+  'mcp', 'pods', 'pod-detail', 'yaml', 'terminal', 'logs', 'nodes', 'overview',
+  'namespaces', 'events', 'deployments', 'services', 'port-forwards', 'helm',
   'confirm-delete', 'helm-detail', 'topology',
 ];
 
@@ -62,7 +63,7 @@ test('/features/ has 17 numbered rows, each with the current dark and light scre
   });
 });
 
-// Task 20 review: only deletes are shown confirming (row /04 says shell commands are not gated),
+// Task 20 review: only deletes are shown confirming (the terminal row says shell commands are not gated),
 // and the Helm diff needs a revision before the current one (ReleasePane.tsx previous = revision - 1).
 test('/features/ claims a confirmation for deletes only, and a Helm diff only from the second revision', () => {
   const main = mainOf(features);
@@ -182,12 +183,12 @@ test('/mcp/ example: every key line of the JSON body is indented alike, "_confir
 const featureCopy = text(mainOf(features));
 const afterHead = (html) => html.slice(html.indexOf('</head>'));
 
-test('A1: /features/ row 01 names the crash-looping pod ledger-worker, as the screenshot does', () => {
+test('A1: /features/ pods row (02) names the crash-looping pod ledger-worker, as the screenshot does', () => {
   assert.doesNotMatch(features, /legacy-adapter/);
   assert.ok(featureCopy.includes('The crash-looping ledger-worker pod shows its restart count climbing in real time.'));
 });
 
-test('A2: /features/ row 02 describes the pod page, not a detail drawer', () => {
+test('A2: /features/ metrics row (03) describes the pod page, not a detail drawer', () => {
   assert.doesNotMatch(afterHead(features), /drawer/i);
   assert.doesNotMatch(featureCopy, /without leaving the table/);
   assert.ok(featureCopy.includes('The pod page shows current CPU and memory from the Kubernetes Metrics Server above its properties, conditions, and controller references, with YAML and Events one tab away. See the whole picture of a pod on one page.'));
