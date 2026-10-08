@@ -277,12 +277,12 @@
         <table>
           <caption>Deployments in <code>default</code>, by cluster</caption>
           <thead><tr><th scope="col">cluster</th><th scope="col">deployment</th><th scope="col">ready</th><th scope="col">up to date</th><th scope="col">available</th><th scope="col">age</th></tr></thead>
-          <tbody><tr><td>kind-demo-eu</td><td>checkout</td><td>3/3</td><td>3</td><td>3</td><td>1m</td></tr><tr><td>kind-demo-eu</td><td>storefront</td><td>2/2</td><td>2</td><td>2</td><td>1m</td></tr><tr><td>kind-demo-us</td><td>checkout</td><td>3/3</td><td>3</td><td>3</td><td>1m</td></tr><tr><td>kind-demo-us</td><td>ledger</td><td>1/2</td><td>2</td><td>1</td><td>1m</td></tr><tr><td>kind-demo-us</td><td>storefront</td><td>2/2</td><td>2</td><td>2</td><td>1m</td></tr><tr><td>kind-demo-ap</td><td>checkout</td><td>3/3</td><td>1</td><td>3</td><td>1m</td></tr><tr><td>kind-demo-ap</td><td>storefront</td><td>2/2</td><td>2</td><td>2</td><td>1m</td></tr></tbody>
+          <tbody><tr><td>kind-demo-eu</td><td>checkout</td><td>3/3</td><td>3</td><td>3</td><td>1m</td></tr><tr><td>kind-demo-eu</td><td>storefront</td><td>2/2</td><td>2</td><td>2</td><td>1m</td></tr><tr><td>kind-demo-us</td><td>checkout</td><td>3/3</td><td>3</td><td>3</td><td>1m</td></tr><tr class="mcp-warn"><td>kind-demo-us</td><td>ledger</td><td>1/2</td><td>2</td><td>1</td><td>1m</td></tr><tr><td>kind-demo-us</td><td>storefront</td><td>2/2</td><td>2</td><td>2</td><td>1m</td></tr><tr class="mcp-warn"><td>kind-demo-ap</td><td>checkout</td><td>3/3</td><td>1</td><td>3</td><td>1m</td></tr><tr><td>kind-demo-ap</td><td>storefront</td><td>2/2</td><td>2</td><td>2</td><td>1m</td></tr></tbody>
         </table>
       </div>
     </div>
   </div>
-  <figcaption>Real tool calls and results: srelens-tui v0.15.0 --mcp-stdio, three local kind clusters. Any MCP client (Cursor, Claude Code, your own agent) makes the same calls.</figcaption>
+  <figcaption>Real tool calls and results: srelens-tui v0.15.0 --mcp-stdio, three local kind clusters. Any MCP client (Cursor, Claude Code, your own agent) can make the same calls.</figcaption>
 </figure><!-- mcp-demo:end -->
         <p><a href="/mcp/">Set up the MCP server →</a></p>
       </div>

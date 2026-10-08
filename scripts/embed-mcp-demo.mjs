@@ -24,12 +24,15 @@ export function parseTranscript(text) {
   return { server: server && { name: server.name, version: server.version }, calls };
 }
 
+// Not fully rolled out: fewer up-to-date or available replicas than desired (the number after the "/" in ready).
+const behind = (d) => { const desired = Number(String(d.ready).split('/')[1]); return d.upToDate < desired || d.available < desired; };
+
 export function renderMcpDemo(text, version) {
   const { calls } = parseTranscript(text);
   const callLines = calls.map((c) => `<span class="mcp-call">→ ${esc(c.tool)}</span>${c.args.context ? `  ${esc(c.args.context)}  ${esc(c.args.namespace)}` : ''}`);
   const rows = calls.filter((c) => c.tool === 'k8s.listDeployments').flatMap((c) => (c.error
     ? [`<tr class="mcp-error"><td>${esc(c.args.context)}</td><td colspan="5">error: ${esc(c.error)}</td></tr>`]
-    : c.result.deployments.map((d) => `<tr><td>${esc(c.args.context)}</td><td>${esc(d.name)}</td><td>${esc(d.ready)}</td><td>${esc(d.upToDate)}</td><td>${esc(d.available)}</td><td>${esc(d.age)}</td></tr>`)));
+    : c.result.deployments.map((d) => `<tr${behind(d) ? ' class="mcp-warn"' : ''}><td>${esc(c.args.context)}</td><td>${esc(d.name)}</td><td>${esc(d.ready)}</td><td>${esc(d.upToDate)}</td><td>${esc(d.available)}</td><td>${esc(d.age)}</td></tr>`)));
   return [
     '<figure class="mcp-demo">',
     `  <div class="mini" aria-label="One question, answered from three clusters">`,
@@ -46,7 +49,7 @@ export function renderMcpDemo(text, version) {
     '      </div>',
     '    </div>',
     '  </div>',
-    `  <figcaption>Real tool calls and results: srelens-tui v${esc(version)} --mcp-stdio, three local kind clusters. Any MCP client (Cursor, Claude Code, your own agent) makes the same calls.</figcaption>`,
+    `  <figcaption>Real tool calls and results: srelens-tui v${esc(version)} --mcp-stdio, three local kind clusters. Any MCP client (Cursor, Claude Code, your own agent) can make the same calls.</figcaption>`,
     '</figure>',
   ].join('\n');
 }

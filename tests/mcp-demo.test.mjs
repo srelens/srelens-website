@@ -6,6 +6,7 @@ import { ROOT, read, listPages } from './lib/site.mjs';
 import { PROMPT, parseTranscript, renderMcpDemo, embedMcpDemo } from '../scripts/embed-mcp-demo.mjs';
 
 const fixture = readFileSync(join(ROOT, 'tests/fixtures/mcp-demo.fixture.jsonl'), 'utf8');
+const transcriptPath = join(ROOT, 'assets/captures/mcp-rollouts.jsonl');
 
 test('parseTranscript pairs each tools/call with its response by id', () => {
   const { server, calls } = parseTranscript(fixture);
@@ -21,7 +22,15 @@ test('renderMcpDemo shows the prompt, every tool call in order, and a row per de
   assert.ok(html.includes(PROMPT), 'prompt');
   const calls = [...html.matchAll(/<span class="mcp-call">→ ([\w.]+)<\/span>([^\n<]*)/g)].map((m) => `${m[1]}${m[2]}`.trim());
   assert.deepEqual(calls, ['k8s.listContexts', 'k8s.listDeployments  kind-a  default', 'k8s.listDeployments  kind-b  default']);
-  assert.match(html, /<tr><td>kind-a<\/td><td>web&lt;x&gt;&amp;y<\/td><td>2\/3<\/td><td>1<\/td><td>2<\/td><td>5m<\/td><\/tr>/);
+  assert.match(html, /<tr class="mcp-warn"><td>kind-a<\/td><td>web&lt;x&gt;&amp;y<\/td><td>2\/3<\/td><td>1<\/td><td>2<\/td><td>5m<\/td><\/tr>/);
+});
+
+test('renderMcpDemo flags a deployment that is not fully rolled out with mcp-warn, and only that one', () => {
+  const rows = (html) => [...html.matchAll(/<tr( class="mcp-warn")?><td>([\w-]+)<\/td><td>([\w&;]+)<\/td>/g)].map((m) => [m[2], m[3], Boolean(m[1])]);
+  assert.deepEqual(rows(renderMcpDemo(fixture, '0.15.0')), [['kind-a', 'web&lt;x&gt;&amp;y', true]]);
+  const committed = rows(renderMcpDemo(readFileSync(transcriptPath, 'utf8'), '0.15.0'));
+  assert.deepEqual(committed.filter((r) => r[2]).map((r) => `${r[0]} ${r[1]}`), ['kind-demo-us ledger', 'kind-demo-ap checkout']);
+  assert.equal(committed.length, 7);
 });
 
 test('renderMcpDemo shows a failed call as an error row, never hides it', () => {
@@ -36,6 +45,12 @@ test('renderMcpDemo labels its table and code for assistive technology and names
   assert.match(html, /<figcaption>Real tool calls and results: srelens-tui v0\.15\.0 --mcp-stdio, three local kind clusters\./);
 });
 
+test('the figcaption says other clients can make the same calls, not that they do (a script sent this session)', () => {
+  const caption = renderMcpDemo(fixture, '0.15.0').match(/<figcaption>[^\n]*<\/figcaption>/)[0];
+  assert.ok(caption.endsWith('can make the same calls.</figcaption>'), caption);
+  assert.ok(!caption.includes(' makes the same calls'), caption);
+});
+
 test('embedMcpDemo replaces only the marked block and is idempotent', () => {
   const page = 'a<!-- mcp-demo:start -->old<!-- mcp-demo:end -->b';
   const once = embedMcpDemo(page, 'NEW $& $1');
@@ -44,12 +59,14 @@ test('embedMcpDemo replaces only the marked block and is idempotent', () => {
   assert.throws(() => embedMcpDemo('no markers', 'x'), /mcp-demo markers/);
 });
 
-const transcriptPath = join(ROOT, 'assets/captures/mcp-rollouts.jsonl');
 const CONTEXTS = ['kind-demo-eu', 'kind-demo-us', 'kind-demo-ap'];
 
 test('the committed transcript is one real session: initialize, listContexts, then listDeployments per demo cluster', () => {
   const { server, calls } = parseTranscript(readFileSync(transcriptPath, 'utf8'));
   assert.equal(server?.name, 'srelens');
+  const recorded = readFileSync(join(ROOT, 'assets/captures/mcp-rollouts.version'), 'utf8').match(/\d+\.\d+\.\d+/)[0];
+  assert.equal(server?.version, recorded, 'the server in the transcript is the version the capture is labelled with');
+  assert.equal(recorded, '0.15.0');
   assert.equal(calls[0].tool, 'k8s.listContexts');
   assert.deepEqual(calls[0].result.contexts.map((c) => c.name).sort(), [...CONTEXTS].sort());
   const deps = calls.filter((c) => c.tool === 'k8s.listDeployments');
@@ -87,6 +104,14 @@ test('the committed panel is exactly the render of the committed transcript', ()
 
 test('the table caption does not draw its <code> as a light chip inside the dark terminal', () => {
   assert.match(read('site.css'), /\.mcp-table caption code \{[^}]*background: none;[^}]*border: 0;/);
+});
+
+test('a focused panel keeps its whole outline: .mini clips overflow, so the ring is drawn inside', () => {
+  assert.match(read('site.css'), /\.mini :focus-visible \{ outline-offset: -2px; \}/);
+});
+
+test('a deployment row that is not rolled out is styled with the terminal warning token', () => {
+  assert.match(read('site.css'), /\.mcp-warn td \{ color: var\(--term-warn\); \}/);
 });
 
 test('/mcp/ calls srelens the Kubernetes kernel for AI', () => {
