@@ -44,7 +44,7 @@
      --tui-advance is the widest letter advance in --font-grid (Menlo and DejaVu 0.602em, Cascadia Mono 0.586em) rounded up, so no font in the stack overflows. */
   --tui-cols: 120;
   --tui-advance: 0.61;
-  --tui-size: 12.5px;
+  --tui-size: 16px;
   --tui-pad-x: 18px;
   --tui-max: calc(var(--tui-size) * var(--tui-cols) * var(--tui-advance) + 2 * var(--tui-pad-x) + 2px);
 

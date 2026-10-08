@@ -70,7 +70,7 @@ typography:
     lineHeight: 1.65
   capture:
     fontFamily: '"Cascadia Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace'
-    fontSize: "12.5px"
+    fontSize: "16px"
     fontWeight: 500
     lineHeight: 1.5
 rounded:
@@ -216,7 +216,7 @@ Fonts with `display=swap`.
 - **Data:** 12.5 to 13px labels: eyebrows, path line, versions, captions.
 - **Terminal:** code blocks at 13.5px, in the same face as the incident drill and
   the other terminal-styled panels.
-- **Capture:** `.tui` text captures, up to 12.5px (`--tui-size`). The size scales
+- **Capture:** `.tui` text captures, up to 16px (`--tui-size`). The size scales
   with the frame through container query units, so the 120 columns fill it.
 
 ### Named Rules

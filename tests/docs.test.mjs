@@ -94,8 +94,8 @@ test('DESIGN.md sends terminal captures to --font-grid and does not claim JetBra
   assert.ok(!/JetBrains Mono[^\n]{0,80}(complete|full|every)[^\n]{0,40}box[- ]drawing/i.test(prose));
 });
 
-test('DESIGN.md says a capture scales to its frame (up to 12.5px) and no longer scrolls', () => {
-  assert.match(prose, /\*\*Capture:\*\* `\.tui` text captures, up to 12\.5px/);
+test('DESIGN.md says a capture scales to its frame (up to --tui-size) and no longer scrolls', () => {
+  assert.ok(prose.includes(`**Capture:** \`.tui\` text captures, up to ${light['tui-size']} (\`--tui-size\`)`), `DESIGN.md names the cap ${light['tui-size']}`);
   assert.match(prose, /container query\s+units/);
   assert.doesNotMatch(prose, /scrolls\s+inside its own box|captures scroll inside/);
   for (const token of ['tui-size', 'tui-cols', 'tui-advance']) assert.ok(light[token], `--${token} is a site.css token`);

@@ -177,3 +177,9 @@ test('the homepage feature rows name the pod page and tabs, not a dock or a side
   assert.ok(h3s.includes('Logs, shells & forwards in tabs'), 'tabs heading');
   assert.ok(!h3s.some((h) => /\bdock\b|beside the manifest/i.test(h)), h3s.join(' | '));
 });
+
+// Owner review A2: the pod page shows health with YAML and Events one tab away, so nothing on the homepage claims
+// manifests side by side.
+test('the homepage claims no side-by-side manifest view', () => {
+  assert.doesNotMatch(html, /side[- ]by[- ]side/i);
+});

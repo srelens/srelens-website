@@ -356,9 +356,11 @@ test('the figure that holds a capture is an inline-size container, so the captur
   assert.match(fitCss, /^\.tui-figure \{[^}]*container-type:\s*inline-size/m);
 });
 
-test('the capture font size is container-relative (cqw) and capped at the old 12.5px', () => {
+test('the capture font size is container-relative (cqw), with a cap high enough to fill the widest page frame', () => {
   assert.match(tuiRule, /font:[^;]*\bmin\(var\(--tui-size\),[^;]*cqw/, '.tui font size is min(cap, a cqw expression)');
-  assert.equal(token('tui-size'), '12.5px', 'the cap is today\'s size');
+  // Shubham 2026-10-08: a capture fills its frame like the screenshots beside it. --wrap content is 1200px wide.
+  const frame = 1200;
+  assert.ok(captureFontSize(frame) < parseFloat(token('tui-size')), `a ${frame}px frame is filled, not held at the cap`);
 });
 
 test('at any frame width the 120 columns fit the frame, in the widest grid font too, so .tui needs no sideways scroll', () => {
