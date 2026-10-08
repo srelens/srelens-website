@@ -40,6 +40,13 @@
   --font-term: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   /* Box-drawing and block glyphs: the Google Fonts JetBrains Mono subsets lack U+2500-25FF, so they would fall back at another width. These system fonts have the glyphs at their own letter advance. */
   --font-grid: "Cascadia Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
+  /* Terminal captures are 120 columns (tmux -x 120). .tui sizes its font from the width of its .tui-figure so the columns fill the frame, never above --tui-size.
+     --tui-advance is the widest letter advance in --font-grid (Menlo and DejaVu 0.602em, Cascadia Mono 0.586em) rounded up, so no font in the stack overflows. */
+  --tui-cols: 120;
+  --tui-advance: 0.61;
+  --tui-size: 12.5px;
+  --tui-pad-x: 18px;
+  --tui-max: calc(var(--tui-size) * var(--tui-cols) * var(--tui-advance) + 2 * var(--tui-pad-x) + 2px);
 
   --wrap: 1200px;
   --gutter: clamp(16px, 4vw, 40px);
@@ -284,12 +291,13 @@ h3 { font-size: 16px; line-height: 1.35; letter-spacing: -0.01em; }
 .codeblock .copy-btn:hover { color: var(--term-fg); border-color: var(--term-border); }
 
 /* ---------- components: terminal capture ---------- */
-.tui-figure { display: grid; gap: 10px; margin: 0; min-width: 0; }
+.tui-figure { display: grid; gap: 10px; margin: 0; min-width: 0; container-type: inline-size; }
 .tui {
-  margin: 0; padding: 16px 18px; overflow-x: auto; tab-size: 8;
+  width: min(100%, var(--tui-max));
+  margin: 0; padding: 16px var(--tui-pad-x); overflow-x: auto; tab-size: 8; /* overflow-x stays as a safety net */
   background: var(--term-bg); color: var(--term-fg);
   border: 1px solid var(--term-line); border-radius: var(--r-frame); box-shadow: var(--evidence-shadow);
-  font: 500 12.5px/1.5 var(--font-grid);
+  font: 500 min(var(--tui-size), calc((100cqw - 2 * var(--tui-pad-x) - 2px) / (var(--tui-cols) * var(--tui-advance))))/1.5 var(--font-grid);
 }
 .tui-figure figcaption, .shot-cap { margin: 0; font: 500 12px var(--font-mono); color: var(--muted); }
 

@@ -94,6 +94,13 @@ test('DESIGN.md sends terminal captures to --font-grid and does not claim JetBra
   assert.ok(!/JetBrains Mono[^\n]{0,80}(complete|full|every)[^\n]{0,40}box[- ]drawing/i.test(prose));
 });
 
+test('DESIGN.md says a capture scales to its frame (up to 12.5px) and no longer scrolls', () => {
+  assert.match(prose, /\*\*Capture:\*\* `\.tui` text captures, up to 12\.5px/);
+  assert.match(prose, /container query\s+units/);
+  assert.doesNotMatch(prose, /scrolls\s+inside its own box|captures scroll inside/);
+  for (const token of ['tui-size', 'tui-cols', 'tui-advance']) assert.ok(light[token], `--${token} is a site.css token`);
+});
+
 test('every .class and --token that DESIGN.md names exists in site.css, and every component is named', () => {
   const named = [...prose.matchAll(/`\.([a-z][\w-]*)`/g)].map((m) => m[1]);
   // header, path line, section label, mode switch, keycaps, command block, capture, code block, tables, FAQ, 404, accent

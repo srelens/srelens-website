@@ -333,6 +333,54 @@ test('.tui draws box and block glyphs in --font-grid, whose first family is not 
   assert.doesNotMatch(rule, /var\(--font-term\)/, '.tui no longer uses --font-term');
 });
 
+// ---- Review feedback 2026-10-08 (Shubham, /tui/): every capture fits its frame like an image --------
+// A capture is 120 columns wide. Its font size comes from the width of the frame it sits in (container query
+// units), so the columns fill the frame at any viewport width instead of scrolling sideways or leaving a gap.
+
+const fitCss = read('site.css');
+const token = (name) => fitCss.match(new RegExp(`^\\s*--${name}:\\s*([^;]+);`, 'm'))?.[1].trim();
+const tuiRule = fitCss.match(/^\.tui \{[^}]*\}/m)?.[0] ?? '';
+// The font size the .tui rule asks for, worked out for a frame `frame` px wide: var()s read from site.css, 100cqw = the frame.
+const captureFontSize = (frame) => {
+  const size = tuiRule.match(/font:\s*500\s+(.+?)\/1\.5\s+var\(--font-grid\)/)?.[1];
+  assert.ok(size, '.tui font shorthand is "500 <size>/1.5 var(--font-grid)"');
+  const js = size
+    .replace(/var\(--([\w-]+)\)/g, (_, name) => `(${token(name)})`)
+    .replace(/([\d.]+)cqw/g, (_, n) => `(${n} * ${frame} / 100)`)
+    .replace(/([\d.]+)px/g, '$1')
+    .replace(/\bcalc\(/g, '(').replace(/\bmin\(/g, 'Math.min(');
+  return Function(`"use strict"; return ${js};`)();
+};
+
+test('the figure that holds a capture is an inline-size container, so the capture can read its frame width', () => {
+  assert.match(fitCss, /^\.tui-figure \{[^}]*container-type:\s*inline-size/m);
+});
+
+test('the capture font size is container-relative (cqw) and capped at the old 12.5px', () => {
+  assert.match(tuiRule, /font:[^;]*\bmin\(var\(--tui-size\),[^;]*cqw/, '.tui font size is min(cap, a cqw expression)');
+  assert.equal(token('tui-size'), '12.5px', 'the cap is today\'s size');
+});
+
+test('at any frame width the 120 columns fit the frame, in the widest grid font too, so .tui needs no sideways scroll', () => {
+  const [cap, cols, pad, advance] = [parseFloat(token('tui-size')), Number(token('tui-cols')), parseFloat(token('tui-pad-x')), Number(token('tui-advance'))];
+  assert.equal(cols, 120, 'tmux captures at -x 120');
+  assert.ok(advance >= 0.602 && advance <= 0.62, `--tui-advance ${advance} covers Menlo/DejaVu (0.602em) without leaving a wide gap`);
+  assert.match(tuiRule, /padding:\s*16px var\(--tui-pad-x\)/, 'the padding the size is worked out from');
+  for (const frame of [320, 358, 390, 600, 706, 900, 1000, 1200, 1600]) {
+    const fs = captureFontSize(frame);
+    const inner = frame - 2 * pad - 2; // padding and the two 1px borders
+    assert.ok(fs > 0 && fs <= cap, `${frame}px frame: ${fs}px`);
+    for (const em of [0.586, 0.602]) assert.ok(cols * em * fs <= inner + 0.01, `${frame}px frame: ${cols} columns of ${em}em at ${fs}px are wider than ${inner}px`);
+    if (inner < cap * cols * advance) assert.ok(cols * 0.586 * fs >= 0.95 * inner, `${frame}px frame: Cascadia Mono fills at least 95% of the inner width`);
+    else assert.equal(fs, cap, `${frame}px frame: a frame wider than the capture needs keeps ${cap}px`);
+  }
+});
+
+test('the .tui box is no wider than its 120 columns need at the cap, so a wide frame leaves no gap inside the box', () => {
+  assert.match(token('tui-max') ?? '', /--tui-size\) \* var\(--tui-cols\) \* var\(--tui-advance\) \+ 2 \* var\(--tui-pad-x\) \+ 2px/);
+  assert.match(tuiRule, /width:\s*min\(100%,\s*var\(--tui-max\)\)/);
+});
+
 // ---- Owner copy fixes (Devesh 2026-10-05) ----------------------------------------------------------
 // v0.15.0: MetalLB and Calico peers read "Configured" with no uptime (crates/kube/src/bgp.rs:1593,1611 and 1746,1762); only
 // Cilium live status gives Established and an uptime (bgp.rs:1328-1329, 1380); timers are configured values with "(default)"

@@ -216,7 +216,8 @@ Fonts with `display=swap`.
 - **Data:** 12.5 to 13px labels: eyebrows, path line, versions, captions.
 - **Terminal:** code blocks at 13.5px, in the same face as the incident drill and
   the other terminal-styled panels.
-- **Capture:** `.tui` text captures, 12.5px.
+- **Capture:** `.tui` text captures, up to 12.5px (`--tui-size`). The size scales
+  with the frame through container query units, so the 120 columns fill it.
 
 ### Named Rules
 
@@ -241,13 +242,14 @@ is 56px (`--header-h`) and sticky.
 Long-form pages (docs, guides, security, architecture) use a 70ch reading column
 with the sticky `.content-nav` table of contents. Feature pages use editorial
 rows (`.feature-row`): copy on the left, evidence on the right. A row that holds a
-120-column capture stacks, because the capture needs the whole line and scrolls
-inside its own box.
+120-column capture stacks, because the capture needs the whole line; its font
+scales so the 120 columns fit that line.
 
 At 860px the header links collapse into a `<details>` menu, which works without
 JavaScript, and multi-column groups stack. The five-cell `.bento` grid goes to
 two columns at 1100px and one at 560px. The page body never scrolls sideways;
-wide tables and captures scroll inside their own containers.
+wide tables scroll inside their own containers and captures scale down to fit
+theirs.
 
 ## Elevation & Depth
 
@@ -317,7 +319,9 @@ that is copied.
 ### Terminal capture
 
 `.tui` is a `<pre>` inside a `.tui-figure`, with a caption saying what was
-captured. It is text, so it can be selected and searched. It is filled by
+captured. The figure is a size container; the capture's font size is worked out
+from its width (`--tui-cols` columns at `--tui-advance` em), never above
+`--tui-size`. It is text, so it can be selected and searched. It is filled by
 `scripts/embed-captures.mjs` from `assets/captures/*.ansi`, and a test fails if
 the page differs from a fresh conversion. Spans inside a `.tui` carry inline
 colors; that is the one place the site uses `style=""`.
