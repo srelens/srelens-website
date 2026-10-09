@@ -212,6 +212,19 @@ test('README says only the mcp view keeps its image, and that port-forwards is c
   assert.match(readme, /`port-forwards` is captured in web mode[^\n]*(?:server proxy URL|http:\/\/127\.0\.0\.1:8791\/pf\/1\/)/);
 });
 
+// The desktop screenshots are recaptured from srelens v0.16.0; the terminal captures are not (they are still
+// srelens-tui v0.15.0 text until the srectl recapture), so only the desktop claims move.
+test('README and DESIGN.md date the desktop screenshots to srelens v0.16.0', () => {
+  const shots = /## Screenshots\n([\s\S]*?)(?=\n## Terminal capture)/.exec(readme)?.[1] ?? '';
+  assert.ok(shots.includes('Desktop screenshots show srelens v0.16.0 connected to a live 3-node kind cluster'), 'the README Screenshots section names v0.16.0');
+  assert.doesNotMatch(shots, /0\.15\.0/, 'no v0.15.0 left in the README Screenshots section');
+  const evidence = designMd.slice(designMd.indexOf('## Evidence'), designMd.indexOf('## Do\'s and Don\'ts')).replace(/\s+/g, ' ');
+  assert.match(evidence, /Desktop screenshots are srelens v0\.16\.0/);
+  assert.doesNotMatch(evidence, /Desktop screenshots[^.]*0\.15\.0/, 'DESIGN.md Evidence does not date the desktop screenshots to v0.15.0');
+  const traits = designMd.slice(designMd.indexOf('**Key Characteristics:**'), designMd.indexOf('- Monospace is the voice')).replace(/\s+/g, ' ');
+  assert.match(traits, /desktop screenshots from srelens v0\.16\.0/);
+});
+
 test('README notes the optional fourth tsv column and that the container cannot reach the update check', () => {
   assert.match(readme, /optional fourth column[^\n]*seconds/i);
   assert.match(readme, /api\.github\.com/);

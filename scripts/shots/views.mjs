@@ -1,4 +1,4 @@
-// Desktop views captured for the website, in srelens v0.15.0's "next" design.
+// Desktop views captured for the website, in srelens v0.16.0's "next" design.
 //
 // The next design has no URL router: a screen is a tab, and the open tabs live in the
 // `srelens.next.workspaces` setting. Each view therefore names a `route` (the tab's route,
@@ -11,7 +11,7 @@
 //               (polled, the view fails if it never does): text an empty or still-syncing screen cannot show
 //   keep        why web mode cannot show this view faithfully; a full run skips it and the existing image
 //               stays (--only=<name> still captures it)
-//   namespaces  the namespace filter the screen opens with; [] (the default) is all namespaces.
+//   namespaces  the namespace filter the tab opens with (stored on the tab, since v0.16.0); [] (the default) is all namespaces.
 //   steps       optional, run in order once the route has loaded:
 //                 { label }  click the element whose aria-label is exactly `label`
 //                 { text }   click the visible button/link/[role] element whose text is exactly `text`
@@ -26,7 +26,8 @@ export const APP_THEME = { dark: 'dark', light: 'light' };
 
 const PAYMENTS = ['payments'];
 // ledger-worker crash-loops, so a synced cluster always shows one of these; a screen captured before the app has synced says "all ready".
-const UNHEALTHY = /Degraded|CrashLoopBackOff|NotReady|not ready/;
+// (Pod lists show it as "Error" between restarts and "CrashLoopBackOff" while it waits in back-off.)
+const UNHEALTHY = /Degraded|CrashLoopBackOff|NotReady|not ready|\bError\b/;
 
 export const VIEWS = [
   { name: 'overview', route: '/overview', expect: UNHEALTHY },
@@ -82,7 +83,7 @@ export const VIEWS = [
     route: ({ pod }) => `/k/Pod/payments/${pod('payments-api')}`,
     namespaces: PAYMENTS,
     expect: 'Active',
-    // In web mode the Local column shows the server proxy URL (http://127.0.0.1:8791/pf/1/), not the desktop 127.0.0.1:8080; the alt on /features/ says so.
+    // In web mode the Local column shows the server proxy URL (http://127.0.0.1:8791/pf/<n>/, a new <n> per theme because each view starts with no forwards), not the desktop 127.0.0.1:8080; the alt on /features/ says so.
     // The pod's Forward action opens the New port forward dialog; once it is up the status bar's counter opens the Port forwards tab.
     steps: [
       { text: 'Forward' }, { wait: 1500 },
@@ -97,6 +98,10 @@ export const VIEWS = [
 
 // Whether the page text has what a view waits for; a view with no expectation is always ready.
 export const seen = (text, expect) => expect === undefined || (typeof expect === 'string' ? text.includes(expect) : expect.test(text));
+
+// Whether the page says the cluster can be reached. The status bar reads "version unknown / Unreachable" while a connection
+// check is failing (it flaps for a second now and then); a shot taken then has the right rows and a red error in the corner.
+export const reachable = (text) => !/\bUnreachable\b/.test(text);
 
 // The views a run captures: all but the `keep` ones, or exactly the comma-separated names given (which may include them).
 export function selectViews(only) {
@@ -139,11 +144,17 @@ function describeRoute(route) {
 
 // The `srelens.next.workspaces` document: one workspace holding every context, a pinned Home
 // tab and a tab at `route`. `contexts` is k8s.listContexts' answer; the ids are its stableIds.
-export function workspaceDoc(contexts, activeName, route) {
+// `namespaces` is the view's namespace filter: since v0.16.0 it is per tab (Tab.namespaces, keyed by the
+// cluster's stableId), not the old global srelens.next.namespaces setting. [] is an explicit all-namespaces.
+export function workspaceDoc(contexts, activeName, route, namespaces) {
   const active = contexts.find((c) => c.name === activeName);
   if (!active) throw new Error(`no context called ${activeName}`);
   const [title, kind] = describeRoute(route);
-  const tab = { id: 'shot-route', route, title, kind, ...(APP_SCOPED.has(route) ? {} : { sub: active.name }) };
+  const tab = {
+    id: 'shot-route', route, title, kind,
+    ...(APP_SCOPED.has(route) ? {} : { sub: active.name }),
+    ...(namespaces === undefined ? {} : { namespaces: { [active.stableId]: namespaces } }),
+  };
   return {
     version: 1,
     currentId: 'shot-ws',

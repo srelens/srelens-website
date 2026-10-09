@@ -139,8 +139,8 @@ without JavaScript.
 
 **Key Characteristics:**
 
-- Real product evidence is the primary visual: desktop screenshots and
-  `srelens-tui` text captures, both from v0.15.0 (see Evidence).
+- Real product evidence is the primary visual: desktop screenshots from srelens
+  v0.16.0 and `srelens-tui` text captures from v0.15.0 (see Evidence).
 - Monospace is the voice of the system; Geist carries long reading.
 - Two complete themes. The default follows the visitor's OS.
 - Terminal surfaces (code blocks, captures, the incident drill) are dark in
@@ -363,8 +363,9 @@ pages. It keeps `noindex`.
 
 ## Evidence
 
-Desktop screenshots and terminal captures are srelens v0.15.0 against the
-`srelens-demo` kind cluster (1 control-plane, 2 workers). Desktop screenshots come
+Desktop screenshots are srelens v0.16.0 and terminal captures are `srelens-tui`
+v0.15.0, both against the `srelens-demo` kind cluster (1 control-plane, 2
+workers). Desktop screenshots come
 from `srelens-server` serving the app's "next" design in web mode, driven by
 `scripts/shots/desktop-shots.mjs`. Terminal captures are real `srelens-tui` text
 at 120×32, taken in tmux by `scripts/demo/capture-all.sh` and

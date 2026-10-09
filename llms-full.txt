@@ -72,7 +72,7 @@ Supported backend capabilities are registered in a shared capability registry an
 ## Screenshot inventory (all real captures, dark and light themes)
 
 - Cluster overview of the three-node kind-srelens-demo cluster, flagging the crash-looping ledger-worker in payments as not ready — https://srelens.com/assets/shots/dark-overview.webp
-- Nodes table for the three demo cluster nodes with readiness, roles, CPU and memory usage and Kubernetes version — https://srelens.com/assets/shots/dark-nodes.webp
+- Nodes table for the three demo cluster nodes with readiness, roles, CPU and memory usage bars and Kubernetes version — https://srelens.com/assets/shots/dark-nodes.webp
 - Pods table across all namespaces with live status, restarts, CPU and memory, ledger-worker in payments crash-looping — https://srelens.com/assets/shots/dark-pods.webp
 - Pod detail for payments-api in payments: 1/1 ready, Running, nginx:1.27-alpine, with Logs, Shell and Forward actions — https://srelens.com/assets/shots/dark-pod-detail.webp
 - YAML editor on the payments-api Deployment, checked by a server dry run, with schema-aware key hints — https://srelens.com/assets/shots/dark-yaml.webp
@@ -83,7 +83,7 @@ Supported backend capabilities are registered in a shared capability registry an
 - Cluster events with all, warnings and normal filters and a by-reason count that includes one BackOff warning — https://srelens.com/assets/shots/dark-events.webp
 - Deployments across all namespaces with ready, up-to-date and available counts, ledger-worker at 0/1 ready — https://srelens.com/assets/shots/dark-deployments.webp
 - Services across namespaces with type, cluster IP and ports, and the external IP of the payments-api-lb load balancer — https://srelens.com/assets/shots/dark-services.webp
-- Port forwards tab: payments-api port 80 forwarded through the srelens server at http://127.0.0.1:8791/pf/1/ — https://srelens.com/assets/shots/dark-port-forwards.webp
+- Port forwards tab: payments-api port 80 forwarded through the srelens server at a 127.0.0.1:8791/pf/ proxy URL — https://srelens.com/assets/shots/dark-port-forwards.webp
 - Helm releases list with podinfo deployed in checkout at revision 2 and its Upgrade, Roll back and Uninstall actions — https://srelens.com/assets/shots/dark-helm.webp
 - Delete Pod? confirmation for the crash-looping ledger-worker pod in payments, with the equivalent kubectl command — https://srelens.com/assets/shots/dark-confirm-delete.webp
 - Helm pane for podinfo with the rendered manifest diff from revision 1 to 2, replicas going from 1 to 2 — https://srelens.com/assets/shots/dark-helm-detail.webp

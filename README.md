@@ -63,7 +63,7 @@ or name pages: `node scripts/apply-shell.mjs index.html tui/index.html`. It also
 
 ## Screenshots
 
-Desktop screenshots show srelens v0.15.0 connected to a live 3-node kind cluster (`srelens-demo`: 1 control-plane + 2 workers). The demo workloads (`scripts/demo/workloads.yaml`) span `payments` / `checkout` / `monitoring` and include a deliberately crash-looping pod (`ledger-worker`) and metrics-server for live usage numbers. `scripts/demo/extras.sh` adds a Helm release with two revisions, Argo CD with an Application, and MetalLB peering with an FRR router for BGP.
+Desktop screenshots show srelens v0.16.0 connected to a live 3-node kind cluster (`srelens-demo`: 1 control-plane + 2 workers). The demo workloads (`scripts/demo/workloads.yaml`) span `payments` / `checkout` / `monitoring` and include a deliberately crash-looping pod (`ledger-worker`) and metrics-server for live usage numbers. `scripts/demo/extras.sh` adds a Helm release with two revisions, Argo CD with an Application, and MetalLB peering with an FRR router for BGP.
 
 They are captured in web mode, not from the native app. `srelens-server`, built from the srelens repo at the release tag, serves the same React UI ("next" design) with an isolated data directory and a dev login, and only the `srelens-demo` kubeconfig is uploaded. The native app is never run for this, because its settings and vault key live in the real user profile and OS credential store.
 
@@ -76,7 +76,7 @@ node scripts/shots/desktop-shots.mjs \
 
 It drives headless Chrome over the DevTools Protocol (set `CHROME` if it is not at the default path) at a 1600×974 viewport with device scale 1.5, and writes `assets/shots/{dark,light}-<view>.webp` at 2400×1461, quality 82. Each view's route, the text that proves it has synced, and any click steps live in `scripts/shots/views.mjs`. Add a view there to capture a new one.
 
-One view carries a `keep` field and is skipped by a full run: `mcp`. Web mode cannot show it faithfully (the MCP server pane exists only in the desktop app), and its image is on no page now; `--only=mcp` still captures it. `port-forwards` is captured in web mode, where the Local column shows the srelens server proxy URL (`http://127.0.0.1:8791/pf/1/`) instead of the desktop `127.0.0.1:8080`, and the alt text on `/features/` says so. One image is kept on purpose until its text capture exists: the `srectl` AI assistant screenshot (see "Assistant capture" below; it needs a real provider key).
+One view carries a `keep` field and is skipped by a full run: `mcp`. Web mode cannot show it faithfully (the MCP server pane exists only in the desktop app), and its image is on no page now; `--only=mcp` still captures it. `port-forwards` is captured in web mode, where the Local column shows the srelens server proxy URL (`http://127.0.0.1:8791/pf/<n>/`, `<n>` being the forward's number, which differs between the dark and light shots because each view starts with no forwards) instead of the desktop `127.0.0.1:8080`, and the alt text on `/features/` says so. One image is kept on purpose until its text capture exists: the `srectl` AI assistant screenshot (see "Assistant capture" below; it needs a real provider key).
 
 ## Terminal capture
 
