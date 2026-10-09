@@ -1,9 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join } from 'node:path';
 import { ROOT, read, listPages } from './lib/site.mjs';
-import { PROMPT, parseTranscript, renderMcpDemo, embedMcpDemo } from '../scripts/embed-mcp-demo.mjs';
+import { PROMPT, PANEL_PAGES, parseTranscript, renderMcpDemo, embedMcpDemo, embedPanelPages } from '../scripts/embed-mcp-demo.mjs';
 
 const fixture = readFileSync(join(ROOT, 'tests/fixtures/mcp-demo.fixture.jsonl'), 'utf8');
 const transcriptPath = join(ROOT, 'assets/captures/mcp-rollouts.jsonl');
@@ -95,11 +96,60 @@ test('the homepage section right after the hero is "Talk to your clusters"', () 
   assert.match(home, /<h2>The Kubernetes kernel for AI\.<\/h2>/);
 });
 
-test('the committed panel is exactly the render of the committed transcript', () => {
-  const transcript = readFileSync(join(ROOT, 'assets/captures/mcp-rollouts.jsonl'), 'utf8');
-  const version = readFileSync(join(ROOT, 'assets/captures/mcp-rollouts.version'), 'utf8').match(/\d+\.\d+\.\d+/)[0];
-  const block = home.slice(home.indexOf('<!-- mcp-demo:start -->') + '<!-- mcp-demo:start -->'.length, home.indexOf('<!-- mcp-demo:end -->'));
-  assert.equal(block, renderMcpDemo(transcript, version));
+// One recorded session, one rendered block, shown wherever the page talks about MCP.
+test('the panel pages are the homepage, /features/, /mcp/ and /tui/', () => {
+  assert.deepEqual(PANEL_PAGES, ['index.html', 'features/index.html', 'mcp/index.html', 'tui/index.html']);
+});
+
+const MARKERS = ['<!-- mcp-demo:start -->', '<!-- mcp-demo:end -->'];
+
+test('the mcp-demo markers sit once on each panel page and on no other page', () => {
+  for (const file of listPages()) {
+    for (const marker of MARKERS) {
+      assert.equal(read(file).split(marker).length - 1, PANEL_PAGES.includes(file) ? 1 : 0, `${file}: ${marker}`);
+    }
+  }
+});
+
+for (const file of PANEL_PAGES) {
+  test(`${file}: the committed panel is exactly the render of the committed transcript`, () => {
+    const transcript = readFileSync(join(ROOT, 'assets/captures/mcp-rollouts.jsonl'), 'utf8');
+    const version = readFileSync(join(ROOT, 'assets/captures/mcp-rollouts.version'), 'utf8').match(/\d+\.\d+\.\d+/)[0];
+    const page = read(file);
+    const block = page.slice(page.indexOf(MARKERS[0]) + MARKERS[0].length, page.indexOf(MARKERS[1]));
+    assert.equal(block, renderMcpDemo(transcript, version));
+  });
+}
+
+// A scratch site: the transcript and one stale page per panel page.
+function scratchSite(pages) {
+  const dir = mkdtempSync(join(tmpdir(), 'mcp-demo-'));
+  mkdirSync(join(dir, 'assets/captures'), { recursive: true });
+  writeFileSync(join(dir, 'assets/captures/mcp-rollouts.jsonl'), fixture);
+  writeFileSync(join(dir, 'assets/captures/mcp-rollouts.version'), 'srelens-tui v0.15.0\n');
+  for (const [page, html] of Object.entries(pages)) {
+    mkdirSync(dirname(join(dir, page)), { recursive: true });
+    writeFileSync(join(dir, page), html);
+  }
+  return dir;
+}
+
+test('embedPanelPages writes the one render into every panel page, and a second run changes nothing', () => {
+  const stale = (page) => `<main>${page}${MARKERS[0]}stale${MARKERS[1]}</main>`;
+  const dir = scratchSite(Object.fromEntries(PANEL_PAGES.map((p) => [p, stale(p)])));
+  try {
+    assert.deepEqual(embedPanelPages(dir), PANEL_PAGES);
+    const block = renderMcpDemo(fixture, '0.15.0');
+    for (const page of PANEL_PAGES) assert.equal(readFileSync(join(dir, page), 'utf8'), `<main>${page}${MARKERS[0]}${block}${MARKERS[1]}</main>`);
+    assert.deepEqual(embedPanelPages(dir), [], 'nothing left to change');
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('embedPanelPages names the page that lost its markers', () => {
+  const dir = scratchSite(Object.fromEntries(PANEL_PAGES.map((p) => [p, p === 'mcp/index.html' ? '<main>no markers</main>' : `${MARKERS[0]}x${MARKERS[1]}`])));
+  try {
+    assert.throws(() => embedPanelPages(dir), /mcp\/index\.html: no mcp-demo markers/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
 test('the table caption does not draw its <code> as a light chip inside the dark terminal', () => {

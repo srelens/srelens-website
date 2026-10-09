@@ -1,4 +1,4 @@
-// Renders the homepage "Talk to your clusters" panel from a recorded MCP stdio transcript and embeds it in index.html.
+// Renders the "Talk to your clusters" panel from a recorded MCP stdio transcript and embeds it in every page that carries the markers.
 //   node scripts/embed-mcp-demo.mjs   (reads assets/captures/mcp-rollouts.jsonl and .version)
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -57,15 +57,30 @@ export function renderMcpDemo(text, version) {
 export function embedMcpDemo(html, block) {
   const i = html.indexOf(START);
   const j = html.indexOf(END, i);
-  if (i === -1 || j === -1) throw new Error('index.html has no mcp-demo markers');
+  if (i === -1 || j === -1) throw new Error('no mcp-demo markers');
   return html.slice(0, i + START.length) + block + html.slice(j);
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
-  const root = join(fileURLToPath(import.meta.url), '..', '..');
+// The pages that show the one recorded session, each with the markers once.
+export const PANEL_PAGES = ['index.html', 'features/index.html', 'mcp/index.html', 'tui/index.html'];
+
+// Renders the committed transcript into every panel page under `root`; returns the pages whose bytes changed.
+export function embedPanelPages(root) {
   const transcript = readFileSync(join(root, 'assets/captures/mcp-rollouts.jsonl'), 'utf8');
   const version = readFileSync(join(root, 'assets/captures/mcp-rollouts.version'), 'utf8').match(/\d+\.\d+\.\d+/)[0];
-  const file = join(root, 'index.html');
-  writeFileSync(file, embedMcpDemo(readFileSync(file, 'utf8'), renderMcpDemo(transcript, version)));
-  console.log('embedded the MCP demo into index.html');
+  const block = renderMcpDemo(transcript, version);
+  return PANEL_PAGES.filter((page) => {
+    const file = join(root, page);
+    const before = readFileSync(file, 'utf8');
+    let after;
+    try { after = embedMcpDemo(before, block); } catch (e) { throw new Error(`${page}: ${e.message}`); }
+    if (after === before) return false;
+    writeFileSync(file, after);
+    return true;
+  });
+}
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  const changed = embedPanelPages(join(fileURLToPath(import.meta.url), '..', '..'));
+  console.log(changed.length ? `embedded the MCP demo into ${changed.join(', ')}` : 'the MCP demo is already up to date');
 }

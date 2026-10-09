@@ -110,12 +110,26 @@
               <h3>Built-in MCP for AI agents</h3>
               <p>Start the loopback MCP server, install the stdio CLI, and copy client configuration from Settings. The same Rust capability registry powers the desktop and agent surfaces, with explicit confirmation required for mutations.</p>
             </div>
-            <figure class="shot">
-              <img class="shot-dark" src="/assets/shots/dark-mcp.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens MCP settings in dark theme with server transport, CLI, and client configuration">
-              <img class="shot-light" src="/assets/shots/light-mcp.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens MCP settings in light theme with loopback server and client setup controls">
-            </figure>
+            <!-- mcp-demo:start --><figure class="mcp-demo">
+  <div class="mini" aria-label="One question, answered from three clusters">
+    <div class="mini-bar">mcp · srelens — agent session</div>
+    <div class="mini-body">
+      <pre tabindex="0" role="group" aria-label="mcp · srelens — agent session"><span class="mcp-prompt">prompt</span>  What's rolling out in default, across all my clusters?
+<span class="mcp-call">→ k8s.listContexts</span>
+<span class="mcp-call">→ k8s.listDeployments</span>  kind-demo-eu  default
+<span class="mcp-call">→ k8s.listDeployments</span>  kind-demo-us  default
+<span class="mcp-call">→ k8s.listDeployments</span>  kind-demo-ap  default</pre>
+      <div class="mcp-table" tabindex="0" role="group" aria-label="Deployments in default, by cluster">
+        <table>
+          <caption>Deployments in <code>default</code>, by cluster</caption>
+          <thead><tr><th scope="col">cluster</th><th scope="col">deployment</th><th scope="col">ready</th><th scope="col">up to date</th><th scope="col">available</th><th scope="col">age</th></tr></thead>
+          <tbody><tr><td>kind-demo-eu</td><td>checkout</td><td>3/3</td><td>3</td><td>3</td><td>1m</td></tr><tr><td>kind-demo-eu</td><td>storefront</td><td>2/2</td><td>2</td><td>2</td><td>1m</td></tr><tr><td>kind-demo-us</td><td>checkout</td><td>3/3</td><td>3</td><td>3</td><td>1m</td></tr><tr class="mcp-warn"><td>kind-demo-us</td><td>ledger</td><td>1/2</td><td>2</td><td>1</td><td>1m</td></tr><tr><td>kind-demo-us</td><td>storefront</td><td>2/2</td><td>2</td><td>2</td><td>1m</td></tr><tr class="mcp-warn"><td>kind-demo-ap</td><td>checkout</td><td>3/3</td><td>1</td><td>3</td><td>1m</td></tr><tr><td>kind-demo-ap</td><td>storefront</td><td>2/2</td><td>2</td><td>2</td><td>1m</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <figcaption>Real tool calls and results: srelens-tui v0.15.0 --mcp-stdio, three local kind clusters. Any MCP client (Cursor, Claude Code, your own agent) can make the same calls.</figcaption>
+</figure><!-- mcp-demo:end -->
           </div>
 
           <div class="feature-row">

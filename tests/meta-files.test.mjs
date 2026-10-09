@@ -115,7 +115,8 @@ test('each inventory description is the alt text of the matching features-page s
     assert.equal(desc, expected[0].toUpperCase() + expected.slice(1), name);
     checked += 1;
   }
-  assert.equal(checked, alts.size - UNCHANGED_SHOTS.size);
+  // dark-mcp left /features/ on 2026-10-09 (its row is the MCP panel now), so only the unchanged shots still pictured there are skipped.
+  assert.equal(checked, alts.size - [...UNCHANGED_SHOTS].filter((name) => alts.has(name)).length);
 });
 
 test('llms files describe no stale demo cluster', () => {

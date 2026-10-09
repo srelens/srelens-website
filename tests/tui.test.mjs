@@ -99,11 +99,12 @@ test('every in-page #anchor-link targets an id that exists', () => {
   for (const id of links) assert.ok(ids.has(id), `#${id}`);
 });
 
-test('the MCP feature stacks its two screenshots in a shot-stack', () => {
+// Devesh 2026-10-09 ("All new UI images"): the two Cursor screenshots give way to the recorded srelens-tui --mcp-stdio session.
+test('the headless MCP row shows the recorded --mcp-stdio session and keeps its bullets, with no Cursor screenshots', () => {
   const row = html.slice(html.indexOf('id="headless-mcp-server"'), html.indexOf('id="argocd-gitops"'));
-  const stack = row.slice(row.indexOf('<div class="shot-stack">'));
-  assert.equal((stack.match(/<figure class="shot">/g) ?? []).length, 2);
-  assert.ok(stack.includes('/assets/shots/tui-mcp-agent.png') && stack.includes('/assets/shots/tui-mcp-tools.png'));
+  assert.ok(row.includes('<!-- mcp-demo:start --><figure class="mcp-demo">'), 'the row holds the panel');
+  assert.doesNotMatch(row, /shot-stack|<img|tui-mcp-(agent|tools)/);
+  assert.equal((row.match(/<li><strong>/g) ?? []).length, 4, 'the four bullets stay');
 });
 
 test('the compare table scrolls inside its own box with scoped headers', () => {
@@ -256,7 +257,9 @@ test('.page-hero .hero-actions is capped at its column so the nowrap install com
 
 const TUI_PAGES = ['tui/index.html', 'docs/tui/index.html'];
 const REPLACED = ['tui-overview.webp', 'tui-pods.webp', 'tui-argo.webp', 'tui-helm.webp', 'tui-bgp.webp', 'tui-gpuinfo.webp', 'tui-logs.webp', 'tui-tree.webp', 'tui-banner.webp'];
-const KEPT = { 'tui/index.html': ['tui-assistant.webp', 'tui-mcp-agent.png', 'tui-mcp-tools.png'], 'docs/tui/index.html': ['tui-assistant.webp', 'argocd-hub-spoke.png', 'tui-argo-config.png'] };
+const KEPT = { 'tui/index.html': ['tui-assistant.webp'], 'docs/tui/index.html': ['tui-assistant.webp', 'argocd-hub-spoke.png', 'tui-argo-config.png'] };
+// Off the page since 2026-10-09 (the recorded MCP session replaced them), but the files stay published.
+const UNUSED = { 'tui/index.html': ['tui-mcp-agent.png', 'tui-mcp-tools.png'], 'docs/tui/index.html': [] };
 // Where each capture sits: [text that opens its section, capture name]. The section's first figure is the capture.
 const PLACED = {
   'tui/index.html': [['id="cluster-overview"', 'overview'], ['id="pod-operations"', 'pods'], ['id="argocd-gitops"', 'argo'], ['id="helm-inspector"', 'helm-detail'],
@@ -275,7 +278,7 @@ for (const file of TUI_PAGES) {
   test(`${file}: the screenshots without a capture stay images, and every old image file stays published`, () => {
     const page = read(file);
     for (const image of KEPT[file]) assert.ok(page.includes(`/assets/shots/${image}`), `${file} lost ${image}`);
-    for (const image of [...REPLACED, ...KEPT[file]]) assert.ok(existsSync(join(ROOT, 'assets', 'shots', image)), `assets/shots/${image} was deleted`);
+    for (const image of [...REPLACED, ...KEPT[file], ...UNUSED[file]]) assert.ok(existsSync(join(ROOT, 'assets', 'shots', image)), `assets/shots/${image} was deleted`);
   });
 
   test(`${file}: each replaced screenshot is now a tui-figure holding its capture, with a truthful caption`, () => {

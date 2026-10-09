@@ -43,17 +43,22 @@ test('each page has one H1 with one accent phrase of four words or fewer', () =>
 // ---- /features/ ------------------------------------------------------------------------------
 
 // Devesh 2026-10-08 review: the MCP row leads the page; the other sixteen keep their order, one place down.
+// Devesh 2026-10-09 ("All new UI images"): row 1 is the recorded MCP session (null), not the old-UI settings screenshot.
 const FEATURE_SHOTS = [
-  'mcp', 'pods', 'pod-detail', 'yaml', 'terminal', 'logs', 'nodes', 'overview',
+  null, 'pods', 'pod-detail', 'yaml', 'terminal', 'logs', 'nodes', 'overview',
   'namespaces', 'events', 'deployments', 'services', 'port-forwards', 'helm',
   'confirm-delete', 'helm-detail', 'topology',
 ];
 
-test('/features/ has 17 numbered rows, each with the current dark and light screenshot', () => {
+test('/features/ has 17 numbered rows: the MCP panel first, then the current dark and light screenshots', () => {
   const rows = [...mainOf(features).matchAll(/<div class="feature-row">([\s\S]*?)<\/figure>/g)].map((m) => m[1]);
   assert.equal(rows.length, FEATURE_SHOTS.length);
+  assert.ok(rows[0].includes('<h3>Built-in MCP for AI agents</h3>'), 'row 1 keeps its copy');
+  assert.ok(rows[0].includes('<!-- mcp-demo:start --><figure class="mcp-demo">'), 'row 1 is the MCP panel');
+  assert.doesNotMatch(rows[0], /<img|-mcp\.webp/, 'row 1 has no old MCP screenshot');
   rows.forEach((row, i) => {
     assert.ok(row.includes(`<span class="fr-num">/ ${String(i + 1).padStart(2, '0')}</span>`), `row ${i + 1} number`);
+    if (FEATURE_SHOTS[i] === null) return;
     for (const mode of ['dark', 'light']) {
       const img = row.match(new RegExp(`<img class="shot-${mode}" src="/assets/shots/${mode}-${FEATURE_SHOTS[i]}\\.webp"[^>]*>`));
       assert.ok(img, `row ${i + 1} ${mode} image`);
@@ -93,8 +98,13 @@ test('/mcp/ code blocks are <pre><code> inside .codeblock, so they take the term
   assert.match(css, /\.codeblock pre code \{ font: inherit;/);
 });
 
-test('/mcp/ keeps the screenshot, its caption and the example tool call', () => {
-  assert.ok(mcp.includes('<p class="shot-cap">real screenshot · the MCP panel in srelens settings, server listening on loopback</p>'));
+// Devesh 2026-10-09 ("All new UI images"): the hero shows the recorded MCP session, not the old-UI settings screenshot.
+// Its caption described that screenshot, so it goes with it; the panel carries its own figcaption.
+test('/mcp/ hero is the recorded MCP session, with no old settings screenshot or caption, and keeps the example tool call', () => {
+  const band = mcp.slice(mcp.indexOf('<div class="band">'), mcp.indexOf('<section class="section" id="how">'));
+  assert.ok(band.includes('<!-- mcp-demo:start --><figure class="mcp-demo">'), 'the hero holds the panel');
+  assert.doesNotMatch(mcp, /-mcp\.webp|real screenshot · the MCP panel in srelens settings/, 'no old settings screenshot or caption');
+  assert.doesNotMatch(band, /<img|shot-cap/);
   const example = sectionOf(mcp, 'example');
   assert.match(example, /<div class="mini" aria-label="Example MCP tool call">\s*<div class="mini-bar">[\s\S]*<div class="mini-body">\s*<pre[^>]*>/);
 });
