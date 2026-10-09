@@ -160,6 +160,21 @@ test('design.json shadow, motion, breakpoints and component colours exist in sit
   }
 });
 
+// Devesh 2026-10-09: v0.16.0 / srectl. The design notes quote the product as their evidence, so they name the terminal product
+// srectl and the release the evidence is from. Neither file is scanned by rename.test.mjs or version.test.mjs, so this pins them.
+test('DESIGN.md and design.json name srectl and v0.16.0 evidence, not srelens-tui or v0.15.0', () => {
+  const designJson = read('.impeccable/design.json');
+  for (const [file, body] of [['DESIGN.md', designMd], ['.impeccable/design.json', designJson]]) {
+    assert.doesNotMatch(body, /srelens-tui/, `${file} still says srelens-tui`);
+    assert.doesNotMatch(body, /0\.15\.0/, `${file} still cites v0.15.0`);
+  }
+  assert.match(designMd, /Every binding is verified against the released\s+v0\.16\.0 source before it appears\./);
+  assert.ok(design.components.some((c) => c.html.includes('brew install srelens/tap/srectl')), 'the Command Block shows the srectl install');
+  assert.ok(design.components.some((c) => c.html.includes('$ srectl -A')), 'the Terminal Capture shows srectl');
+  assert.match(design.narrative.overview, /the desktop app and srectl\./);
+  assert.ok(design.narrative.keyCharacteristics.some((k) => k.startsWith('Real desktop screenshots and srectl text captures from v0.16.0 ')));
+});
+
 // ---- README.md ----
 
 const readme = read('README.md');

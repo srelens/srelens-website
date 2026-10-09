@@ -123,7 +123,7 @@
       "name": "Command Block",
       "kind": "custom",
       "description": "A prompt, one command and a copy button.",
-      "html": "<div class=\"ds-cmd\"><b>$</b><code>brew install srelens/tap/srelens-tui</code><button>copy</button></div>",
+      "html": "<div class=\"ds-cmd\"><b>$</b><code>brew install srelens/tap/srectl</code><button>copy</button></div>",
       "css": ".ds-cmd{display:inline-flex;align-items:center;gap:12px;min-height:46px;padding:6px 6px 6px 16px;border:1px solid #e4dfeb;border-radius:9px;background:#ffffff}.ds-cmd b{font:600 14px \"Geist Mono\",ui-monospace,monospace;color:#15803d}.ds-cmd code{font:500 14px \"Geist Mono\",ui-monospace,monospace;color:#1b1524}.ds-cmd button{padding:5px 10px;border:1px solid #e4dfeb;border-radius:6px;background:#f3f0f7;color:#675d74;font:500 12px \"Geist Mono\",ui-monospace,monospace}"
     },
     {
@@ -136,16 +136,16 @@
     {
       "name": "Terminal Capture",
       "kind": "custom",
-      "description": "Real srelens-tui text in a dark frame, set in the grid stack so borders line up. Dark in both themes.",
-      "html": "<pre class=\"ds-tui\">$ srelens-tui -A\n:pods</pre>",
+      "description": "Real srectl text in a dark frame, set in the grid stack so borders line up. Dark in both themes.",
+      "html": "<pre class=\"ds-tui\">$ srectl -A\n:pods</pre>",
       "css": ".ds-tui{margin:0;padding:16px 18px;overflow-x:auto;border:1px solid #2a2433;border-radius:10px;background:#100d16;color:#d9d3e3;box-shadow:0 24px 60px -24px rgba(20,10,40,.35);font:500 12.5px/1.5 \"Cascadia Mono\",Menlo,Consolas,\"DejaVu Sans Mono\",\"Liberation Mono\",monospace}"
     }
   ],
   "narrative": {
     "northStar": "Command line",
-    "overview": "srelens is one product with one Rust core and two front ends, the desktop app and srelens-tui. The site is written as a shell session so both read as the same thing: monospace for headings, labels, commands and data, a proportional face for reading, a path for navigation, and real screenshots and terminal captures as evidence.",
+    "overview": "srelens is one product with one Rust core and two front ends, the desktop app and srectl. The site is written as a shell session so both read as the same thing: monospace for headings, labels, commands and data, a proportional face for reading, a path for navigation, and real screenshots and terminal captures as evidence.",
     "keyCharacteristics": [
-      "Real desktop screenshots and srelens-tui text captures from v0.15.0 are the primary visual evidence.",
+      "Real desktop screenshots and srectl text captures from v0.16.0 are the primary visual evidence.",
       "Monospace carries the voice; Geist carries long reading.",
       "Two complete themes that follow the OS; terminal surfaces are dark in both.",
       "One warm accent phrase per page at most, on the H1 only.",

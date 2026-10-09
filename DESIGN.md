@@ -300,7 +300,7 @@ hidden and both panels render one after the other under a `.mode-label`.
 `kbd` is a small sunk chip with a heavier bottom border. A `.keys` row of keycaps
 sits in a feature or capability card. When both apps have a binding for the same
 thing, both show (`⌘K` and `:`). Every binding is verified against the released
-v0.15.0 source before it appears.
+v0.16.0 source before it appears.
 
 ### Buttons
 
