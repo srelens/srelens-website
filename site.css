@@ -475,7 +475,6 @@ h2:hover .heading-anchor, h3:hover .heading-anchor, .heading-anchor:focus-visibl
 .stat .stat-value { font: 600 clamp(26px, 3vw, 36px)/1 var(--font-mono); letter-spacing: -0.04em; color: var(--ink); }
 .stat h3 { font-size: 14px; }
 .stat p { margin: 0; font-size: 14px; color: var(--muted); }
-.shot-stack { display: grid; gap: 14px; }
 /* A 120-column capture needs the whole row, not the 7fr column: the narrative stacks above it. */
 .feature-row:has(> .tui-figure) { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 .feature-row:has(> .tui-figure) .feature-narrative { max-width: var(--measure); }

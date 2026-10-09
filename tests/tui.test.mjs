@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT, read, text } from './lib/site.mjs';
+import { ROOT, read, text, listPages } from './lib/site.mjs';
 import { captureHtml } from '../scripts/embed-captures.mjs';
 
 const html = read('tui/index.html');
@@ -105,6 +105,12 @@ test('the headless MCP row shows the recorded --mcp-stdio session and keeps its 
   assert.ok(row.includes('<!-- mcp-demo:start --><figure class="mcp-demo">'), 'the row holds the panel');
   assert.doesNotMatch(row, /shot-stack|<img|tui-mcp-(agent|tools)/);
   assert.equal((row.match(/<li><strong>/g) ?? []).length, 4, 'the four bullets stay');
+});
+
+// Devesh 2026-10-09 review: that /tui/ row was the only user of .shot-stack, so the rule is dead CSS.
+test('.shot-stack is gone: no rule in site.css and no published page uses it', () => {
+  assert.ok(!/\.shot-stack\b/.test(read('site.css')), 'site.css still has a .shot-stack rule');
+  for (const file of listPages()) assert.ok(!read(file).includes('shot-stack'), `${file} uses shot-stack`);
 });
 
 test('the compare table scrolls inside its own box with scoped headers', () => {
