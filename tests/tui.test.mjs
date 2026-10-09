@@ -33,7 +33,7 @@ test('the hero keeps its One-Line Install eyebrow and h2 above the command row (
 });
 
 test('the hero carries the capture caption and never claims CrashLoopBackOff (pods show the phase)', () => {
-  assert.ok(html.includes('<figcaption>text capture · srectl v0.15.0 on the srelens-demo kind cluster · select it</figcaption>'));
+  assert.ok(html.includes('<figcaption>text capture · srectl v0.16.0 on the srelens-demo kind cluster · select it</figcaption>'));
   // The shared footer links the CrashLoopBackOff guide; that is a page title, not a claim about the TUI.
   assert.doesNotMatch(bare.replace(/<footer class="site-footer">[\s\S]*?<\/footer>/, ''), /CrashLoopBackOff/);
 });
@@ -307,8 +307,8 @@ for (const file of TUI_PAGES) {
       const caption = figure.match(/<figcaption>([^<]+)<\/figcaption>/)?.[1];
       assert.ok(caption, `${name}: figcaption`);
       assert.match(caption, name === 'gpu'
-        ? /^srectl [^·]+ · text capture from v0\.15\.0 · simulated GPU node \(kwok\)$/
-        : /^srectl [^·]+ · text capture from v0\.15\.0$/, `${name}: ${caption}`);
+        ? /^srectl [^·]+ · text capture from v0\.16\.0 · simulated GPU node \(kwok\)$/
+        : /^srectl [^·]+ · text capture from v0\.16\.0$/, `${name}: ${caption}`);
       assert.doesNotMatch(figure.replace(/<pre class="tui"[^>]*>[\s\S]*?<\/pre>/, ''), /CrashLoopBackOff/, `${name}: pods show the phase, not CrashLoopBackOff`);
     }
   });

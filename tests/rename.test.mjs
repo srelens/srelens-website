@@ -6,11 +6,10 @@ import { listPages, read } from './lib/site.mjs';
 const FORMERLY = /\(?formerly srelens-tui\)?/g;
 const MUST_SAY_FORMERLY = ['tui/index.html', 'docs/tui/index.html', 'docs/tui.html'];
 
-// Devesh 2026-10-09: v0.16.0 / srectl. Recorded output is not renamed by hand: the text capture inside each <pre class="tui">
-// is re-taken in Task 6, and the MCP transcript panel is re-recorded in Task 7. Both may say srelens-tui until then.
-// Task 6 removes the first exemption below and Task 7 the second. The opening <pre> tag stays checked, so its aria-label is renamed now.
+// Devesh 2026-10-09: v0.16.0 / srectl. Recorded output is not renamed by hand. The text captures inside each <pre class="tui">
+// were re-taken from srectl v0.16.0 (Task 6), so they are checked like prose now. The MCP transcript panel is re-recorded in
+// Task 7 and may say srelens-tui until then; Task 7 removes the exemption below.
 const exempt = (text) => text
-  .replace(/(<pre class="tui"[^>]*>)[\s\S]*?<\/pre>/g, '$1')
   .replace(/<!-- mcp-demo:start -->[\s\S]*?<!-- mcp-demo:end -->/g, '');
 
 // The desktop app's own binary is also an MCP stdio server: `srelens --mcp-stdio`, the command Settings → MCP offers once the

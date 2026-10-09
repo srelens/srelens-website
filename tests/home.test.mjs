@@ -33,11 +33,11 @@ test('the terminal panel embeds the real pods capture', () => {
   assert.ok(html.includes(`<!-- capture:pods:start -->${captureHtml('pods')}<!-- capture:pods:end -->`));
 });
 
-test('the terminal caption and label never claim CrashLoopBackOff (v0.15.0 shows the pod phase)', () => {
+test('the terminal caption and label never claim CrashLoopBackOff (v0.16.0 shows the pod phase)', () => {
   const figure = html.match(/<figure class="tui-figure">[\s\S]*?<\/figure>/)[0];
   const outsideCapture = figure.replace(/<pre class="tui"[^>]*>[\s\S]*?<\/pre>/, (pre) => pre.match(/<pre[^>]*>/)[0]);
   assert.doesNotMatch(outsideCapture, /CrashLoopBackOff/);
-  assert.match(outsideCapture, /<figcaption>text capture · srectl v0\.15\.0 on the same cluster · select it<\/figcaption>/);
+  assert.match(outsideCapture, /<figcaption>text capture · srectl v0\.16\.0 on the same cluster · select it<\/figcaption>/);
 });
 
 test('the incident drill sits in #workflow, before #features', () => {

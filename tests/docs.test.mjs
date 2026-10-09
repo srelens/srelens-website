@@ -212,8 +212,7 @@ test('README says only the mcp view keeps its image, and that port-forwards is c
   assert.match(readme, /`port-forwards` is captured in web mode[^\n]*(?:server proxy URL|http:\/\/127\.0\.0\.1:8791\/pf\/1\/)/);
 });
 
-// The desktop screenshots are recaptured from srelens v0.16.0; the terminal captures are not (they are still
-// srelens-tui v0.15.0 text until the srectl recapture), so only the desktop claims move.
+// The desktop screenshots are recaptured from srelens v0.16.0 (the terminal captures have their own test below).
 test('README and DESIGN.md date the desktop screenshots to srelens v0.16.0', () => {
   const shots = /## Screenshots\n([\s\S]*?)(?=\n## Terminal capture)/.exec(readme)?.[1] ?? '';
   assert.ok(shots.includes('Desktop screenshots show srelens v0.16.0 connected to a live 3-node kind cluster'), 'the README Screenshots section names v0.16.0');
@@ -223,6 +222,23 @@ test('README and DESIGN.md date the desktop screenshots to srelens v0.16.0', () 
   assert.doesNotMatch(evidence, /Desktop screenshots[^.]*0\.15\.0/, 'DESIGN.md Evidence does not date the desktop screenshots to v0.15.0');
   const traits = designMd.slice(designMd.indexOf('**Key Characteristics:**'), designMd.indexOf('- Monospace is the voice')).replace(/\s+/g, ' ');
   assert.match(traits, /desktop screenshots from srelens v0\.16\.0/);
+});
+
+// Devesh 2026-10-09: v0.16.0 / srectl. The terminal captures are srectl v0.16.0 text, and every doc that dates them says so.
+test('DESIGN.md, PRODUCT.md and llms-full.txt date the terminal captures to srectl v0.16.0', () => {
+  const evidence = designMd.slice(designMd.indexOf('## Evidence'), designMd.indexOf('## Do\'s and Don\'ts')).replace(/\s+/g, ' ');
+  assert.match(evidence, /Desktop screenshots are srelens v0\.16\.0 and terminal captures are `srectl` v0\.16\.0, both against the `srelens-demo` kind cluster/);
+  assert.match(evidence, /Terminal captures are real `srectl` text at 120×32/);
+  assert.doesNotMatch(evidence, /0\.15\.0|srelens-tui/, 'DESIGN.md Evidence names neither the old version nor the old binary');
+  const traits = designMd.slice(designMd.indexOf('**Key Characteristics:**'), designMd.indexOf('- Monospace is the voice')).replace(/\s+/g, ' ');
+  assert.match(traits, /desktop screenshots from srelens v0\.16\.0 and `srectl` text captures from v0\.16\.0 \(see Evidence\)/);
+  assert.match(designMd.replace(/\s+/g, ' '), /desktop screenshots and text captured from `srectl`, both taken against the `srelens-demo` cluster/);
+  assert.match(designMd.replace(/\s+/g, ' '), /desktop screenshots and `srectl` text captures, from the released version/);
+  assert.match(read('PRODUCT.md').replace(/\s+/g, ' '), /Real `srectl` v0\.16\.0 text captures of the demo cluster/);
+  // The same paragraphs name the product, so the old binary name goes everywhere except where PRODUCT.md says "formerly".
+  assert.doesNotMatch(designMd, /srelens-tui/, 'DESIGN.md names the terminal product srectl throughout');
+  assert.doesNotMatch(read('PRODUCT.md').replace(/\(formerly srelens-tui\)|, formerly srelens-tui/g, ''), /srelens-tui/, 'PRODUCT.md says srelens-tui only as "formerly"');
+  assert.match(read('llms-full.txt'), /The srectl screens are text captures of v0\.16\.0 against the same cluster/);
 });
 
 test('README notes the optional fourth tsv column and that the container cannot reach the update check', () => {
