@@ -183,3 +183,21 @@ test('the homepage feature rows name the pod page and tabs, not a dock or a side
 test('the homepage claims no side-by-side manifest view', () => {
   assert.doesNotMatch(html, /side[- ]by[- ]side/i);
 });
+
+// Devesh 2026-10-09 ("All new UI images"): the homepage already shows the recorded session right after the hero,
+// so the "/ 03" MCP row drops its old-UI settings screenshot and points up at the session instead of repeating it.
+const mcpRow = html.slice(html.indexOf('<div class="feature-row" id="mcp">'), html.indexOf('</section>', html.indexOf('<div class="feature-row" id="mcp">')));
+
+test('the homepage MCP feature row has no old-UI image and points up at the one live session', () => {
+  assert.equal((html.match(/class="mcp-demo"/g) ?? []).length, 1, 'the panel is shown once, right after the hero');
+  assert.ok(mcpRow.includes('<h3>Backend capabilities available through MCP</h3>'), 'the row keeps its heading');
+  assert.doesNotMatch(mcpRow, /<figure|<img|-mcp\.webp/, 'no figure or old settings image');
+  assert.ok(mcpRow.includes('<p><a href="/mcp/">How the MCP server works →</a></p>\n              <p><a href="#talk-to-your-clusters">See a live session across three clusters ↑</a></p>'));
+  assert.ok(html.includes('<section class="section" id="talk-to-your-clusters">'), 'the link has a target');
+});
+
+test('a feature row without a figure is one column, capped at the measure, with tokens only', () => {
+  const css = read('site.css');
+  assert.match(css, /\.feature-row:not\(:has\(> figure\)\) \{ grid-template-columns: minmax\(0, 1fr\); \}/);
+  assert.match(css, /\.feature-row:not\(:has\(> figure\)\) \.copy \{ max-width: var\(--measure\); \}/);
+});
