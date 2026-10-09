@@ -93,7 +93,8 @@ test('the homepage section right after the hero is "Talk to your clusters"', () 
   const heroEnd = home.indexOf('</section>', home.indexOf('<section class="hero">'));
   const next = home.slice(heroEnd).match(/<section class="section" id="([\w-]+)">/);
   assert.equal(next?.[1], 'talk-to-your-clusters');
-  assert.match(home, /<h2>The Kubernetes kernel for AI\.<\/h2>/);
+  // The kernel line is the H1 since 2026-10-09, so this section's H2 is the plain ask, not a repeat of it.
+  assert.match(home, /<h2>Talk to your clusters\.<\/h2>/);
 });
 
 // One recorded session, one rendered block, shown wherever the page talks about MCP.

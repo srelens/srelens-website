@@ -7,10 +7,10 @@ import { captureHtml } from '../scripts/embed-captures.mjs';
 
 const html = read('index.html');
 
-test('the H1 carries exactly one accent phrase: "control room"', () => {
+test('the H1 carries exactly one accent phrase: "kernel"', () => {
   const h1 = html.match(/<h1[\s\S]*?<\/h1>/)[0];
   assert.equal((h1.match(/class="accent"/g) ?? []).length, 1);
-  assert.match(h1, /<span class="accent">control room<\/span>/);
+  assert.match(h1, /<span class="accent">kernel<\/span>/);
 });
 
 test('mode switch: a tablist hidden until JS runs, two tabs wired to two panels', () => {

@@ -25,6 +25,16 @@ const META_CHANGES = {
   },
 };
 
+// H1s changed on purpose, as exact [from, to] pairs. Devesh 2026-10-09: the homepage H1 becomes the "kernel" line.
+const H1_CHANGES = {
+  'index.html': ['The Kubernetes control room for engineers and AI agents.', 'The Kubernetes kernel for engineers and AI agents.'],
+};
+const plannedH1 = (file, base) => (H1_CHANGES[file] ? [H1_CHANGES[file][1], ...base.h1.slice(1)] : base.h1);
+
+test('every planned H1 change replaces the H1 the baseline really has', () => {
+  for (const [file, [from]] of Object.entries(H1_CHANGES)) assert.equal(baselineFor(file).h1[0], from, file);
+});
+
 // Task 22: full robots directive everywhere except 404, and an OG/Twitter card on every page the manifest gives one
 // (the mirror docs/tui.html follows docs/tui/index.html). A page that already has og:image only swaps the image.
 const baseOf = baselineFor;
@@ -36,7 +46,7 @@ for (const p of PAGES) {
   if (p.file !== '404.html' && b.meta.robots !== ROBOTS) changes.robots = ROBOTS;
   if (src.ogCard) {
     const image = `https://srelens.com/assets/og/${src.ogCard}`;
-    const alt = `srelens.com${new URL(b.canonical).pathname}: ${b.h1[0]}`;
+    const alt = `srelens.com${new URL(b.canonical).pathname}: ${plannedH1(src.file, b)[0]}`;
     Object.assign(changes, b.meta['og:image'] ? {
       'og:image': image, 'og:image:width': '1200', 'og:image:height': '630', 'og:image:alt': alt, 'twitter:image': image,
     } : {
@@ -198,11 +208,11 @@ for (const file of listPages()) {
   const html = read(file);
   const base = baselineFor(file);
 
-  test(`${file}: title, canonical and h1 are unchanged`, () => {
+  test(`${file}: title, canonical and h1 match the baseline plus planned changes`, () => {
     assert.ok(base, 'page missing from the baseline');
     assert.equal(title(html), base.title);
     assert.equal(canonical(html), base.canonical);
-    assert.deepEqual(h1s(html), base.h1);
+    assert.deepEqual(h1s(html), plannedH1(file, base));
   });
 
   test(`${file}: SEO meta tags match the baseline plus planned changes`, () => {
