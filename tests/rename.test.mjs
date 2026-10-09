@@ -28,6 +28,24 @@ for (const file of [...listPages(), 'llms.txt', 'llms-full.txt']) {
   });
 }
 
+// Devesh 2026-10-09: v0.16.0 / srectl. "formerly srelens-tui" is pinned by count, not only allowed: [in <head>, after </head>].
+// The three pages found as srelens-tui say it in their title, og:title and twitter:title and once in the hero lede; each llms
+// file says it once, where the terminal product is first introduced, so answer engines can map the old name. Nowhere else.
+const FORMERLY_COUNTS = {
+  'tui/index.html': [3, 1], 'docs/tui/index.html': [3, 1], 'docs/tui.html': [3, 1],
+  'llms.txt': [0, 1], 'llms-full.txt': [0, 1],
+};
+const times = (s) => (s.match(/formerly srelens-tui/g) ?? []).length;
+
+for (const file of [...listPages(), 'llms.txt', 'llms-full.txt']) {
+  test(`${file}: says "formerly srelens-tui" exactly as often as it should`, () => {
+    const text = read(file);
+    const end = text.indexOf('</head>');
+    const [inHead, inBody] = end < 0 ? [0, times(text)] : [times(text.slice(0, end)), times(text.slice(end))];
+    assert.deepEqual([inHead, inBody], FORMERLY_COUNTS[file] ?? [0, 0], `${file}: "formerly srelens-tui" in <head> and after it`);
+  });
+}
+
 for (const file of MUST_SAY_FORMERLY) {
   test(`${file}: keeps "formerly srelens-tui" in its title or meta description and once in visible copy`, () => {
     const html = read(file);

@@ -1,6 +1,6 @@
 # srelens
 
-> srelens is a Kubernetes workspace — available as a native desktop GUI app and a fast standalone Terminal UI written in Rust (`srectl`) for browsing, inspecting, and operating Kubernetes clusters. It is built with a Rust core (kube-rs), features an in-memory Informer cache, deep Helm inspection, and includes a built-in MCP (Model Context Protocol) server and embedded AI assistant that exposes supported backend capabilities as AI-callable tools.
+> srelens is a Kubernetes workspace — available as a native desktop GUI app and a fast standalone Terminal UI written in Rust (`srectl`, formerly srelens-tui) for browsing, inspecting, and operating Kubernetes clusters. It is built with a Rust core (kube-rs), features an in-memory Informer cache, deep Helm inspection, and includes a built-in MCP (Model Context Protocol) server and embedded AI assistant that exposes supported backend capabilities as AI-callable tools.
 
 Key facts:
 - Product type: desktop application (Kubernetes IDE / cluster workspace) & standalone Terminal UI (srectl)

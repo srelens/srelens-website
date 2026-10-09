@@ -152,7 +152,7 @@ test('both llms files list every page in the sitemap', () => {
 // ---- Owner copy fixes (Devesh 2026-10-05) ----------------------------------------------------------
 
 test('C9, C10: the llms ledes say "a fast standalone Terminal UI written in Rust" and "a Rust core (kube-rs)"', () => {
-  const lede = '> srelens is a Kubernetes workspace — available as a native desktop GUI app and a fast standalone Terminal UI written in Rust (`srectl`) for browsing, inspecting, and operating Kubernetes clusters. It is built with a Rust core (kube-rs), features an in-memory Informer cache,';
+  const lede = '> srelens is a Kubernetes workspace — available as a native desktop GUI app and a fast standalone Terminal UI written in Rust (`srectl`, formerly srelens-tui) for browsing, inspecting, and operating Kubernetes clusters. It is built with a Rust core (kube-rs), features an in-memory Informer cache,';
   for (const file of LLMS) {
     const first = read(file).split('\n')[2];
     assert.ok(first.startsWith(lede), `${file}: ${first.slice(0, 160)}`);

@@ -24,6 +24,7 @@ export const PAGES = [
   { file: 'download/index.html', nav: '/download/', crumbs: [root, ['download', '/download/', 'Download']], ogCard: 'og-download.png' },
   { file: 'faq/index.html', nav: '/faq/', crumbs: [root, ['faq', '/faq/', 'FAQ']], ogCard: 'og-faq.png' },
   { file: 'docs/index.html', nav: '/docs/', crumbs: [root, ['Documentation', '/docs/']], ogCard: 'og-docs.png' },
+  // Devesh 2026-10-09: v0.16.0 / srectl (the breadcrumb label named srelens-tui)
   { file: 'docs/tui/index.html', nav: '/docs/', crumbs: [root, docs, ['Terminal UI (srectl)', '/docs/tui/']], ogCard: 'og-docs-tui.png' },
   { file: 'docs/tui.html', mirrorOf: 'docs/tui/index.html' },
   { file: 'security/index.html', nav: '/docs/', crumbs: [root, docs, ['Security', '/security/']], ogCard: 'og-security.png' },
