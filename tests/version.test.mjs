@@ -43,6 +43,20 @@ test('every release download link names an asset that v0.16.0 really published',
   }
 });
 
+// main.js rewrites each [data-asset] link to its template with {v} swapped for the latest release, so a template that names no
+// real asset becomes a dead link the day it runs. Every page is checked, not only /download/ (Task 3 review).
+test('every data-asset template on every page names an asset that v0.16.0 really published', () => {
+  let templates = 0;
+  for (const file of listPages()) {
+    for (const m of read(file).matchAll(/data-asset="([^"]+)"/g)) {
+      templates += 1;
+      const name = m[1].replace('{v}', RELEASE);
+      assert.ok(ASSETS.has(name), `${file}: data-asset="${m[1]}" becomes ${name}, which srelens-v${RELEASE} did not publish`);
+    }
+  }
+  assert.ok(templates >= 24, `found only ${templates} data-asset templates`);
+});
+
 test('terminal archives on the site are srectl, not the srelens-tui bridge', () => {
   for (const file of listPages()) assert.doesNotMatch(read(file), /releases\/download\/[^"]*\/srelens-tui-/, file);
 });
