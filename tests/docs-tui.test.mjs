@@ -1,0 +1,43 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { ROOT, listPages, read } from './lib/site.mjs';
+
+test('docs/tui.html is an exact copy of docs/tui/index.html', () => {
+  assert.equal(read('docs/tui.html'), read('docs/tui/index.html'));
+});
+
+test('no page redirects with a meta refresh', () => {
+  for (const file of listPages()) {
+    assert.doesNotMatch(read(file), /http-equiv=["']?refresh/i, file);
+  }
+});
+
+// A JS redirect: assigning to location (or location.href), or calling location.replace/assign.
+// Reading location.pathname or location.search, and setting location.hash, are not redirects.
+const JS_REDIRECT = /\blocation(?:\.href)?\s*=(?!=)|\blocation\.(?:replace|assign)\s*\(/;
+
+const publishedScripts = () => execFileSync('git', ['ls-files', '*.js', '*.mjs', '*.cjs'], { cwd: ROOT, encoding: 'utf8' })
+  .split('\n').filter((f) => f && !/^(?:tests|scripts)\//.test(f));
+
+// Statements allowed to navigate with JavaScript, per file. None since the old-UI product tour (whose fallback was a click that
+// opened its MP4) was removed on 2026-10-09; an allowance added here must still be in its file, exactly once.
+const ALLOWED_NAVIGATION = {};
+
+test('the allowed navigation is still in its file (drop the allowance when it goes)', () => {
+  for (const [file, statements] of Object.entries(ALLOWED_NAVIGATION)) {
+    for (const statement of statements) assert.equal(read(file).split(statement).length - 1, 1, `${file}: ${statement}`);
+  }
+});
+
+test('no page or published script redirects with JavaScript', () => {
+  const scripts = publishedScripts();
+  assert.ok(scripts.includes('main.js'), 'main.js is scanned');
+  const hits = [];
+  for (const file of [...listPages(), ...scripts]) {
+    read(file).split('\n').forEach((line, i) => {
+      if (JS_REDIRECT.test(line) && !ALLOWED_NAVIGATION[file]?.includes(line.trim())) hits.push(`${file}:${i + 1}: ${line.trim().slice(0, 100)}`);
+    });
+  }
+  assert.deepEqual(hits, []);
+});

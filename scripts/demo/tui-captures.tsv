@@ -1,0 +1,20 @@
+# name	arguments	keys
+# Columns are tab-separated. Keys are tmux send-keys tokens; | separates batches, sent 2 s apart. Lines starting with # are ignored.
+# Without a deep link or -n, srelens-tui opens the feature guide over the Namespaces view, so rows that type into a table add a target (-A pods) or -n.
+features	-A	
+overview	-A srelens://view/kind-srelens-demo/_/overview	
+deployments	srelens://view/kind-srelens-demo/payments/deployments	
+helm	-A srelens://view/kind-srelens-demo/_/helm	
+helm-detail	-A srelens://view/kind-srelens-demo/_/helm	Enter | 2 | m m
+argo	-A srelens://view/kind-srelens-demo/_/argo
+argo-config	-A srelens://view/kind-srelens-demo/_/config	j j j j j
+bgp	-A srelens://view/kind-srelens-demo/_/bgp	
+gpu	-A srelens://view/kind-srelens-demo/_/gpuinfo	
+top	-A srelens://view/kind-srelens-demo/_/top	
+topology	srelens://view/kind-srelens-demo/payments/topology	
+warnings	-A srelens://view/kind-srelens-demo/_/events	w
+tree	-n payments	/ payments-api Enter | t
+logs	-n payments	Escape | l
+themes	-A pods	: themes Enter
+help	-A pods	?
+assistant	-A srelens://view/kind-srelens-demo/payments/ai	Why Space is Space ledger-worker Space in Space payments Space crash-looping? Enter	90

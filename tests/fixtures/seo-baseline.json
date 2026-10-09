@@ -1,0 +1,1849 @@
+{
+  "source": "5d73669",
+  "pages": {
+    "404.html": {
+      "title": "404 — Page not found · srelens",
+      "canonical": null,
+      "h1": [
+        "Pod not found in this namespace."
+      ],
+      "meta": {
+        "description": null,
+        "robots": "noindex",
+        "og:type": null,
+        "og:url": null,
+        "og:site_name": null,
+        "og:title": null,
+        "og:description": null,
+        "og:image": null,
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": null,
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [],
+      "pageLinks": [
+        "/"
+      ],
+      "ids": [],
+      "headings": []
+    },
+    "architecture/index.html": {
+      "title": "srelens Architecture — Rust, Tauri, kube-rs, and MCP",
+      "canonical": "https://srelens.com/architecture/",
+      "h1": [
+        "One capability registry, two operating surfaces."
+      ],
+      "meta": {
+        "description": "Explore the srelens architecture: React and Tauri desktop shell, pure-Rust backend, kube-rs integration, capability registry, event streams, and MCP server.",
+        "robots": "index, follow",
+        "og:type": null,
+        "og:url": null,
+        "og:site_name": null,
+        "og:title": null,
+        "og:description": null,
+        "og:image": null,
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": null,
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [],
+      "pageLinks": [
+        "/",
+        "/architecture/",
+        "/compare/",
+        "/docs/",
+        "/docs/tui/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/guides/",
+        "/mcp/",
+        "/security/",
+        "/tui/"
+      ],
+      "ids": [
+        "main"
+      ],
+      "headings": [
+        "System map",
+        "The capability registry",
+        "Streaming operations",
+        "Local Kubernetes access",
+        "Why Tauri",
+        "Read the source"
+      ]
+    },
+    "compare/aptakube/index.html": {
+      "title": "srelens vs Aptakube: Lightweight Kubernetes Desktop GUIs",
+      "canonical": "https://srelens.com/compare/aptakube/",
+      "h1": [
+        "srelens vs Aptakube: open control room or polished client?"
+      ],
+      "meta": {
+        "description": "Compare srelens and Aptakube, two Tauri Kubernetes desktop clients, across multi-cluster workflows, licensing, local security, operations, and AI.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "article",
+        "og:url": "https://srelens.com/compare/aptakube/",
+        "og:site_name": null,
+        "og:title": "srelens vs Aptakube",
+        "og:description": "Two lightweight Kubernetes desktop clients compared.",
+        "og:image": "https://srelens.com/assets/og/og-compare.jpg",
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": "summary_large_image",
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "srelens vs Aptakube",
+          "url": "https://srelens.com/compare/aptakube/",
+          "dateModified": "2026-07-30",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "srelens",
+            "url": "https://srelens.com/"
+          }
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/compare/headlamp/",
+        "/compare/k9s/",
+        "/compare/lens/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "main",
+        "year"
+      ],
+      "headings": [
+        "Choose srelens when",
+        "Choose Aptakube when",
+        "Shared foundation, different product bets.",
+        "Is Aptakube an Electron app?",
+        "Which has stronger multi-cluster aggregation?",
+        "What is srelens’s clearest advantage?",
+        "Choose openness and agent access."
+      ]
+    },
+    "compare/freelens/index.html": {
+      "title": "srelens vs Freelens and OpenLens: Open-Source Kubernetes IDEs",
+      "canonical": "https://srelens.com/compare/freelens/",
+      "h1": [
+        "srelens vs Freelens: two open-source Kubernetes IDEs."
+      ],
+      "meta": {
+        "description": "Compare srelens with Freelens and the OpenLens migration path across architecture, licensing, Kubernetes workflow, local access, and built-in MCP.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "article",
+        "og:url": "https://srelens.com/compare/freelens/",
+        "og:site_name": null,
+        "og:title": "srelens vs Freelens / OpenLens",
+        "og:description": "Two open-source approaches to the Kubernetes desktop IDE.",
+        "og:image": "https://srelens.com/assets/og/og-compare.jpg",
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": "summary_large_image",
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "srelens vs Freelens and OpenLens",
+          "url": "https://srelens.com/compare/freelens/",
+          "dateModified": "2026-07-30",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "srelens",
+            "url": "https://srelens.com/"
+          }
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/compare/aptakube/",
+        "/compare/headlamp/",
+        "/compare/lens/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "main",
+        "year"
+      ],
+      "headings": [
+        "Choose srelens when",
+        "Choose Freelens when",
+        "Lineage is the biggest difference.",
+        "What happened to OpenLens?",
+        "Is srelens a Freelens fork?",
+        "A familiar workflow, rebuilt from zero."
+      ]
+    },
+    "compare/headlamp/index.html": {
+      "title": "srelens vs Headlamp: Kubernetes Desktop vs Web UI",
+      "canonical": "https://srelens.com/compare/headlamp/",
+      "h1": [
+        "srelens vs Headlamp: desktop or shared web UI?"
+      ],
+      "meta": {
+        "description": "Compare srelens and Headlamp for Kubernetes: local desktop versus in-cluster web UI, plugins, architecture, multi-cluster access, MCP support, and best use cases.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "article",
+        "og:url": "https://srelens.com/compare/headlamp/",
+        "og:site_name": null,
+        "og:title": "srelens vs Headlamp",
+        "og:description": "Local Kubernetes desktop workspace versus extensible web UI.",
+        "og:image": "https://srelens.com/assets/og/og-compare.jpg",
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": "summary_large_image",
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "srelens vs Headlamp",
+          "url": "https://srelens.com/compare/headlamp/",
+          "dateModified": "2026-07-30",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "srelens",
+            "url": "https://srelens.com/"
+          }
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/compare/k9s/",
+        "/compare/kubernetes-dashboard/",
+        "/compare/lens/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "main",
+        "year"
+      ],
+      "headings": [
+        "Choose srelens when",
+        "Choose Headlamp when",
+        "Different delivery models.",
+        "Is Headlamp only a Kubernetes Dashboard replacement?",
+        "Which is easier to roll out to a whole team?",
+        "Keep the control room on your machine."
+      ]
+    },
+    "compare/index.html": {
+      "title": "Compare Kubernetes GUIs and Tools — srelens Alternatives Guide",
+      "canonical": "https://srelens.com/compare/",
+      "h1": [
+        "Compare Kubernetes tools without the sales fog."
+      ],
+      "meta": {
+        "description": "Compare srelens with Lens, Freelens, OpenLens, Headlamp, K9s, Aptakube, and Kubernetes Dashboard to find the right Kubernetes interface.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "website",
+        "og:url": "https://srelens.com/compare/",
+        "og:site_name": "srelens",
+        "og:title": "Compare Kubernetes GUIs and Tools",
+        "og:description": "Practical comparisons for Lens, Headlamp, K9s, Freelens, Aptakube, and Kubernetes Dashboard users.",
+        "og:image": "https://srelens.com/assets/og/og-compare.jpg",
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": "summary_large_image",
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": "https://srelens.com/assets/og/og-compare.jpg"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "Kubernetes tool comparisons",
+          "url": "https://srelens.com/compare/",
+          "description": "Practical comparisons of srelens with current Kubernetes desktop, terminal, and web interfaces.",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "srelens",
+            "url": "https://srelens.com/"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "srelens",
+              "item": "https://srelens.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Compare",
+              "item": "https://srelens.com/compare/"
+            }
+          ]
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/compare/aptakube/",
+        "/compare/freelens/",
+        "/compare/headlamp/",
+        "/compare/k9s/",
+        "/compare/kubernetes-dashboard/",
+        "/compare/lens/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "main",
+        "year"
+      ],
+      "headings": [
+        "srelens vs Lens / K8sLens",
+        "srelens vs Headlamp",
+        "srelens vs K9s",
+        "srelens vs Freelens / OpenLens",
+        "srelens vs Aptakube",
+        "Kubernetes Dashboard alternatives",
+        "Pick for the workflow you actually use.",
+        "Use the tool that gets you to the answer."
+      ]
+    },
+    "compare/k9s/index.html": {
+      "title": "srelens vs K9s: Kubernetes Desktop GUI & Rust TUI vs Go Terminal UI",
+      "canonical": "https://srelens.com/compare/k9s/",
+      "h1": [
+        "srelens vs K9s: GUI & Rust TUI vs Go terminal"
+      ],
+      "meta": {
+        "description": "Compare srelens and K9s: srelens offers both a multi-tab desktop workspace and a standalone pure-Rust terminal UI (srelens-tui) with 0ms Informer cache, deep Helm values diff, and built-in AI MCP, compared to K9s.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "article",
+        "og:url": "https://srelens.com/compare/k9s/",
+        "og:site_name": null,
+        "og:title": "srelens vs K9s",
+        "og:description": "Visual Kubernetes desktop and pure-Rust terminal UI vs Go-based K9s.",
+        "og:image": "https://srelens.com/assets/og/og-compare.jpg",
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": "summary_large_image",
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "srelens vs K9s",
+          "url": "https://srelens.com/compare/k9s/",
+          "dateModified": "2026-09-07",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "srelens",
+            "url": "https://srelens.com/"
+          }
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/compare/aptakube/",
+        "/compare/headlamp/",
+        "/compare/lens/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "main",
+        "year"
+      ],
+      "headings": [
+        "Choose srelens when",
+        "Choose K9s when",
+        "Both are local. srelens gives you both interfaces.",
+        "Does srelens replace K9s?",
+        "Which is better over SSH?",
+        "GUI or terminal: work your way."
+      ]
+    },
+    "compare/kubernetes-dashboard/index.html": {
+      "title": "Kubernetes Dashboard Alternatives: srelens vs Headlamp",
+      "canonical": "https://srelens.com/compare/kubernetes-dashboard/",
+      "h1": [
+        "Kubernetes Dashboard is archived. What should replace it?"
+      ],
+      "meta": {
+        "description": "Kubernetes Dashboard was archived in January 2026. Compare its recommended successor Headlamp with srelens, a local open-source Kubernetes desktop client.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "article",
+        "og:url": "https://srelens.com/compare/kubernetes-dashboard/",
+        "og:site_name": null,
+        "og:title": "Kubernetes Dashboard alternatives",
+        "og:description": "Choose a maintained web UI or move the workspace to your desktop.",
+        "og:image": "https://srelens.com/assets/og/og-compare.jpg",
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": "summary_large_image",
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Kubernetes Dashboard alternatives",
+          "url": "https://srelens.com/compare/kubernetes-dashboard/",
+          "dateModified": "2026-07-30",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "srelens",
+            "url": "https://srelens.com/"
+          }
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/compare/headlamp/",
+        "/compare/k9s/",
+        "/compare/lens/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "main",
+        "year"
+      ],
+      "headings": [
+        "Choose srelens when",
+        "Choose Headlamp when",
+        "Move the web UI—or remove it.",
+        "Is Kubernetes Dashboard still safe to keep using?",
+        "Does srelens require a Helm chart or ingress?",
+        "Is srelens the official successor?",
+        "Move the UI off the cluster."
+      ]
+    },
+    "compare/lens/index.html": {
+      "title": "srelens vs Lens (K8sLens): Local Kubernetes IDE Comparison",
+      "canonical": "https://srelens.com/compare/lens/",
+      "h1": [
+        "srelens vs Lens: local tool or team platform?"
+      ],
+      "meta": {
+        "description": "Compare srelens with Lens Desktop / K8sLens: account requirements, local cluster access, architecture, team features, MCP integration, licensing, and ideal use cases.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "article",
+        "og:url": "https://srelens.com/compare/lens/",
+        "og:site_name": "srelens",
+        "og:title": "srelens vs Lens / K8sLens",
+        "og:description": "A practical comparison of two Kubernetes desktop workflows.",
+        "og:image": "https://srelens.com/assets/og/og-compare.jpg",
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": "summary_large_image",
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "srelens vs Lens / K8sLens",
+          "url": "https://srelens.com/compare/lens/",
+          "dateModified": "2026-07-30",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "srelens",
+            "url": "https://srelens.com/"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "srelens",
+              "item": "https://srelens.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Compare",
+              "item": "https://srelens.com/compare/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Lens",
+              "item": "https://srelens.com/compare/lens/"
+            }
+          ]
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/compare/aptakube/",
+        "/compare/freelens/",
+        "/compare/k9s/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "main",
+        "year"
+      ],
+      "headings": [
+        "Choose srelens when",
+        "Choose Lens when",
+        "The meaningful differences.",
+        "A familiar shape, different defaults.",
+        "Will the workflow feel familiar?",
+        "Does srelens replace every Lens service?",
+        "Can both be installed?",
+        "Try the local-first Lens alternative."
+      ]
+    },
+    "docs/index.html": {
+      "title": "srelens Documentation — Install, Connect, and Operate Kubernetes",
+      "canonical": "https://srelens.com/docs/",
+      "h1": [
+        "Operate srelens with confidence."
+      ],
+      "meta": {
+        "description": "Start using srelens: install the desktop app, connect kubeconfig contexts, investigate Kubernetes resources, and configure MCP clients.",
+        "robots": "index, follow",
+        "og:type": null,
+        "og:url": null,
+        "og:site_name": null,
+        "og:title": null,
+        "og:description": null,
+        "og:image": null,
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": null,
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [],
+      "pageLinks": [
+        "/",
+        "/architecture/",
+        "/compare/",
+        "/docs/",
+        "/docs/tui/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/guides/",
+        "/mcp/",
+        "/security/",
+        "/tui/"
+      ],
+      "ids": [
+        "actions",
+        "clusters",
+        "investigate",
+        "main",
+        "mcp",
+        "quick-start",
+        "troubleshooting",
+        "tui",
+        "tui-assistant",
+        "tui-features",
+        "tui-gpuinfo",
+        "tui-helm",
+        "tui-install",
+        "tui-keybindings",
+        "tui-node-inspection",
+        "tui-overview",
+        "tui-usage",
+        "year"
+      ],
+      "headings": [
+        "Five-minute quick start",
+        "Terminal interface (srelens-tui)",
+        "Installation",
+        "Cluster health & overview (:overview)",
+        "Deep node & hardware inspection (:nodes ➔ Enter)",
+        "GPU nodes & VRAM allocation inspector (:gpuinfo)",
+        "Deep Helm 3 inspection (:helm ➔ Enter)",
+        "Embedded SRE AI assistant (:assistant or Tab)",
+        "Additional capabilities",
+        "CLI Usage & Subcommands",
+        "Keybindings quick reference",
+        "Connect and distinguish clusters",
+        "Investigate a workload",
+        "Take guarded action",
+        "Connect an MCP client",
+        "When something fails"
+      ]
+    },
+    "docs/tui.html": {
+      "title": "Redirecting to srelens-tui Documentation",
+      "canonical": "https://srelens.com/docs/tui/",
+      "h1": [],
+      "meta": {
+        "description": null,
+        "robots": null,
+        "og:type": null,
+        "og:url": null,
+        "og:site_name": null,
+        "og:title": null,
+        "og:description": null,
+        "og:image": null,
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": null,
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [],
+      "pageLinks": [
+        "/docs/tui/"
+      ],
+      "ids": [],
+      "headings": []
+    },
+    "docs/tui/index.html": {
+      "title": "srelens-tui Documentation — Pure-Rust Terminal UI for Kubernetes",
+      "canonical": "https://srelens.com/docs/tui/",
+      "h1": [
+        "srelens-tui Guide & Reference"
+      ],
+      "meta": {
+        "description": "Comprehensive documentation for srelens-tui: installation, keybindings, command palette reference, BGP peering dashboard, Helm 3 values diff, log streaming, and AI assistant configuration.",
+        "robots": "index, follow",
+        "og:type": null,
+        "og:url": null,
+        "og:site_name": null,
+        "og:title": null,
+        "og:description": null,
+        "og:image": null,
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": null,
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/docs/",
+        "/docs/tui/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "ai-assistant",
+        "argocd-gitops",
+        "bgp-dashboard",
+        "cli-usage",
+        "command-palette",
+        "crd-support",
+        "debug-shells",
+        "gpu-fleet",
+        "helm-inspector",
+        "install",
+        "keybindings",
+        "log-streamer",
+        "main",
+        "node-ssh",
+        "overview",
+        "pod-operations",
+        "resource-tree",
+        "troubleshooting",
+        "tui-mcp",
+        "year"
+      ],
+      "headings": [
+        "Overview",
+        "Installation & Updates",
+        "Homebrew (macOS & Linux)",
+        "Standalone Install Script (macOS & Linux)",
+        "Cargo (From Source)",
+        "Updating in-place",
+        "CLI Arguments & Flags",
+        "Command Palette Reference (:)",
+        "Keybindings Reference",
+        "Global Keybindings",
+        "Table & Resource Navigation",
+        "Log Streaming Viewer",
+        "Embedded SRE AI Assistant (:ai or Tab)",
+        "Supported Providers",
+        "Built-in Diagnostic Slash Commands",
+        "ArgoCD Applications & GitOps Sync (:argo)",
+        "ArgoCD Hub & Spoke Architecture",
+        "Configuring ArgoCD Hub Context (:config)",
+        "Pod & Workload Operations (:pods)",
+        "Deep Helm 3 Values Diff & Rollback (:helm)",
+        "GPU Fleet & VRAM Allocation Telemetry (:gpuinfo)",
+        "BGP Peering & Topology Dashboard (:bgp)",
+        "Engineered Multi-Pod Log Streamer (l)",
+        "Resource Hierarchy Tree (t)",
+        "Shells & Ephemeral Debug Containers",
+        "Node SSH & Out-of-Band Diagnostics",
+        "Target Resolution & Address Selection",
+        "SSH Key Discovery Ladder",
+        "Out-of-Band Service Recovery",
+        "TUI MCP Server (srelens-tui mcp)",
+        "Safety & Permission Flags",
+        "Cursor Configuration (.cursor/mcp.json or ~/.cursor/mcp.json)",
+        "Claude Desktop (claude_desktop_config.json)",
+        "Claude Code CLI",
+        "Gemini / Antigravity (mcp_config.json)",
+        "Generic MCP Clients",
+        "CRD Discovery & Evaluated Printer Columns",
+        "Diagnostics & Troubleshooting"
+      ]
+    },
+    "download/index.html": {
+      "title": "Download srelens — Kubernetes GUI & Terminal UI (TUI) for macOS, Windows & Linux",
+      "canonical": "https://srelens.com/download/",
+      "h1": [
+        "Download srelens."
+      ],
+      "meta": {
+        "description": "Download srelens free: Kubernetes desktop client and pure-Rust terminal UI (srelens-tui) for macOS, Windows, and Linux — direct from GitHub Releases, or install via Cargo.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "website",
+        "og:url": "https://srelens.com/download/",
+        "og:site_name": "srelens",
+        "og:title": "Download srelens — free for macOS, Windows, and Linux",
+        "og:description": "Installers straight from GitHub Releases. No account, no license key — your kubeconfig is all it needs.",
+        "og:image": "https://srelens.com/assets/og/og-download.jpg",
+        "og:image:width": "1200",
+        "og:image:height": "630",
+        "og:image:alt": "srelens pods table connected to a live Kubernetes cluster.",
+        "og:locale": "en_US",
+        "twitter:card": "summary_large_image",
+        "twitter:title": "Download srelens — free for macOS, Windows, and Linux",
+        "twitter:description": "Installers straight from GitHub Releases. No account, no license key — your kubeconfig is all it needs.",
+        "twitter:image": "https://srelens.com/assets/og/og-download.jpg"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Download srelens",
+          "url": "https://srelens.com/download/",
+          "description": "Download srelens free for macOS, Windows, and Linux, or build it from source.",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "srelens",
+            "url": "https://srelens.com/"
+          },
+          "primaryImageOfPage": "https://srelens.com/assets/og/og-download.jpg"
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "srelens",
+              "item": "https://srelens.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Download",
+              "item": "https://srelens.com/download/"
+            }
+          ]
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "first-run",
+        "get-started",
+        "main",
+        "platforms",
+        "tui",
+        "year"
+      ],
+      "headings": [
+        "macOS",
+        "Windows",
+        "Linux",
+        "srelens-tui: pure Rust in your terminal.",
+        "macOS (CLI)",
+        "Linux (CLI)",
+        "Windows (CLI)",
+        "Install via Homebrew.",
+        "From installer to cluster in a minute.",
+        "Or run it from source.",
+        "Open your kubeconfig and go."
+      ]
+    },
+    "faq/index.html": {
+      "title": "srelens FAQ — Kubernetes Desktop Workspace Questions, Answered",
+      "canonical": "https://srelens.com/faq/",
+      "h1": [
+        "Questions operators ask, answered directly."
+      ],
+      "meta": {
+        "description": "What is srelens? How is it different from Lens or Freelens? Where do cluster credentials go? How does the MCP integration work? Every common question about the Rust-based Kubernetes desktop client, answered.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "website",
+        "og:url": "https://srelens.com/faq/",
+        "og:site_name": "srelens",
+        "og:title": "srelens FAQ — questions operators ask",
+        "og:description": "Platforms, credentials, kubectl, MCP, and how srelens compares to Lens and Freelens — answered directly.",
+        "og:image": "https://srelens.com/assets/og/og-faq.jpg",
+        "og:image:width": "1200",
+        "og:image:height": "630",
+        "og:image:alt": "srelens exec terminal inside a pod on a live cluster.",
+        "og:locale": "en_US",
+        "twitter:card": "summary_large_image",
+        "twitter:title": "srelens FAQ — questions operators ask",
+        "twitter:description": "Platforms, credentials, kubectl, MCP, and how srelens compares to Lens and Freelens — answered directly.",
+        "twitter:image": "https://srelens.com/assets/og/og-faq.jpg"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is srelens?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "srelens is a Kubernetes desktop workspace — a native GUI app for browsing, inspecting, and operating Kubernetes clusters. It reads the contexts in your local kubeconfig and gives you resource browsing across 40+ kinds, live watches, log streaming, in-pod terminals, port forwarding, Helm release views, and a schema-aware YAML editor, all in one window. It is built on Tauri v2 with a pure-Rust core."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How is srelens different from Lens or Freelens?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "srelens uses Tauri v2 with a pure-Rust core and connects directly to Kubernetes API servers through kube-rs. It follows a familiar Kubernetes desktop workflow while providing local-first operation and MCP access for supported backend capabilities. srelens is independently developed and is not affiliated with Mirantis Lens or the Freelens project."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What platforms does srelens run on?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "srelens targets macOS, Windows, and Linux desktops via Tauri v2."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does srelens replace kubectl?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. srelens complements kubectl by giving engineers a visual workspace for investigation, analysis, and day-to-day cluster operations. The built-in local terminal still lets you use kubectl and other command-line tools when needed."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does the AI (MCP) integration work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Supported backend capabilities in srelens are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Where do my cluster credentials go?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Nowhere. srelens runs entirely on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There is no intermediary cloud service between the app and your API servers."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I download srelens today?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Installers for macOS (Apple Silicon and Intel), Windows, and Linux are published on GitHub Releases. The latest build is always available there, and you can also build srelens from source."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are the screenshots on srelens.com real?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Every product image on srelens.com is an unedited capture of srelens connected to a live three-node kind Kubernetes cluster (one control-plane and two workers) running real workloads, in both the dark and light themes of the app."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is srelens free?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. srelens is open source under the MIT license and free to download. There is no account, license key, or paid tier."
+              }
+            }
+          ]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "srelens",
+              "item": "https://srelens.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "FAQ",
+              "item": "https://srelens.com/faq/"
+            }
+          ]
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "main",
+        "year"
+      ],
+      "headings": [
+        "The fastest answer is trying it."
+      ]
+    },
+    "features/index.html": {
+      "title": "srelens Features — Kubernetes GUI with Live Watches, Logs, Terminals & YAML",
+      "canonical": "https://srelens.com/features/",
+      "h1": [
+        "Every feature, shown with real screenshots."
+      ],
+      "meta": {
+        "description": "Tour every srelens feature with real screenshots: live pod tables, node metrics, log streaming, in-pod exec terminals, a schema-aware YAML editor, Helm views, and confirmation-gated cluster operations.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "website",
+        "og:url": "https://srelens.com/features/",
+        "og:site_name": "srelens",
+        "og:title": "srelens features — the whole investigation in one window",
+        "og:description": "Real screenshots of srelens against a live multi-node cluster: pods, metrics, logs, terminals, YAML, and safe operations.",
+        "og:image": "https://srelens.com/assets/og/og-features.jpg",
+        "og:image:width": "1200",
+        "og:image:height": "630",
+        "og:image:alt": "srelens pod detail drawer with live metrics beside the pods table.",
+        "og:locale": "en_US",
+        "twitter:card": "summary_large_image",
+        "twitter:title": "srelens features — the whole investigation in one window",
+        "twitter:description": "Real screenshots of srelens against a live multi-node cluster: pods, metrics, logs, terminals, YAML, and safe operations.",
+        "twitter:image": "https://srelens.com/assets/og/og-features.jpg"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "srelens features",
+          "url": "https://srelens.com/features/",
+          "description": "Every srelens feature shown with real screenshots against a live multi-node Kubernetes cluster.",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "srelens",
+            "url": "https://srelens.com/"
+          },
+          "primaryImageOfPage": "https://srelens.com/assets/og/og-features.jpg"
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "srelens",
+              "item": "https://srelens.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Features",
+              "item": "https://srelens.com/features/"
+            }
+          ]
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "main",
+        "year"
+      ],
+      "headings": [
+        "A live pods table, not a refresh button",
+        "Metrics and manifest, side by side",
+        "Schema-aware YAML editing",
+        "Exec into any container",
+        "Logs that follow the investigation",
+        "Nodes with real usage numbers",
+        "Cluster health at a glance",
+        "Namespaces without losing the cluster view",
+        "Events are an investigation surface",
+        "Workloads with rollout context",
+        "Services and endpoints in context",
+        "Port forwards, managed centrally",
+        "Helm releases in the same workspace",
+        "Built-in MCP for AI agents",
+        "Your kubeconfig is all it needs."
+      ]
+    },
+    "guides/crashloopbackoff/index.html": {
+      "title": "How to Debug Kubernetes CrashLoopBackOff — srelens Guide",
+      "canonical": "https://srelens.com/guides/crashloopbackoff/",
+      "h1": [
+        "Debug CrashLoopBackOff from the last failure backward."
+      ],
+      "meta": {
+        "description": "Debug Kubernetes CrashLoopBackOff with container state, restart counts, previous-instance logs, events, YAML, and ephemeral debug containers.",
+        "robots": "index, follow",
+        "og:type": null,
+        "og:url": null,
+        "og:site_name": null,
+        "og:title": null,
+        "og:description": null,
+        "og:image": null,
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": null,
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "HowTo",
+          "name": "How to debug Kubernetes CrashLoopBackOff",
+          "description": "Investigate a restarting Kubernetes container with state, previous-instance logs, events, configuration, and controlled debugging.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Confirm the restarting container"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Read previous-instance logs"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Inspect Kubernetes events"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Review the workload manifest"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Use the least invasive debugging path"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Verify recovery"
+            }
+          ]
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/guides/",
+        "/guides/oomkilled/",
+        "/mcp/",
+        "/security/",
+        "/tui/"
+      ],
+      "ids": [
+        "config",
+        "confirm",
+        "debug",
+        "events",
+        "logs",
+        "main"
+      ],
+      "headings": [
+        "1. Confirm which container is restarting",
+        "2. Read the previous container instance",
+        "3. Inspect object and scheduling events",
+        "4. Review the workload manifest",
+        "5. Use the least invasive debugging path",
+        "6. Verify recovery"
+      ]
+    },
+    "guides/failed-deployment/index.html": {
+      "title": "How to Diagnose a Failed Kubernetes Deployment — srelens Guide",
+      "canonical": "https://srelens.com/guides/failed-deployment/",
+      "h1": [
+        "Trace a failed deployment through its rollout graph."
+      ],
+      "meta": {
+        "description": "Diagnose a failed Kubernetes Deployment by tracing rollout conditions, ReplicaSets, pods, events, logs, YAML changes, and guarded recovery actions.",
+        "robots": "index, follow",
+        "og:type": null,
+        "og:url": null,
+        "og:site_name": null,
+        "og:title": null,
+        "og:description": null,
+        "og:image": null,
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": null,
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "HowTo",
+          "name": "How to diagnose a failed Kubernetes Deployment",
+          "description": "Trace rollout conditions through ReplicaSets, pods, events, logs, manifest changes, and safe recovery options.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Read controller rollout state"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Follow the active revision"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Collect pod-level evidence"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Review manifest and history"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Choose the smallest safe recovery"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Confirm rollout health"
+            }
+          ]
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/guides/",
+        "/mcp/",
+        "/security/",
+        "/tui/"
+      ],
+      "ids": [
+        "diff",
+        "evidence",
+        "graph",
+        "main",
+        "recover",
+        "state"
+      ],
+      "headings": [
+        "1. Read the controller state",
+        "2. Follow the active revision",
+        "3. Collect pod-level evidence",
+        "4. Review the manifest and rollout history",
+        "5. Choose the smallest safe recovery",
+        "6. Confirm rollout health"
+      ]
+    },
+    "guides/index.html": {
+      "title": "Kubernetes Troubleshooting Guides for SREs — srelens",
+      "canonical": "https://srelens.com/guides/",
+      "h1": [
+        "Troubleshoot the failure in front of you."
+      ],
+      "meta": {
+        "description": "Practical Kubernetes troubleshooting guides for CrashLoopBackOff, OOMKilled containers, and failed deployments using events, logs, metrics, YAML, and guarded actions.",
+        "robots": "index, follow",
+        "og:type": null,
+        "og:url": null,
+        "og:site_name": null,
+        "og:title": null,
+        "og:description": null,
+        "og:image": null,
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": null,
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [],
+      "pageLinks": [
+        "/",
+        "/architecture/",
+        "/compare/",
+        "/docs/",
+        "/docs/tui/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/guides/crashloopbackoff/",
+        "/guides/failed-deployment/",
+        "/guides/oomkilled/",
+        "/mcp/",
+        "/security/",
+        "/tui/"
+      ],
+      "ids": [
+        "main"
+      ],
+      "headings": [
+        "Debug CrashLoopBackOff",
+        "Investigate OOMKilled pods",
+        "Diagnose a failed deployment",
+        "Keep the whole investigation in one window."
+      ]
+    },
+    "guides/oomkilled/index.html": {
+      "title": "How to Investigate Kubernetes OOMKilled Pods — srelens Guide",
+      "canonical": "https://srelens.com/guides/oomkilled/",
+      "h1": [
+        "Investigate OOMKilled before increasing the limit."
+      ],
+      "meta": {
+        "description": "Investigate Kubernetes OOMKilled containers using exit state, previous logs, memory metrics, resource limits, workload YAML, and controlled verification.",
+        "robots": "index, follow",
+        "og:type": null,
+        "og:url": null,
+        "og:site_name": null,
+        "og:title": null,
+        "og:description": null,
+        "og:image": null,
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": null,
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "HowTo",
+          "name": "How to investigate Kubernetes OOMKilled pods",
+          "description": "Confirm an OOM termination, reconstruct memory demand, compare workload limits, review a controlled change, and verify recovery.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Confirm the OOMKilled termination"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Reconstruct the last container instance"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Compare demand with resource limits"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Review a controlled change"
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Verify recovery"
+            }
+          ]
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/guides/",
+        "/guides/crashloopbackoff/",
+        "/mcp/",
+        "/security/",
+        "/tui/"
+      ],
+      "ids": [
+        "change",
+        "confirm",
+        "history",
+        "limits",
+        "main",
+        "verify"
+      ],
+      "headings": [
+        "1. Confirm the termination",
+        "2. Reconstruct the last instance",
+        "3. Compare observed demand with the manifest",
+        "4. Review a controlled change",
+        "5. Verify recovery"
+      ]
+    },
+    "index.html": {
+      "title": "srelens — Open-Source Kubernetes Desktop Client Built in Rust",
+      "canonical": "https://srelens.com/",
+      "h1": [
+        "The Kubernetes control room for engineers and AI agents."
+      ],
+      "meta": {
+        "description": "srelens is an open-source Kubernetes desktop client (GUI) for macOS, Windows, and Linux. Built in Rust with Tauri v2, it combines live resource browsing, logs, terminals, YAML editing, and a built-in MCP server for AI agents.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "website",
+        "og:url": "https://srelens.com/",
+        "og:site_name": "srelens",
+        "og:title": "srelens — The Kubernetes control room",
+        "og:description": "A local-first Kubernetes desktop workspace built in Rust for engineers and AI agents. Real screenshots, live clusters, one window.",
+        "og:image": "https://srelens.com/assets/og/og-home.jpg",
+        "og:image:width": "1200",
+        "og:image:height": "630",
+        "og:image:alt": "srelens cluster overview dashboard for a three-node Kubernetes cluster.",
+        "og:locale": "en_US",
+        "twitter:card": "summary_large_image",
+        "twitter:title": "srelens — The Kubernetes control room",
+        "twitter:description": "A local-first Kubernetes desktop workspace built in Rust for engineers and AI agents.",
+        "twitter:image": "https://srelens.com/assets/og/og-home.jpg"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "srelens",
+          "url": "https://srelens.com/",
+          "description": "srelens is an open-source, local-first Kubernetes desktop workspace built with Tauri v2 and a pure-Rust core. It provides multi-cluster resource browsing, live watches, YAML editing, logs, pod terminals, port forwarding, Helm views, metrics, safe cluster operations, and MCP access for supported backend capabilities.",
+          "applicationCategory": "DeveloperApplication",
+          "applicationSubCategory": "Kubernetes desktop workspace",
+          "operatingSystem": "macOS, Windows, Linux",
+          "softwareVersion": "0.3.0",
+          "releaseNotes": "Installers for macOS, Windows, and Linux are available on GitHub Releases.",
+          "downloadUrl": "https://srelens.com/download/",
+          "screenshot": [
+            "https://srelens.com/assets/shots/dark-overview.webp",
+            "https://srelens.com/assets/shots/dark-nodes.webp",
+            "https://srelens.com/assets/shots/dark-namespaces.webp",
+            "https://srelens.com/assets/shots/dark-events.webp",
+            "https://srelens.com/assets/shots/dark-pods.webp",
+            "https://srelens.com/assets/shots/dark-deployments.webp",
+            "https://srelens.com/assets/shots/dark-pod-detail.webp",
+            "https://srelens.com/assets/shots/dark-yaml.webp",
+            "https://srelens.com/assets/shots/dark-logs.webp",
+            "https://srelens.com/assets/shots/dark-terminal.webp",
+            "https://srelens.com/assets/shots/dark-services.webp",
+            "https://srelens.com/assets/shots/dark-port-forwards.webp",
+            "https://srelens.com/assets/shots/dark-helm.webp",
+            "https://srelens.com/assets/shots/dark-mcp.webp"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "image": "https://srelens.com/assets/og/og-home.jpg",
+          "publisher": {
+            "@type": "Organization",
+            "name": "srelens",
+            "url": "https://srelens.com/",
+            "logo": "https://srelens.com/assets/icon-512.png"
+          },
+          "featureList": [
+            "Dual-mode interface: Desktop GUI application and standalone pure-Rust Terminal UI (srelens-tui)",
+            "Multi-cluster kubeconfig context management with cluster hotbar",
+            "Resource browser covering 40+ Kubernetes resource kinds",
+            "Live streaming resource watches and 0ms Informer cache",
+            "Schema-aware YAML editor with autocomplete and linting",
+            "In-pod interactive terminals (exec)",
+            "Pod and workload log streaming",
+            "Port forwarding management",
+            "Deep Helm release inspection and values diff with rollback",
+            "Custom Resource Definition (CRD) browsing",
+            "Command palette with global resource search",
+            "Node operations: cordon, drain, evict — confirmation-gated",
+            "Cluster CPU and memory metrics via metrics-server",
+            "Built-in MCP server and embedded AI assistant drawer"
+          ]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "srelens",
+          "url": "https://srelens.com/",
+          "description": "Official website for srelens, the Kubernetes desktop workspace built in Rust."
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "srelens",
+          "url": "https://srelens.com/",
+          "logo": "https://srelens.com/assets/icon-512.png",
+          "sameAs": [
+            "https://github.com/srelens/srelens"
+          ]
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/architecture/",
+        "/compare/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/guides/",
+        "/mcp/",
+        "/security/",
+        "/tui/"
+      ],
+      "ids": [
+        "compare",
+        "download",
+        "everything",
+        "faq",
+        "features",
+        "get-started",
+        "incident-act",
+        "incident-diagnose",
+        "incident-signal",
+        "incident-tab-act",
+        "incident-tab-diagnose",
+        "incident-tab-signal",
+        "learn",
+        "main",
+        "mcp",
+        "tour-title",
+        "workflow",
+        "year"
+      ],
+      "headings": [
+        "From signal to action, without switching tools.",
+        "Observe",
+        "Diagnose",
+        "Act",
+        "The whole investigation, in one window.",
+        "Live metrics beside the manifest",
+        "Logs, shells & forwards in the dock",
+        "Backend capabilities available through MCP",
+        "Everything an operator reaches for.",
+        "40+ resource kinds",
+        "Streaming watches",
+        "Command palette",
+        "Helm & CRDs",
+        "Cluster usage",
+        "Safe cluster actions",
+        "Multi-kubeconfig",
+        "Browser-style tabs",
+        "Local-first",
+        "srelens-tui in your shell",
+        "Keep the runbook beside the control room.",
+        "Documentation",
+        "SRE guides",
+        "Security",
+        "Architecture",
+        "A familiar workflow, rebuilt in Rust.",
+        "Download the latest srelens release.",
+        "macOS",
+        "Windows",
+        "Linux",
+        "Or run it from source.",
+        "Questions operators ask.",
+        "Ready when the pager goes off."
+      ]
+    },
+    "mcp/index.html": {
+      "title": "Kubernetes MCP Server Built Into a Desktop App — srelens",
+      "canonical": "https://srelens.com/mcp/",
+      "h1": [
+        "A Kubernetes MCP server, built into the app."
+      ],
+      "meta": {
+        "description": "srelens ships a built-in MCP server: supported Kubernetes operations are exposed as AI-callable tools over stdio or loopback HTTP, with ready-to-paste config for Claude Code, Claude Desktop, and Cursor. Mutating tools are confirmation-gated.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "website",
+        "og:url": "https://srelens.com/mcp/",
+        "og:site_name": "srelens",
+        "og:title": "A Kubernetes MCP server, built into srelens",
+        "og:description": "Let AI agents drive your clusters through the same capabilities the GUI uses — locally, with explicit confirmation for anything mutating.",
+        "og:image": "https://srelens.com/assets/og/og-mcp.jpg",
+        "og:image:width": "1200",
+        "og:image:height": "630",
+        "og:image:alt": "srelens MCP settings with the built-in server listening on loopback HTTP.",
+        "og:locale": "en_US",
+        "twitter:card": "summary_large_image",
+        "twitter:title": "A Kubernetes MCP server, built into srelens",
+        "twitter:description": "Let AI agents drive your clusters through the same capabilities the GUI uses — locally, with explicit confirmation for anything mutating.",
+        "twitter:image": "https://srelens.com/assets/og/og-mcp.jpg"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "srelens MCP server",
+          "url": "https://srelens.com/mcp/",
+          "description": "How the built-in srelens MCP server exposes supported Kubernetes operations to AI agents over stdio and loopback HTTP.",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "srelens",
+            "url": "https://srelens.com/"
+          },
+          "primaryImageOfPage": "https://srelens.com/assets/og/og-mcp.jpg"
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "srelens",
+              "item": "https://srelens.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "MCP",
+              "item": "https://srelens.com/mcp/"
+            }
+          ]
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/docs/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "answers",
+        "example",
+        "how",
+        "main",
+        "setup",
+        "year"
+      ],
+      "headings": [
+        "One registry, two protocols, zero cloud.",
+        "Shared capability registry",
+        "stdio or loopback HTTP",
+        "Consent-gated mutations",
+        "Ready-to-paste config for every AI workspace.",
+        "Cursor",
+        "Claude Desktop",
+        "Claude Code CLI",
+        "Gemini / Antigravity",
+        "Generic (Any MCP Client)",
+        "What a gated tool call looks like",
+        "What agents can and cannot do.",
+        "Can an AI agent break my cluster through srelens?",
+        "Do my credentials ever leave my machine?",
+        "Which MCP clients work with srelens?",
+        "Your cluster, on the tool list."
+      ]
+    },
+    "security/index.html": {
+      "title": "srelens Security and Privacy — Local Kubernetes Access",
+      "canonical": "https://srelens.com/security/",
+      "h1": [
+        "Cluster access stays under your control."
+      ],
+      "meta": {
+        "description": "Understand how srelens handles kubeconfig credentials, direct cluster connections, MCP access, RBAC, confirmation gates, updates, and web deployment security.",
+        "robots": "index, follow",
+        "og:type": null,
+        "og:url": null,
+        "og:site_name": null,
+        "og:title": null,
+        "og:description": null,
+        "og:image": null,
+        "og:image:width": null,
+        "og:image:height": null,
+        "og:image:alt": null,
+        "og:locale": null,
+        "twitter:card": null,
+        "twitter:title": null,
+        "twitter:description": null,
+        "twitter:image": null
+      },
+      "jsonLd": [],
+      "pageLinks": [
+        "/",
+        "/architecture/",
+        "/compare/",
+        "/docs/",
+        "/docs/tui/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/guides/",
+        "/mcp/",
+        "/security/",
+        "/tui/"
+      ],
+      "ids": [
+        "main"
+      ],
+      "headings": [
+        "Desktop security model",
+        "Guarded mutations",
+        "MCP access",
+        "Updates and packages",
+        "Web deployment is a separate trust model",
+        "Reporting a vulnerability"
+      ]
+    },
+    "tui/index.html": {
+      "title": "srelens-tui — Pure-Rust Terminal UI for Kubernetes",
+      "canonical": "https://srelens.com/tui/",
+      "h1": [
+        "The terminal control room for Kubernetes."
+      ],
+      "meta": {
+        "description": "srelens-tui is an ultra-fast, keyboard-driven terminal UI for Kubernetes built in Rust with Ratatui and kube-rs. Live stream watches, BGP peering dashboard, Helm 3 inspector, interactive logs, and in-process AI diagnostics.",
+        "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+        "og:type": "website",
+        "og:url": "https://srelens.com/tui/",
+        "og:site_name": "srelens",
+        "og:title": "srelens-tui — Pure-Rust Terminal UI for Kubernetes",
+        "og:description": "An ultra-fast, keyboard-driven terminal workspace for Kubernetes operators. Live stream watches, BGP peering dashboard, Helm 3 diffs, and embedded AI diagnostics.",
+        "og:image": "https://srelens.com/assets/shots/tui-overview.webp",
+        "og:image:width": "2400",
+        "og:image:height": "1461",
+        "og:image:alt": "srelens-tui cluster overview running in a modern terminal.",
+        "og:locale": "en_US",
+        "twitter:card": "summary_large_image",
+        "twitter:title": "srelens-tui — Pure-Rust Terminal UI for Kubernetes",
+        "twitter:description": "An ultra-fast, keyboard-driven terminal workspace for Kubernetes operators. Live stream watches, BGP peering dashboard, Helm 3 diffs, and embedded AI diagnostics.",
+        "twitter:image": "https://srelens.com/assets/shots/tui-overview.webp"
+      },
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "srelens-tui",
+          "url": "https://srelens.com/tui/",
+          "description": "srelens-tui is a standalone pure-Rust terminal user interface for Kubernetes operators, built with Ratatui and kube-rs. It provides 0ms Informer cache browsing, live stream watches, BGP peering dashboard, deep Helm 3 values diff and rollback, auto-wrapped logs, debug containers, and an in-process AI assistant drawer.",
+          "applicationCategory": "DeveloperApplication",
+          "applicationSubCategory": "Kubernetes Terminal UI",
+          "operatingSystem": "macOS, Linux, Windows",
+          "softwareVersion": "0.3.0",
+          "downloadUrl": "https://srelens.com/download/#tui",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "image": "https://srelens.com/assets/shots/tui-overview.webp",
+          "publisher": {
+            "@type": "Organization",
+            "name": "srelens",
+            "url": "https://srelens.com/",
+            "logo": "https://srelens.com/assets/icon-512.png"
+          }
+        }
+      ],
+      "pageLinks": [
+        "/",
+        "/compare/",
+        "/docs/",
+        "/docs/tui/",
+        "/download/",
+        "/faq/",
+        "/features/",
+        "/mcp/",
+        "/tui/"
+      ],
+      "ids": [
+        "ai",
+        "ai-assistant",
+        "argocd",
+        "argocd-gitops",
+        "bgp",
+        "bgp-dashboard",
+        "cluster-overview",
+        "compare",
+        "download",
+        "features",
+        "gpu-fleet",
+        "gpuinfo",
+        "headless-mcp-server",
+        "helm",
+        "helm-inspector",
+        "hierarchy-tree",
+        "keybindings",
+        "log-streamer",
+        "logs",
+        "main",
+        "overview",
+        "pod-operations",
+        "pods",
+        "resource-tree",
+        "tui-mcp",
+        "year"
+      ],
+      "headings": [
+        "Install via Homebrew or Shell Script",
+        "Startup Time",
+        "Informer Cache",
+        "Memory Footprint",
+        "Pure Rust Core",
+        "Engineered for high-stakes SRE operations.",
+        "Embedded SRE AI Assistant (:ai or Tab)#",
+        "Headless MCP Server (srelens-tui mcp)#",
+        "ArgoCD Applications & Sync Dashboard (:argo)#",
+        "Real-Time Cluster Overview & Telemetry (:overview)#",
+        "High-Density Pod & Resource Operations (:pods)#",
+        "Deep Helm 3 Inspector & Values Diff (:helm)#",
+        "GPU Fleet & VRAM Allocation Telemetry (:gpuinfo)#",
+        "BGP Peering & Topology Dashboard (:bgp)#",
+        "Engineered Multi-Pod Log Streamer (l)#",
+        "Visual Resource Hierarchy Trees (t)#",
+        "How srelens-tui compares.",
+        "Keybindings cheat sheet.",
+        "Navigation & Global",
+        "Resource Operations",
+        "Get srelens-tui for your platform.",
+        "macOS",
+        "Linux",
+        "Windows",
+        "Fast, reliable, in-process AI."
+      ]
+    }
+  }
+}

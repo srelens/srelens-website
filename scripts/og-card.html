@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>srelens og card</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@500;600&display=swap">
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    box-sizing: border-box; display: grid; grid-template-rows: auto 1fr auto; padding: 64px 72px;
+    background: #0f0d14; color: #ece8f3; font-family: "Geist Mono", monospace;
+  }
+  .top { display: flex; align-items: center; gap: 14px; font: 600 26px "Geist Mono", monospace; }
+  .top img { width: 40px; height: 40px; }
+  .path { margin-top: 56px; font: 500 24px "Geist Mono", monospace; color: #a78bfa; }
+  h1 { max-width: 1000px; margin: 18px 0 0; font: 600 56px/1.1 "Geist Mono", monospace; letter-spacing: -0.045em; text-wrap: balance; }
+  .foot { display: flex; justify-content: space-between; padding-top: 22px; border-top: 1px solid #2a2533; font: 500 20px "Geist Mono", monospace; color: #9d94aa; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="top"><img src="/assets/logo-mark.svg" alt="">srelens</div>
+    <div class="path" id="path"></div>
+    <h1 id="title"></h1>
+  </div>
+  <div></div>
+  <div class="foot"><span>The Kubernetes kernel</span><span>MIT · macOS · Windows · Linux</span></div>
+  <script>
+    var q = new URLSearchParams(location.search);
+    document.getElementById("path").textContent = q.get("path") || "srelens.com/";
+    document.getElementById("title").textContent = q.get("title") || "";
+  </script>
+</body>
+</html>

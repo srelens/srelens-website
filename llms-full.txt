@@ -1,20 +1,21 @@
 # srelens
 
-> srelens is a Kubernetes workspace — available as a native desktop GUI app and an ultra-fast standalone pure-Rust Terminal UI (`srelens-tui`) for browsing, inspecting, and operating Kubernetes clusters. It is built with a pure-Rust core (kube-rs), features 0ms Informer caching, deep Helm inspection, and includes a built-in MCP (Model Context Protocol) server and embedded AI assistant that exposes supported backend capabilities as AI-callable tools.
+> srelens is a Kubernetes workspace — available as a native desktop GUI app and a fast standalone Terminal UI written in Rust (`srelens-tui`) for browsing, inspecting, and operating Kubernetes clusters. It is built with a Rust core (kube-rs), features an in-memory Informer cache, deep Helm inspection, and includes a built-in MCP (Model Context Protocol) server and embedded AI assistant that exposes supported backend capabilities as AI-callable tools.
 
 Key facts:
 - Product type: desktop application (Kubernetes IDE / cluster workspace) & standalone Terminal UI (srelens-tui)
 - Platforms: macOS, Windows, Linux (Tauri v2 desktop app; standalone binary CLI / TUI)
-- Status: available — desktop installers and srelens-tui CLI archives published on GitHub Releases for macOS (Apple Silicon + Intel), Windows (x64 + ARM64), and Linux (x86_64 + aarch64); srelens-tui also installable via Homebrew (`brew install srelens/tap/srelens-tui`)
+- Status: available — desktop installers on GitHub Releases for macOS (Apple Silicon + Intel), Windows (x64), and Linux (x86_64); srelens-tui CLI archives for macOS (Apple Silicon + Intel), Windows (x64), and Linux (x86_64 + aarch64, glibc and static musl); srelens-tui also installable via Homebrew (`brew install srelens/tap/srelens-tui`)
 - Price: free, open source under the MIT license
 - Architecture: Rust core using kube-rs to talk to the Kubernetes API directly — no Electron, no Node.js in the core app runtime
 - Lineage: inspired by Lens / Freelens (Electron-based Kubernetes IDEs); srelens is a clean-room rebuild of that workflow, not a fork. Not affiliated with Mirantis (Lens) or the Freelens project.
-- All product screenshots on srelens.com are real captures of srelens connected to a live 3-node kind cluster, in both dark and light app themes.
+- Desktop screenshots in both app themes and srelens-tui text captures, all from a live kind cluster.
 
 ## Pages
 
 - Home: https://srelens.com/
 - Features (with real screenshots): https://srelens.com/features/
+- Terminal UI (srelens-tui): https://srelens.com/tui/
 - MCP server for AI agents: https://srelens.com/mcp/
 - Kubernetes tool comparison hub: https://srelens.com/compare/
 - srelens vs Lens / K8sLens: https://srelens.com/compare/lens/
@@ -25,16 +26,24 @@ Key facts:
 - Kubernetes Dashboard alternatives: https://srelens.com/compare/kubernetes-dashboard/
 - Download for macOS, Windows, Linux: https://srelens.com/download/
 - FAQ: https://srelens.com/faq/
+- Documentation and quick start: https://srelens.com/docs/
+- Terminal UI (srelens-tui) documentation: https://srelens.com/docs/tui/
+- Security and privacy model: https://srelens.com/security/
+- Architecture: https://srelens.com/architecture/
+- Kubernetes troubleshooting guides: https://srelens.com/guides/
+- Debug CrashLoopBackOff: https://srelens.com/guides/crashloopbackoff/
+- Investigate OOMKilled pods: https://srelens.com/guides/oomkilled/
+- Diagnose failed Deployments: https://srelens.com/guides/failed-deployment/
 
 ## Features
 
-- Standalone pure-Rust Terminal UI (`srelens-tui`): in-memory Informer cache (0ms instant screen switching), Tab-completed command bar (`:po`, `:svc`, `:deploy`, `:helm`, `:workloads`, `:topology`, `:gpuinfo`, `:top`, `:ctx`), deep Helm inspector & values diff, interactive themes, and embedded AI assistant
+- Standalone pure-Rust Terminal UI (`srelens-tui`): in-memory Informer cache (instant screen switching for views already opened), Tab-completed command bar (`:po`, `:svc`, `:deploy`, `:helm`, `:workloads`, `:topology`, `:gpuinfo`, `:top`, `:ctx`), deep Helm inspector & values diff, interactive themes, and embedded AI assistant
 - Multi-cluster management: every context in your local kubeconfig, cluster hotbar, multiple kubeconfig files, context profiles and custom ordering
-- Resource browser covering 40+ Kubernetes kinds: workloads (Pods, Deployments, StatefulSets, DaemonSets, Jobs, CronJobs), config and storage (ConfigMaps, Secrets, PVCs, PVs, StorageClasses), networking (Services, Ingresses, NetworkPolicies, EndpointSlices), RBAC (Roles, ClusterRoles, bindings, ServiceAccounts), admission webhooks, autoscaling, Namespaces, Nodes, Events
+- Resource browser covering 35 built-in Kubernetes kinds plus any CRD: workloads (Pods, Deployments, StatefulSets, DaemonSets, Jobs, CronJobs), config and storage (ConfigMaps, Secrets, PVCs, PVs, StorageClasses), networking (Services, Ingresses, NetworkPolicies, EndpointSlices), RBAC (Roles, ClusterRoles, bindings, ServiceAccounts), admission webhooks, autoscaling, Namespaces, Nodes, Events
 - Live streaming resource watches (kube-rs watch streams, not polling)
 - Browser-style tabs: each tab is a (cluster, resource-kind) view
 - Schema-aware YAML editor with autocomplete and linting driven by the cluster's OpenAPI schema; create resources from templates and apply
-- In-pod interactive terminals (exec), docked in the app
+- In-pod interactive terminals (exec), opened as tabs in the app
 - Pod and workload log streaming with container filtering and search
 - Port forwarding: start/stop/monitor forwards with a status indicator
 - Helm release inspection
@@ -50,7 +59,7 @@ Supported backend capabilities are registered in a shared capability registry an
 
 ## Common questions
 
-- Does srelens replace kubectl? No — it complements it. It doesn't require kubectl (it uses kube-rs directly) but is a workspace for investigation and operations, not a scripting/automation tool.
+- Does srelens replace kubectl? No — it complements it. srelens talks to the Kubernetes API directly through kube-rs and doesn't need kubectl for that; srelens-tui uses your local kubectl for pod and node shells and your local helm for rollbacks. It is a workspace for investigation and operations, not a scripting/automation tool.
 - Is it free? Yes, free and MIT-licensed.
 - Where does cluster data go? Nowhere — the app runs locally and talks directly to your clusters.
 
@@ -62,23 +71,26 @@ Supported backend capabilities are registered in a shared capability registry an
 
 ## Screenshot inventory (all real captures, dark and light themes)
 
-- Cluster overview: node readiness, pod health, pod distribution, recent warnings — https://srelens.com/assets/shots/dark-overview.webp
-- Nodes table with live CPU/memory from metrics-server — https://srelens.com/assets/shots/dark-nodes.webp
-- Pods table (live metrics, phases, nodes, and restarts across namespaces) — https://srelens.com/assets/shots/dark-pods.webp
-- Pod detail drawer with live metrics — https://srelens.com/assets/shots/dark-pod-detail.webp
-- Schema-aware YAML editor — https://srelens.com/assets/shots/dark-yaml.webp
-- In-pod exec terminal — https://srelens.com/assets/shots/dark-terminal.webp
-- Log streaming dock — https://srelens.com/assets/shots/dark-logs.webp
-- MCP settings panel (server, CLI, client config) — https://srelens.com/assets/shots/dark-mcp.webp
-- Namespaces with status and resource totals — https://srelens.com/assets/shots/dark-namespaces.webp
-- Kubernetes events with reasons, objects, messages, and age — https://srelens.com/assets/shots/dark-events.webp
-- Deployments with replicas, images, selectors, and usage — https://srelens.com/assets/shots/dark-deployments.webp
-- Services with cluster IPs, ports, selectors, and endpoints — https://srelens.com/assets/shots/dark-services.webp
-- Port-forward management — https://srelens.com/assets/shots/dark-port-forwards.webp
-- Helm release management — https://srelens.com/assets/shots/dark-helm.webp
+- Cluster overview of the three-node kind-srelens-demo cluster, flagging the crash-looping ledger-worker in payments as not ready — https://srelens.com/assets/shots/dark-overview.webp
+- Nodes table for the three demo cluster nodes with readiness, roles, CPU and memory usage and Kubernetes version — https://srelens.com/assets/shots/dark-nodes.webp
+- Pods table across all namespaces with live status, restarts, CPU and memory, ledger-worker in payments crash-looping — https://srelens.com/assets/shots/dark-pods.webp
+- Pod detail for payments-api in payments: 1/1 ready, Running, nginx:1.27-alpine, with Logs, Shell and Forward actions — https://srelens.com/assets/shots/dark-pod-detail.webp
+- YAML editor on the payments-api Deployment, checked by a server dry run, with schema-aware key hints — https://srelens.com/assets/shots/dark-yaml.webp
+- Shell session inside a payments-api pod running hostname and nslookup for the redis service — https://srelens.com/assets/shots/dark-terminal.webp
+- Log stream for the crash-looping ledger-worker pod: connecting to ledger-db, then fatal: connection refused — https://srelens.com/assets/shots/dark-logs.webp
+- Real MCP session (srelens-tui v0.15.0 --mcp-stdio) answering one question from three kind clusters, on https://srelens.com/#talk-to-your-clusters
+- Namespaces list for the demo cluster with status, labels and age — https://srelens.com/assets/shots/dark-namespaces.webp
+- Cluster events with all, warnings and normal filters and a by-reason count that includes one BackOff warning — https://srelens.com/assets/shots/dark-events.webp
+- Deployments across all namespaces with ready, up-to-date and available counts, ledger-worker at 0/1 ready — https://srelens.com/assets/shots/dark-deployments.webp
+- Services across namespaces with type, cluster IP and ports, and the external IP of the payments-api-lb load balancer — https://srelens.com/assets/shots/dark-services.webp
+- Port forwards tab: payments-api port 80 forwarded through the srelens server at http://127.0.0.1:8791/pf/1/ — https://srelens.com/assets/shots/dark-port-forwards.webp
+- Helm releases list with podinfo deployed in checkout at revision 2 and its Upgrade, Roll back and Uninstall actions — https://srelens.com/assets/shots/dark-helm.webp
+- Delete Pod? confirmation for the crash-looping ledger-worker pod in payments, with the equivalent kubectl command — https://srelens.com/assets/shots/dark-confirm-delete.webp
+- Helm pane for podinfo with the rendered manifest diff from revision 1 to 2, replicas going from 1 to 2 — https://srelens.com/assets/shots/dark-helm-detail.webp
+- Topology of the payments namespace with the failing ledger-worker selected and its declared call to ledger-db — https://srelens.com/assets/shots/dark-topology.webp
 
 Light-theme variants use the same names with the `light-` prefix.
 
 ## Demo environment used for screenshots
 
-kind cluster `srelens-demo`: 1 control-plane + 2 worker nodes (Kubernetes v1.35), namespaces `payments`, `checkout`, `monitoring`; workloads include multi-replica Deployments (checkout-api, storefront-web, cart-service, payments-worker, metrics-agent), a redis StatefulSet, a billing CronJob, an HPA, and a deliberately crash-looping `legacy-adapter` Deployment. metrics-server installed for live usage numbers.
+kind cluster `srelens-demo` (context `kind-srelens-demo`): 1 control-plane + 2 worker nodes, Kubernetes v1.36.1; namespaces `payments`, `checkout`, `monitoring`. Workloads: a `payments-api` Deployment (2 replicas, nginx:1.27-alpine), a `redis` StatefulSet, a deliberately crash-looping `ledger-worker` Deployment (it logs `connecting to ledger-db:5432`, then `fatal: connection refused`, and exits 1) in `payments`; a `checkout-web` Deployment and a `cart-sync` CronJob in `checkout`; a `status-exporter` Deployment in `monitoring`. The feature captures add a Helm release `podinfo` in `checkout` with two revisions (revision 2 raises replicas from 1 to 2), Argo CD with a `guestbook` Application, and MetalLB in BGP mode peering with an FRR router container, with a `payments-api-lb` LoadBalancer Service in `payments`. metrics-server installed for live usage numbers. For the srelens-tui GPU view only, a simulated NVIDIA A100 GPU node was added with kwok (no GPU exists) and removed afterwards. The srelens-tui screens are text captures of v0.15.0 against the same cluster, shown on https://srelens.com/tui/ and https://srelens.com/docs/tui/.

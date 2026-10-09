@@ -1,0 +1,9 @@
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"srelens-site-demo","version":"1"}}}
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{}},"serverInfo":{"name":"srelens","version":"0.15.0"}}}
+{"jsonrpc":"2.0","method":"notifications/initialized"}
+{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"k8s.listContexts","arguments":{}}}
+{"jsonrpc":"2.0","id":3,"result":{"content":[{"type":"text","text":"{\"contexts\":[{\"name\":\"kind-a\"},{\"name\":\"kind-b\"}],\"error\":null}"}],"isError":false}}
+{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"k8s.listDeployments","arguments":{"context":"kind-a","namespace":"default"}}}
+{"jsonrpc":"2.0","id":4,"result":{"content":[{"type":"text","text":"{\"deployments\":[{\"name\":\"web<x>&y\",\"namespace\":\"default\",\"ready\":\"2/3\",\"upToDate\":1,\"available\":2,\"created\":null,\"age\":\"5m\",\"createdAt\":\"\"}]}"}],"isError":false}}
+{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"k8s.listDeployments","arguments":{"context":"kind-b","namespace":"default"}}}
+{"jsonrpc":"2.0","id":5,"result":{"content":[{"type":"text","text":"context kind-b: connection refused"}],"isError":true}}

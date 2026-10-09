@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: ledger, namespace: default }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: ledger } }
+  template:
+    metadata: { labels: { app: ledger } }
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector: { matchLabels: { app: ledger } }
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: worker
+          image: nginx:1.27-alpine

@@ -1,0 +1,22 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata: { name: demo-pool, namespace: metallb-system }
+spec: { addresses: ["@POOL@"] }
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata: { name: edge-router, namespace: metallb-system }
+spec: { myASN: 64513, peerASN: 64512, peerAddress: "@FRR_IP@" }
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata: { name: demo-adv, namespace: metallb-system }
+spec: { ipAddressPools: [demo-pool] }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: payments-api-lb, namespace: payments }
+spec:
+  type: LoadBalancer
+  selector: { app: payments-api }
+  ports: [{ port: 80, targetPort: 80 }]

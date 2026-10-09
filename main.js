@@ -6,13 +6,17 @@
   var year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
+  /* ---------- 404: show the requested path ---------- */
+  var errPath = document.querySelector("[data-err-path]");
+  if (errPath) errPath.textContent = window.location.pathname;
+
   /* ---------- theme toggle ---------- */
   function syncThemeColor() {
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
       meta.setAttribute(
         "content",
-        document.documentElement.getAttribute("data-theme") === "light" ? "#faf9fe" : "#08060f"
+        document.documentElement.getAttribute("data-theme") === "light" ? "#fbfafc" : "#0f0d14"
       );
     }
   }
@@ -25,17 +29,6 @@
       syncThemeColor();
     });
   });
-
-  /* ---------- navigation scroll progress ---------- */
-  function updateScrollProgress() {
-    var max = document.documentElement.scrollHeight - window.innerHeight;
-    var pageProgress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    var progress = 0.18 + pageProgress * 0.82;
-    document.body.style.setProperty("--scroll-progress", progress.toFixed(4));
-  }
-  updateScrollProgress();
-  window.addEventListener("scroll", updateScrollProgress, { passive: true });
-  window.addEventListener("resize", updateScrollProgress);
 
   /* ---------- table of contents active section scrollspy ---------- */
   var contentNav = document.querySelector(".content-nav");
@@ -182,87 +175,62 @@
     });
   });
 
-  /* ---------- product walkthrough dialog ---------- */
-  var tourDialog = document.querySelector("[data-tour-dialog]");
-  var tourVideo = document.querySelector("[data-tour-video]");
-  document.querySelectorAll("[data-tour-open]").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      if (!tourDialog || typeof tourDialog.showModal !== "function") {
-        window.location.href = "/assets/media/srelens-product-tour.mp4";
-        return;
-      }
-      tourDialog.showModal();
-      if (tourVideo) {
-        tourVideo.currentTime = 0;
-        tourVideo.play().catch(function () { /* controls remain available */ });
-      }
+  /* ---------- tabs: incident drill and homepage desktop / terminal switch ---------- */
+  function bindTabs(tabs, panels, tabAttr, panelAttr) {
+    function show(name, focusTab) {
+      tabs.forEach(function (tab) {
+        var selected = tab.getAttribute(tabAttr) === name;
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        if (selected && focusTab) tab.focus();
+      });
+      panels.forEach(function (panel) {
+        panel.hidden = panel.getAttribute(panelAttr) !== name;
+      });
+    }
+    tabs.forEach(function (tab, index) {
+      tab.addEventListener("click", function () { show(tab.getAttribute(tabAttr), false); });
+      tab.addEventListener("keydown", function (event) {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        var next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+        show(tabs[next].getAttribute(tabAttr), true);
+      });
     });
-  });
-  function closeTour() {
-    if (!tourDialog) return;
-    if (tourVideo) tourVideo.pause();
-    tourDialog.close();
-  }
-  document.querySelectorAll("[data-tour-close]").forEach(function (btn) {
-    btn.addEventListener("click", closeTour);
-  });
-  if (tourDialog) {
-    tourDialog.addEventListener("click", function (event) {
-      if (event.target === tourDialog) closeTour();
-    });
-    tourDialog.addEventListener("close", function () {
-      if (tourVideo) tourVideo.pause();
-    });
+    return show;
   }
 
-  /* ---------- interactive incident drill ---------- */
-  var incidentTabs = Array.from(document.querySelectorAll("[data-incident-tab]"));
-  var incidentPanels = Array.from(document.querySelectorAll("[data-incident-panel]"));
-  function showIncidentStep(step, focusTab) {
-    incidentTabs.forEach(function (tab) {
-      var selected = tab.getAttribute("data-incident-tab") === step;
-      tab.setAttribute("aria-selected", String(selected));
-      tab.tabIndex = selected ? 0 : -1;
-      if (selected && focusTab) tab.focus();
-    });
-    incidentPanels.forEach(function (panel) {
-      panel.hidden = panel.getAttribute("data-incident-panel") !== step;
-    });
-  }
-  incidentTabs.forEach(function (tab, index) {
-    tab.addEventListener("click", function () {
-      showIncidentStep(tab.getAttribute("data-incident-tab"), false);
-    });
-    tab.addEventListener("keydown", function (event) {
-      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-      event.preventDefault();
-      var delta = event.key === "ArrowRight" ? 1 : -1;
-      var next = (index + delta + incidentTabs.length) % incidentTabs.length;
-      showIncidentStep(incidentTabs[next].getAttribute("data-incident-tab"), true);
-    });
-  });
+  var showIncidentStep = bindTabs(
+    Array.from(document.querySelectorAll("[data-incident-tab]")),
+    Array.from(document.querySelectorAll("[data-incident-panel]")),
+    "data-incident-tab", "data-incident-panel"
+  );
   document.querySelectorAll("[data-incident-next]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       showIncidentStep(btn.getAttribute("data-incident-next"), false);
     });
   });
 
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* ---------- scroll reveal ---------- */
-  var revealEls = document.querySelectorAll(".reveal");
-  if (reduced || !("IntersectionObserver" in window)) {
-    revealEls.forEach(function (el) { el.classList.add("in"); });
-  } else {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("in");
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
-    revealEls.forEach(function (el) { io.observe(el); });
+  var modes = document.querySelector("[data-modes]");
+  if (modes) {
+    var showMode = bindTabs(
+      Array.from(modes.querySelectorAll("[data-mode-tab]")),
+      Array.from(modes.querySelectorAll("[data-mode-panel]")),
+      "data-mode-tab", "data-mode-panel"
+    );
+    var modeTabs = modes.querySelector("[role='tablist']");
+    modeTabs.hidden = false;
+    modes.classList.add("is-enhanced");
+    showMode("desktop", false);
+    /* Single-character shortcuts are only live while a tab of the switch has focus (WCAG 2.1.4). */
+    document.addEventListener("keydown", function (event) {
+      if (!modeTabs.contains(document.activeElement)) return;
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      var el = document.activeElement;
+      if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;
+      if (event.key === "1") showMode("desktop", false);
+      if (event.key === "2") showMode("terminal", false);
+    });
   }
 
   /* ---------- screenshot zoom modal dialog ---------- */
@@ -352,33 +320,4 @@
     e.preventDefault();
     openZoom(src, visibleImg.alt);
   });
-
-  if (reduced) return;
-
-  /* ---------- hero mock: typing log line ---------- */
-  var typeLine = document.getElementById("type-line");
-  if (typeLine) {
-    var msg = "payment gateway recovered — 200 OK (1.2s)";
-    var i = 0;
-    (function type() {
-      if (i <= msg.length) {
-        typeLine.textContent = msg.slice(0, i);
-        i++;
-        setTimeout(type, 34 + Math.random() * 46);
-      }
-    })();
-  }
-
-  /* ---------- hero mock: pending pod flips to running ---------- */
-  var flip = document.getElementById("flip-status");
-  if (flip) {
-    setTimeout(function () {
-      flip.innerHTML = '<span class="status running"><i></i>Running</span>';
-      var row = flip.closest("tr");
-      if (row) {
-        var ready = row.children[1];
-        if (ready) ready.textContent = "1/1";
-      }
-    }, 4200);
-  }
 })();

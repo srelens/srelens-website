@@ -9,7 +9,7 @@
   <link rel="canonical" href="https://srelens.com/features/">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="author" content="srelens">
-  <meta name="theme-color" content="#08060f">
+  <meta name="theme-color" content="#0f0d14">
   <meta name="color-scheme" content="dark light">
   <script>
     (function () {
@@ -28,15 +28,15 @@
   <meta property="og:site_name" content="srelens">
   <meta property="og:title" content="srelens features — the whole investigation in one window">
   <meta property="og:description" content="Real screenshots of srelens against a live multi-node cluster: pods, metrics, logs, terminals, YAML, and safe operations.">
-  <meta property="og:image" content="https://srelens.com/assets/og/og-features.jpg">
+  <meta property="og:image" content="https://srelens.com/assets/og/og-features.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="srelens pod detail drawer with live metrics beside the pods table.">
+  <meta property="og:image:alt" content="srelens.com/features/: Every feature, shown with real screenshots.">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="srelens features — the whole investigation in one window">
   <meta name="twitter:description" content="Real screenshots of srelens against a live multi-node cluster: pods, metrics, logs, terminals, YAML, and safe operations.">
-  <meta name="twitter:image" content="https://srelens.com/assets/og/og-features.jpg">
+  <meta name="twitter:image" content="https://srelens.com/assets/og/og-features.png">
 
   <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
@@ -46,9 +46,8 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/enterprise.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+  <link rel="stylesheet" href="/site.css?v=1">
 
   <script type="application/ld+json">
   {
@@ -74,45 +73,25 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <div class="bg-aurora" aria-hidden="true"></div>
-  <div class="bg-grid" aria-hidden="true"></div>
 
   <header class="site-header">
-    <div class="wrap">
-      <nav class="nav" aria-label="Main">
-        <a class="brand" href="/">
-          <img src="/assets/logo-mark.svg" alt="" width="30" height="30">
-          <span>sre<span class="lens">lens</span></span>
-        </a>
-        <ul class="nav-links">
-          <li><a class="active" href="/features/">Features</a></li>
-          <li><a href="/tui/">TUI</a></li>
-          <li><a href="/mcp/">MCP</a></li>
-          <li><a href="/compare/">Compare</a></li>
-          <li><a href="/docs/">Docs</a></li><li><a href="/download/">Download</a></li>
-          <li><a href="/faq/">FAQ</a></li>
-        </ul>
-        <span class="nav-status" aria-hidden="true"><span class="dot"></span> available now</span>
-        <button class="theme-toggle" type="button" aria-label="Toggle light/dark theme">
-          <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-        </button>
-        <a class="nav-cta" href="https://github.com/srelens/srelens" rel="noopener">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-          GitHub
-        </a>
-      </nav>
-    </div>
-  </header>
+<div class="wrap nav">
+<a class="brand" href="/"><img src="/assets/logo-mark.svg" alt="" width="24" height="24"><span>srelens</span></a>
+<nav class="nav-main" aria-label="Main">
+<ul class="nav-links"><li><a href="/features/" aria-current="page"><span class="slash" aria-hidden="true">/</span>features</a></li><li><a href="/tui/"><span class="slash" aria-hidden="true">/</span>tui</a></li><li><a href="/mcp/"><span class="slash" aria-hidden="true">/</span>mcp</a></li><li><a href="/compare/"><span class="slash" aria-hidden="true">/</span>compare</a></li><li><a href="/docs/"><span class="slash" aria-hidden="true">/</span>docs</a></li><li><a href="/download/"><span class="slash" aria-hidden="true">/</span>download</a></li><li><a href="/faq/"><span class="slash" aria-hidden="true">/</span>faq</a></li></ul>
+<details class="nav-menu"><summary>menu</summary><ul class="nav-menu-list"><li><a href="/features/" aria-current="page"><span class="slash" aria-hidden="true">/</span>features</a></li><li><a href="/tui/"><span class="slash" aria-hidden="true">/</span>tui</a></li><li><a href="/mcp/"><span class="slash" aria-hidden="true">/</span>mcp</a></li><li><a href="/compare/"><span class="slash" aria-hidden="true">/</span>compare</a></li><li><a href="/docs/"><span class="slash" aria-hidden="true">/</span>docs</a></li><li><a href="/download/"><span class="slash" aria-hidden="true">/</span>download</a></li><li><a href="/faq/"><span class="slash" aria-hidden="true">/</span>faq</a></li></ul></details>
+</nav>
+<button class="theme-toggle" type="button" aria-label="Toggle light/dark theme"><svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button>
+<a class="nav-cta" href="https://github.com/srelens/srelens" rel="noopener">github <span aria-hidden="true">↗</span></a>
+</div>
+</header>
 
   <main id="main">
 
     <section class="page-hero">
       <div class="wrap">
-        <nav class="crumbs" aria-label="Breadcrumb">
-          <a href="/">srelens</a> <span class="sep">/</span> <span>features</span>
-        </nav>
-        <h1>Every feature, shown with <span class="grad">real screenshots.</span></h1>
+        <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/">srelens</a></li><li><span aria-current="page">features</span></li></ol></nav>
+        <h1>Every feature, shown with <span class="accent">real screenshots.</span></h1>
         <p class="lede">
           Each capture on this page is srelens connected to a live three-node kind cluster
           running real workloads: deployments, a StatefulSet, CronJobs, and one
@@ -121,203 +100,259 @@
       </div>
     </section>
 
-    <section class="section" style="padding-top:40px;">
+    <section class="section">
       <div class="wrap">
         <div class="feature-rows">
 
           <div class="feature-row">
-            <div class="copy reveal">
+            <div class="copy">
               <span class="fr-num">/ 01</span>
-              <h3>A live pods table, not a refresh button</h3>
-              <p>Filter by namespace and watch phase, readiness, restarts, CPU, and memory update in place as the cluster changes through kube-rs watches. The crash-looping <code>legacy-adapter</code> pod shows its restart count climbing in real time.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-pods.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens pods table showing live CPU, memory, readiness, phases, nodes, and restart counts across the demo cluster">
-              <img class="shot-light" src="/assets/shots/light-pods.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens pods table in light theme showing workloads across namespaces with live phase and restart data">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 02</span>
-              <h3>Metrics and manifest, side by side</h3>
-              <p>The detail drawer streams CPU and memory from the Kubernetes Metrics Server next to properties, conditions, controller references, and events. See the whole picture of a pod without leaving the table.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-pod-detail.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens pod detail drawer with live CPU and memory charts, properties, and conditions">
-              <img class="shot-light" src="/assets/shots/light-pod-detail.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens pod detail drawer in light theme with metrics and pod properties">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 03</span>
-              <h3>Schema-aware YAML editing</h3>
-              <p>Open the YAML tab and edit the live manifest with syntax highlighting, line numbers, and apply/reset, driven by your cluster's own OpenAPI schema with CRDs included.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-yaml.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens YAML editor showing the live manifest of a payments worker pod with syntax highlighting and apply controls">
-              <img class="shot-light" src="/assets/shots/light-yaml.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens YAML editor in light theme with a pod manifest open beside the pods table">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 04</span>
-              <h3>Exec into any container</h3>
-              <p>A full interactive terminal, docked in the workspace. Here it resolves a headless Redis service with <code>nslookup</code> from inside a worker pod and receives DNS answers straight from the cluster.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-terminal.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens in-pod exec terminal running hostname and nslookup against cluster DNS">
-              <img class="shot-light" src="/assets/shots/light-terminal.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens exec terminal in light theme resolving a headless Redis service from inside a pod">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 05</span>
-              <h3>Logs that follow the investigation</h3>
-              <p>Stream logs from any pod or whole workload with container filtering and search, docked beside the resource and still running when you switch tabs to check the nodes.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-logs.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens streaming live logs from a payments worker pod under the pods table">
-              <img class="shot-light" src="/assets/shots/light-logs.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens log streaming in light theme with search and container filter">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 06</span>
-              <h3>Nodes with real usage numbers</h3>
-              <p>Roles, taints, versions, and live CPU/memory from metrics-server for every node. Cordon, drain, and evict are one action away and always confirmation-gated.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-nodes.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens nodes table showing a control-plane and two workers with live CPU and memory usage">
-              <img class="shot-light" src="/assets/shots/light-nodes.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens nodes table in light theme with roles, versions, and usage for three kind nodes">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 07</span>
-              <h3>Cluster health at a glance</h3>
-              <p>The overview turns live API data into a compact operational summary: node readiness, pod health, workload and service counts, namespace coverage, and the warnings worth investigating first.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-overview.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens dark cluster overview with health summaries, pod distribution, and recent warnings for kind-srelens-demo">
-              <img class="shot-light" src="/assets/shots/light-overview.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens light cluster overview showing nodes, pods, workloads, services, namespaces, and warning health">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 08</span>
-              <h3>Namespaces without losing the cluster view</h3>
-              <p>See every namespace, its status, age, labels, and live resource totals in one table, then open a namespace directly to continue the investigation with the right scope.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-namespaces.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens namespaces table in dark theme with status, age, labels, and resource counts">
-              <img class="shot-light" src="/assets/shots/light-namespaces.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens namespaces table in light theme for the three-node demo cluster">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 09</span>
-              <h3>Events are an investigation surface</h3>
-              <p>Search and filter Kubernetes events across namespaces, sort by severity and time, and jump from a warning to the object that emitted it instead of reconstructing the trail from CLI output.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-events.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens events view in dark theme showing Kubernetes warnings and normal events">
-              <img class="shot-light" src="/assets/shots/light-events.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens events view in light theme with namespace, reason, object, message, and age columns">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 10</span>
-              <h3>Workloads with rollout context</h3>
-              <p>Deployments expose desired and available replicas, update strategy, images, selectors, age, and live usage. Scale or restart a rollout from the same view, with confirmation before the action runs.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-deployments.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens deployments table in dark theme with replicas, images, selectors, and live usage">
-              <img class="shot-light" src="/assets/shots/light-deployments.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens deployments table in light theme across checkout, monitoring, and payments namespaces">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 11</span>
-              <h3>Services and endpoints in context</h3>
-              <p>Inspect service type, cluster IP, ports, selectors, and endpoint readiness alongside the workloads they route to. Networking stays part of the same tabbed workspace.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-services.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens services table in dark theme with cluster IPs, ports, selectors, and endpoint readiness">
-              <img class="shot-light" src="/assets/shots/light-services.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens services table in light theme for the demo workloads">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 12</span>
-              <h3>Port forwards, managed centrally</h3>
-              <p>Create, inspect, copy, and stop forwards for resources across the open cluster. The dedicated view keeps active tunnels visible instead of burying them in background terminal processes.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-port-forwards.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens port forwards management view in dark theme">
-              <img class="shot-light" src="/assets/shots/light-port-forwards.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens port forwards management view in light theme with a create-forward action">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 13</span>
-              <h3>Helm releases in the same workspace</h3>
-              <p>List and inspect releases, then install, upgrade, roll back, or uninstall with values and rendered-diff context—without switching to a separate Helm dashboard.</p>
-            </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-helm.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens Helm releases view in dark theme with release actions and namespace filtering">
-              <img class="shot-light" src="/assets/shots/light-helm.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens Helm releases view in light theme">
-            </figure>
-          </div>
-
-          <div class="feature-row">
-            <div class="copy reveal">
-              <span class="fr-num">/ 14</span>
               <h3>Built-in MCP for AI agents</h3>
               <p>Start the loopback MCP server, install the stdio CLI, and copy client configuration from Settings. The same Rust capability registry powers the desktop and agent surfaces, with explicit confirmation required for mutations.</p>
             </div>
-            <figure class="shot reveal">
-              <img class="shot-dark" src="/assets/shots/dark-mcp.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens MCP settings in dark theme with server transport, CLI, and client configuration">
-              <img class="shot-light" src="/assets/shots/light-mcp.webp" width="2400" height="1461" loading="lazy"
-                   alt="srelens MCP settings in light theme with loopback server and client setup controls">
+            <!-- mcp-demo:start --><figure class="mcp-demo">
+  <div class="mini" aria-label="One question, answered from three clusters">
+    <div class="mini-bar">mcp · srelens — agent session</div>
+    <div class="mini-body">
+      <pre tabindex="0" role="group" aria-label="mcp · srelens — agent session"><span class="mcp-prompt">prompt</span>  What's rolling out in default, across all my clusters?
+<span class="mcp-call">→ k8s.listContexts</span>
+<span class="mcp-call">→ k8s.listDeployments</span>  kind-demo-eu  default
+<span class="mcp-call">→ k8s.listDeployments</span>  kind-demo-us  default
+<span class="mcp-call">→ k8s.listDeployments</span>  kind-demo-ap  default</pre>
+      <div class="mcp-table" tabindex="0" role="group" aria-label="Deployments in default, by cluster">
+        <table>
+          <caption>Deployments in <code>default</code>, by cluster</caption>
+          <thead><tr><th scope="col">cluster</th><th scope="col">deployment</th><th scope="col">ready</th><th scope="col">up to date</th><th scope="col">available</th><th scope="col">age</th></tr></thead>
+          <tbody><tr><td>kind-demo-eu</td><td>checkout</td><td>3/3</td><td>3</td><td>3</td><td>1m</td></tr><tr><td>kind-demo-eu</td><td>storefront</td><td>2/2</td><td>2</td><td>2</td><td>1m</td></tr><tr><td>kind-demo-us</td><td>checkout</td><td>3/3</td><td>3</td><td>3</td><td>1m</td></tr><tr class="mcp-warn"><td>kind-demo-us</td><td>ledger</td><td>1/2</td><td>2</td><td>1</td><td>1m</td></tr><tr><td>kind-demo-us</td><td>storefront</td><td>2/2</td><td>2</td><td>2</td><td>1m</td></tr><tr class="mcp-warn"><td>kind-demo-ap</td><td>checkout</td><td>3/3</td><td>1</td><td>3</td><td>1m</td></tr><tr><td>kind-demo-ap</td><td>storefront</td><td>2/2</td><td>2</td><td>2</td><td>1m</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <figcaption>Real tool calls and results: srelens-tui v0.15.0 --mcp-stdio, three local kind clusters. Any MCP client (Cursor, Claude Code, your own agent) can make the same calls.</figcaption>
+</figure><!-- mcp-demo:end -->
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 02</span>
+              <h3>A live pods table, not a refresh button</h3>
+              <p>Filter by namespace and watch phase, readiness, restarts, CPU, and memory update in place as the cluster changes through kube-rs watches. The crash-looping <code>ledger-worker</code> pod shows its restart count climbing in real time.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-pods.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens pods table across all namespaces with live status, restarts, CPU and memory, ledger-worker in payments crash-looping">
+              <img class="shot-light" src="/assets/shots/light-pods.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens pods table across all namespaces with live status, restarts, CPU and memory, ledger-worker in payments crash-looping, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 03</span>
+              <h3>Metrics on the pod page</h3>
+              <p>The pod page shows current CPU and memory from the Kubernetes Metrics Server above its properties, conditions, and controller references, with YAML and Events one tab away. See the whole picture of a pod on one page.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-pod-detail.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens pod detail for payments-api in payments: 1/1 ready, Running, nginx:1.27-alpine, with Logs, Shell and Forward actions">
+              <img class="shot-light" src="/assets/shots/light-pod-detail.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens pod detail for payments-api in payments: 1/1 ready, Running, nginx:1.27-alpine, with Logs, Shell and Forward actions, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 04</span>
+              <h3>Schema-aware YAML editing</h3>
+              <p>Open the YAML tab and edit the live manifest with syntax highlighting, line numbers, and apply/reset, driven by your cluster's own OpenAPI schema with CRDs included.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-yaml.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens YAML editor on the payments-api Deployment, checked by a server dry run, with schema-aware key hints">
+              <img class="shot-light" src="/assets/shots/light-yaml.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens YAML editor on the payments-api Deployment, checked by a server dry run, with schema-aware key hints, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 05</span>
+              <h3>Exec into any container</h3>
+              <p>A full interactive terminal, opened as a tab in the workspace. Here it resolves a headless Redis service with <code>nslookup</code> from inside a pod and receives DNS answers straight from the cluster.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-terminal.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens shell session inside a payments-api pod running hostname and nslookup for the redis service">
+              <img class="shot-light" src="/assets/shots/light-terminal.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens shell session inside a payments-api pod running hostname and nslookup for the redis service, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 06</span>
+              <h3>Logs that follow the investigation</h3>
+              <p>Stream logs from any pod or whole workload with container filtering and search, opened as a tab of its own and still running when you switch tabs to check the nodes.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-logs.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens log stream for the crash-looping ledger-worker pod: connecting to ledger-db, then fatal: connection refused">
+              <img class="shot-light" src="/assets/shots/light-logs.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens log stream for the crash-looping ledger-worker pod: connecting to ledger-db, then fatal: connection refused, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 07</span>
+              <h3>Nodes with real usage numbers</h3>
+              <p>Roles, taints, versions, and live CPU/memory from metrics-server for every node. Cordon, drain, and evict are one action away and always confirmation-gated.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-nodes.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens nodes table for the three demo cluster nodes with readiness, roles, CPU and memory usage and Kubernetes version">
+              <img class="shot-light" src="/assets/shots/light-nodes.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens nodes table for the three demo cluster nodes with readiness, roles, CPU and memory usage and Kubernetes version, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 08</span>
+              <h3>Cluster health at a glance</h3>
+              <p>The overview turns live API data into a compact operational summary: node readiness, pod health, workload and service counts, namespace coverage, and the warnings worth investigating first.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-overview.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens cluster overview of the three-node kind-srelens-demo cluster, flagging the crash-looping ledger-worker in payments as not ready">
+              <img class="shot-light" src="/assets/shots/light-overview.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens cluster overview of the three-node kind-srelens-demo cluster, flagging the crash-looping ledger-worker in payments as not ready, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 09</span>
+              <h3>Namespaces without losing the cluster view</h3>
+              <p>See every namespace, its status, age, labels, and live resource totals in one table, then open a namespace directly to continue the investigation with the right scope.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-namespaces.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens namespaces list for the demo cluster with status, labels and age">
+              <img class="shot-light" src="/assets/shots/light-namespaces.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens namespaces list for the demo cluster with status, labels and age, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 10</span>
+              <h3>Events are an investigation surface</h3>
+              <p>Search and filter Kubernetes events across namespaces, sort by severity and time, and jump from a warning to the object that emitted it instead of reconstructing the trail from CLI output.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-events.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens cluster events with all, warnings and normal filters and a by-reason count that includes one BackOff warning">
+              <img class="shot-light" src="/assets/shots/light-events.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens cluster events with all, warnings and normal filters and a by-reason count that includes one BackOff warning, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 11</span>
+              <h3>Workloads with rollout context</h3>
+              <p>Deployments expose desired and available replicas, update strategy, images, selectors, age, and live usage. Scale or restart a rollout from the same view, with confirmation before the action runs.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-deployments.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens deployments across all namespaces with ready, up-to-date and available counts, ledger-worker at 0/1 ready">
+              <img class="shot-light" src="/assets/shots/light-deployments.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens deployments across all namespaces with ready, up-to-date and available counts, ledger-worker at 0/1 ready, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 12</span>
+              <h3>Services and endpoints in context</h3>
+              <p>Inspect service type, cluster IP, ports, selectors, and endpoint readiness alongside the workloads they route to. Networking stays part of the same tabbed workspace.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-services.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens services across namespaces with type, cluster IP and ports, and the external IP of the payments-api-lb load balancer">
+              <img class="shot-light" src="/assets/shots/light-services.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens services across namespaces with type, cluster IP and ports, and the external IP of the payments-api-lb load balancer, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 13</span>
+              <h3>Port forwards, managed centrally</h3>
+              <p>Create, inspect, copy, and stop forwards for resources across the open cluster. The dedicated view keeps active tunnels visible instead of burying them in background terminal processes.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-port-forwards.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens port forwards tab: payments-api port 80 forwarded through the srelens server at http://127.0.0.1:8791/pf/1/">
+              <img class="shot-light" src="/assets/shots/light-port-forwards.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens port forwards tab: payments-api port 80 forwarded through the srelens server at http://127.0.0.1:8791/pf/1/, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 14</span>
+              <h3>Helm releases in the same workspace</h3>
+              <p>List and inspect releases, then install, upgrade, roll back, or uninstall with values and rendered-diff context—without switching to a separate Helm dashboard.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-helm.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens Helm releases list with podinfo deployed in checkout at revision 2 and its Upgrade, Roll back and Uninstall actions">
+              <img class="shot-light" src="/assets/shots/light-helm.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens Helm releases list with podinfo deployed in checkout at revision 2 and its Upgrade, Roll back and Uninstall actions, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 15</span>
+              <h3>Deletes name their target first</h3>
+              <p>Deleting a pod opens a confirmation that names the pod and its namespace and shows the equivalent kubectl command. Nothing changes in the cluster until you confirm.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-confirm-delete.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens Delete Pod? confirmation for the crash-looping ledger-worker pod in payments, with the equivalent kubectl command">
+              <img class="shot-light" src="/assets/shots/light-confirm-delete.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens Delete Pod? confirmation for the crash-looping ledger-worker pod in payments, with the equivalent kubectl command, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 16</span>
+              <h3>See what a Helm upgrade changed</h3>
+              <p>Select a release and the side pane renders the manifest diff between its current revision and the one before, with Roll back and the values editor beside it. The diff appears once a release has a second revision.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-helm-detail.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens Helm pane for podinfo with the rendered manifest diff from revision 1 to 2, replicas going from 1 to 2">
+              <img class="shot-light" src="/assets/shots/light-helm-detail.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens Helm pane for podinfo with the rendered manifest diff from revision 1 to 2, replicas going from 1 to 2, light theme">
+            </figure>
+          </div>
+
+          <div class="feature-row">
+            <div class="copy">
+              <span class="fr-num">/ 17</span>
+              <h3>Trace how traffic reaches a workload</h3>
+              <p>Topology lays a namespace out by hops from where traffic enters, from Service to workload to whatever it calls. Dependencies read from environment variables, arguments and ConfigMaps are drawn as declared, apart from routes, and selecting a node lists what it reaches.</p>
+            </div>
+            <figure class="shot">
+              <img class="shot-dark" src="/assets/shots/dark-topology.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens topology of the payments namespace with the failing ledger-worker selected and its declared call to ledger-db">
+              <img class="shot-light" src="/assets/shots/light-topology.webp" width="2400" height="1461" loading="lazy"
+                   alt="srelens topology of the payments namespace with the failing ledger-worker selected and its declared call to ledger-db, light theme">
             </figure>
           </div>
 
@@ -327,10 +362,10 @@
 
     <section class="final">
       <p class="eyebrow"><span class="tick">●</span> See it on your own clusters</p>
-      <h2 class="display">Your kubeconfig is <span class="grad">all it needs.</span></h2>
+      <h2 class="display">Your kubeconfig is all it needs.</h2>
       <p>Free and open source for macOS, Windows, and Linux.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="/download/">Download <span data-version>v0.3.0</span></a>
+        <a class="btn btn-primary" href="/download/">Download <span data-version>v0.15.0</span></a>
         <a class="btn btn-ghost" href="/mcp/">Explore the MCP server</a>
       </div>
     </section>
@@ -338,39 +373,19 @@
   </main>
 
   <footer class="site-footer">
-    <div class="wrap">
-      <div class="footer-grid">
-        <div>
-          <p class="footer-brand"><img src="/assets/logo-mark.svg" alt="" width="26" height="26"> <span>sre<span class="lens">lens</span></span></p>
-          <p class="footer-tag">The Kubernetes control room · built with Rust &amp; Tauri</p>
-        </div>
-        <div class="footer-cols">
-          <div class="footer-col">
-            <h4>Product</h4>
-            <ul>
-              <li><a href="/features/">Features</a></li>
-              <li><a href="/tui/">TUI</a></li>
-              <li><a href="/mcp/">MCP</a></li>
-              <li><a href="/compare/">Compare</a></li>
-              <li><a href="/docs/">Docs</a></li><li><a href="/download/">Download</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h4>Project</h4>
-            <ul>
-              <li><a href="https://github.com/srelens/srelens" rel="noopener">GitHub</a></li>
-              <li><a href="https://github.com/srelens/srelens/releases" rel="noopener">Releases</a></li>
-              <li><a href="/faq/">FAQ</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="footer-meta">
-        <span>© <span id="year">2026</span> srelens. All rights reserved.</span>
-        <span>not affiliated with Mirantis (Lens) or the Freelens project</span>
-      </div>
-    </div>
-  </footer>
+<div class="wrap footer-grid">
+<div class="footer-brand">
+<a class="brand" href="/"><img src="/assets/logo-mark.svg" alt="" width="24" height="24"><span>srelens</span></a>
+<p class="footer-tag">The Kubernetes kernel · built with Rust &amp; Tauri</p>
+<p class="footer-version">latest <span data-version>v0.15.0</span> · MIT</p>
+</div>
+<nav class="footer-cols" aria-label="Footer"><div class="footer-col"><p class="footer-h">product</p><ul><li><a href="/features/">features</a></li><li><a href="/tui/">tui</a></li><li><a href="/mcp/">mcp</a></li><li><a href="/download/">download</a></li></ul></div><div class="footer-col"><p class="footer-h">learn</p><ul><li><a href="/docs/">docs</a></li><li><a href="/docs/tui/">tui docs</a></li><li><a href="/guides/">sre guides</a></li><li><a href="/guides/crashloopbackoff/">CrashLoopBackOff</a></li><li><a href="/guides/oomkilled/">OOMKilled</a></li><li><a href="/guides/failed-deployment/">Failed deployment</a></li><li><a href="/faq/">faq</a></li></ul></div><div class="footer-col"><p class="footer-h">compare</p><ul><li><a href="/compare/">all comparisons</a></li><li><a href="/compare/lens/">lens</a></li><li><a href="/compare/k9s/">k9s</a></li><li><a href="/compare/headlamp/">headlamp</a></li><li><a href="/compare/freelens/">freelens</a></li><li><a href="/compare/aptakube/">aptakube</a></li><li><a href="/compare/kubernetes-dashboard/">kubernetes dashboard</a></li></ul></div><div class="footer-col"><p class="footer-h">project</p><ul><li><a href="/security/">security</a></li><li><a href="/architecture/">architecture</a></li><li><a href="https://github.com/srelens/srelens" rel="noopener">github</a></li><li><a href="https://github.com/srelens/srelens/releases" rel="noopener">releases</a></li></ul></div></nav>
+</div>
+<div class="wrap footer-meta">
+<span>© <span id="year">2026</span> srelens. All rights reserved.</span>
+<span>Independently developed · not affiliated with Mirantis (Lens) or the Freelens project</span>
+</div>
+</footer>
 
   <script src="/main.js" defer></script>
 </body>

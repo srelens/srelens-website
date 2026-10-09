@@ -14,3 +14,6 @@
 
 /main.js
   Cache-Control: public, max-age=86400
+
+/site.css
+  Cache-Control: public, max-age=86400
