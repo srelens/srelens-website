@@ -103,9 +103,10 @@ const LD_ANSWER_CHANGES = {
       "srelens targets macOS, Windows, and Linux desktops via Tauri v2.",
       "macOS, Windows, and Linux desktops via Tauri v2.",
     ],
+    // Devesh 2026-10-09: /mcp/ shows the setup and a recorded session across three clusters now, not screenshots.
     [
       "Supported backend capabilities in srelens are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned.",
-      "Supported backend capabilities are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned. The MCP page shows the setup with real screenshots.",
+      "Supported backend capabilities are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned. The MCP page shows the setup and a recorded session across three clusters.",
     ],
     [
       "Nowhere. srelens runs entirely on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There is no intermediary cloud service between the app and your API servers.",
