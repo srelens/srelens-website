@@ -186,7 +186,7 @@ test('no stored text capture is from srelens-tui or v0.15.0: the product text sa
 // (apps/tui/src/views/tui_config_view.rs:228-229), so the row needs six j presses, not five. j = select_next_field (app.rs:6708-6710).
 test('argo-config presses j six times: ArgoCD Hub Context is the seventh setting of :config in v0.16.0', () => {
   assert.equal(rowsOf().find((r) => r[0] === 'argo-config')[2], 'j j j j j j');
-  // v0.16.0 groups the Argo settings in an "ArgoCD (:argo)" box whose first field is "Hub Context" (tui_config_view.rs:648).
+  // v0.16.0 groups the Argo settings in an "ArgoCD (:argo)" box whose first field is "Hub Context" (tui_config_view.rs:649).
   assert.match(stored().find(([f]) => f === 'argo-config.ansi')[1], /▶ Hub Context/, 'the capture has the Hub Context field selected');
 });
 

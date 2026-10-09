@@ -187,11 +187,13 @@ publishing an update. The capture scripts install with this copy, not the live U
 `main.js` rewrites `[data-version]` labels and `[data-asset]` hrefs from the GitHub Releases API at load; the hardcoded values are the no-JS fallback. When a new stable release (`srelens-vX.Y.Z`) ships:
 
 1. Update `RELEASE` in `tests/version.test.mjs`.
-2. Update `softwareVersion` in the JSON-LD on `/` and `/tui/`.
-3. Update the `<span data-version>` fallback labels and the fallback download URLs (`releases/download/srelens-vX.Y.Z/…`; the asset names carry the version too). `node scripts/apply-shell.mjs --all` re-renders the footer's version from the homepage JSON-LD.
-4. Re-capture the evidence for the new version: the desktop screenshots (`node scripts/shots/desktop-shots.mjs`), then the terminal captures (refresh `install.sh` from the new tag first, then run `capture.sh` and `capture-all.sh` with `VERSION=X.Y.Z`, then `node scripts/embed-captures.mjs`). Update the captions that name the version.
-5. Run `node --test`. Every `softwareVersion`, `data-version` label and download URL must agree with `RELEASE`.
-6. Bump `lastmod` in `sitemap.xml`.
+2. Regenerate the release's asset list, the `release-vX.Y.Z-assets.txt` fixture, and point the path in `tests/version.test.mjs` at it: `(cd tests/fixtures && gh release view srelens-vX.Y.Z --repo srelens/srelens --json assets --jq '.assets[].name' > release-vX.Y.Z-assets.txt)`. Every linked asset name is checked against that file, so tests stay offline.
+3. Update `softwareVersion` in the JSON-LD on `/` and `/tui/`.
+4. Update the `<span data-version>` fallback labels and the fallback download URLs (`releases/download/srelens-vX.Y.Z/…`; the asset names carry the version too). `node scripts/apply-shell.mjs --all` re-renders the footer's version from the homepage JSON-LD.
+5. Re-capture the evidence for the new version: the desktop screenshots (`node scripts/shots/desktop-shots.mjs`), then the terminal captures (refresh `install.sh` from the new tag first, then run `capture.sh` and `capture-all.sh` with `VERSION=X.Y.Z`, then `node scripts/embed-captures.mjs`). Update the captions that name the version.
+6. Whenever `install.sh` is re-synced from upstream (step 5 does it), update its blob pin: the source blob and tag in the "Installation script" section above, and the blob hash and tag in the `tests/docs.test.mjs` test that starts "README says the served install.sh is the".
+7. Run `node --test`. Every `softwareVersion`, `data-version` label and download URL must agree with `RELEASE`.
+8. Bump `lastmod` in `sitemap.xml`.
 
 ## SEO / AEO checklist (already included)
 
