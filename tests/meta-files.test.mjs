@@ -6,7 +6,7 @@ import { ROOT, listPages, read, canonical, attr, sitemapUrls } from './lib/site.
 import { PAGES } from '../scripts/pages.mjs';
 
 // Bump with the sitemap when the PR opens on a later date.
-const LASTMOD = '2026-10-05';
+const LASTMOD = '2026-10-09';
 const LLMS = ['llms.txt', 'llms-full.txt'];
 
 test('sitemap lists exactly the canonical of every published page except 404 and mirrors', () => {

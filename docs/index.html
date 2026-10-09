@@ -122,7 +122,7 @@
             <button class="copy-btn" type="button" data-copy='# Homebrew (macOS &amp; Linux)
 brew install srelens/tap/srectl
 
-# One-line install script (macOS &amp; Linux)
+# One-line install script (Linux)
 curl -fsSL https://srelens.com/install.sh | bash
 
 # Cargo
@@ -130,7 +130,7 @@ cargo install --git https://github.com/srelens/srelens srectl'>copy</button>
 <pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Homebrew (macOS &amp; Linux)</span>
 brew install srelens/tap/srectl
 
-<span class="c"># One-line install script (macOS &amp; Linux)</span>
+<span class="c"># One-line install script (Linux)</span>
 curl -fsSL https://srelens.com/install.sh | bash
 
 <span class="c"># Cargo</span>
@@ -160,7 +160,7 @@ cargo install --git https://github.com/srelens/srelens srectl</code></pre>
         <h3 id="tui-gpuinfo">GPU nodes &amp; VRAM allocation inspector (<code>:gpuinfo</code>)</h3>
         <p>For machine learning, AI inference, and compute-heavy clusters, <code>:gpuinfo</code> (or <code>:gpu</code>, <code>:gpus</code>) opens a dedicated, dual-pane accelerator dashboard:</p>
         <ul>
-          <li><strong>GPU Node Fleet (Left Pane):</strong> Inspect every GPU-equipped node, detected physical accelerator models (NVIDIA A100, H100, L4, V100, RTX series), installed card counts, total vs. allocated VRAM, and per-node GPU utilization gauges.</li>
+          <li><strong>GPU Node Fleet (Left Pane):</strong> Inspect every GPU-equipped node, detected physical accelerator models (NVIDIA A100, H100, L4, V100, RTX series), installed card counts, total vs. allocated VRAM, and per-node GPU allocation gauges.</li>
           <li><strong>Workload VRAM Breakdown (Right Pane):</strong> See exactly which pods and namespaces are requesting accelerator capacity, their requested physical GPUs or fractional MIG/vGPU slices, and current execution phase.</li>
           <li><strong>Cluster Totals:</strong> Top-level summary tracking total cards installed, cards allocated, aggregate VRAM capacity, and assigned VRAM.</li>
         </ul>

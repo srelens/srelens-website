@@ -16,7 +16,8 @@ const REMOVED_HEADINGS = {
   'tui/index.html': ['Startup Time', 'Informer Cache', 'Memory Footprint', 'Pure Rust Core',
     'Headless MCP Server (srelens-tui mcp)#', 'How srelens-tui compares.', 'Get srelens-tui for your platform.'],
   // Devesh 2026-10-09: v0.16.0 / srectl
-  'docs/tui/index.html': ['TUI MCP Server (srelens-tui mcp)'],
+  // Devesh 2026-10-09: v0.16.0 final review (install.sh is Linux only)
+  'docs/tui/index.html': ['TUI MCP Server (srelens-tui mcp)', 'Standalone Install Script (macOS & Linux)'],
   // Devesh 2026-10-09: v0.16.0 / srectl
   'docs/index.html': ['Terminal interface (srelens-tui)'],
   // Shubham/Devesh 2026-10-08 review: remove the first-run section
@@ -61,4 +62,53 @@ test('C9: no published page or llms file says "blazing-fast" or "ultra-fast"', (
 // so no "docked" hit survives anywhere and none is pinned as TUI-true.
 test('A5: no published page or llms file says logs, shells or tools are "docked"', () => {
   for (const file of PUBLISHED) assert.doesNotMatch(read(file), /\bdocked\b/i, file);
+});
+
+// ---- v0.16.0 final review (Devesh 2026-10-09) ----
+
+// install.sh is the Linux installer: check_platform() refuses Darwin and points at `brew install srelens/tap/srectl` (install.sh:329-336).
+// Homebrew works on both, so the Homebrew labels keep "macOS & Linux"; the curl installer's labels say Linux.
+test('final review: no page labels the one-line curl installer "macOS"', () => {
+  for (const file of PUBLISHED) {
+    const html = read(file);
+    assert.doesNotMatch(html, /install(?:er| script)\s*\(macOS/i, `${file} labels the curl installer macOS`);
+    assert.doesNotMatch(html, /macOS[^\n]{0,40}install(?:er| script)/i, `${file} puts macOS in front of the curl installer`);
+  }
+});
+
+test('final review: /docs/ and /docs/tui/ label the curl installer Linux, with Homebrew for macOS right above it', () => {
+  const docs = read('docs/index.html');
+  assert.equal(docs.split('# One-line install script (Linux)\ncurl -fsSL https://srelens.com/install.sh | bash').length - 1, 1, 'the copy button');
+  assert.equal(docs.split('<span class="c"># One-line install script (Linux)</span>\ncurl -fsSL https://srelens.com/install.sh | bash').length - 1, 1, 'the displayed block');
+  assert.ok(docs.includes('# Homebrew (macOS &amp; Linux)\nbrew install srelens/tap/srectl\n\n# One-line install script (Linux)'), 'brew first, for macOS');
+  for (const file of ['docs/tui/index.html', 'docs/tui.html']) {
+    const html = read(file);
+    assert.ok(html.includes('<h3>Homebrew (macOS &amp; Linux)</h3>'), `${file}: the Homebrew heading`);
+    assert.ok(html.includes('<h3>Standalone Install Script (Linux)</h3>'), `${file}: the curl installer heading`);
+  }
+});
+
+// columns.tsx:515-540 (v0.16.0): the namespaces table has Name, Status, Labels and Age, and the screenshot shows the same four.
+test('final review: /features/ row 09 lists only what the namespaces table shows', () => {
+  assert.ok(read('features/index.html').includes('<p>See every namespace, its status, age, and labels in one table, then open a namespace directly to continue the investigation with the right scope.</p>'));
+  for (const file of PUBLISHED) assert.doesNotMatch(read(file), /resource totals/i, file);
+});
+
+// gpu_view.rs:528-561: the per-node gauges are "GPUs (Alloc)" and "VRAM Allocation", requests over capacity, not measured use.
+test('final review: /docs/ calls the per-node GPU gauges allocation gauges, and no page says utilization gauges', () => {
+  assert.ok(read('docs/index.html').includes('total vs. allocated VRAM, and per-node GPU allocation gauges.</li>'));
+  for (const file of PUBLISHED) assert.doesNotMatch(read(file), /utili[sz]ation gauges/i, file);
+});
+
+// The kept tui-assistant.webp is a pre-rename build: its window title reads "srelens-tui" and it shows an update banner (v0.14.x).
+// The alt may name that title only as "srelens-tui (now srectl)", and must say the image is a pre-rename build.
+test('final review: the tui-assistant.webp alts name srelens-tui only with "now srectl", and say pre-rename build', () => {
+  for (const file of ['tui/index.html', 'docs/tui/index.html', 'docs/tui.html']) {
+    const tag = read(file).match(/<img[^>]*tui-assistant\.webp[^>]*>/)?.[0] ?? '';
+    const alt = tag.match(/\salt="([^"]*)"/)?.[1] ?? '';
+    assert.ok(alt, `${file}: the assistant screenshot has an alt`);
+    assert.ok(alt.includes('srelens-tui'), `${file}: the alt says what the window title shows`);
+    assert.equal((alt.match(/srelens-tui/g) ?? []).length, (alt.match(/srelens-tui \(now srectl\)/g) ?? []).length, `${file}: srelens-tui without "now srectl"`);
+    assert.match(alt, /pre-rename build/, file);
+  }
 });

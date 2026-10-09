@@ -6,6 +6,12 @@ import { listPages, read } from './lib/site.mjs';
 const FORMERLY = /\(?formerly srelens-tui\)?/g;
 const MUST_SAY_FORMERLY = ['tui/index.html', 'docs/tui/index.html', 'docs/tui.html'];
 
+// Devesh 2026-10-09: v0.16.0 final review. The kept tui-assistant.webp is a pre-rename build (its window title reads "srelens-tui"),
+// so its alt names that title, and only as "srelens-tui (now srectl)". One alt per page, three in all, counted below and only
+// inside an alt attribute: /tui/, /docs/tui/ and the /docs/tui.html mirror. Nothing else may use it.
+const NOW_SRECTL = /srelens-tui \(now srectl\)/g;
+const NOW_SRECTL_COUNTS = { 'tui/index.html': 1, 'docs/tui/index.html': 1, 'docs/tui.html': 1 };
+
 // Devesh 2026-10-09: v0.16.0 / srectl. Recorded output is not renamed by hand, and none is exempt now: the text captures inside
 // each <pre class="tui"> were re-taken from srectl v0.16.0 (Task 6) and the MCP panel was re-recorded from it (Task 7), so every
 // page and llms file is checked like prose.
@@ -29,7 +35,7 @@ test('the --mcp-stdio pattern reads the command, with or without a version betwe
 for (const file of [...listPages(), 'llms.txt', 'llms-full.txt']) {
   test(`${file}: names srectl, keeping srelens-tui only as "formerly srelens-tui"`, () => {
     const text = read(file);
-    assert.doesNotMatch(text.replace(FORMERLY, ''), /srelens-tui/, file);
+    assert.doesNotMatch(text.replace(FORMERLY, '').replace(NOW_SRECTL, ''), /srelens-tui/, file);
     for (const m of text.matchAll(/brew install ([\w/.-]+)/g)) assert.equal(m[1], 'srelens/tap/srectl', file);
     const stdio = [...text.matchAll(STDIO)].map((m) => m[1]);
     for (const name of stdio.filter((n) => n !== 'srelens')) assert.equal(name, 'srectl', file);
@@ -52,6 +58,15 @@ for (const file of [...listPages(), 'llms.txt', 'llms-full.txt']) {
     const end = text.indexOf('</head>');
     const [inHead, inBody] = end < 0 ? [0, times(text)] : [times(text.slice(0, end)), times(text.slice(end))];
     assert.deepEqual([inHead, inBody], FORMERLY_COUNTS[file] ?? [0, 0], `${file}: "formerly srelens-tui" in <head> and after it`);
+  });
+}
+
+for (const file of [...listPages(), 'llms.txt', 'llms-full.txt']) {
+  test(`${file}: says "srelens-tui (now srectl)" exactly as often as it should, and only in an alt`, () => {
+    const text = read(file);
+    const inAlt = [...text.matchAll(/\salt="[^"]*"/g)].flatMap((m) => m[0].match(NOW_SRECTL) ?? []).length;
+    assert.equal(inAlt, NOW_SRECTL_COUNTS[file] ?? 0, `${file}: "srelens-tui (now srectl)" in alt attributes`);
+    assert.equal((text.match(NOW_SRECTL) ?? []).length, inAlt, `${file}: "srelens-tui (now srectl)" outside an alt attribute`);
   });
 }
 
