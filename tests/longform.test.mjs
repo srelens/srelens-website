@@ -240,6 +240,15 @@ test('/docs/tui/ keeps the rows marked keep: ArgoCD hub and spoke (C33), GPU mod
   assert.ok(prose(tui).includes('Automatically detects hardware accelerator classes (H100, A100, L4, T4, Tesla).'));
 });
 
+// Devesh 2026-10-09, controller ruling (same as the /tui/ "Workload Attribution" bullet). The GPU view's right pane, "GPU CONSUMPTION &
+// WORKLOADS" (apps/tui/src/views/gpu_view.rs:418, "Select a GPU node on the left" at :427), lists "PODS ASKING FOR GPU / VRAM" for the
+// selected node (:739) with GPUS and VRAM REQ columns (:797-858), from the pods whose containers request GPU or VRAM resources
+// (crates/kube/src/gpu_info.rs:316-425). It shows requests per node, not which GPU device a pod is bound to.
+test('/docs/tui/ GPU "Attached Workloads" describes per-node GPU requests, not binding to specific devices', () => {
+  has(tui, '<li><strong>Attached Workloads:</strong> Select a GPU node to see the training jobs and inference pods that request GPUs on it, with the GPUs and VRAM each one asks for.</li>');
+  never(prose(tui), /specific GPU devices/, 'device binding is not shown');
+});
+
 test('/docs/tui/ and /docs/ make no CrashLoopBackOff claim about the TUI pods table (D2)', () => {
   // D2 held at v0.15.0, where the pods table showed the phase (Running, READY 0/1). v0.16.0 shows kubectl's own STATUS word
   // instead (d2a2b925, #786), CrashLoopBackOff included, so the guard is now copy discipline, not a fact about the product:
