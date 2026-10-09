@@ -125,8 +125,21 @@ const LD_ANSWER_CHANGES = {
     ],
   ],
 };
-// Exact baseline JSON-LD `image` -> replacement, per page.
+// Exact baseline JSON-LD `image` / `primaryImageOfPage` -> replacement, per page.
 const LD_IMAGE_CHANGES = {
+  // Devesh 2026-10-09: all new UI images; the old og-*.jpg cards show the old UI
+  'index.html': [
+    ['https://srelens.com/assets/og/og-home.jpg', 'https://srelens.com/assets/og/og-home.png'],
+  ],
+  'features/index.html': [
+    ['https://srelens.com/assets/og/og-features.jpg', 'https://srelens.com/assets/og/og-features.png'],
+  ],
+  'mcp/index.html': [
+    ['https://srelens.com/assets/og/og-mcp.jpg', 'https://srelens.com/assets/og/og-mcp.png'],
+  ],
+  'download/index.html': [
+    ['https://srelens.com/assets/og/og-download.jpg', 'https://srelens.com/assets/og/og-download.png'],
+  ],
   'tui/index.html': [
     // Devesh 2026-10: use the new UI images; the old one shows a real cluster.
     ['https://srelens.com/assets/shots/tui-overview.webp', 'https://srelens.com/assets/og/og-tui.png'],
@@ -143,7 +156,10 @@ const LD_SCREENSHOT_CHANGES = {
 const ldChange = (node, file) => {
   let out = 'softwareVersion' in node ? { ...node, softwareVersion: '0.15.0' } : node;
   const pictured = new Map(LD_IMAGE_CHANGES[file] ?? []);
-  if (typeof out.image === 'string') out = { ...out, image: pictured.get(out.image) ?? out.image };
+  // `image` and `primaryImageOfPage` are a URL string or an ImageObject ({url} or {@id}); the baseline has plain strings.
+  const reimage = (v) => (typeof v === 'string' ? pictured.get(v) ?? v
+    : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, ['url', '@id'].includes(k) ? pictured.get(x) ?? x : x])) : v);
+  for (const key of ['image', 'primaryImageOfPage']) if (key in out) out = { ...out, [key]: reimage(out[key]) };
   const screenshots = new Map(LD_SCREENSHOT_CHANGES[file] ?? []);
   if (Array.isArray(out.screenshot)) out = { ...out, screenshot: out.screenshot.map((s) => screenshots.get(s) ?? s) };
   const swaps = new Map(LD_FEATURE_CHANGES[file] ?? []);
@@ -185,7 +201,7 @@ test('every planned JSON-LD description change replaces a description that the b
 
 test('every planned JSON-LD image change replaces an image that the baseline really has, with the page\'s og:image', () => {
   for (const [file, swaps] of Object.entries(LD_IMAGE_CHANGES)) {
-    const images = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).map((n) => n.image);
+    const images = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).flatMap((n) => [n.image, n.primaryImageOfPage]);
     for (const [from, to] of swaps) {
       assert.ok(images.includes(from), `${file}: "${from}" is not in the baseline`);
       assert.equal(to, META_CHANGES[file]['og:image'], `${file}: the JSON-LD image is the og:image`);
@@ -271,6 +287,13 @@ test('no published page points og:image or twitter:image at an old-UI .jpg in as
     for (const key of ['og:image', 'twitter:image']) {
       assert.doesNotMatch(meta(html, key) ?? '', /\/assets\/og\/[^/]*\.jpe?g$/i, `${file}: ${key}`);
     }
+  }
+});
+
+// The structured data must not name them either: a crawler reads `image` / `primaryImageOfPage` as the page's picture.
+test('no published page names an old-UI .jpg from assets/og/ anywhere in its JSON-LD', () => {
+  for (const file of listPages()) {
+    assert.doesNotMatch(JSON.stringify(ldNodes(read(file))), /\/assets\/og\/[^"/]*\.jpe?g/i, file);
   }
 });
 
