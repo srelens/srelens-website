@@ -49,7 +49,7 @@ export function renderMcpDemo(text, version) {
     '      </div>',
     '    </div>',
     '  </div>',
-    `  <figcaption>Real tool calls and results: srelens-tui v${esc(version)} --mcp-stdio, three local kind clusters. Any MCP client (Cursor, Claude Code, your own agent) can make the same calls.</figcaption>`,
+    `  <figcaption>Real tool calls and results: srectl v${esc(version)} --mcp-stdio, three local kind clusters. Any MCP client (Cursor, Claude Code, your own agent) can make the same calls.</figcaption>`,
     '</figure>',
   ].join('\n');
 }

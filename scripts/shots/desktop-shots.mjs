@@ -9,9 +9,10 @@
 // settings are rewritten through PUT /api/settings/:key (web mode keeps settings in the server
 // DB; localStorage is only imported when the DB lacks a key, so it is ignored after first boot):
 //   srelens.design             "next"
-//   srelens.next.workspaces    the workspace document with one tab at the view's route
+//   srelens.next.workspaces    the workspace document with one tab at the view's route; since v0.16.0 the tab
+//                              also holds the namespace filter, { <stableId>: [namespace, ...] }, [] being all
+//                              namespaces (the global srelens.next.namespaces setting is no longer read)
 //   srelens.next.appearance    { theme: "dark" | "light" }
-//   srelens.next.namespaces    { <stableId>: [namespace, ...] }, [] being all namespaces
 //
 // A shot is only taken once the view's `expect` text is on the page (views.mjs), and the first
 // load of a run is a throwaway warm-up: the first load after the server starts can paint
@@ -24,7 +25,8 @@ import { join, resolve } from 'node:path';
 import { isDeepStrictEqual } from 'node:util';
 import { ROOT } from '../../tests/lib/site.mjs';
 import { connect, navigate } from './cdp.mjs';
-import { APP_DESIGN, APP_THEME, VIEWS, seen, selectThemes, selectViews, workspaceDoc } from './views.mjs';
+import { stopAllForwards } from './forwards.mjs';
+import { APP_DESIGN, APP_THEME, VIEWS, reachable, seen, selectThemes, selectViews, workspaceDoc } from './views.mjs';
 
 const USAGE = 'usage: node scripts/shots/desktop-shots.mjs --srelens=<srelens worktree with a built server> --kubeconfig=<srelens-demo kubeconfig> [--context=NAME] [--only=a,b] [--themes=dark,light] [--out=DIR]';
 const usageError = (message) => { console.error(`${message}\n${USAGE}`); process.exit(2); };
@@ -121,7 +123,6 @@ async function capture() {
   if (!listed.ok) throw new Error(`k8s.listContexts failed: ${listed.status} ${await listed.text()}`);
   const contexts = (await listed.json()).contexts ?? [];
   if (contexts.length !== 1 || contexts[0].name !== CONTEXT) throw new Error(`expected only ${CONTEXT}, the server lists: ${contexts.map((c) => c.name).join(', ') || 'nothing'}`);
-  const [{ stableId }] = contexts;
 
   // Settings values are JSON, stored verbatim; read each back so a value that did not stick fails here, not in a screenshot.
   const putSetting = async (key, value) => {
@@ -163,10 +164,10 @@ async function capture() {
     const started = Date.now();
     while (Date.now() - started < EXPECT_MS) {
       text = await evaluate('document.body.innerText');
-      if (seen(text, view.expect)) { await sleep(600); return; }
+      if (seen(text, view.expect) && reachable(text)) { await sleep(600); return; }
       await sleep(250);
     }
-    throw new Error(`${view.expect} never appeared within ${EXPECT_MS / 1000}s; the page said: ${text.replace(/\s+/g, ' ').slice(0, 300)}`);
+    throw new Error(`${view.expect} never appeared (with the cluster reachable) within ${EXPECT_MS / 1000}s; the page said: ${text.replace(/\s+/g, ' ').slice(0, 300)}`);
   };
 
   const KEYS = { Enter: 13, Escape: 27, Tab: 9, ArrowDown: 40, ArrowUp: 38 };
@@ -209,10 +210,10 @@ async function capture() {
     const route = typeof view.route === 'function' ? view.route({ context: CONTEXT, pod }) : view.route;
     // Park first: a page unloading while we write could flush its own old state over ours.
     await navigate(cdp, 'about:blank');
+    await stopAllForwards(api); // a forward outlives its page; the previous view's must not show in this status bar
     await putSetting('srelens.design', APP_DESIGN);
     await putSetting('srelens.next.appearance', { theme: APP_THEME[theme] });
-    await putSetting('srelens.next.namespaces', { [stableId]: view.namespaces ?? [] });
-    await putSetting('srelens.next.workspaces', workspaceDoc(contexts, CONTEXT, route));
+    await putSetting('srelens.next.workspaces', workspaceDoc(contexts, CONTEXT, route, view.namespaces ?? []));
     await navigate(cdp, `${ORIGIN}/`);
     await waitForApp();
     return route;

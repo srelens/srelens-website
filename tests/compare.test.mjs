@@ -104,18 +104,18 @@ test('/compare/k9s/ says "in-memory Informer cache" with the approved wording at
   const body = text(mainOf(html));
   assert.equal(
     meta(html, 'description'),
-    'Compare srelens and K9s: srelens offers both a multi-tab desktop workspace and a standalone pure-Rust terminal UI (srelens-tui) with an in-memory Informer cache, deep Helm values diff, and built-in AI MCP, compared to K9s.',
+    'Compare srelens and K9s: srelens offers both a multi-tab desktop workspace and a standalone pure-Rust terminal UI (srectl) with an in-memory Informer cache, deep Helm values diff, and built-in AI MCP, compared to K9s.',
   );
   for (const sentence of [
     // hero lede
-    'srelens gives operators both a multi-tab desktop workspace and a fast, pure-Rust terminal UI (srelens-tui) featuring an in-memory Informer cache, deep Helm values diff, live topology, and embedded AI.',
+    'srelens gives operators both a multi-tab desktop workspace and a fast, pure-Rust terminal UI (srectl) featuring an in-memory Informer cache, deep Helm values diff, live topology, and embedded AI.',
     // "Choose srelens when" bullet
     'You want instant screen switching for views already opened, with an in-memory Informer cache.',
     // table, "Investigation model" and "Caching & Speed" rows
     'Desktop tabs plus split terminal views with an in-memory Informer cache',
     'In-memory Informer cache (instant screen switching for views already opened) + streaming watches',
     // "Does srelens replace K9s?" and "Which is better over SSH?"
-    'Because srelens provides both srelens-tui (pure-Rust, in-memory Informer cache, deep Helm diffs, topology flow, GPU VRAM tracking, and embedded AI) and the desktop GUI,',
+    'Because srelens provides both srectl (pure-Rust, in-memory Informer cache, deep Helm diffs, topology flow, GPU VRAM tracking, and embedded AI) and the desktop GUI,',
     'in minimal cloud bastions, with instant navigation between cluster views already opened.',
   ]) assert.ok(body.includes(sentence), sentence);
 });
