@@ -161,7 +161,7 @@ cargo install --git https://github.com/srelens/srelens srectl</code></pre>
         <p>For machine learning, AI inference, and compute-heavy clusters, <code>:gpuinfo</code> (or <code>:gpu</code>, <code>:gpus</code>) opens a dedicated, dual-pane accelerator dashboard:</p>
         <ul>
           <li><strong>GPU Node Fleet (Left Pane):</strong> Inspect every GPU-equipped node, detected physical accelerator models (NVIDIA A100, H100, L4, V100, RTX series), installed card counts, total vs. allocated VRAM, and per-node GPU utilization gauges.</li>
-          <li><strong>Workload VRAM Breakdown (Right Pane):</strong> See exactly which pods and namespaces are consuming accelerator capacity, their requested physical GPUs or fractional MIG/vGPU slices, and current execution phase.</li>
+          <li><strong>Workload VRAM Breakdown (Right Pane):</strong> See exactly which pods and namespaces are requesting accelerator capacity, their requested physical GPUs or fractional MIG/vGPU slices, and current execution phase.</li>
           <li><strong>Cluster Totals:</strong> Top-level summary tracking total cards installed, cards allocated, aggregate VRAM capacity, and assigned VRAM.</li>
         </ul>
 
@@ -181,7 +181,7 @@ cargo install --git https://github.com/srelens/srelens srectl</code></pre>
           <li><strong>Context-Aware Troubleshooting:</strong> Ask questions about failing workloads, parse confusing stack traces, diagnose crashloops, or investigate warning event cascades. The assistant receives active cluster context to provide grounded answers.</li>
           <li><strong>Built-in Slash Commands:</strong> Run quick investigation macros like <code>/crashloop</code>, <code>/oom</code>, <code>/rollout</code>, or <code>/endpoints</code> to trigger standardized diagnostic workflows.</li>
           <li><strong>Multi-Provider &amp; Local LLMs:</strong> Configure Anthropic (Claude), OpenAI, Google, or local Ollama models via <code>:ai-settings</code> (or <code>:settings</code>). No proprietary lock-in.</li>
-          <li><strong>High-Density "Caveman Mode":</strong> Enable terse, high-information-density output (<code>/caveman</code>) designed specifically for rapid operational debugging with minimal token overhead.</li>
+          <li><strong>High-Density "Caveman Mode":</strong> Terse, high-information-density output designed specifically for rapid operational debugging with minimal token overhead. It starts at the <code>ultra</code> level until you choose another with <code>/caveman</code>.</li>
           <li><strong>Model Context Protocol (MCP) Tools:</strong> Integrated with srelens's native MCP tool registry, allowing the AI to safely query cluster APIs and run diagnostic lookups. Tools that change the cluster are blocked in the assistant.</li>
         </ul>
 

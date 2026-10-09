@@ -258,16 +258,31 @@ test('the approved prose replaces the lede and the section copy (C02, C05, C11, 
 // and krew (lib.rs:442-452, 145-160; they are gated as destructive: crates/mcp/src/lib.rs:359-372). Nothing is uploaded or reported
 // to srelens: crates/capability/src/audit.rs:15.
 test('the Zero Cloud Relay bullet names the tools that reach the internet instead of claiming 100% local (v0.16.0)', () => {
-  assert.ok(html.includes('<li><strong>Zero Cloud Relay:</strong> Runs locally over stdio against your local kubeconfig, with no srelens cloud in between and no telemetry. Your kubeconfig credentials are used only to reach your own clusters. A few tools fetch from the internet when an agent calls them: <code>github.rolloutCause</code> asks api.github.com about an Argo sync, and the toolbox installers (which need <code>--allow-destructive</code>) download kubectl, helm and krew. A <code>GITHUB_TOKEN</code> or <code>GH_TOKEN</code> is sent to api.github.com only if you have set one.</li>'));
-  assert.doesNotMatch(text(main), /100% locally|tokens, or telemetry leave/);
+  // Fix round 1: the list must read as open-ended. Helm repo add/update, install and upgrade with a remote chart
+  // (docs/mcp-catalog.md:130-137; crates/kube/src/helm_cli.rs:564-606) and krew plugin install/upgrade (crates/kube/src/toolbox.rs:807,
+  // 830) reach the internet too, so the bullet says "some tools ... for example" and names the three kinds, not a complete list.
+  assert.ok(html.includes('<li><strong>Zero Cloud Relay:</strong> Runs locally over stdio against your local kubeconfig, with no srelens cloud in between and no telemetry; your kubeconfig credentials are used only to reach your own clusters. Some tools reach the internet when an agent calls them, for example <code>github.rolloutCause</code> (api.github.com), the toolbox installers, and the helm and krew commands it runs. Those that install or update software need <code>--allow-destructive</code>, and a <code>GITHUB_TOKEN</code> or <code>GH_TOKEN</code> is sent to api.github.com only if you have set one.</li>'));
+  assert.doesNotMatch(text(main), /100% locally|tokens, or telemetry leave|A few tools fetch/);
 });
 
 // Devesh 2026-10-09, controller ruling. The GPU view lists the pods that request GPU or VRAM resources on each node, with their GPUs and
 // VRAM requested (crates/kube/src/gpu_info.rs:316-425; columns GPUS and VRAM REQ at apps/tui/src/views/gpu_view.rs:829-858). No TUI code
 // treats a DCGM exporter specially (the only "dcgm" code is the MCP endpoint helper, crates/kube/src/endpoint_query.rs:110, 266).
 test('GPU Workload Attribution says what the GPU view reads (pods that request GPUs), with no DCGM claim', () => {
-  assert.ok(html.includes('<li><strong>Workload Attribution:</strong> Instantly see the training jobs and inference pods that request GPUs on each node, with the GPUs and VRAM each one asks for.</li>'));
-  assert.doesNotMatch(text(main), /DCGM/i);
+  // Fix round 1: say what the columns are. GPUS is the count requested; VRAM REQ is the VRAM those GPUs represent, taken from the
+  // request for MIG slices or HAMi memory, and otherwise derived from the node's per-GPU VRAM when whole GPUs are requested
+  // (crates/kube/src/gpu_info.rs:376-404, derivation at :398-403).
+  assert.ok(html.includes('<li><strong>Workload Attribution:</strong> Instantly see the training jobs and inference pods that request GPUs on each node, with the GPUs requested and the VRAM they represent.</li>'));
+  assert.doesNotMatch(text(main), /DCGM|asks for/i);
+});
+
+// Devesh 2026-10-09, controller ruling (fix round 1). v0.16.0 starts the assistant at the ultra caveman level until the user chooses
+// (apps/tui/src/ai_config.rs:276-283, applied at app.rs:595-596), and a bare /caveman reports the current level while a level is
+// active (app.rs:6422-6429; it turns on full only when the mode is off, :6430-6444). "Use /caveman for terse output" read as
+// opt-in; it is on by default.
+test('the Caveman bullet says the assistant starts at ultra and what /caveman does (v0.16.0)', () => {
+  assert.ok(html.includes('<li><strong>High-Density Caveman Mode:</strong> Replies start at the terse <code>ultra</code> level until you choose another. <code>/caveman</code> shows the level while it is on, and <code>/caveman lite|full|ultra|off</code> sets it, for high-stress pager duty.</li>'));
+  assert.doesNotMatch(text(main), /Use \/caveman for terse/);
 });
 
 // ---- styles ----------------------------------------------------------------------------------

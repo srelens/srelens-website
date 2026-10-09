@@ -375,7 +375,7 @@ srectl update</code></pre>
               <tr><td><code>/oom</code></td><td>Diagnoses OOMKilled events and memory limit pressure</td></tr>
               <tr><td><code>/rollout</code></td><td>Diagnoses stalled Deployment rollouts, replica mismatches, and probe failures</td></tr>
               <tr><td><code>/endpoints</code></td><td>Debugs a Service with no ready endpoints: selector vs labels, readiness probes, targetPort and EndpointSlices</td></tr>
-              <tr><td><code>/caveman</code></td><td>Enables high-density, ultra-terse output mode for high-stress pager duty</td></tr>
+              <tr><td><code>/caveman</code></td><td>Sets how terse the assistant's replies are: <code>lite</code>, <code>full</code>, <code>ultra</code>, <code>wenyan-*</code> or <code>off</code>. It starts at <code>ultra</code> until you choose; <code>/caveman</code> alone shows the current level, or turns on <code>full</code> if it is off</td></tr>
             </tbody>
           </table>
 
@@ -631,7 +631,7 @@ srectl update</code></pre>
           <ul>
             <li><strong>Accelerator Models:</strong> Automatically detects hardware accelerator classes (H100, A100, L4, T4, Tesla).</li>
             <li><strong>VRAM Capacity Gauges:</strong> Real-time visual progress bars of allocated vs. total GPU memory.</li>
-            <li><strong>Attached Workloads:</strong> Select a GPU node to see the training jobs and inference pods that request GPUs on it, with the GPUs and VRAM each one asks for.</li>
+            <li><strong>Attached Workloads:</strong> Select a GPU node to see the training jobs and inference pods that request GPUs on it, with the GPUs requested and the VRAM they represent.</li>
           </ul>
 
           <h2 id="bgp-dashboard">BGP Peering &amp; Topology Dashboard (<code>:bgp</code>)</h2>

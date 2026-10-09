@@ -151,9 +151,12 @@ const LD_ANSWER_CHANGES = {
       "Supported backend capabilities in srelens are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned.",
       "Supported backend capabilities are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned. The MCP page shows the setup and a recorded session across three clusters.",
     ],
+    // Devesh 2026-10-09: v0.16.0 re-check (privacy). "runs entirely on your machine" stopped being literal: github.rolloutCause
+    // (crates/registry/src/github.rs:539, registered at lib.rs:585-587) sends an Argo app's repository and commit SHAs to api.github.com
+    // when you or an agent call it. The visible answer is the source of truth (C13), so this is its text word for word.
     [
       "Nowhere. srelens runs entirely on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There is no intermediary cloud service between the app and your API servers.",
-      "Nowhere. srelens runs entirely on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There's no intermediary cloud service between the app and your API servers.",
+      "Nowhere. srelens runs on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There's no intermediary cloud service between the app and your API servers. Some tools do reach the internet when you or an agent call them, such as a GitHub commit lookup for an Argo CD sync, which sends the repository and commit SHAs to api.github.com; your cluster credentials are not part of it.",
     ],
     [
       "Yes. Installers for macOS (Apple Silicon and Intel), Windows, and Linux are published on GitHub Releases. The latest build is always available there, and you can also build srelens from source.",

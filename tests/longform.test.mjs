@@ -245,8 +245,27 @@ test('/docs/tui/ keeps the rows marked keep: ArgoCD hub and spoke (C33), GPU mod
 // selected node (:739) with GPUS and VRAM REQ columns (:797-858), from the pods whose containers request GPU or VRAM resources
 // (crates/kube/src/gpu_info.rs:316-425). It shows requests per node, not which GPU device a pod is bound to.
 test('/docs/tui/ GPU "Attached Workloads" describes per-node GPU requests, not binding to specific devices', () => {
-  has(tui, '<li><strong>Attached Workloads:</strong> Select a GPU node to see the training jobs and inference pods that request GPUs on it, with the GPUs and VRAM each one asks for.</li>');
-  never(prose(tui), /specific GPU devices/, 'device binding is not shown');
+  // Fix round 1: GPUS is the count requested and VRAM REQ the VRAM those GPUs represent (taken from the request for MIG slices or HAMi
+  // memory, else derived from the node's per-GPU VRAM for whole GPUs: crates/kube/src/gpu_info.rs:398-404).
+  has(tui, '<li><strong>Attached Workloads:</strong> Select a GPU node to see the training jobs and inference pods that request GPUs on it, with the GPUs requested and the VRAM they represent.</li>');
+  never(prose(tui), /specific GPU devices|asks for/, 'device binding is not shown');
+});
+
+// Devesh 2026-10-09, controller ruling (fix round 1). The assistant starts at the ultra caveman level until the user chooses
+// (apps/tui/src/ai_config.rs:276-283, applied at app.rs:595-596). A bare /caveman reports the current level while one is active
+// (app.rs:6422-6429) and turns on full only when the mode is off (:6430-6444); the levels are lite, full, ultra, wenyan-lite,
+// wenyan-full, wenyan-ultra and off (ai_skills.rs:172-174, 384-410).
+test('/docs/tui/ /caveman row says the assistant starts at ultra and what the bare command does (v0.16.0)', () => {
+  has(tui, '<tr><td><code>/caveman</code></td><td>Sets how terse the assistant\'s replies are: <code>lite</code>, <code>full</code>, <code>ultra</code>, <code>wenyan-*</code> or <code>off</code>. It starts at <code>ultra</code> until you choose; <code>/caveman</code> alone shows the current level, or turns on <code>full</code> if it is off</td></tr>');
+  never(prose(tui), /Enables high-density/, 'old row');
+});
+
+// Fix round 1 (controller ruling): the Workload VRAM Breakdown lists the pods that REQUEST GPUs; "consuming" implies measured use
+// (the pods table is gpu_view.rs:739 "PODS ASKING FOR GPU / VRAM" with GPUS and VRAM REQ columns, :797-858).
+test('/docs/ GPU breakdown says requesting, not consuming; the caveman item says it starts at ultra', () => {
+  has(docs, 'See exactly which pods and namespaces are requesting accelerator capacity, their requested physical GPUs or fractional MIG/vGPU slices, and current execution phase.');
+  never(docs, /consuming accelerator/, '/docs/');
+  has(docs, '<li><strong>High-Density "Caveman Mode":</strong> Terse, high-information-density output designed specifically for rapid operational debugging with minimal token overhead. It starts at the <code>ultra</code> level until you choose another with <code>/caveman</code>.</li>');
 });
 
 test('/docs/tui/ and /docs/ make no CrashLoopBackOff claim about the TUI pods table (D2)', () => {

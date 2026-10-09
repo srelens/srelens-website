@@ -100,7 +100,7 @@
         "name": "Where do my cluster credentials go?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Nowhere. srelens runs entirely on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There's no intermediary cloud service between the app and your API servers."
+          "text": "Nowhere. srelens runs on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There's no intermediary cloud service between the app and your API servers. Some tools do reach the internet when you or an agent call them, such as a GitHub commit lookup for an Argo CD sync, which sends the repository and commit SHAs to api.github.com; your cluster credentials are not part of it."
         }
       },
       {
@@ -205,7 +205,7 @@
           <details>
             <summary>Where do my cluster credentials go?</summary>
             <div class="faq-a">
-              <p>Nowhere. srelens runs entirely on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There's no intermediary cloud service between the app and your API servers.</p>
+              <p>Nowhere. srelens runs on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There's no intermediary cloud service between the app and your API servers. Some tools do reach the internet when you or an agent call them, such as a GitHub commit lookup for an Argo CD sync, which sends the repository and commit SHAs to api.github.com; your cluster credentials are not part of it.</p>
             </div>
           </details>
           <details>

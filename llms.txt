@@ -61,7 +61,7 @@ Supported backend capabilities are registered in a shared capability registry an
 
 - Does srelens replace kubectl? No — it complements it. srelens talks to the Kubernetes API directly through kube-rs and doesn't need kubectl for that; srectl uses your local kubectl for pod and node shells and your local helm for rollbacks. It is a workspace for investigation and operations, not a scripting/automation tool.
 - Is it free? Yes, free and MIT-licensed.
-- Where does cluster data go? Nowhere — the app runs locally and talks directly to your clusters.
+- Where does cluster data go? Nowhere by default — the app runs locally and talks directly to your clusters. Some tools reach the internet when you or an agent call them, such as a GitHub commit lookup for an Argo CD sync, which sends the repository and commit SHAs to api.github.com.
 
 ## Links
 
