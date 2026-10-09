@@ -115,11 +115,20 @@ const LD_IMAGE_CHANGES = {
     ['https://srelens.com/assets/shots/tui-overview.webp', 'https://srelens.com/assets/og/og-tui.png'],
   ],
 };
+// Exact baseline JSON-LD `screenshot` entry -> replacement, per page.
+const LD_SCREENSHOT_CHANGES = {
+  'index.html': [
+    // Devesh 2026-10-09: all new UI images; the MCP settings image is old UI
+    ['https://srelens.com/assets/shots/dark-mcp.webp', 'https://srelens.com/assets/shots/dark-topology.webp'],
+  ],
+};
 // Applied to every baseline JSON-LD node of `file` before comparison.
 const ldChange = (node, file) => {
   let out = 'softwareVersion' in node ? { ...node, softwareVersion: '0.15.0' } : node;
   const pictured = new Map(LD_IMAGE_CHANGES[file] ?? []);
   if (typeof out.image === 'string') out = { ...out, image: pictured.get(out.image) ?? out.image };
+  const screenshots = new Map(LD_SCREENSHOT_CHANGES[file] ?? []);
+  if (Array.isArray(out.screenshot)) out = { ...out, screenshot: out.screenshot.map((s) => screenshots.get(s) ?? s) };
   const swaps = new Map(LD_FEATURE_CHANGES[file] ?? []);
   if (Array.isArray(out.featureList)) out = { ...out, featureList: out.featureList.map((f) => swaps.get(f) ?? f) };
   const described = new Map(LD_DESCRIPTION_CHANGES[file] ?? []);
@@ -163,6 +172,17 @@ test('every planned JSON-LD image change replaces an image that the baseline rea
     for (const [from, to] of swaps) {
       assert.ok(images.includes(from), `${file}: "${from}" is not in the baseline`);
       assert.equal(to, META_CHANGES[file]['og:image'], `${file}: the JSON-LD image is the og:image`);
+    }
+  }
+});
+
+test('every planned JSON-LD screenshot change replaces a screenshot the baseline lists, with a published image it does not list yet', () => {
+  for (const [file, swaps] of Object.entries(LD_SCREENSHOT_CHANGES)) {
+    const listed = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).flatMap((n) => n.screenshot ?? []);
+    for (const [from, to] of swaps) {
+      assert.ok(listed.includes(from), `${file}: "${from}" is not in the baseline`);
+      assert.ok(!listed.includes(to), `${file}: "${to}" is already listed`);
+      assert.ok(existsSync(join(ROOT, to.replace('https://srelens.com/', ''))), `${file}: ${to} is missing on disk`);
     }
   }
 });
