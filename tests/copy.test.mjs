@@ -76,6 +76,25 @@ test('final review: no page labels the one-line curl installer "macOS"', () => {
   }
 });
 
+// Every place the curl command is shown names Linux in its own label: the heading or "# comment" line nearest above it. The copy
+// button repeats the displayed command (data-copy="curl ..."), so only the displayed one is checked. /tui/ has no heading there,
+// only the comment line in its hero install block. Five sites: /docs/ (its copy button holds a comment too), /docs/tui/ and
+// its mirror, and /tui/. /download/, /faq/ and the llms files carry no curl command.
+test('final review: every curl installer block is labelled Linux, on /tui/ as well', () => {
+  const LABEL = /<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>|<span class="c"># [^<\n]*|^# [^\n]*/gm;
+  const sites = [];
+  for (const file of PUBLISHED) {
+    const html = read(file);
+    for (const m of html.matchAll(/curl -fsSL https:\/\/srelens\.com\/install\.sh/g)) {
+      if (/data-copy=["']$/.test(html.slice(m.index - 11, m.index))) continue;
+      const label = [...html.slice(0, m.index).matchAll(LABEL)].at(-1)?.[0] ?? '';
+      assert.match(label, /Linux/, `${file}: the label above the curl installer is "${label}"`);
+      sites.push(file);
+    }
+  }
+  assert.deepEqual(sites, ['docs/index.html', 'docs/index.html', 'docs/tui.html', 'docs/tui/index.html', 'tui/index.html']);
+});
+
 test('final review: /docs/ and /docs/tui/ label the curl installer Linux, with Homebrew for macOS right above it', () => {
   const docs = read('docs/index.html');
   assert.equal(docs.split('# One-line install script (Linux)\ncurl -fsSL https://srelens.com/install.sh | bash').length - 1, 1, 'the copy button');
