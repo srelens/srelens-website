@@ -170,8 +170,21 @@ test('/docs/tui/ command table: real aliases and descriptions (B48, B58, C14, C1
   never(tui, /:bgp-peers|:port-forwards/, 'unrecognised aliases');
 });
 
-test('/docs/tui/ AI section: estimated tokens, real providers and the shipped slash commands (C05, C08, B65, B67)', () => {
-  assert.ok(prose(tui).includes('The AI assistant drawer provides in-process conversational diagnosis with an estimated token count per reply and direct Kubernetes MCP tool execution.'));
+// Devesh 2026-10-09: v0.16.0 re-check. :config groups the Argo settings in an "ArgoCD (:argo)" box and labels its first two fields
+// "Hub Context" and "Hub Kubeconfig" (apps/tui/src/views/tui_config_view.rs:630, 649, 666); v0.15.0 had "ArgoCD Hub Context" and
+// "ArgoCD Hub Kubeconfig Path". The box also has UI URL and Fetch Timeout, which are new in 0.16.0 and not advertised here (spec §6).
+test('/docs/tui/ :config bullets name the fields as v0.16.0 labels them: Hub Context and Hub Kubeconfig', () => {
+  has(tui, '<li><strong>Hub Context:</strong> Select or cycle (<code>h</code>/<code>l</code> or <code>e</code> to edit) the kubeconfig context where your ArgoCD control plane resides.</li>');
+  has(tui, '<li><strong>Hub Kubeconfig:</strong> Set a custom path if your Hub cluster kubeconfig is separate from <code>$KUBECONFIG</code>.</li>');
+  never(mainOf(tui), /<strong>ArgoCD Hub (?:Context|Kubeconfig Path):<\/strong>/, 'v0.15.0 field labels');
+  never(prose(tui), /UI URL|Fetch Timeout/, 'new in 0.16.0, not advertised');
+});
+
+// Devesh 2026-10-09: v0.16.0 re-check. The assistant now shows the usage its provider reports (agent.rs resolve_token_usage,
+// crates/llm/src/agent_loop.rs StreamItem::Usage) and falls back to an estimate only when none arrives, so "estimated" is gone.
+test('/docs/tui/ AI section: per-reply token usage, real providers and the shipped slash commands (C05, C08, B65, B67)', () => {
+  assert.ok(prose(tui).includes('The AI assistant drawer provides in-process conversational diagnosis with per-reply token usage and direct Kubernetes MCP tool execution.'));
+  never(prose(tui), /estimated token/i, 'token counts are provider-reported in v0.16.0');
   has(tui, '<li><strong>Anthropic Claude:</strong> default model <code>claude-3-7-sonnet-20250219</code>; any Claude model ID can be set.</li>\n<li><strong>OpenAI:</strong> default model <code>gpt-4o</code>; any chat model ID can be set.</li>\n<li><strong>Google Gemini:</strong> default model <code>gemini-2.5-flash</code>; any Gemini model ID can be set.</li>\n<li><strong>OpenAI-compatible / Ollama (local):</strong> defaults to <code>http://localhost:11434/v1</code> and <code>llama3.2</code>; point it at any OpenAI-compatible endpoint.</li>');
   has(tui, '<tr><td><code>/endpoints</code></td><td>Debugs a Service with no ready endpoints: selector vs labels, readiness probes, targetPort and EndpointSlices</td></tr>');
   assert.deepEqual([...mainOf(tui).matchAll(/<td><code>(\/[a-z]+)<\/code><\/td>/g)].map((m) => m[1]), ['/crashloop', '/oom', '/rollout', '/endpoints', '/caveman']);
@@ -213,8 +226,10 @@ test('/docs/tui/ keeps the rows marked keep: ArgoCD hub and spoke (C33), GPU mod
   assert.ok(prose(tui).includes('Automatically detects hardware accelerator classes (H100, A100, L4, T4, Tesla).'));
 });
 
-test('/docs/tui/ and /docs/ never say the TUI pods table shows CrashLoopBackOff (D2)', () => {
-  // The Kubernetes state is a pod phase of Running with READY 0/1 in the TUI; the only mention left is the /crashloop playbook.
+test('/docs/tui/ and /docs/ make no CrashLoopBackOff claim about the TUI pods table (D2)', () => {
+  // D2 held at v0.15.0, where the pods table showed the phase (Running, READY 0/1). v0.16.0 shows kubectl's own STATUS word
+  // instead (d2a2b925, #786), CrashLoopBackOff included, so the guard is now copy discipline, not a fact about the product:
+  // the only mention left is the /crashloop playbook.
   assert.equal((prose(tui).match(/CrashLoopBackOff/g) ?? []).length, 1);
   has(tui, '<tr><td><code>/crashloop</code></td><td>Automated CrashLoopBackOff analysis: pulls exit codes, crash logs, and event cascades</td></tr>');
   never(prose(docs), /CrashLoopBackOff/, '/docs/');

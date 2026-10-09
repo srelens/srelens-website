@@ -200,6 +200,13 @@ test('A1: /features/ pods row (02) names the crash-looping pod ledger-worker, as
   assert.ok(featureCopy.includes('The crash-looping ledger-worker pod shows its restart count climbing in real time.'));
 });
 
+// Devesh 2026-10-09: v0.16.0 re-check. The desktop pods list shows kubectl's own pod status (b874715c, #793; the Status column is
+// podStatus() in packages/ui-next/src/lib/kinds/columns.tsx:121), so CrashLoopBackOff and Init:0/2 appear where v0.15.0 showed the phase.
+test('v0.16.0: /features/ pods row (02) says status, not phase, because the pods list shows kubectl\'s status word', () => {
+  assert.ok(featureCopy.includes('Filter by namespace and watch status, readiness, restarts, CPU, and memory update in place as the cluster changes through kube-rs watches.'));
+  assert.doesNotMatch(featureCopy, /watch phase/);
+});
+
 test('A2: /features/ metrics row (03) describes the pod page, not a detail drawer', () => {
   assert.doesNotMatch(afterHead(features), /drawer/i);
   assert.doesNotMatch(featureCopy, /without leaving the table/);

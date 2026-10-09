@@ -131,7 +131,7 @@
           Built on <code>ratatui</code> and <code>kube-rs</code>, <strong>srectl</strong> (formerly srelens-tui) delivers the full operational
           power of srelens inside a single, fast native binary. Featuring an in-memory Informer cache that redraws
           views you have already opened without a new request, live streaming watches, BGP network peering dashboards,
-          Helm 3 values diffs, auto-wrapped logs, and an embedded AI assistant with per-reply token estimates.
+          Helm 3 values diffs, auto-wrapped logs, and an embedded AI assistant with per-reply token usage.
         </p>
         <div class="section-head">
           <p class="eyebrow"><span class="tick">●</span> One-Line Install</p>
@@ -264,7 +264,7 @@
               <ul class="feature-bullets">
                 <li><strong>Incident Playbooks:</strong> Run <code>/crashloop</code>, <code>/oom</code>, <code>/rollout</code>, or <code>/endpoints</code> to diagnose failing workloads with grounded root cause analysis.</li>
                 <li><strong>Tool Badges &amp; Execution:</strong> Transparently runs diagnostic tools (manifest and event reads, log tailing, metrics). Tools that change the cluster are blocked in the assistant; MCP clients can use them by launching <code>srectl mcp --allow-destructive</code>.</li>
-                <li><strong>Multi-Provider &amp; Token Estimates:</strong> Each reply shows an estimated token count and the reply time. Connect Anthropic Claude, OpenAI, Google Gemini, or any OpenAI-compatible endpoint such as local <strong>Ollama</strong>.</li>
+                <li><strong>Multi-Provider &amp; Token Usage:</strong> Each reply shows its token usage and the reply time. Connect Anthropic Claude, OpenAI, Google Gemini, or any OpenAI-compatible endpoint such as local <strong>Ollama</strong>.</li>
                 <li><strong>High-Density Caveman Mode:</strong> Use <code>/caveman</code> for terse, ultra-compact operational output designed for high-stress pager duty.</li>
               </ul>
             </div>

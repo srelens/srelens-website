@@ -33,7 +33,8 @@ test('the terminal panel embeds the real pods capture', () => {
   assert.ok(html.includes(`<!-- capture:pods:start -->${captureHtml('pods')}<!-- capture:pods:end -->`));
 });
 
-test('the terminal caption and label never claim CrashLoopBackOff (v0.16.0 shows the pod phase)', () => {
+// The v0.16.0 pods table shows kubectl's own STATUS word (d2a2b925, #786); the caption and label still describe the capture, not a status.
+test('the terminal caption and label make no CrashLoopBackOff claim', () => {
   const figure = html.match(/<figure class="tui-figure">[\s\S]*?<\/figure>/)[0];
   const outsideCapture = figure.replace(/<pre class="tui"[^>]*>[\s\S]*?<\/pre>/, (pre) => pre.match(/<pre[^>]*>/)[0]);
   assert.doesNotMatch(outsideCapture, /CrashLoopBackOff/);

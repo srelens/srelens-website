@@ -32,7 +32,9 @@ test('the hero keeps its One-Line Install eyebrow and h2 above the command row (
   assert.ok(hero.includes('<a class="btn btn-ghost" href="/docs/tui/">Read Documentation</a>'));
 });
 
-test('the hero carries the capture caption and never claims CrashLoopBackOff (pods show the phase)', () => {
+// Devesh 2026-10-09: v0.16.0 re-check. The pods table shows kubectl's own STATUS word (d2a2b925, #786), so the capture itself
+// reads CrashLoopBackOff; the copy around it still makes no claim about that column.
+test('the hero carries the capture caption and makes no CrashLoopBackOff claim around the capture', () => {
   assert.ok(html.includes('<figcaption>text capture · srectl v0.16.0 on the srelens-demo kind cluster · select it</figcaption>'));
   // The shared footer links the CrashLoopBackOff guide; that is a page title, not a claim about the TUI.
   assert.doesNotMatch(bare.replace(/<footer class="site-footer">[\s\S]*?<\/footer>/, ''), /CrashLoopBackOff/);
@@ -208,8 +210,8 @@ test('the approved copy replaces each reworded claim, exactly', () => {
     ['B65', '<li><strong>Incident Playbooks:</strong> Run <code>/crashloop</code>, <code>/oom</code>, <code>/rollout</code>, or <code>/endpoints</code> to diagnose failing workloads with grounded root cause analysis.</li>'],
     // C18
     ['C18', '<li><strong>Tool Badges &amp; Execution:</strong> Transparently runs diagnostic tools (manifest and event reads, log tailing, metrics). Tools that change the cluster are blocked in the assistant; MCP clients can use them by launching <code>srectl mcp --allow-destructive</code>.</li>'],
-    // C05
-    ['C05', '<li><strong>Multi-Provider &amp; Token Estimates:</strong> Each reply shows an estimated token count and the reply time. Connect Anthropic Claude, OpenAI, Google Gemini, or any OpenAI-compatible endpoint such as local <strong>Ollama</strong>.</li>'],
+    // C05, then v0.16.0 (Devesh 2026-10-09 re-check): the count is the provider's own usage report, estimated only when none arrives
+    ['C05', '<li><strong>Multi-Provider &amp; Token Usage:</strong> Each reply shows its token usage and the reply time. Connect Anthropic Claude, OpenAI, Google Gemini, or any OpenAI-compatible endpoint such as local <strong>Ollama</strong>.</li>'],
     // C06
     ['C06', '<li><strong>100+ Native Tools:</strong> Agents invoke high-performance cluster primitives — tailing multi-pod logs, inspecting manifests, querying metrics, and analyzing topology.</li>'],
     // B69 / B70: the subcommand spelling
@@ -240,7 +242,7 @@ test('the approved copy replaces each reworded claim, exactly', () => {
 test('the approved prose replaces the lede and the section copy (C02, C05, C11, C28)', () => {
   const prose = text(main);
   for (const [row, sentence] of [
-    ['C02/C05', 'Featuring an in-memory Informer cache that redraws views you have already opened without a new request, live streaming watches, BGP network peering dashboards, Helm 3 values diffs, auto-wrapped logs, and an embedded AI assistant with per-reply token estimates.'],
+    ['C02/C05', 'Featuring an in-memory Informer cache that redraws views you have already opened without a new request, live streaming watches, BGP network peering dashboards, Helm 3 values diffs, auto-wrapped logs, and an embedded AI assistant with per-reply token usage.'],
     ['C11', 'Everything you need during on-call incidents: live peering states, instant AI triage playbooks, smart auto-wrapped logs, Helm values diffs, and hierarchy trees.'],
     ['C28', 'Keyboard-optimized table views with in-memory sorting, persistent regex filtering, and deep operational shortcuts.'],
   ]) assert.ok(prose.includes(sentence), `${row}: ${sentence}`);
@@ -309,7 +311,7 @@ for (const file of TUI_PAGES) {
       assert.match(caption, name === 'gpu'
         ? /^srectl [^·]+ · text capture from v0\.16\.0 · simulated GPU node \(kwok\)$/
         : /^srectl [^·]+ · text capture from v0\.16\.0$/, `${name}: ${caption}`);
-      assert.doesNotMatch(figure.replace(/<pre class="tui"[^>]*>[\s\S]*?<\/pre>/, ''), /CrashLoopBackOff/, `${name}: pods show the phase, not CrashLoopBackOff`);
+      assert.doesNotMatch(figure.replace(/<pre class="tui"[^>]*>[\s\S]*?<\/pre>/, ''), /CrashLoopBackOff/, `${name}: the caption and label make no CrashLoopBackOff claim`);
     }
   });
 }

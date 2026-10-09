@@ -149,7 +149,7 @@ test('key shapes of the three providers and the env var assignments are refused 
   }
 });
 
-test('only the assistant capture may say tokens, because its replies show a per-reply token estimate (the product text)', () => {
+test('only the assistant capture may say tokens, because its replies show per-reply token usage (the product text)', () => {
   const estimate = '⚡ 1,204 tokens (900 prompt, 304 completion)';
   assert.deepEqual(captureProblems('assistant.ansi', `Hello! Type '/caveman' for token compression.\n${estimate}\n`), []);
   assert.match(captureProblems('pods.ansi', estimate).join('\n'), /credential word/);

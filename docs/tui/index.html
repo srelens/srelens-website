@@ -350,7 +350,7 @@ srectl update</code></pre>
 
           <h2 id="ai-assistant">Embedded SRE AI Assistant (<code>:ai</code> or <code>Tab</code>)</h2>
           <p>
-            The AI assistant drawer provides in-process conversational diagnosis with an estimated token count per reply
+            The AI assistant drawer provides in-process conversational diagnosis with per-reply token usage
             and direct Kubernetes MCP tool execution.
           </p>
 
@@ -488,8 +488,8 @@ srectl update</code></pre>
           </figure>
 
           <ul>
-            <li><strong>ArgoCD Hub Context:</strong> Select or cycle (<code>h</code>/<code>l</code> or <code>e</code> to edit) the kubeconfig context where your ArgoCD control plane resides.</li>
-            <li><strong>ArgoCD Hub Kubeconfig Path:</strong> Set a custom path if your Hub cluster kubeconfig is separate from <code>$KUBECONFIG</code>.</li>
+            <li><strong>Hub Context:</strong> Select or cycle (<code>h</code>/<code>l</code> or <code>e</code> to edit) the kubeconfig context where your ArgoCD control plane resides.</li>
+            <li><strong>Hub Kubeconfig:</strong> Set a custom path if your Hub cluster kubeconfig is separate from <code>$KUBECONFIG</code>.</li>
             <li><strong>Environment Variables:</strong> You can also set <code>SRELENS_ARGO_HUB_CONTEXT</code> and <code>SRELENS_ARGO_HUB_KUBECONFIG</code> in your shell environment.</li>
           </ul>
 
