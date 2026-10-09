@@ -6,7 +6,8 @@ overview	-A srelens://view/kind-srelens-demo/_/overview
 deployments	srelens://view/kind-srelens-demo/payments/deployments	
 helm	-A srelens://view/kind-srelens-demo/_/helm	
 helm-detail	-A srelens://view/kind-srelens-demo/_/helm	Enter | 2 | m m
-argo	-A srelens://view/kind-srelens-demo/_/argo	
+argo	-A srelens://view/kind-srelens-demo/_/argo
+argo-config	-A srelens://view/kind-srelens-demo/_/config	j j j j j
 bgp	-A srelens://view/kind-srelens-demo/_/bgp	
 gpu	-A srelens://view/kind-srelens-demo/_/gpuinfo	
 top	-A srelens://view/kind-srelens-demo/_/top	
@@ -16,3 +17,4 @@ tree	-n payments	/ payments-api Enter | t
 logs	-n payments	Escape | l
 themes	-A pods	: themes Enter
 help	-A pods	?
+assistant	-A srelens://view/kind-srelens-demo/payments/ai	Why Space is Space ledger-worker Space in Space payments Space crash-looping? Enter	90

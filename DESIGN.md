@@ -370,12 +370,13 @@ from `srelens-server` serving the app's "next" design in web mode, driven by
 at 120×32, taken in tmux by `scripts/demo/capture-all.sh` and
 `scripts/demo/capture.sh`.
 
-Some images are not from that run and are kept on purpose: the desktop `mcp` and
-`port-forwards` views, which web mode cannot show faithfully (the `keep` field in
-`scripts/shots/views.mjs`), the `srelens-tui` AI assistant screenshot, which needs
-a real provider key, and the Cursor MCP agent screenshots, which show a
-third-party app. Older `tui-*` screenshots also remain where no text capture
-replaces them. The README has the full workflow.
+Some images are not from that run: the desktop `mcp` view, which web mode cannot
+show faithfully (the `keep` field in `scripts/shots/views.mjs`; its image is on no
+page now), and the `srelens-tui` AI assistant screenshot, which needs a real
+provider key and is replaced by a text capture once its owner runs the row. In web
+mode port forwards are captured through the srelens server, so the Local column
+shows its proxy URL and the alt text says so. Older `tui-*` screenshots also
+remain where no text capture replaces them. The README has the full workflow.
 
 ## Do's and Don'ts
 

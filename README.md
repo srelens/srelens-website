@@ -76,7 +76,7 @@ node scripts/shots/desktop-shots.mjs \
 
 It drives headless Chrome over the DevTools Protocol (set `CHROME` if it is not at the default path) at a 1600×974 viewport with device scale 1.5, and writes `assets/shots/{dark,light}-<view>.webp` at 2400×1461, quality 82. Each view's route, the text that proves it has synced, and any click steps live in `scripts/shots/views.mjs`. Add a view there to capture a new one.
 
-Two views carry a `keep` field and are skipped by a full run: `mcp` and `port-forwards`. Web mode cannot show them faithfully (the MCP server pane exists only in the desktop app, and the port-forward Local column shows the server proxy URL, not the desktop `127.0.0.1:8080`), so their existing images, captured by hand from the desktop app, stay. `--only=mcp` still captures them. Two more kinds of image are kept on purpose: the `srelens-tui` AI assistant screenshot (it needs a real provider key) and the Cursor MCP agent screenshots (a third-party app).
+One view carries a `keep` field and is skipped by a full run: `mcp`. Web mode cannot show it faithfully (the MCP server pane exists only in the desktop app), and its image is on no page now; `--only=mcp` still captures it. `port-forwards` is captured in web mode, where the Local column shows the srelens server proxy URL (`http://127.0.0.1:8791/pf/1/`) instead of the desktop `127.0.0.1:8080`, and the alt text on `/features/` says so. One image is kept on purpose until its text capture exists: the `srelens-tui` AI assistant screenshot (see "Assistant capture" below; it needs a real provider key).
 
 ## Terminal capture
 
@@ -101,7 +101,7 @@ MSYS_NO_PATHCONV=1 docker run --rm --network kind -v "$(pwd -W 2>/dev/null || pw
   -e KUBECONFIG=/work/kubeconfig ubuntu:24.04 bash /work/capture-all.sh
 ```
 
-`scripts/demo/capture-all.sh` installs the pinned `srelens-tui` (`VERSION=0.15.0`) in the container, then captures every row of `scripts/demo/tui-captures.tsv` in tmux at 120×32 (100 columns truncated the STATUS and NAME columns), writing `.superpowers/capture/out/<name>.ansi`. Add `-e ONLY=overview,helm` to the `docker run` to capture only those rows. The homepage and `/tui/` hero capture, the pods view with `ledger-worker` selected, comes from `scripts/demo/capture.sh` the same way (`-e JUMP=<n>` moves the selection down n rows; the TUI sorts pods by name) and writes `pods.ansi`. The `gpu` row needs a simulated node: install kwok v0.6.1, apply `scripts/demo/extras/gpu.yaml`, capture with `ONLY=gpu`, then remove them again. Its caption says the node is simulated.
+`scripts/demo/capture-all.sh` installs the pinned `srelens-tui` (`VERSION=0.15.0`) in the container, then captures every row of `scripts/demo/tui-captures.tsv` in tmux at 120×32 (100 columns truncated the STATUS and NAME columns), writing `.superpowers/capture/out/<name>.ansi`. Add `-e ONLY=overview,helm` to the `docker run` to capture only those rows. The homepage and `/tui/` hero capture, the pods view with `ledger-worker` selected, comes from `scripts/demo/capture.sh` the same way (`-e JUMP=<n>` moves the selection down n rows; the TUI sorts pods by name) and writes `pods.ansi`. The `gpu` row needs a simulated node: install kwok v0.6.1, apply `scripts/demo/extras/gpu.yaml`, capture with `ONLY=gpu`, then remove them again. Its caption says the node is simulated. A row's optional fourth column is the number of seconds to wait after its keys before the screen is read (only `assistant` uses it, to wait for the model). The script also points `api.github.com` at localhost inside the container, so srelens-tui's startup update check cannot add a "newer release" notice to a capture of the pinned version.
 
 Copy the `.ansi` files into `assets/captures/`, then embed them:
 
@@ -111,6 +111,24 @@ node --test
 ```
 
 Pages hold `<!-- capture:NAME:start --><!-- capture:NAME:end -->` marker pairs. The embed script fills each one from the `.ansi` file of the same name in `assets/captures/`, through `scripts/ansi-to-html.mjs`, and `tests/captures.test.mjs` fails if an embedded capture differs from a fresh conversion or shows a loading screen, an update banner or a stray host path.
+
+### Assistant capture (needs your AI key)
+
+The `assistant` row opens the AI assistant (`:ai`) on `kind-srelens-demo` and asks "Why is ledger-worker in payments crash-looping?", then waits 90 seconds for the answer. It needs a provider key, which this repo never holds, so it is run by hand. A key goes to the container only as an environment variable of that one `docker run`: `-e ANTHROPIC_API_KEY` with no value makes Docker copy it from your shell (set it there first), so it is never typed into the command, written to a file or printed. `capture-all.sh` also keeps it from the installer it downloads. `OPENAI_API_KEY` and `GEMINI_API_KEY` are passed through the same way, but srelens-tui v0.15.0 defaults to the Anthropic provider and only uses them once its provider setting is changed.
+
+With the cluster up and step 2 above repeated (so the container has the current script and rows), run it from the repo root:
+
+```sh
+MSYS_NO_PATHCONV=1 docker run --rm --network kind -v "$(pwd -W 2>/dev/null || pwd)/.superpowers/capture:/work" \
+  -e KUBECONFIG=/work/kubeconfig -e ANTHROPIC_API_KEY -e ONLY=assistant ubuntu:24.04 bash /work/capture-all.sh
+```
+
+A run without `ONLY=assistant` captures every row, this one included; without a key that row shows "No API key configured" and `tests/captures.test.mjs` refuses the file. Then:
+
+1. Read `.superpowers/capture/out/assistant.ansi`. It must show a real answer about `ledger-worker` (no error, no "No API key configured"). Its per-reply "tokens" line is allowed; a key, an error banner, another context or a host path is not, and `node --test` checks that.
+2. Copy it into `assets/captures/`.
+3. On `/tui/` (`#ai-assistant`) and `/docs/tui/` (`#ai-assistant`), replace the `tui-assistant.webp` `<figure class="shot">` with a `tui-figure` block like the other captures: a `<pre class="tui" tabindex="0" role="region" aria-label="srelens-tui AI assistant answering a question about ledger-worker, text capture">` holding `<!-- capture:assistant:start --><!-- capture:assistant:end -->`, and a `<figcaption>` ending ` · text capture from v0.15.0`. Add `assistant` to `PLACED` in `tests/tui.test.mjs` and move `tui-assistant.webp` from `KEPT` to `REPLACED` there (and update the screenshot count in `tests/longform.test.mjs`) first, so the page change starts from a failing test.
+4. Fill the marker with `node scripts/embed-captures.mjs`, mirror the page with `cp docs/tui/index.html docs/tui.html`, and run `node --test`. Keep `assets/shots/tui-assistant.webp` on disk.
 
 ### MCP demo
 

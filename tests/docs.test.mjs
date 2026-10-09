@@ -190,6 +190,40 @@ test('README documents the test run, shared shell, captures, OG cards, screensho
   ]) assert.ok(readme.includes(cmd), `README does not mention ${cmd}`);
 });
 
+test('DESIGN.md Evidence keeps only the mcp view and the assistant screenshot, not port-forwards, the Cursor images or the Argo config image', () => {
+  const evidence = designMd.slice(designMd.indexOf('## Evidence'), designMd.indexOf('## Do\'s and Don\'ts')).replace(/\s+/g, ' ');
+  assert.match(evidence, /desktop `mcp` view/);
+  assert.doesNotMatch(evidence, /`port-forwards`|Cursor|third-party/);
+  assert.match(evidence, /AI assistant screenshot, which needs a real provider key/);
+  assert.match(evidence, /In web mode port forwards are captured through the srelens server, so the Local column shows its proxy URL/);
+});
+
+test('README says only the mcp view keeps its image, and that port-forwards is captured in web mode', () => {
+  assert.doesNotMatch(readme, /Two views carry a `keep` field/);
+  assert.match(readme, /One view carries a `keep` field and is skipped by a full run: `mcp`/);
+  assert.match(readme, /`port-forwards` is captured in web mode[^\n]*(?:server proxy URL|http:\/\/127\.0\.0\.1:8791\/pf\/1\/)/);
+});
+
+test('README notes the optional fourth tsv column and that the container cannot reach the update check', () => {
+  assert.match(readme, /optional fourth column[^\n]*seconds/i);
+  assert.match(readme, /api\.github\.com/);
+});
+
+// Devesh runs the assistant capture himself: the model needs his key, which this repo never sees.
+test('README has an "Assistant capture (needs your AI key)" subsection with the exact docker run and the follow-up steps', () => {
+  const section = /### Assistant capture \(needs your AI key\)\n([\s\S]*?)(?=\n##)/.exec(readme)?.[1];
+  assert.ok(section, 'the subsection exists, under "Terminal capture"');
+  assert.ok(readme.indexOf('### Assistant capture') > readme.indexOf('## Terminal capture') && readme.indexOf('### Assistant capture') < readme.indexOf('## OG cards'));
+  const command = 'MSYS_NO_PATHCONV=1 docker run --rm --network kind -v "$(pwd -W 2>/dev/null || pwd)/.superpowers/capture:/work" \\\n'
+    + '  -e KUBECONFIG=/work/kubeconfig -e ANTHROPIC_API_KEY -e ONLY=assistant ubuntu:24.04 bash /work/capture-all.sh';
+  assert.ok(section.includes(command), 'the exact command, with the key passed by name from the shell');
+  assert.doesNotMatch(section, /API_KEY=|\bsk-|AIza/, 'no key and no key assignment is ever written down');
+  for (const step of ['.superpowers/capture/out/assistant.ansi', '`assets/captures/`', 'tui-assistant.webp', '`/tui/`', '`/docs/tui/`', 'capture:assistant:start', 'node scripts/embed-captures.mjs', 'cp docs/tui/index.html docs/tui.html']) {
+    assert.ok(section.includes(step), `the follow-up steps mention ${step}`);
+  }
+  assert.match(section, /OPENAI_API_KEY[\s\S]*GEMINI_API_KEY/, 'the other two providers are named');
+});
+
 test('the scripts that drive headless Chrome use a throwaway profile, never the user\'s own', () => {
   for (const file of ['scripts/og-cards.mjs', 'scripts/screens.mjs']) {
     const src = read(file);
