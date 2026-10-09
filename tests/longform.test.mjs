@@ -111,10 +111,10 @@ test('/docs/tui/ keeps its 18-entry table of contents, in document order (the sc
   assert.deepEqual(h2s(tui).map((h) => h.id), TUI_TOC);
 });
 
-test('/docs/tui/ keeps three real screenshots as images; the other nine are text captures (Task 21)', () => {
+test('/docs/tui/ keeps two real screenshots as images; the other ten are text captures (Task 21, then the Argo config screen)', () => {
   const shots = [...mainOf(tui).matchAll(/<figure class="shot">\s*<img src="([^"]+)" width="(\d+)" height="(\d+)" alt="([^"]{10,})">\s*<\/figure>/g)];
-  assert.deepEqual(shots.map((m) => m[1].replace('/assets/shots/', '')), ['tui-assistant.webp', 'argocd-hub-spoke.png', 'tui-argo-config.png']);
-  assert.equal((mainOf(tui).match(/<figure class="tui-figure">/g) ?? []).length, 9);
+  assert.deepEqual(shots.map((m) => m[1].replace('/assets/shots/', '')), ['tui-assistant.webp', 'argocd-hub-spoke.png']);
+  assert.equal((mainOf(tui).match(/<figure class="tui-figure">/g) ?? []).length, 10);
 });
 
 // ---- /docs/tui/ claim fixes ------------------------------------------------------------------

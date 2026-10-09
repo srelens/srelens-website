@@ -256,16 +256,16 @@ test('.page-hero .hero-actions is capped at its column so the nowrap install com
 // ---- Task 21: TUI screenshots that now have a text capture ------------------------------------
 
 const TUI_PAGES = ['tui/index.html', 'docs/tui/index.html'];
-const REPLACED = ['tui-overview.webp', 'tui-pods.webp', 'tui-argo.webp', 'tui-helm.webp', 'tui-bgp.webp', 'tui-gpuinfo.webp', 'tui-logs.webp', 'tui-tree.webp', 'tui-banner.webp'];
-const KEPT = { 'tui/index.html': ['tui-assistant.webp'], 'docs/tui/index.html': ['tui-assistant.webp', 'argocd-hub-spoke.png', 'tui-argo-config.png'] };
-// Off the page since 2026-10-09 (the recorded MCP session replaced them), but the files stay published.
-const UNUSED = { 'tui/index.html': ['tui-mcp-agent.png', 'tui-mcp-tools.png'], 'docs/tui/index.html': [] };
+const REPLACED = ['tui-overview.webp', 'tui-pods.webp', 'tui-argo.webp', 'tui-helm.webp', 'tui-bgp.webp', 'tui-gpuinfo.webp', 'tui-logs.webp', 'tui-tree.webp', 'tui-banner.webp', 'tui-argo-config.png'];
+const KEPT = { 'tui/index.html': ['tui-assistant.webp'], 'docs/tui/index.html': ['tui-assistant.webp', 'argocd-hub-spoke.png'] };
+// Off the page since 2026-10-09 (the recorded MCP session and the argo-config capture replaced them), but the files stay published.
+const UNUSED = { 'tui/index.html': ['tui-mcp-agent.png', 'tui-mcp-tools.png'], 'docs/tui/index.html': ['tui-argo-config.png'] };
 // Where each capture sits: [text that opens its section, capture name]. The section's first figure is the capture.
 const PLACED = {
   'tui/index.html': [['id="cluster-overview"', 'overview'], ['id="pod-operations"', 'pods'], ['id="argocd-gitops"', 'argo'], ['id="helm-inspector"', 'helm-detail'],
     ['id="gpu-fleet"', 'gpu'], ['id="bgp-dashboard"', 'bgp'], ['id="log-streamer"', 'logs'], ['id="resource-tree"', 'tree'], ['<!-- ============ STARTUP FEATURE GUIDE CAPTURE', 'features']],
   'docs/tui/index.html': [['<h2 id="overview">', 'overview'], ['<h2 id="keybindings">', 'help'], ['<h2 id="argocd-gitops">', 'argo'], ['<h2 id="pod-operations">', 'pods'],
-    ['<h2 id="helm-inspector">', 'helm-detail'], ['<h2 id="gpu-fleet">', 'gpu'], ['<h2 id="bgp-dashboard">', 'bgp'], ['<h2 id="log-streamer">', 'logs'], ['<h2 id="resource-tree">', 'tree']],
+    ['<h3>Configuring ArgoCD Hub Context', 'argo-config'], ['<h2 id="helm-inspector">', 'helm-detail'], ['<h2 id="gpu-fleet">', 'gpu'], ['<h2 id="bgp-dashboard">', 'bgp'], ['<h2 id="log-streamer">', 'logs'], ['<h2 id="resource-tree">', 'tree']],
 };
 
 for (const file of TUI_PAGES) {
