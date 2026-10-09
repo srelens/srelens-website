@@ -168,7 +168,3 @@ test('a deployment row that is not rolled out is styled with the terminal warnin
 test('/mcp/ calls srelens the Kubernetes kernel for AI', () => {
   assert.match(read('mcp/index.html'), /srelens is the Kubernetes kernel for AI: your agents use it so you don’t have to\./);
 });
-
-test('no page and no llms file names srectl before the release that ships it', () => {
-  for (const file of [...listPages(), 'llms.txt', 'llms-full.txt']) assert.doesNotMatch(read(file), /srectl/i, file);
-});

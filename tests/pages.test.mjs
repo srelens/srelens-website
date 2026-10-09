@@ -135,15 +135,17 @@ test('/download/ keeps every [data-asset] button with its template and release f
   const links = [...download.matchAll(/<a [^>]*data-asset="([^"]+)"[^>]*>/g)].map((m) => ({ tag: m[0], template: m[1] }));
   assert.equal(links.length, 12);
   for (const { tag, template } of links) {
-    const name = template.replace('{v}', '0.15.0');
-    assert.ok(tag.includes(`href="https://github.com/srelens/srelens/releases/download/srelens-v0.15.0/${name}"`), template);
+    const name = template.replace('{v}', '0.16.0');
+    assert.ok(tag.includes(`href="https://github.com/srelens/srelens/releases/download/srelens-v0.16.0/${name}"`), template);
     assert.ok(tag.includes('rel="noopener"'), template);
   }
-  assert.deepEqual(links.map((l) => l.template).filter((t) => t.startsWith('srelens-tui-')), [
-    'srelens-tui-{v}-aarch64-apple-darwin.tar.gz', 'srelens-tui-{v}-x86_64-apple-darwin.tar.gz',
-    'srelens-tui-{v}-x86_64-unknown-linux-gnu.tar.gz', 'srelens-tui-{v}-aarch64-unknown-linux-gnu.tar.gz',
-    'srelens-tui-{v}-x86_64-pc-windows-msvc.zip',
+  // Devesh 2026-10-09: v0.16.0 / srectl. The terminal archives are srectl-{v}-<target>; main.js rewrites hrefs from these templates.
+  assert.deepEqual(links.map((l) => l.template).filter((t) => t.startsWith('srectl-')), [
+    'srectl-{v}-aarch64-apple-darwin.tar.gz', 'srectl-{v}-x86_64-apple-darwin.tar.gz',
+    'srectl-{v}-x86_64-unknown-linux-gnu.tar.gz', 'srectl-{v}-aarch64-unknown-linux-gnu.tar.gz',
+    'srectl-{v}-x86_64-pc-windows-msvc.zip',
   ]);
+  assert.equal(links.filter((l) => l.template.startsWith('srelens-tui-')).length, 0, 'no srelens-tui-{v} template remains');
 });
 
 test('/download/ keeps its three anchored sections and the x64 Windows CLI card', () => {

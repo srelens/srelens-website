@@ -155,7 +155,8 @@ const LD_SCREENSHOT_CHANGES = {
 };
 // Applied to every baseline JSON-LD node of `file` before comparison.
 const ldChange = (node, file) => {
-  let out = 'softwareVersion' in node ? { ...node, softwareVersion: '0.15.0' } : node;
+  // Devesh 2026-10-09: v0.16.0
+  let out = 'softwareVersion' in node ? { ...node, softwareVersion: '0.16.0' } : node;
   const pictured = new Map(LD_IMAGE_CHANGES[file] ?? []);
   // `image` and `primaryImageOfPage` are a URL string or an ImageObject ({url} or {@id}); the baseline has plain strings.
   const reimage = (v) => (typeof v === 'string' ? pictured.get(v) ?? v
