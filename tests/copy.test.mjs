@@ -20,6 +20,8 @@ const REMOVED_HEADINGS = {
 const REMOVED_IDS = {
   // Shubham/Devesh 2026-10-08 review: remove the first-run section
   'download/index.html': ['first-run'],
+  // Devesh 2026-10-09 ("Hide the button"): the old-UI product tour dialog is removed, and its title paragraph carried this id.
+  'index.html': ['tour-title'],
 };
 
 for (const file of listPages()) {

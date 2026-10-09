@@ -175,39 +175,6 @@
     });
   });
 
-  /* ---------- product walkthrough dialog ---------- */
-  var tourDialog = document.querySelector("[data-tour-dialog]");
-  var tourVideo = document.querySelector("[data-tour-video]");
-  document.querySelectorAll("[data-tour-open]").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      if (!tourDialog || typeof tourDialog.showModal !== "function") {
-        window.location.href = "/assets/media/srelens-product-tour.mp4";
-        return;
-      }
-      tourDialog.showModal();
-      if (tourVideo) {
-        tourVideo.currentTime = 0;
-        tourVideo.play().catch(function () { /* controls remain available */ });
-      }
-    });
-  });
-  function closeTour() {
-    if (!tourDialog) return;
-    if (tourVideo) tourVideo.pause();
-    tourDialog.close();
-  }
-  document.querySelectorAll("[data-tour-close]").forEach(function (btn) {
-    btn.addEventListener("click", closeTour);
-  });
-  if (tourDialog) {
-    tourDialog.addEventListener("click", function (event) {
-      if (event.target === tourDialog) closeTour();
-    });
-    tourDialog.addEventListener("close", function () {
-      if (tourVideo) tourVideo.pause();
-    });
-  }
-
   /* ---------- tabs: incident drill and homepage desktop / terminal switch ---------- */
   function bindTabs(tabs, panels, tabAttr, panelAttr) {
     function show(name, focusTab) {

@@ -20,9 +20,9 @@ const JS_REDIRECT = /\blocation(?:\.href)?\s*=(?!=)|\blocation\.(?:replace|assig
 const publishedScripts = () => execFileSync('git', ['ls-files', '*.js', '*.mjs', '*.cjs'], { cwd: ROOT, encoding: 'utf8' })
   .split('\n').filter((f) => f && !/^(?:tests|scripts)\//.test(f));
 
-// The one allowed statement: when <dialog> is unsupported, the walkthrough button (a click, never a page load)
-// opens the MP4 itself. It redirects nobody and no URL changes meaning.
-const ALLOWED_NAVIGATION = { 'main.js': ['window.location.href = "/assets/media/srelens-product-tour.mp4";'] };
+// Statements allowed to navigate with JavaScript, per file. None since the old-UI product tour (whose fallback was a click that
+// opened its MP4) was removed on 2026-10-09; an allowance added here must still be in its file, exactly once.
+const ALLOWED_NAVIGATION = {};
 
 test('the allowed navigation is still in its file (drop the allowance when it goes)', () => {
   for (const [file, statements] of Object.entries(ALLOWED_NAVIGATION)) {

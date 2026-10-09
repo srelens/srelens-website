@@ -285,3 +285,8 @@ test('the footer year is filled in', () => {
   fixture({ extras: [year] });
   assert.equal(year.textContent, String(new Date().getFullYear()));
 });
+
+// Devesh 2026-10-09 ("Hide the button"): the old-UI product tour is hidden, so its dialog code is gone.
+test('main.js carries no product-tour code', () => {
+  assert.doesNotMatch(source, /tour|walkthrough/i);
+});

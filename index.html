@@ -192,18 +192,14 @@
             <div class="hero-actions">
               <a class="btn btn-primary" href="/download/">Download <span data-version>v0.15.0</span></a>
             </div>
-            <figure class="shot hero-shot tour-poster">
+            <figure class="shot hero-shot">
               <img class="shot-dark" src="/assets/shots/dark-overview.webp" width="2400" height="1461"
                    fetchpriority="high"
                    alt="srelens cluster overview of the three-node kind-srelens-demo cluster, flagging the crash-looping ledger-worker in payments as not ready">
               <img class="shot-light" src="/assets/shots/light-overview.webp" width="2400" height="1461" loading="lazy"
                    alt="srelens cluster overview of the three-node kind-srelens-demo cluster, flagging the crash-looping ledger-worker in payments as not ready, light theme">
-              <button class="tour-play" type="button" data-tour-open aria-label="Play the 17-second srelens product walkthrough">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-                Watch product tour <span>17 sec</span>
-              </button>
             </figure>
-            <p class="shot-cap">real screenshot · srelens connected to a 3-node kind cluster (1 control-plane + 2 workers) · <button class="text-action" type="button" data-tour-open>play walkthrough</button></p>
+            <p class="shot-cap">real screenshot · srelens connected to a 3-node kind cluster (1 control-plane + 2 workers)</p>
           </div>
 
           <div class="mode-panel" id="mode-terminal" role="tabpanel" aria-labelledby="mode-tab-terminal" data-mode-panel="terminal">
@@ -287,26 +283,6 @@
         <p><a href="/mcp/">Set up the MCP server →</a></p>
       </div>
     </section>
-
-    <dialog class="tour-dialog" data-tour-dialog aria-labelledby="tour-title">
-      <div class="tour-dialog-head">
-        <div>
-          <p id="tour-title">srelens operational walkthrough</p>
-          <span>Seven verified product captures · no synthetic interface</span>
-        </div>
-        <button type="button" class="tour-close" data-tour-close aria-label="Close product walkthrough">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <video data-tour-video controls preload="metadata" poster="/assets/shots/dark-overview.webp">
-        <source src="/assets/media/srelens-product-tour.mp4" type="video/mp4">
-        Your browser cannot play the video. <a href="/assets/media/srelens-product-tour.gif">Open the animated GIF instead</a>.
-      </video>
-      <ol class="tour-sequence" aria-label="Walkthrough sequence">
-        <li>Overview</li><li>Pods</li><li>Details</li><li>Logs</li><li>Terminal</li><li>YAML</li><li>MCP</li>
-      </ol>
-      <p class="tour-fallback"><a href="/assets/media/srelens-product-tour.gif">Open GIF version</a></p>
-    </dialog>
 
     <!-- ============ TECH STRIP ============ -->
     <div class="tech-strip" aria-label="Built with">

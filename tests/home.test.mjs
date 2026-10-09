@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { read, ldNodes, text } from './lib/site.mjs';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { ROOT, read, ldNodes, text } from './lib/site.mjs';
 import { captureHtml } from '../scripts/embed-captures.mjs';
 
 const html = read('index.html');
@@ -50,12 +52,23 @@ test('the hero keeps the download, terminal and GitHub actions', () => {
   assert.ok(hero.includes('data-copy="brew install srelens/tap/srelens-tui"'));
 });
 
-test('the desktop panel keeps both real screenshots and the walkthrough trigger', () => {
+// Devesh 2026-10-09 ("Hide the button"): the product tour shows the old UI. Nothing on the homepage opens it any more;
+// the MP4 and GIF stay published so no link to them returns 404.
+test('the desktop panel keeps both real screenshots and their caption, with no control that opens the old tour', () => {
   const desktop = html.match(/<div class="mode-panel" id="mode-desktop"[\s\S]*?<div class="mode-panel" id="mode-terminal"/)[0];
   assert.match(desktop, /<img class="shot-dark" src="\/assets\/shots\/dark-overview\.webp"[^>]*fetchpriority="high"/);
   assert.match(desktop, /<img class="shot-light" src="\/assets\/shots\/light-overview\.webp"/);
-  assert.match(desktop, /<button class="tour-play" type="button" data-tour-open/);
-  assert.match(desktop, /<button class="text-action" type="button" data-tour-open>play walkthrough<\/button>/);
+  assert.ok(desktop.includes('<p class="shot-cap">real screenshot · srelens connected to a 3-node kind cluster (1 control-plane + 2 workers)</p>'));
+  assert.doesNotMatch(desktop, /<button|data-tour|tour-|walkthrough/i);
+});
+
+test('the homepage has no tour dialog, video or link, and the tour files stay published', () => {
+  assert.doesNotMatch(html, /data-tour|tour-|<dialog|<video|srelens-product-tour|walkthrough/i);
+  for (const ext of ['mp4', 'gif']) assert.ok(existsSync(join(ROOT, `assets/media/srelens-product-tour.${ext}`)), `srelens-product-tour.${ext} was deleted`);
+});
+
+test('site.css has no rule for the removed tour or its text button', () => {
+  assert.doesNotMatch(read('site.css'), /\.tour-|\.text-action/);
 });
 
 // ---- Verified keycaps (claims check, Decision 4). Cells without a verified binding carry no keys row;
