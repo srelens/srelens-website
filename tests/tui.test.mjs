@@ -218,8 +218,10 @@ test('the approved copy replaces each reworded claim, exactly', () => {
     ['B69', '<li><strong>Granular Safety Flags:</strong> Gate sensitive reads with <code>--allow-sensitive-reads</code> and mutating actions (scale, restart, apply, delete) with <code>--allow-destructive</code>.</li>'],
     // C15
     ['C15', '<li><strong>Live Resource Gauges:</strong> Real-time visual progress bars for cluster-wide CPU and memory utilization, plus GPU when present.</li>'],
-    // C02
-    ['C02', '<li><strong>Cached Refresh:</strong> The in-memory Informer cache keeps opened views current from live watches; pod and node metrics refresh about every 4 seconds.</li>'],
+    // C02, then Devesh 2026-10-09 re-check: the metrics refresh runs every 40th tick (apps/tui/src/app.rs:671-695), and the tick is
+    // 250 ms (apps/tui/src/main.rs:250, the same at v0.15.0 and v0.16.0), so it is every 10 seconds. The "~4 seconds" comment in
+    // app.rs assumes a 100 ms tick that does not exist; the claims check (C02) copied that comment.
+    ['C02', '<li><strong>Cached Refresh:</strong> The in-memory Informer cache keeps opened views current from live watches; pod and node metrics refresh about every 10 seconds.</li>'],
     // C26
     ['C26', '<li><strong>Instant Shells (<code>s</code>):</strong> Drops straight into a container shell, trying <code>/bin/sh</code>, then <code>bash</code>, through your local <code>kubectl</code>.</li>'],
     // B29
