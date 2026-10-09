@@ -199,7 +199,8 @@ test('the homepage claims no side-by-side manifest view', () => {
 
 // Devesh 2026-10-09 ("All new UI images"): the homepage already shows the recorded session right after the hero,
 // so the "/ 03" MCP row drops its old-UI settings screenshot and points up at the session instead of repeating it.
-const mcpRow = html.slice(html.indexOf('<div class="feature-row" id="mcp">'), html.indexOf('</section>', html.indexOf('<div class="feature-row" id="mcp">')));
+const mcpRowAt = html.search(/<div class="feature-row[^"]*" id="mcp">/);
+const mcpRow = html.slice(mcpRowAt, html.indexOf('</section>', mcpRowAt));
 
 test('the homepage MCP feature row has no old-UI image and points up at the one live session', () => {
   assert.equal((html.match(/class="mcp-demo"/g) ?? []).length, 1, 'the panel is shown once, right after the hero');
@@ -209,8 +210,20 @@ test('the homepage MCP feature row has no old-UI image and points up at the one 
   assert.ok(html.includes('<section class="section" id="talk-to-your-clusters">'), 'the link has a target');
 });
 
-test('a feature row without a figure is one column, capped at the measure, with tokens only', () => {
+// Devesh 2026-10-09 review: the text-only row is opted in by a class on the homepage row. The old `:not(:has(> figure))` rule
+// also matched /mcp/#example (a .copy + .mini row with no figure) and squeezed its two columns into one.
+test('the homepage MCP row opts in to the one-column text row, capped at the measure, with tokens only', () => {
   const css = read('site.css');
-  assert.match(css, /\.feature-row:not\(:has\(> figure\)\) \{ grid-template-columns: minmax\(0, 1fr\); \}/);
-  assert.match(css, /\.feature-row:not\(:has\(> figure\)\) \.copy \{ max-width: var\(--measure\); \}/);
+  assert.match(mcpRow, /^<div class="feature-row feature-row--text" id="mcp">/);
+  assert.match(css, /\.feature-row--text \{ grid-template-columns: minmax\(0, 1fr\); \}/);
+  assert.match(css, /\.feature-row--text \.copy \{ max-width: var\(--measure\); \}/);
+});
+
+test('no feature-row rule keys on a missing figure, and /mcp/#example (copy + .mini) keeps its two columns', () => {
+  assert.ok(!/\.feature-row:not\(:has\(> figure\)\)/.test(read('site.css')), 'site.css has a .feature-row:not(:has(> figure)) rule');
+  const example = read('mcp/index.html');
+  const row = example.slice(example.indexOf('<section class="section" id="example">'), example.indexOf('</section>', example.indexOf('id="example"')));
+  assert.match(row, /<div class="feature-row">/, 'the example row is a plain feature-row');
+  assert.doesNotMatch(row, /feature-row--text/);
+  assert.ok(row.includes('<div class="mini"'), 'it pairs the copy with a .mini');
 });
