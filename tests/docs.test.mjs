@@ -88,6 +88,13 @@ test('DESIGN.md names the Command line system, not the old Operations Brief', ()
   }
 });
 
+// Devesh 2026-10-09: the homepage accent is "kernel". The Accent Rule names what the page really carries.
+test('DESIGN.md Accent Rule names the accent phrase the homepage H1 really carries', () => {
+  const accent = /<h1[\s\S]*?<span class="accent">([^<]+)<\/span>[\s\S]*?<\/h1>/.exec(read('index.html'))?.[1];
+  assert.ok(accent, 'the homepage H1 has an accent');
+  assert.ok(prose.replace(/\s+/g, ' ').includes(`On the homepage the accent is "${accent}".`), `DESIGN.md does not say the homepage accent is "${accent}"`);
+});
+
 test('DESIGN.md sends terminal captures to --font-grid and does not claim JetBrains Mono draws box borders', () => {
   assert.match(prose, /`--font-grid`[^\n]*\.tui|\.tui[^\n]*`--font-grid`/);
   assert.match(prose, /lack U\+2500[–-]25FF/);
@@ -222,6 +229,14 @@ test('README has an "Assistant capture (needs your AI key)" subsection with the 
     assert.ok(section.includes(step), `the follow-up steps mention ${step}`);
   }
   assert.match(section, /OPENAI_API_KEY[\s\S]*GEMINI_API_KEY/, 'the other two providers are named');
+});
+
+// Devesh 2026-10-09 review: v0.15.0 defaults to a model Anthropic may have retired; the run then fails and he has to know why.
+test('README names the srelens-tui v0.15.0 default model and what to do when Anthropic has retired it', () => {
+  const section = /### Assistant capture \(needs your AI key\)\n([\s\S]*?)(?=\n##)/.exec(readme)?.[1] ?? '';
+  const flat = section.replace(/\s+/g, ' ');
+  assert.ok(flat.includes('srelens-tui v0.15.0 defaults to the Anthropic model `claude-3-7-sonnet-20250219` (`ai_config.rs:60` in the v0.15.0 source)'), 'the default model and where it is set');
+  assert.match(flat, /retired[^.]*API error[^.]*privacy scan[^.]*refuses[^.]*current model in srelens-tui's AI settings first\./, 'a retired model: the error, the refusal, the fix');
 });
 
 test('the scripts that drive headless Chrome use a throwaway profile, never the user\'s own', () => {

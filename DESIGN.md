@@ -184,7 +184,7 @@ overrides it and remembers the choice. Desktop screenshots swap between
 
 **The Accent Rule.** At most one accent phrase per page, on the H1 only, in a
 `<span class="accent">` of four words or fewer. `.accent` sets `--hot`. A longer
-phrase is plain H1 text. On the homepage the accent is "control room".
+phrase is plain H1 text. On the homepage the accent is "kernel".
 
 **The Status Color Rule.** Green, amber and red describe state. Brand violet
 carries links and primary action. Neither becomes ambient decoration.
