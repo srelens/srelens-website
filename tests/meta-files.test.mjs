@@ -62,9 +62,9 @@ test('C02: llms files say in-memory Informer cache, with no 0ms', () => {
 
 test('C09: llms files list only the platforms that ship', () => {
   const status = '- Status: available — desktop installers on GitHub Releases for macOS (Apple Silicon + Intel), '
-    + 'Windows (x64), and Linux (x86_64); srelens-tui CLI archives for macOS (Apple Silicon + Intel), '
+    + 'Windows (x64), and Linux (x86_64); srectl CLI archives for macOS (Apple Silicon + Intel), '
     + 'Windows (x64), and Linux (x86_64 + aarch64, glibc and static musl); '
-    + 'srelens-tui also installable via Homebrew (`brew install srelens/tap/srelens-tui`)';
+    + 'srectl also installable via Homebrew (`brew install srelens/tap/srectl`)';
   for (const file of LLMS) {
     const body = read(file);
     assert.doesNotMatch(body, /ARM64/, file);
@@ -72,9 +72,9 @@ test('C09: llms files list only the platforms that ship', () => {
   }
 });
 
-test('C29: llms files say srelens-tui uses local kubectl and helm', () => {
+test('C29: llms files say srectl uses local kubectl and helm', () => {
   const answer = '- Does srelens replace kubectl? No — it complements it. srelens talks to the Kubernetes API '
-    + "directly through kube-rs and doesn't need kubectl for that; srelens-tui uses your local kubectl for pod "
+    + "directly through kube-rs and doesn't need kubectl for that; srectl uses your local kubectl for pod "
     + 'and node shells and your local helm for rollbacks. It is a workspace for investigation and operations, '
     + 'not a scripting/automation tool.';
   for (const file of LLMS) assert.ok(read(file).includes(answer), file);
@@ -119,7 +119,9 @@ test('each inventory description is the alt text of the matching features-page s
 // dark-mcp.webp is an old-UI image no page shows any more (the MCP row is the recorded session), so the inventory must not offer it.
 test('no llms file names dark-mcp.webp, and llms-full.txt describes the recorded MCP session instead', () => {
   for (const file of LLMS) assert.doesNotMatch(read(file), /dark-mcp\.webp/, file);
-  assert.ok(full().split('\n').includes('- Real MCP session (srelens-tui v0.15.0 --mcp-stdio) answering one question from three kind clusters, on https://srelens.com/#talk-to-your-clusters'));
+  // Devesh 2026-10-09: v0.16.0 / srectl. No version in the line until Task 7 re-records the session with srectl 0.16.0: the page's
+  // transcript still comes from srelens-tui 0.15.0, and "srectl v0.15.0" never existed.
+  assert.ok(full().split('\n').includes('- Real MCP session (srectl --mcp-stdio) answering one question from three kind clusters, on https://srelens.com/#talk-to-your-clusters'));
 });
 
 test('llms files describe no stale demo cluster', () => {
@@ -150,7 +152,7 @@ test('both llms files list every page in the sitemap', () => {
 // ---- Owner copy fixes (Devesh 2026-10-05) ----------------------------------------------------------
 
 test('C9, C10: the llms ledes say "a fast standalone Terminal UI written in Rust" and "a Rust core (kube-rs)"', () => {
-  const lede = '> srelens is a Kubernetes workspace — available as a native desktop GUI app and a fast standalone Terminal UI written in Rust (`srelens-tui`) for browsing, inspecting, and operating Kubernetes clusters. It is built with a Rust core (kube-rs), features an in-memory Informer cache,';
+  const lede = '> srelens is a Kubernetes workspace — available as a native desktop GUI app and a fast standalone Terminal UI written in Rust (`srectl`) for browsing, inspecting, and operating Kubernetes clusters. It is built with a Rust core (kube-rs), features an in-memory Informer cache,';
   for (const file of LLMS) {
     const first = read(file).split('\n')[2];
     assert.ok(first.startsWith(lede), `${file}: ${first.slice(0, 160)}`);
@@ -158,8 +160,8 @@ test('C9, C10: the llms ledes say "a fast standalone Terminal UI written in Rust
   }
 });
 
-test('C14: the llms screenshot line names desktop screenshots and srelens-tui text captures, not "3-node"', () => {
-  const line = '- Desktop screenshots in both app themes and srelens-tui text captures, all from a live kind cluster.';
+test('C14: the llms screenshot line names desktop screenshots and srectl text captures, not "3-node"', () => {
+  const line = '- Desktop screenshots in both app themes and srectl text captures, all from a live kind cluster.';
   for (const file of LLMS) {
     const body = read(file);
     assert.ok(body.split('\n').slice(0, 14).includes(line), file);

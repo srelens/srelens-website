@@ -9,11 +9,11 @@ Pure static HTML/CSS/JS. No build step, no framework, no dependencies. Deploy th
 ```
 index.html          landing page (SoftwareApplication + WebSite + Organization JSON-LD)
 features/           feature deep-dive with 17 real workflows in both themes
-tui/                dedicated landing page for the pure-Rust Terminal UI (srelens-tui)
+tui/                dedicated landing page for the pure-Rust Terminal UI (srectl)
 mcp/                the built-in MCP server for AI agents (setup + example)
 compare/            comparison hub + Lens, Headlamp, K9s, Freelens/OpenLens,
                     Aptakube, and Kubernetes Dashboard alternative guides
-download/           installers for macOS / Windows / Linux + srelens-tui CLI + build from source
+download/           installers for macOS / Windows / Linux + srectl CLI + build from source
 faq/                full FAQ (FAQPage JSON-LD lives here, and only here)
 docs/               operator quick start and product documentation (includes docs/tui/)
 guides/             SRE runbooks for CrashLoopBackOff, OOMKilled, and failed rollouts

@@ -4,22 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>srelens-tui Documentation — Pure-Rust Terminal UI for Kubernetes</title>
-  <meta name="description" content="Comprehensive documentation for srelens-tui: installation, keybindings, command palette reference, BGP peering dashboard, Helm 3 values diff, log streaming, and AI assistant configuration.">
+  <title>srectl (formerly srelens-tui) Documentation — Pure-Rust Terminal UI for Kubernetes</title>
+  <meta name="description" content="Comprehensive documentation for srectl: installation, keybindings, command palette reference, BGP peering dashboard, Helm 3 values diff, log streaming, and AI assistant configuration.">
   <link rel="canonical" href="https://srelens.com/docs/tui/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://srelens.com/docs/tui/">
   <meta property="og:site_name" content="srelens">
-  <meta property="og:title" content="srelens-tui Documentation — Pure-Rust Terminal UI for Kubernetes">
-  <meta property="og:description" content="Comprehensive documentation for srelens-tui: installation, keybindings, command palette reference, BGP peering dashboard, Helm 3 values diff, log streaming, and AI assistant configuration.">
+  <meta property="og:title" content="srectl (formerly srelens-tui) Documentation — Pure-Rust Terminal UI for Kubernetes">
+  <meta property="og:description" content="Comprehensive documentation for srectl: installation, keybindings, command palette reference, BGP peering dashboard, Helm 3 values diff, log streaming, and AI assistant configuration.">
   <meta property="og:image" content="https://srelens.com/assets/og/og-docs-tui.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="srelens.com/docs/tui/: srelens-tui Guide &amp; Reference">
+  <meta property="og:image:alt" content="srelens.com/docs/tui/: srectl Guide &amp; Reference">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="srelens-tui Documentation — Pure-Rust Terminal UI for Kubernetes">
-  <meta name="twitter:description" content="Comprehensive documentation for srelens-tui: installation, keybindings, command palette reference, BGP peering dashboard, Helm 3 values diff, log streaming, and AI assistant configuration.">
+  <meta name="twitter:title" content="srectl (formerly srelens-tui) Documentation — Pure-Rust Terminal UI for Kubernetes">
+  <meta name="twitter:description" content="Comprehensive documentation for srectl: installation, keybindings, command palette reference, BGP peering dashboard, Helm 3 values diff, log streaming, and AI assistant configuration.">
   <meta name="twitter:image" content="https://srelens.com/assets/og/og-docs-tui.png">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="theme-color" content="#0f0d14">
@@ -60,7 +60,7 @@
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "Terminal UI (srelens-tui)",
+      "name": "Terminal UI (srectl)",
       "item": "https://srelens.com/docs/tui/"
     }
   ]
@@ -85,9 +85,9 @@
   <main id="main">
     <section class="page-hero">
       <div class="wrap">
-        <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/">srelens</a></li><li><a href="/docs/">Docs</a></li><li><span aria-current="page">Terminal UI (srelens-tui)</span></li></ol></nav>
-        <h1>srelens-tui Guide &amp; Reference</h1>
-        <p class="lede">A high-performance, keyboard-driven pure-Rust terminal workspace for Kubernetes operators and SREs.</p>
+        <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/">srelens</a></li><li><a href="/docs/">Docs</a></li><li><span aria-current="page">Terminal UI (srectl)</span></li></ol></nav>
+        <h1>srectl Guide &amp; Reference</h1>
+        <p class="lede">srectl (formerly srelens-tui) is a high-performance, keyboard-driven pure-Rust terminal workspace for Kubernetes operators and SREs.</p>
         <div class="article-meta"><span>Standalone CLI / TUI</span><span>Ratatui &amp; kube-rs</span><span>Zero Electron</span><span>Open Source</span></div>
       </div>
     </section>
@@ -120,13 +120,13 @@
         <article class="prose">
           <h2 id="overview">Overview</h2>
           <p>
-            <code>srelens-tui</code> is a native, standalone terminal workspace for Kubernetes. Built with <code>kube-rs</code> and <code>ratatui</code>,
+            <code>srectl</code> is a native, standalone terminal workspace for Kubernetes. Built with <code>kube-rs</code> and <code>ratatui</code>,
             it delivers instant view switching for opened views via an in-memory Informer cache, live resource watches, deep Helm 3 values diffs,
             BGP control plane topology views, and an embedded SRE AI assistant.
           </p>
 
           <figure class="tui-figure">
-            <pre class="tui" tabindex="0" role="region" aria-label="srelens-tui cluster overview: health, CPU and memory allocation, workload health, text capture"><!-- capture:overview:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
+            <pre class="tui" tabindex="0" role="region" aria-label="srectl cluster overview: health, CPU and memory allocation, workload health, text capture"><!-- capture:overview:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
 </span><span style="color:#bac2de">Ctx: </span><span style="color:#50dc8c;font-weight:700">kind-srelens-demo</span>  <span style="color:#bac2de">NS: </span><span style="color:#38bdf8;font-weight:700">[all]</span>  <span style="color:#bac2de">View: </span><span style="color:#eab308;font-weight:700">Overview</span>                                 <span style="color:#38bdf8;font-weight:700">&lt;:ctx&gt;</span><span style="color:#bac2de"> All Ctx  </span><span style="color:#38bdf8;font-weight:700">&lt;F1-F10&gt;</span><span style="color:#bac2de"> Hotkeys  </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de">
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ┌</span><span style="color:#8b5cf6;font-weight:700"> Cluster Health &amp; Resource Overview [&lt;s&gt; Summarise, &lt;c&gt; Copy, &lt;r&gt; Refresh, &lt;Esc&gt; Back] </span><span style="color:#4b5563">───────────────────────────────┐
@@ -158,7 +158,7 @@
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#38bdf8;font-weight:700">&lt;:&gt;</span><span style="color:#bac2de"> Cmd </span><span style="color:#38bdf8;font-weight:700">&lt;s&gt;</span><span style="color:#bac2de"> Summarise </span><span style="color:#38bdf8;font-weight:700">&lt;c&gt;</span><span style="color:#bac2de"> Copy </span><span style="color:#38bdf8;font-weight:700">&lt;r&gt;</span><span style="color:#bac2de"> Refresh </span><span style="color:#38bdf8;font-weight:700">&lt;Esc&gt;</span><span style="color:#bac2de"> Back </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de"> Help </span><!-- capture:overview:end --></pre>
-            <figcaption>srelens-tui cluster overview: health, CPU and memory allocation, workload health · text capture from v0.15.0</figcaption>
+            <figcaption>srectl cluster overview: health, CPU and memory allocation, workload health · text capture from v0.15.0</figcaption>
           </figure>
 
           <h2 id="install">Installation &amp; Updates</h2>
@@ -166,16 +166,16 @@
           <h3>Homebrew (macOS &amp; Linux)</h3>
           <p>Install the pre-built binary formula using our official Homebrew tap:</p>
           <div class="codeblock">
-            <button class="copy-btn" type="button" data-copy='# Tap and install srelens-tui
-brew install srelens/tap/srelens-tui
+            <button class="copy-btn" type="button" data-copy='# Tap and install srectl
+brew install srelens/tap/srectl
 
 # Launch
-srelens-tui'>copy</button>
-<pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Tap and install srelens-tui</span>
-brew install srelens/tap/srelens-tui
+srectl'>copy</button>
+<pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Tap and install srectl</span>
+brew install srelens/tap/srectl
 
 <span class="c"># Launch</span>
-srelens-tui</code></pre>
+srectl</code></pre>
           </div>
 
           <h3>Standalone Install Script (macOS &amp; Linux)</h3>
@@ -187,8 +187,8 @@ srelens-tui</code></pre>
 
           <h3>Cargo (From Source)</h3>
           <div class="codeblock">
-            <button class="copy-btn" type="button" data-copy='cargo install --git https://github.com/srelens/srelens srelens-tui'>copy</button>
-<pre tabindex="0" role="group" aria-label="Code example"><code>cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
+            <button class="copy-btn" type="button" data-copy='cargo install --git https://github.com/srelens/srelens srectl'>copy</button>
+<pre tabindex="0" role="group" aria-label="Code example"><code>cargo install --git https://github.com/srelens/srelens srectl</code></pre>
           </div>
 
           <h3>Updating in-place</h3>
@@ -197,20 +197,20 @@ srelens-tui</code></pre>
           </p>
           <div class="codeblock">
             <button class="copy-btn" type="button" data-copy='# Check for available updates without installing
-srelens-tui update --check
+srectl update --check
 
 # Download and apply update in-place
-srelens-tui update'>copy</button>
+srectl update'>copy</button>
 <pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Check for available updates without installing</span>
-srelens-tui update --check
+srectl update --check
 
 <span class="c"># Download and apply update in-place</span>
-srelens-tui update</code></pre>
+srectl update</code></pre>
           </div>
 
           <h2 id="cli-usage">CLI Arguments &amp; Flags</h2>
           <div class="codeblock">
-<pre tabindex="0" role="group" aria-label="Code example"><code>srelens-tui [TARGET] [-n NAMESPACE] [-A] [-c CONTEXT] [-k KUBECONFIG] [SUBCOMMAND]</code></pre>
+<pre tabindex="0" role="group" aria-label="Code example"><code>srectl [TARGET] [-n NAMESPACE] [-A] [-c CONTEXT] [-k KUBECONFIG] [SUBCOMMAND]</code></pre>
           </div>
 
           <table>
@@ -225,7 +225,7 @@ srelens-tui update</code></pre>
               <tr><td><code>-k, --kubeconfig &lt;PATH&gt;</code></td><td>Explicit path to a kubeconfig file (defaults to <code>$KUBECONFIG</code> or <code>~/.kube/config</code>)</td></tr>
               <tr><td><code>info</code></td><td>Subcommand: Print cluster connectivity, server version, and reachability diagnostics without starting TUI</td></tr>
               <tr><td><code>toolbox</code></td><td>Subcommand: Check local CLI diagnostics (kubectl, helm, krew plugins)</td></tr>
-              <tr><td><code>update</code></td><td>Subcommand: Update srelens-tui in-place to the latest release (<code>--check</code> to inspect)</td></tr>
+              <tr><td><code>update</code></td><td>Subcommand: Update srectl in-place to the latest release (<code>--check</code> to inspect)</td></tr>
             </tbody>
           </table>
 
@@ -259,14 +259,14 @@ srelens-tui update</code></pre>
               <tr><td><code>:ai</code></td><td><code>:assistant</code>, <code>:chat</code></td><td>Toggle embedded SRE AI assistant drawer</td></tr>
               <tr><td><code>:ai-settings</code></td><td><code>:settings</code></td><td>Configure AI provider, API key, model, endpoint, max tokens and timeout</td></tr>
               <tr><td><code>:theme</code></td><td><code>:colors</code></td><td>Switch active theme (Catppuccin, Nord, Dracula, Gruvbox, Tokyo Night)</td></tr>
-              <tr><td><code>:quit</code></td><td><code>:q</code>, <code>:exit</code></td><td>Exit srelens-tui</td></tr>
+              <tr><td><code>:quit</code></td><td><code>:q</code>, <code>:exit</code></td><td>Exit srectl</td></tr>
             </tbody>
           </table>
 
           <h2 id="keybindings">Keybindings Reference</h2>
 
           <figure class="tui-figure">
-            <pre class="tui" tabindex="0" role="region" aria-label="srelens-tui keybindings cheat sheet (the ? help overlay), text capture"><!-- capture:help:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
+            <pre class="tui" tabindex="0" role="region" aria-label="srectl keybindings cheat sheet (the ? help overlay), text capture"><!-- capture:help:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
 </span><span style="color:#bac2de">Ctx: </span><span style="color:#50dc8c;font-weight:700">kind-srelens-demo</span>  <span style="color:#bac2de">NS: </span><span style="color:#38bdf8;font-weight:700">[all]</span>  <span style="color:#bac2de">View: </span><span style="color:#eab308;font-weight:700">Pods</span>                                     <span style="color:#38bdf8;font-weight:700">&lt;:ctx&gt;</span><span style="color:#bac2de"> All Ctx  </span><span style="color:#38bdf8;font-weight:700">&lt;F1-F10&gt;</span><span style="color:#bac2de"> Hotkeys  </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de">
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ┌</span><span style="color:#8b5cf6;font-weight:700"> Pods [38] </span><span style="color:#4b5563">──</span><span style="color:#8b5cf6">╭ SRElens &amp; k9s Keybindings Cheat Sheet (Press Esc to close) ────────────────────────────╮</span><span style="color:#4b5563">───────────────┐
@@ -299,7 +299,7 @@ srelens-tui update</code></pre>
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#38bdf8;font-weight:700">&lt;:&gt;</span><span style="color:#bac2de"> Cmd </span><span style="color:#38bdf8;font-weight:700">&lt;/&gt;</span><span style="color:#bac2de"> Filter </span><span style="color:#38bdf8;font-weight:700">&lt;l&gt;</span><span style="color:#bac2de"> Logs </span><span style="color:#38bdf8;font-weight:700">&lt;s&gt;</span><span style="color:#bac2de"> Shell </span><span style="color:#38bdf8;font-weight:700">&lt;m&gt;</span><span style="color:#bac2de"> Metrics </span><span style="color:#38bdf8;font-weight:700">&lt;f&gt;/&lt;F&gt;</span><span style="color:#bac2de"> PortForward </span><span style="color:#38bdf8;font-weight:700">&lt;d&gt;</span><span style="color:#bac2de"> Describe </span><span style="color:#38bdf8;font-weight:700">&lt;y&gt;</span><span style="color:#bac2de"> YAML </span><span style="color:#38bdf8;font-weight:700">&lt;e&gt;</span><span style="color:#bac2de"> Edit </span><span style="color:#38bdf8;font-weight:700">&lt;^d&gt;</span><span style="color:#bac2de"> Delete </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de"> Hel
 </span><!-- capture:help:end --></pre>
-            <figcaption>srelens-tui keybindings cheat sheet (the ? help overlay) · text capture from v0.15.0</figcaption>
+            <figcaption>srectl keybindings cheat sheet (the ? help overlay) · text capture from v0.15.0</figcaption>
           </figure>
 
           <h3>Global Keybindings</h3>
@@ -355,7 +355,7 @@ srelens-tui update</code></pre>
           </p>
 
           <figure class="shot">
-            <img src="/assets/shots/tui-assistant.webp" width="2784" height="1692" alt="srelens-tui AI assistant drawer running incident diagnosis">
+            <img src="/assets/shots/tui-assistant.webp" width="2784" height="1692" alt="srectl AI assistant drawer running incident diagnosis">
           </figure>
 
           <h3>Supported Providers</h3>
@@ -385,7 +385,7 @@ srelens-tui update</code></pre>
           </p>
 
           <figure class="tui-figure">
-            <pre class="tui" tabindex="0" role="region" aria-label="srelens-tui ArgoCD Applications GitOps view, text capture"><!-- capture:argo:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
+            <pre class="tui" tabindex="0" role="region" aria-label="srectl ArgoCD Applications GitOps view, text capture"><!-- capture:argo:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
 </span><span style="color:#bac2de">Ctx: </span><span style="color:#50dc8c;font-weight:700">kind-srelens-demo</span>  <span style="color:#bac2de">NS: </span><span style="color:#38bdf8;font-weight:700">[all]</span>  <span style="color:#bac2de">View: </span><span style="color:#eab308;font-weight:700">ArgoCD Applications</span>                      <span style="color:#38bdf8;font-weight:700">&lt;:ctx&gt;</span><span style="color:#bac2de"> All Ctx  </span><span style="color:#38bdf8;font-weight:700">&lt;F1-F10&gt;</span><span style="color:#bac2de"> Hotkeys  </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de">
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ╭</span><span style="color:#8b5cf6;font-weight:700"> 🐙 ArgoCD Applications [1] (&lt;Enter&gt; Details  &lt;x&gt; Actions / AI &lt;s&gt; Sync  &lt;p&gt; Toggle Auto-Sync  &lt;R&gt; Hard Refresh  &lt;g&gt; G</span><span style="color:#4b5563">╮
@@ -418,7 +418,7 @@ srelens-tui update</code></pre>
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#38bdf8;font-weight:700">&lt;:&gt;</span><span style="color:#bac2de"> Cmd </span><span style="color:#38bdf8;font-weight:700">&lt;/&gt;</span><span style="color:#bac2de"> Filter </span><span style="color:#38bdf8;font-weight:700">&lt;Enter&gt;</span><span style="color:#bac2de"> Details </span><span style="color:#38bdf8;font-weight:700">&lt;x&gt;</span><span style="color:#bac2de"> Actions / AI </span><span style="color:#38bdf8;font-weight:700">&lt;s&gt;</span><span style="color:#bac2de"> Sync </span><span style="color:#38bdf8;font-weight:700">&lt;p&gt;</span><span style="color:#bac2de"> Auto-Sync </span><span style="color:#38bdf8;font-weight:700">&lt;R&gt;</span><span style="color:#bac2de"> Hard Refresh </span><span style="color:#38bdf8;font-weight:700">&lt;g&gt;</span><span style="color:#bac2de"> Git </span><span style="color:#38bdf8;font-weight:700">&lt;r&gt;</span><span style="color:#bac2de"> Reload </span><span style="color:#38bdf8;font-weight:700">&lt;Esc&gt;</span><span style="color:#bac2de"> Bac
 </span><!-- capture:argo:end --></pre>
-            <figcaption>srelens-tui ArgoCD Applications GitOps view · text capture from v0.15.0</figcaption>
+            <figcaption>srectl ArgoCD Applications GitOps view · text capture from v0.15.0</figcaption>
           </figure>
 
           <ul>
@@ -437,10 +437,10 @@ srelens-tui update</code></pre>
           </ul>
 
           <figure class="shot">
-            <img src="/assets/shots/argocd-hub-spoke.png" width="1200" height="743" alt="ArgoCD Hub & Spoke architecture in srelens-tui">
+            <img src="/assets/shots/argocd-hub-spoke.png" width="1200" height="743" alt="ArgoCD Hub & Spoke architecture in srectl">
           </figure>
 
-          <p><strong>How <code>srelens-tui</code> Works with Hub &amp; Spoke:</strong></p>
+          <p><strong>How <code>srectl</code> Works with Hub &amp; Spoke:</strong></p>
           <ol>
             <li><strong>Discover Clusters:</strong> Reads cluster registration secrets (labeled <code>argocd.argoproj.io/secret-type: cluster</code>) from the hub cluster.</li>
             <li><strong>Match Active Cluster:</strong> Matches your current kubeconfig context with Application destinations using server URL or cluster name.</li>
@@ -453,7 +453,7 @@ srelens-tui update</code></pre>
           </p>
 
           <figure class="tui-figure">
-            <pre class="tui" tabindex="0" role="region" aria-label="srelens-tui TUI Configuration screen with the ArgoCD Hub Context field selected, text capture"><!-- capture:argo-config:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
+            <pre class="tui" tabindex="0" role="region" aria-label="srectl TUI Configuration screen with the ArgoCD Hub Context field selected, text capture"><!-- capture:argo-config:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
 </span><span style="color:#bac2de">Ctx: </span><span style="color:#50dc8c;font-weight:700">kind-srelens-demo</span>  <span style="color:#bac2de">NS: </span><span style="color:#38bdf8;font-weight:700">[all]</span>  <span style="color:#bac2de">View: </span><span style="color:#eab308;font-weight:700">TUI Configuration</span>                        <span style="color:#38bdf8;font-weight:700">&lt;:ctx&gt;</span><span style="color:#bac2de"> All Ctx  </span><span style="color:#38bdf8;font-weight:700">&lt;F1-F10&gt;</span><span style="color:#bac2de"> Hotkeys  </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de">
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#8b5cf6">┌</span><span style="color:#8b5cf6;font-weight:700"> TUI Configuration </span><span style="color:#8b5cf6">───────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -485,7 +485,7 @@ srelens-tui update</code></pre>
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#38bdf8;font-weight:700">&lt;:&gt;</span><span style="color:#bac2de"> Cmd </span><span style="color:#38bdf8;font-weight:700">&lt;j/k&gt;</span><span style="color:#bac2de"> Select </span><span style="color:#38bdf8;font-weight:700">&lt;h/l&gt;</span><span style="color:#bac2de"> Adjust </span><span style="color:#38bdf8;font-weight:700">&lt;r&gt;</span><span style="color:#bac2de"> Reset </span><span style="color:#38bdf8;font-weight:700">&lt;Esc&gt;</span><span style="color:#bac2de"> Back </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de"> Help </span><!-- capture:argo-config:end --></pre>
-            <figcaption>srelens-tui TUI Configuration screen, ArgoCD Hub Context selected · text capture from v0.15.0</figcaption>
+            <figcaption>srectl TUI Configuration screen, ArgoCD Hub Context selected · text capture from v0.15.0</figcaption>
           </figure>
 
           <ul>
@@ -500,7 +500,7 @@ srelens-tui update</code></pre>
           </p>
 
           <figure class="tui-figure">
-            <pre class="tui" tabindex="0" role="region" aria-label="srelens-tui pod operations table, text capture"><!-- capture:pods:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
+            <pre class="tui" tabindex="0" role="region" aria-label="srectl pod operations table, text capture"><!-- capture:pods:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
 </span><span style="color:#bac2de">Ctx: </span><span style="color:#50dc8c;font-weight:700">kind-srelens-demo</span>  <span style="color:#bac2de">NS: </span><span style="color:#38bdf8;font-weight:700">[all]</span>  <span style="color:#bac2de">View: </span><span style="color:#eab308;font-weight:700">Pods</span>                                     <span style="color:#38bdf8;font-weight:700">&lt;:ctx&gt;</span><span style="color:#bac2de"> All Ctx  </span><span style="color:#38bdf8;font-weight:700">&lt;F1-F10&gt;</span><span style="color:#bac2de"> Hotkeys  </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de">
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ┌</span><span style="color:#8b5cf6;font-weight:700"> Pods [38] </span><span style="color:#4b5563">───────────────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -533,7 +533,7 @@ srelens-tui update</code></pre>
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#38bdf8;font-weight:700">&lt;:&gt;</span><span style="color:#bac2de"> Cmd </span><span style="color:#38bdf8;font-weight:700">&lt;/&gt;</span><span style="color:#bac2de"> Filter </span><span style="color:#38bdf8;font-weight:700">&lt;l&gt;</span><span style="color:#bac2de"> Logs </span><span style="color:#38bdf8;font-weight:700">&lt;s&gt;</span><span style="color:#bac2de"> Shell </span><span style="color:#38bdf8;font-weight:700">&lt;m&gt;</span><span style="color:#bac2de"> Metrics </span><span style="color:#38bdf8;font-weight:700">&lt;f&gt;/&lt;F&gt;</span><span style="color:#bac2de"> PortForward </span><span style="color:#38bdf8;font-weight:700">&lt;d&gt;</span><span style="color:#bac2de"> Describe </span><span style="color:#38bdf8;font-weight:700">&lt;y&gt;</span><span style="color:#bac2de"> YAML </span><span style="color:#38bdf8;font-weight:700">&lt;e&gt;</span><span style="color:#bac2de"> Edit </span><span style="color:#38bdf8;font-weight:700">&lt;^d&gt;</span><span style="color:#bac2de"> Delete </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de"> Hel
 </span><!-- capture:pods:end --></pre>
-            <figcaption>srelens-tui pod operations table · text capture from v0.15.0</figcaption>
+            <figcaption>srectl pod operations table · text capture from v0.15.0</figcaption>
           </figure>
 
           <ul>
@@ -547,7 +547,7 @@ srelens-tui update</code></pre>
           </p>
 
           <figure class="tui-figure">
-            <pre class="tui" tabindex="0" role="region" aria-label="srelens-tui Helm 3 inspector, Values Diff tab (revision 2 vs revision 1), text capture"><!-- capture:helm-detail:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
+            <pre class="tui" tabindex="0" role="region" aria-label="srectl Helm 3 inspector, Values Diff tab (revision 2 vs revision 1), text capture"><!-- capture:helm-detail:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
 </span><span style="color:#bac2de">Ctx: </span><span style="color:#50dc8c;font-weight:700">kind-srelens-demo</span>  <span style="color:#bac2de">NS: </span><span style="color:#38bdf8;font-weight:700">[all]</span>  <span style="color:#bac2de">View: </span><span style="color:#eab308;font-weight:700">Helm: Values Diff</span>                        <span style="color:#38bdf8;font-weight:700">&lt;:ctx&gt;</span><span style="color:#bac2de"> All Ctx  </span><span style="color:#38bdf8;font-weight:700">&lt;F1-F10&gt;</span><span style="color:#bac2de"> Hotkeys  </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de">
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ╭</span><span style="color:#8b5cf6;font-weight:700"> ⎈ Helm Release: checkout/podinfo [v2] (deployed) </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────╮
@@ -579,7 +579,7 @@ srelens-tui update</code></pre>
 </span><span style="color:#abafbc"> &lt;Tab&gt; Switch Tab  &lt;m&gt; Toggle Diff Mode  &lt;/&gt; Search  &lt;n/N&gt; Next/Prev  &lt;j/k&gt; Scroll  &lt;g/G&gt; Top/Bottom  &lt;Esc&gt; Back
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#38bdf8;font-weight:700">&lt;:&gt;</span><span style="color:#bac2de"> Cmd </span><span style="color:#38bdf8;font-weight:700">&lt;/&gt;</span><span style="color:#bac2de"> Search </span><span style="color:#38bdf8;font-weight:700">&lt;n/N&gt;</span><span style="color:#bac2de"> Next/Prev </span><span style="color:#38bdf8;font-weight:700">&lt;Esc&gt;</span><span style="color:#bac2de"> Back </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de"> Help </span><!-- capture:helm-detail:end --></pre>
-            <figcaption>srelens-tui Helm 3 inspector, Values Diff tab (revision 2 vs revision 1) · text capture from v0.15.0</figcaption>
+            <figcaption>srectl Helm 3 inspector, Values Diff tab (revision 2 vs revision 1) · text capture from v0.15.0</figcaption>
           </figure>
 
           <ul>
@@ -594,7 +594,7 @@ srelens-tui update</code></pre>
           </p>
 
           <figure class="tui-figure">
-            <pre class="tui" tabindex="0" role="region" aria-label="srelens-tui GPU accelerator fleet and VRAM allocation view, text capture"><!-- capture:gpu:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">4 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">41
+            <pre class="tui" tabindex="0" role="region" aria-label="srectl GPU accelerator fleet and VRAM allocation view, text capture"><!-- capture:gpu:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">4 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">41
 </span><span style="color:#bac2de">Ctx: </span><span style="color:#50dc8c;font-weight:700">kind-srelens-demo</span>  <span style="color:#bac2de">NS: </span><span style="color:#38bdf8;font-weight:700">[all]</span>  <span style="color:#bac2de">View: </span><span style="color:#eab308;font-weight:700">GPU Info &amp; VRAM Allocation</span>               <span style="color:#38bdf8;font-weight:700">&lt;:ctx&gt;</span><span style="color:#bac2de"> All Ctx  </span><span style="color:#38bdf8;font-weight:700">&lt;F1-F10&gt;</span><span style="color:#bac2de"> Hotkeys  </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de">
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#8b5cf6">┌</span><span style="color:#8b5cf6;font-weight:700"> ⚡ GPU NODES (1) </span><span style="color:#8b5cf6">────────────────────────┐</span><span style="color:#4b5563">┌</span><span style="color:#8b5cf6;font-weight:700"> 🖥️</span><span style="color:#8b5cf6">┐</span> <span style="color:#8b5cf6;font-weight:700">  NODE GPU CONSUMPTION: gpu-node-a100 </span><span style="color:#4b5563">────────────────────────────────┐
@@ -626,7 +626,7 @@ srelens-tui update</code></pre>
 </span><span style="color:#8b5cf6">└──────────────────────────────────────────┘</span><span style="color:#4b5563">└──────────────────────────────────────────────────────────────────────────┘
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#38bdf8;font-weight:700">&lt;:&gt;</span><span style="color:#bac2de"> Cmd </span><span style="color:#38bdf8;font-weight:700">&lt;↑/↓&gt;</span><span style="color:#bac2de"> Select </span><span style="color:#38bdf8;font-weight:700">&lt;Tab&gt;</span><span style="color:#bac2de"> Pane </span><span style="color:#38bdf8;font-weight:700">&lt;Enter&gt;</span><span style="color:#bac2de"> Inspect </span><span style="color:#38bdf8;font-weight:700">&lt;l&gt;</span><span style="color:#bac2de"> Logs </span><span style="color:#38bdf8;font-weight:700">&lt;d&gt;</span><span style="color:#bac2de"> Describe </span><span style="color:#38bdf8;font-weight:700">&lt;y&gt;</span><span style="color:#bac2de"> YAML </span><span style="color:#38bdf8;font-weight:700">&lt;r&gt;</span><span style="color:#bac2de"> Refresh </span><span style="color:#38bdf8;font-weight:700">&lt;Esc&gt;</span><span style="color:#bac2de"> Back </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de"> Help </span><!-- capture:gpu:end --></pre>
-            <figcaption>srelens-tui GPU accelerator fleet and VRAM allocation view · text capture from v0.15.0 · simulated GPU node (kwok)</figcaption>
+            <figcaption>srectl GPU accelerator fleet and VRAM allocation view · text capture from v0.15.0 · simulated GPU node (kwok)</figcaption>
           </figure>
 
           <ul>
@@ -637,11 +637,11 @@ srelens-tui update</code></pre>
 
           <h2 id="bgp-dashboard">BGP Peering &amp; Topology Dashboard (<code>:bgp</code>)</h2>
           <p>
-            <code>srelens-tui</code> automatically detects cloud-native BGP implementations deployed in your cluster:
+            <code>srectl</code> automatically detects cloud-native BGP implementations deployed in your cluster:
           </p>
 
           <figure class="tui-figure">
-            <pre class="tui" tabindex="0" role="region" aria-label="srelens-tui BGP Peering and Topology dashboard, MetalLB peers, text capture"><!-- capture:bgp:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
+            <pre class="tui" tabindex="0" role="region" aria-label="srectl BGP Peering and Topology dashboard, MetalLB peers, text capture"><!-- capture:bgp:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
 </span><span style="color:#bac2de">Ctx: </span><span style="color:#50dc8c;font-weight:700">kind-srelens-demo</span>  <span style="color:#bac2de">NS: </span><span style="color:#38bdf8;font-weight:700">[all]</span>  <span style="color:#bac2de">View: </span><span style="color:#eab308;font-weight:700">BGP Peering &amp; Route Advertisements</span>       <span style="color:#38bdf8;font-weight:700">&lt;:ctx&gt;</span><span style="color:#bac2de"> All Ctx  </span><span style="color:#38bdf8;font-weight:700">&lt;F1-F10&gt;</span><span style="color:#bac2de"> Hotkeys  </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de">
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ┌</span><span style="color:#38bdf8;font-weight:700"> 🌐 BGP CONTROL PLANE &amp; PEERING TOPOLOGY </span><span style="color:#4b5563">─────────────────────────────────────────────────────────────────────────────┐
@@ -674,7 +674,7 @@ srelens-tui update</code></pre>
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#38bdf8;font-weight:700">&lt;:&gt;</span><span style="color:#bac2de"> Cmd </span><span style="color:#38bdf8;font-weight:700">&lt;1-3/Tab&gt;</span><span style="color:#bac2de"> Tab </span><span style="color:#38bdf8;font-weight:700">&lt;↑/↓/j/k&gt;</span><span style="color:#bac2de"> Select </span><span style="color:#38bdf8;font-weight:700">&lt;/&gt;</span><span style="color:#bac2de"> Filter </span><span style="color:#38bdf8;font-weight:700">&lt;Enter&gt;</span><span style="color:#bac2de"> Inspect Node/Svc </span><span style="color:#38bdf8;font-weight:700">&lt;d&gt;</span><span style="color:#bac2de"> Describe </span><span style="color:#38bdf8;font-weight:700">&lt;y&gt;</span><span style="color:#bac2de"> YAML </span><span style="color:#38bdf8;font-weight:700">&lt;r&gt;</span><span style="color:#bac2de"> Refresh </span><span style="color:#38bdf8;font-weight:700">&lt;Esc&gt;</span><span style="color:#bac2de"> Back
 </span><!-- capture:bgp:end --></pre>
-            <figcaption>srelens-tui BGP Peering and Topology dashboard, MetalLB peers · text capture from v0.15.0</figcaption>
+            <figcaption>srectl BGP Peering and Topology dashboard, MetalLB peers · text capture from v0.15.0</figcaption>
           </figure>
 
           <ul>
@@ -687,11 +687,11 @@ srelens-tui update</code></pre>
           <h2 id="log-streamer">Engineered Multi-Pod Log Streamer (<code>l</code>)</h2>
           <p>
             When inspecting microservices with high-volume JSON logs, standard terminals break line numbers and wrap text chaotically.
-            <code>srelens-tui</code> features engineered log wrapping:
+            <code>srectl</code> features engineered log wrapping:
           </p>
 
           <figure class="tui-figure">
-            <pre class="tui" tabindex="0" role="region" aria-label="srelens-tui log streaming view for the ledger-worker pod, text capture"><!-- capture:logs:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
+            <pre class="tui" tabindex="0" role="region" aria-label="srectl log streaming view for the ledger-worker pod, text capture"><!-- capture:logs:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
 </span><span style="color:#bac2de">Ctx: </span><span style="color:#50dc8c;font-weight:700">kind-srelens-demo</span>  <span style="color:#bac2de">NS: </span><span style="color:#38bdf8;font-weight:700">[payments]</span>  <span style="color:#bac2de">View: </span><span style="color:#eab308;font-weight:700">Logs</span>                                <span style="color:#38bdf8;font-weight:700">&lt;:ctx&gt;</span><span style="color:#bac2de"> All Ctx  </span><span style="color:#38bdf8;font-weight:700">&lt;F1-F10&gt;</span><span style="color:#bac2de"> Hotkeys  </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de">
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#8b5cf6">┌</span><span style="color:#8b5cf6;font-weight:700"> Logs: ledger-worker-7f8847c54d-qvqmz (payments/worker) [FtpW] [5/5 lines] (&lt;f&gt; Follow &lt;t&gt; Time &lt;p&gt; Prev &lt;w&gt; Wrap &lt;s&gt; </span><span style="color:#8b5cf6">┐
@@ -723,7 +723,7 @@ srelens-tui update</code></pre>
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#38bdf8;font-weight:700">&lt;:&gt;</span><span style="color:#bac2de"> Cmd </span><span style="color:#38bdf8;font-weight:700">&lt;c&gt;</span><span style="color:#bac2de"> Copy </span><span style="color:#38bdf8;font-weight:700">&lt;f&gt;</span><span style="color:#bac2de"> Follow </span><span style="color:#38bdf8;font-weight:700">&lt;t&gt;</span><span style="color:#bac2de"> Timestamps </span><span style="color:#38bdf8;font-weight:700">&lt;/&gt;</span><span style="color:#bac2de"> Search </span><span style="color:#38bdf8;font-weight:700">&lt;n/N&gt;</span><span style="color:#bac2de"> Next/Prev </span><span style="color:#38bdf8;font-weight:700">&lt;s&gt;</span><span style="color:#bac2de"> Save </span><span style="color:#38bdf8;font-weight:700">&lt;Esc&gt;</span><span style="color:#bac2de"> Back </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de"> Help </span><!-- capture:logs:end --></pre>
-            <figcaption>srelens-tui log streaming view for the ledger-worker pod · text capture from v0.15.0</figcaption>
+            <figcaption>srectl log streaming view for the ledger-worker pod · text capture from v0.15.0</figcaption>
           </figure>
 
           <ul>
@@ -738,7 +738,7 @@ srelens-tui update</code></pre>
           </p>
 
           <figure class="tui-figure">
-            <pre class="tui" tabindex="0" role="region" aria-label="srelens-tui resource hierarchy tree view, text capture"><!-- capture:tree:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
+            <pre class="tui" tabindex="0" role="region" aria-label="srectl resource hierarchy tree view, text capture"><!-- capture:tree:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
 </span><span style="color:#bac2de">Ctx: </span><span style="color:#50dc8c;font-weight:700">kind-srelens-demo</span>  <span style="color:#bac2de">NS: </span><span style="color:#38bdf8;font-weight:700">[payments]</span>  <span style="color:#bac2de">View: </span><span style="color:#eab308;font-weight:700">Resource Relationship Tree</span>          <span style="color:#38bdf8;font-weight:700">&lt;:ctx&gt;</span><span style="color:#bac2de"> All Ctx  </span><span style="color:#38bdf8;font-weight:700">&lt;F1-F10&gt;</span><span style="color:#bac2de"> Hotkeys  </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de">
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ┌</span><span style="color:#8b5cf6;font-weight:700"> 🌳 Resource Relationship Tree: Pod/payments-api-6ddc974bf-9gmq4 payments [↑/↓: Move, Enter: Jump, l: Logs, y: YAML, d</span><span style="color:#4b5563">┐
@@ -771,7 +771,7 @@ srelens-tui update</code></pre>
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#38bdf8;font-weight:700">&lt;:&gt;</span><span style="color:#bac2de"> Cmd </span><span style="color:#38bdf8;font-weight:700">&lt;↑/↓&gt;</span><span style="color:#bac2de"> Move </span><span style="color:#38bdf8;font-weight:700">&lt;Enter&gt;</span><span style="color:#bac2de"> Jump </span><span style="color:#38bdf8;font-weight:700">&lt;x&gt;</span><span style="color:#bac2de"> Actions </span><span style="color:#38bdf8;font-weight:700">&lt;l&gt;</span><span style="color:#bac2de"> Logs </span><span style="color:#38bdf8;font-weight:700">&lt;y&gt;</span><span style="color:#bac2de"> YAML </span><span style="color:#38bdf8;font-weight:700">&lt;d&gt;</span><span style="color:#bac2de"> Describe </span><span style="color:#38bdf8;font-weight:700">&lt;c&gt;</span><span style="color:#bac2de"> Copy </span><span style="color:#38bdf8;font-weight:700">&lt;Esc&gt;</span><span style="color:#bac2de"> Back </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de"> Help </span> | <span style="color:#bac2de">Filter: </span><span style="color:#eab308">"paym
 </span><!-- capture:tree:end --></pre>
-            <figcaption>srelens-tui resource hierarchy tree view · text capture from v0.15.0</figcaption>
+            <figcaption>srectl resource hierarchy tree view · text capture from v0.15.0</figcaption>
           </figure>
 
           <ul>
@@ -782,20 +782,20 @@ srelens-tui update</code></pre>
           <h2 id="debug-shells">Shells &amp; Ephemeral Debug Containers</h2>
           <ul>
             <li><strong>Container Shell (<code>s</code>):</strong> Drops straight into a container shell, trying <code>/bin/sh</code>, <code>sh</code>, <code>bash</code> and <code>/bin/bash</code> in turn.</li>
-            <li><strong>Ephemeral Debug Containers (MCP):</strong> MCP clients that launch <code>srelens-tui mcp --allow-destructive</code> can attach an ephemeral debug container to a distroless pod without restarting it (<code>k8s.debugPod</code>).</li>
+            <li><strong>Ephemeral Debug Containers (MCP):</strong> MCP clients that launch <code>srectl mcp --allow-destructive</code> can attach an ephemeral debug container to a distroless pod without restarting it (<code>k8s.debugPod</code>).</li>
             <li><strong>Privileged Node Shell (<code>s</code> on the Nodes view):</strong> Runs <code>kubectl debug node/&lt;name&gt;</code> to open a root shell with the node's host namespaces and filesystem reachable. Requires <code>kubectl</code> on your PATH.</li>
           </ul>
 
           <h2 id="node-ssh">Node SSH &amp; Out-of-Band Diagnostics</h2>
           <p>
             When host services like <code>kubelet</code>, <code>containerd</code>, <code>rke2-agent</code>, or <code>k3s</code> fail,
-            the Kubernetes API cannot schedule debug pods or execute commands. <code>srelens-tui</code> provides out-of-band SSH capabilities
+            the Kubernetes API cannot schedule debug pods or execute commands. <code>srectl</code> provides out-of-band SSH capabilities
             to triage and recover nodes directly.
           </p>
 
           <h3>Target Resolution &amp; Address Selection</h3>
           <p>
-            When targeting a node by name, <code>srelens-tui</code> resolves addresses in order of network safety:
+            When targeting a node by name, <code>srectl</code> resolves addresses in order of network safety:
           </p>
           <ol>
             <li><code>InternalIP</code> (default preference for private VPCs and cloud clusters)</li>
@@ -805,7 +805,7 @@ srelens-tui update</code></pre>
 
           <h3>SSH Key Discovery Ladder</h3>
           <p>
-            <code>srelens-tui</code> hands authentication to your system <code>ssh</code>, which offers agent identities first and then the standard keys in <code>~/.ssh/</code>:
+            <code>srectl</code> hands authentication to your system <code>ssh</code>, which offers agent identities first and then the standard keys in <code>~/.ssh/</code>:
           </p>
           <ol>
             <li><strong>SSH Agent (<code>SSH_AUTH_SOCK</code>):</strong> If an SSH agent is running with loaded keys (<code>ssh-add -l</code>), agent identities are offered first.</li>
@@ -826,18 +826,18 @@ srelens-tui update</code></pre>
             <li><strong>Interactive Node SSH (<code>S</code> on the Nodes view):</strong> Opens an interactive <code>ssh</code> session to the node after you confirm the destination (InternalIP, then ExternalIP).</li>
             <li><strong>Systemd Status (assistant / MCP, needs <code>--allow-sensitive-reads</code>):</strong> Check system service states (<code>systemctl status &lt;service&gt;</code>) without an operational kubelet.</li>
             <li><strong>Journal Logs (assistant / MCP, needs <code>--allow-sensitive-reads</code>):</strong> Retrieve systemd journal logs (<code>journalctl -u &lt;service&gt;</code>, with <code>--since</code> and <code>--grep</code> filters).</li>
-            <li><strong>Guarded Restarts (MCP, needs <code>--allow-destructive</code>):</strong> Restart a system service such as <code>kubelet</code> or <code>rke2-server</code> from an MCP client that launches <code>srelens-tui mcp --allow-destructive</code>.</li>
+            <li><strong>Guarded Restarts (MCP, needs <code>--allow-destructive</code>):</strong> Restart a system service such as <code>kubelet</code> or <code>rke2-server</code> from an MCP client that launches <code>srectl mcp --allow-destructive</code>.</li>
           </ul>
 
-          <h2 id="tui-mcp">TUI MCP Server (<code>srelens-tui mcp</code>)</h2>
+          <h2 id="tui-mcp">TUI MCP Server (<code>srectl mcp</code>)</h2>
           <p>
-            <code>srelens-tui</code> includes a headless MCP (Model Context Protocol) server over standard JSON-RPC 2.0 stdio,
+            <code>srectl</code> includes a headless MCP (Model Context Protocol) server over standard JSON-RPC 2.0 stdio,
             exposing 100+ cluster tools (Kubernetes, Helm, toolbox and server tools) to AI agents (Cursor, Claude, Gemini, and custom agents).
           </p>
 
           <h3>Safety &amp; Permission Flags</h3>
           <p>
-            By default, <code>srelens-tui mcp</code> runs in safe read-only mode: queries execute immediately, Secrets are masked, and mutating tools are blocked.
+            By default, <code>srectl mcp</code> runs in safe read-only mode: queries execute immediately, Secrets are masked, and mutating tools are blocked.
             Two explicit command-line flags control elevated permissions:
           </p>
           <ul>
@@ -851,27 +851,27 @@ srelens-tui update</code></pre>
 
           <div class="codeblock">
             <button class="copy-btn" type="button" data-copy='# Safe read-only mode (default: secrets masked, mutations blocked)
-srelens-tui mcp
+srectl mcp
 
 # Allow reading sensitive Secret data in plaintext
-srelens-tui mcp --allow-sensitive-reads
+srectl mcp --allow-sensitive-reads
 
 # Allow mutating and destructive operations
-srelens-tui mcp --allow-destructive
+srectl mcp --allow-destructive
 
 # Full access (sensitive reads + destructive mutations)
-srelens-tui mcp --allow-sensitive-reads --allow-destructive'>copy</button>
+srectl mcp --allow-sensitive-reads --allow-destructive'>copy</button>
 <pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Safe read-only mode (default: secrets masked, mutations blocked)</span>
-srelens-tui mcp
+srectl mcp
 
 <span class="c"># Allow reading sensitive Secret data in plaintext</span>
-srelens-tui mcp --allow-sensitive-reads
+srectl mcp --allow-sensitive-reads
 
 <span class="c"># Allow mutating and destructive operations</span>
-srelens-tui mcp --allow-destructive
+srectl mcp --allow-destructive
 
 <span class="c"># Full access (sensitive reads + destructive mutations)</span>
-srelens-tui mcp --allow-sensitive-reads --allow-destructive</code></pre>
+srectl mcp --allow-sensitive-reads --allow-destructive</code></pre>
           </div>
 
           <h3>Cursor Configuration (<code>.cursor/mcp.json</code> or <code>~/.cursor/mcp.json</code>)</h3>
@@ -879,7 +879,7 @@ srelens-tui mcp --allow-sensitive-reads --allow-destructive</code></pre>
             <button class="copy-btn" type="button" data-copy='{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": [
         "mcp",
         "--allow-sensitive-reads",
@@ -891,7 +891,7 @@ srelens-tui mcp --allow-sensitive-reads --allow-destructive</code></pre>
 <pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": [
         "mcp",
         "--allow-sensitive-reads",
@@ -907,7 +907,7 @@ srelens-tui mcp --allow-sensitive-reads --allow-destructive</code></pre>
             <button class="copy-btn" type="button" data-copy='{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": [
         "mcp",
         "--allow-sensitive-reads",
@@ -919,7 +919,7 @@ srelens-tui mcp --allow-sensitive-reads --allow-destructive</code></pre>
 <pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": [
         "mcp",
         "--allow-sensitive-reads",
@@ -933,15 +933,15 @@ srelens-tui mcp --allow-sensitive-reads --allow-destructive</code></pre>
           <h3>Claude Code CLI</h3>
           <div class="codeblock">
             <button class="copy-btn" type="button" data-copy='# Safe default (read-only)
-claude mcp add srelens -- srelens-tui mcp
+claude mcp add srelens -- srectl mcp
 
 # With sensitive reads and destructive mutations enabled
-claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destructive'>copy</button>
+claude mcp add srelens -- srectl mcp --allow-sensitive-reads --allow-destructive'>copy</button>
 <pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Safe default (read-only)</span>
-claude mcp add srelens -- srelens-tui mcp
+claude mcp add srelens -- srectl mcp
 
 <span class="c"># With sensitive reads and destructive mutations enabled</span>
-claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destructive</code></pre>
+claude mcp add srelens -- srectl mcp --allow-sensitive-reads --allow-destructive</code></pre>
           </div>
 
           <h3>Gemini / Antigravity (<code>mcp_config.json</code>)</h3>
@@ -949,7 +949,7 @@ claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destru
             <button class="copy-btn" type="button" data-copy='{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": [
         "mcp",
         "--allow-sensitive-reads",
@@ -961,7 +961,7 @@ claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destru
 <pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": [
         "mcp",
         "--allow-sensitive-reads",
@@ -977,7 +977,7 @@ claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destru
             <button class="copy-btn" type="button" data-copy='{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": [
         "mcp",
         "--allow-sensitive-reads",
@@ -989,7 +989,7 @@ claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destru
 <pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": [
         "mcp",
         "--allow-sensitive-reads",
@@ -1002,7 +1002,7 @@ claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destru
 
           <h2 id="crd-support">CRD Discovery &amp; Evaluated Printer Columns</h2>
           <p>
-            CustomResourceDefinitions are first-class citizens in <code>srelens-tui</code>:
+            CustomResourceDefinitions are first-class citizens in <code>srectl</code>:
           </p>
           <ul>
             <li>Auto-discovers all CRDs installed across cluster API groups.</li>
@@ -1013,15 +1013,15 @@ claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destru
           <h2 id="troubleshooting">Diagnostics &amp; Troubleshooting</h2>
           <div class="codeblock">
             <button class="copy-btn" type="button" data-copy='# Run cluster reachability diagnostics
-srelens-tui info
+srectl info
 
 # Check local CLI toolchains
-srelens-tui toolbox'>copy</button>
+srectl toolbox'>copy</button>
 <pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Run cluster reachability diagnostics</span>
-srelens-tui info
+srectl info
 
 <span class="c"># Check local CLI toolchains</span>
-srelens-tui toolbox</code></pre>
+srectl toolbox</code></pre>
           </div>
           <p>
             For reproducible issues or feature requests, visit the <a href="https://github.com/srelens/srelens/issues" rel="noopener">srelens GitHub Issues</a> tracker.

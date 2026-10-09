@@ -100,7 +100,7 @@
       "logo": "https://srelens.com/assets/icon-512.png"
     },
     "featureList": [
-      "Dual-mode interface: Desktop GUI application and standalone pure-Rust Terminal UI (srelens-tui)",
+      "Dual-mode interface: Desktop GUI application and standalone pure-Rust Terminal UI (srectl)",
       "Multi-cluster kubeconfig context management with cluster hotbar",
       "Resource browser covering 35 built-in Kubernetes resource kinds plus custom resources",
       "Live streaming resource watches and an in-memory Informer cache",
@@ -173,7 +173,7 @@
         <h1 class="display">The Kubernetes <span class="accent">kernel</span><br>for engineers and AI agents.</h1>
         <p class="lede">
           Investigate, analyse, and take safe action across Kubernetes clusters from a
-          high-performance desktop workspace or a fast terminal UI (<code>srelens-tui</code>),
+          high-performance desktop workspace or a fast terminal UI (<code>srectl</code>),
           built with a <strong>pure-Rust core</strong>. Backend capabilities are also available to AI agents through MCP.
         </p>
         <p class="hero-platforms"><b>Desktop GUI</b> · <b>Terminal UI (TUI)</b> · <b>macOS</b> · <b>Linux</b> · <b>Windows</b> · free and open source</p>
@@ -205,11 +205,11 @@
           <div class="mode-panel" id="mode-terminal" role="tabpanel" aria-labelledby="mode-tab-terminal" data-mode-panel="terminal">
             <p class="mode-label">terminal</p>
             <div class="hero-actions">
-              <div class="cmd"><span class="cmd-p" aria-hidden="true">$</span><code>brew install srelens/tap/srelens-tui</code><button class="copy-btn" type="button" data-copy="brew install srelens/tap/srelens-tui">copy</button></div>
-              <a class="btn btn-ghost" href="/download/#tui">Terminal UI (srelens-tui)</a>
+              <div class="cmd"><span class="cmd-p" aria-hidden="true">$</span><code>brew install srelens/tap/srectl</code><button class="copy-btn" type="button" data-copy="brew install srelens/tap/srectl">copy</button></div>
+              <a class="btn btn-ghost" href="/download/#tui">Terminal UI (srectl)</a>
             </div>
             <figure class="tui-figure">
-              <pre class="tui" tabindex="0" role="region" aria-label="srelens-tui pods view, text capture"><!-- capture:pods:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
+              <pre class="tui" tabindex="0" role="region" aria-label="srectl pods view, text capture"><!-- capture:pods:start --><span style="color:#eab308">⚡ </span><span style="color:#8b5cf6;font-weight:700">SRELENS</span> <span style="color:#50dc8c;background:#232832;font-weight:700">[● 1: kind-srelens-demo]</span>                                                          <span style="color:#22c55e">● </span><span style="color:#bac2de">v1.36.1 Nodes: </span><span style="color:#dce0e8;font-weight:700">3 </span><span style="color:#bac2de">Pods: </span><span style="color:#dce0e8;font-weight:700">38
 </span><span style="color:#bac2de">Ctx: </span><span style="color:#50dc8c;font-weight:700">kind-srelens-demo</span>  <span style="color:#bac2de">NS: </span><span style="color:#38bdf8;font-weight:700">[all]</span>  <span style="color:#bac2de">View: </span><span style="color:#eab308;font-weight:700">Pods</span>                                     <span style="color:#38bdf8;font-weight:700">&lt;:ctx&gt;</span><span style="color:#bac2de"> All Ctx  </span><span style="color:#38bdf8;font-weight:700">&lt;F1-F10&gt;</span><span style="color:#bac2de"> Hotkeys  </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de">
 </span><span style="color:#4b5563">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ┌</span><span style="color:#8b5cf6;font-weight:700"> Pods [38] </span><span style="color:#4b5563">───────────────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -242,7 +242,7 @@
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 </span><span style="color:#38bdf8;font-weight:700">&lt;:&gt;</span><span style="color:#bac2de"> Cmd </span><span style="color:#38bdf8;font-weight:700">&lt;/&gt;</span><span style="color:#bac2de"> Filter </span><span style="color:#38bdf8;font-weight:700">&lt;l&gt;</span><span style="color:#bac2de"> Logs </span><span style="color:#38bdf8;font-weight:700">&lt;s&gt;</span><span style="color:#bac2de"> Shell </span><span style="color:#38bdf8;font-weight:700">&lt;m&gt;</span><span style="color:#bac2de"> Metrics </span><span style="color:#38bdf8;font-weight:700">&lt;f&gt;/&lt;F&gt;</span><span style="color:#bac2de"> PortForward </span><span style="color:#38bdf8;font-weight:700">&lt;d&gt;</span><span style="color:#bac2de"> Describe </span><span style="color:#38bdf8;font-weight:700">&lt;y&gt;</span><span style="color:#bac2de"> YAML </span><span style="color:#38bdf8;font-weight:700">&lt;e&gt;</span><span style="color:#bac2de"> Edit </span><span style="color:#38bdf8;font-weight:700">&lt;^d&gt;</span><span style="color:#bac2de"> Delete </span><span style="color:#38bdf8;font-weight:700">&lt;?&gt;</span><span style="color:#bac2de"> Hel
 </span><!-- capture:pods:end --></pre>
-              <figcaption>text capture · srelens-tui v0.15.0 on the same cluster · select it</figcaption>
+              <figcaption>text capture · srectl v0.15.0 on the same cluster · select it</figcaption>
             </figure>
           </div>
         </div>
@@ -475,7 +475,7 @@
           </article>
           <article class="bento-cell">
             <span class="kicker">terminal UI</span>
-            <h3>srelens-tui in your shell</h3>
+            <h3>srectl in your shell</h3>
             <p>Standalone pure-Rust Ratatui interface with an in-memory Informer cache, deep Helm values diff, live topology, and embedded AI over SSH or locally.</p>
             <p class="keys"><kbd>l</kbd> logs · <kbd>s</kbd> shell · <kbd>t</kbd> tree · <kbd>Tab</kbd> assistant</p>
           </article>

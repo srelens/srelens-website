@@ -161,7 +161,7 @@
           <p class="eyebrow"><a class="section-label anchor-link" href="#setup">#setup</a> · Connect a client</p>
           <h2>Ready-to-paste config for every AI workspace.</h2>
           <p class="sub">
-            Register <code>srelens-tui mcp</code> or <code>srelens --mcp-stdio</code> with your assistant.
+            Register <code>srectl mcp</code> or <code>srelens --mcp-stdio</code> with your assistant.
             Mutating tools require confirmation; read-only diagnostics execute instantly.
           </p>
         </div>
@@ -174,7 +174,7 @@
               <button class="copy-btn" type="button" data-copy='{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -182,7 +182,7 @@
 <pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -197,7 +197,7 @@
               <button class="copy-btn" type="button" data-copy='{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -205,7 +205,7 @@
 <pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -217,9 +217,9 @@
             <h3>Claude Code CLI</h3>
             <p>Register via one-line terminal command:</p>
             <div class="codeblock">
-              <button class="copy-btn" type="button" data-copy="claude mcp add srelens -- srelens-tui mcp">copy</button>
+              <button class="copy-btn" type="button" data-copy="claude mcp add srelens -- srectl mcp">copy</button>
 <pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># register stdio MCP server</span>
-<span class="p">$</span> claude mcp add srelens -- srelens-tui mcp
+<span class="p">$</span> claude mcp add srelens -- srectl mcp
 
 <span class="c"># or via HTTP server (when enabled)</span>
 <span class="p">$</span> claude mcp add --transport http srelens \
@@ -234,7 +234,7 @@
               <button class="copy-btn" type="button" data-copy='{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -242,7 +242,7 @@
 <pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -257,7 +257,7 @@
               <button class="copy-btn" type="button" data-copy='{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -265,7 +265,7 @@
 <pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -314,11 +314,11 @@
         </div>
         <div class="answer">
           <h2>Can an AI agent break my cluster through srelens?</h2>
-          <p>No. By default, the server runs in safe read-only mode with sensitive data masked. Mutating actions require the server to be launched with <code>--mcp-allow-destructive</code> (<code>--allow-destructive</code> for <code>srelens-tui mcp</code>) <em>and</em> the agent must explicitly provide <code>"_confirm": true</code> in its tool call arguments. Reading plaintext Secrets requires launching with <code>--mcp-allow-sensitive-reads</code> (<code>--allow-sensitive-reads</code> for <code>srelens-tui mcp</code>).</p>
+          <p>No. By default, the server runs in safe read-only mode with sensitive data masked. Mutating actions require the server to be launched with <code>--mcp-allow-destructive</code> (<code>--allow-destructive</code> for <code>srectl mcp</code>) <em>and</em> the agent must explicitly provide <code>"_confirm": true</code> in its tool call arguments. Reading plaintext Secrets requires launching with <code>--mcp-allow-sensitive-reads</code> (<code>--allow-sensitive-reads</code> for <code>srectl mcp</code>).</p>
         </div>
         <div class="answer">
           <h2>Do my credentials ever leave my machine?</h2>
-          <p>No. srelens connects to clusters directly with your local kubeconfig credentials. The MCP server runs locally, either inside the app or as a local <code>srelens</code> or <code>srelens-tui mcp</code> process, with no srelens cloud relay between an agent and your API servers.</p>
+          <p>No. srelens connects to clusters directly with your local kubeconfig credentials. The MCP server runs locally, either inside the app or as a local <code>srelens</code> or <code>srectl mcp</code> process, with no srelens cloud relay between an agent and your API servers.</p>
         </div>
         <div class="answer">
           <h2>Which MCP clients work with srelens?</h2>

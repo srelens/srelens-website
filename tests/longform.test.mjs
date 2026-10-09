@@ -117,18 +117,24 @@ test('/docs/tui/ keeps two real screenshots as images; the other ten are text ca
   assert.equal((mainOf(tui).match(/<figure class="tui-figure">/g) ?? []).length, 10);
 });
 
+// Devesh 2026-10-09: v0.16.0 / srectl. The H1 names srectl; the hero lede carries the one visible "formerly srelens-tui".
+test('/docs/tui/ H1 and hero lede name srectl, and the lede says it was srelens-tui', () => {
+  assert.equal(text(tui.match(/<h1>[\s\S]*?<\/h1>/)[0]), 'srectl Guide & Reference');
+  assert.equal(text(tui.match(/<p class="lede">[\s\S]*?<\/p>/)[0]), 'srectl (formerly srelens-tui) is a high-performance, keyboard-driven pure-Rust terminal workspace for Kubernetes operators and SREs.');
+});
+
 // ---- /docs/tui/ claim fixes ------------------------------------------------------------------
 
 test('/docs/tui/ MCP: every client config and command uses the subcommand spelling --allow-* (B69, B70)', () => {
-  // `srelens-tui mcp --mcp-allow-*` exits 2 on v0.15.0; only the top-level --mcp-stdio form takes --mcp-allow-*.
+  // `srectl mcp --mcp-allow-*` is a usage error (srelens-tui mcp was on v0.15.0); only the top-level --mcp-stdio form takes --mcp-allow-*.
   never(tui, /--mcp-allow-/, 'the page');
   const configs = [...codeOf(tui).matchAll(/"args":\s*\[([^\]]*)\]/g)].map((m) => JSON.parse(`[${m[1]}]`));
   assert.equal(configs.length, 4, 'Cursor, Claude Desktop, Gemini / Antigravity and generic client configs');
   for (const args of configs) assert.deepEqual(args, ['mcp', '--allow-sensitive-reads', '--allow-destructive']);
-  hasCode(tui, '# Allow reading sensitive Secret data in plaintext\nsrelens-tui mcp --allow-sensitive-reads');
-  hasCode(tui, '# Allow mutating and destructive operations\nsrelens-tui mcp --allow-destructive');
-  hasCode(tui, '# Full access (sensitive reads + destructive mutations)\nsrelens-tui mcp --allow-sensitive-reads --allow-destructive');
-  hasCode(tui, 'claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destructive');
+  hasCode(tui, '# Allow reading sensitive Secret data in plaintext\nsrectl mcp --allow-sensitive-reads');
+  hasCode(tui, '# Allow mutating and destructive operations\nsrectl mcp --allow-destructive');
+  hasCode(tui, '# Full access (sensitive reads + destructive mutations)\nsrectl mcp --allow-sensitive-reads --allow-destructive');
+  hasCode(tui, 'claude mcp add srelens -- srectl mcp --allow-sensitive-reads --allow-destructive');
   const copied = [...tui.matchAll(/data-copy=(?:"([^"]*)"|'([^']*)')/g)].map((m) => decode(m[1] ?? m[2]));
   assert.ok(copied.length >= 5, 'the config blocks carry copy buttons');
   for (const payload of copied) never(payload, /--mcp-allow-/, 'copy button payload');
@@ -142,7 +148,7 @@ test('/docs/tui/ MCP flag descriptions say what the flags really gate (C24)', ()
 
 test('/docs/tui/ says 100+ tools, not 80+ (C06), and the safe-by-default sentence stays (C32)', () => {
   assert.ok(prose(tui).includes('exposing 100+ cluster tools (Kubernetes, Helm, toolbox and server tools) to AI agents (Cursor, Claude, Gemini, and custom agents).'));
-  assert.ok(prose(tui).includes('By default, srelens-tui mcp runs in safe read-only mode: queries execute immediately, Secrets are masked, and mutating tools are blocked.'));
+  assert.ok(prose(tui).includes('By default, srectl mcp runs in safe read-only mode: queries execute immediately, Secrets are masked, and mutating tools are blocked.'));
 });
 
 test('/docs/tui/ keybinding tables carry the verified keys (B06, B12, B23, B28, B29, B38, C26, C17)', () => {
@@ -188,16 +194,16 @@ test('/docs/tui/ pod bullets no longer promise a Shift + D key (B28), and the sh
   const pods = mainOf(tui).match(/<h2 id="pod-operations">[\s\S]*?<h2 id="helm-inspector">/)[0];
   never(pods, /Debug Containers/, 'pod bullets');
   has(tui, '<li><strong>Container Shell (<code>s</code>):</strong> Drops straight into a container shell, trying <code>/bin/sh</code>, <code>sh</code>, <code>bash</code> and <code>/bin/bash</code> in turn.</li>');
-  has(tui, '<li><strong>Ephemeral Debug Containers (MCP):</strong> MCP clients that launch <code>srelens-tui mcp --allow-destructive</code> can attach an ephemeral debug container to a distroless pod without restarting it (<code>k8s.debugPod</code>).</li>');
+  has(tui, '<li><strong>Ephemeral Debug Containers (MCP):</strong> MCP clients that launch <code>srectl mcp --allow-destructive</code> can attach an ephemeral debug container to a distroless pod without restarting it (<code>k8s.debugPod</code>).</li>');
   has(tui, '<li><strong>Privileged Node Shell (<code>s</code> on the Nodes view):</strong> Runs <code>kubectl debug node/&lt;name&gt;</code> to open a root shell with the node\'s host namespaces and filesystem reachable. Requires <code>kubectl</code> on your PATH.</li>');
 });
 
 test('/docs/tui/ node SSH: the TUI key is S, status / journal / restart are assistant and MCP tools (B29, C23)', () => {
-  has(tui, '<code>srelens-tui</code> hands authentication to your system <code>ssh</code>, which offers agent identities first and then the standard keys in <code>~/.ssh/</code>:');
+  has(tui, '<code>srectl</code> hands authentication to your system <code>ssh</code>, which offers agent identities first and then the standard keys in <code>~/.ssh/</code>:');
   has(tui, '<li><strong>Interactive Node SSH (<code>S</code> on the Nodes view):</strong> Opens an interactive <code>ssh</code> session to the node after you confirm the destination (InternalIP, then ExternalIP).</li>');
   has(tui, '<li><strong>Systemd Status (assistant / MCP, needs <code>--allow-sensitive-reads</code>):</strong> Check system service states (<code>systemctl status &lt;service&gt;</code>) without an operational kubelet.</li>');
   has(tui, '<li><strong>Journal Logs (assistant / MCP, needs <code>--allow-sensitive-reads</code>):</strong> Retrieve systemd journal logs (<code>journalctl -u &lt;service&gt;</code>, with <code>--since</code> and <code>--grep</code> filters).</li>');
-  has(tui, '<li><strong>Guarded Restarts (MCP, needs <code>--allow-destructive</code>):</strong> Restart a system service such as <code>kubelet</code> or <code>rke2-server</code> from an MCP client that launches <code>srelens-tui mcp --allow-destructive</code>.</li>');
+  has(tui, '<li><strong>Guarded Restarts (MCP, needs <code>--allow-destructive</code>):</strong> Restart a system service such as <code>kubelet</code> or <code>rke2-server</code> from an MCP client that launches <code>srectl mcp --allow-destructive</code>.</li>');
   never(prose(tui), /negotiates SSH authentication automatically|Stream systemd journal|Safely trigger controlled service restarts/, 'old SSH claim');
 });
 
@@ -221,8 +227,8 @@ test('/docs/ TUI section carries the approved wording (B28, B29, B65, C02, C06, 
   has(docs, 'Press <strong>Enter</strong> on any release to launch the 5-tab Deep Helm Inspector. Reading releases does not need the <code>helm</code> CLI; rollback calls your local <code>helm</code>:');
   has(docs, '<li><strong>Built-in Slash Commands:</strong> Run quick investigation macros like <code>/crashloop</code>, <code>/oom</code>, <code>/rollout</code>, or <code>/endpoints</code> to trigger standardized diagnostic workflows.</li>');
   has(docs, '<li><strong>Node SSH &amp; Out-of-Band Recovery (<a href="/docs/tui/#node-ssh"><code>S</code> on the Nodes view</a>):</strong>');
-  has(docs, '<li><strong>Headless MCP Server (<a href="/docs/tui/#tui-mcp"><code>srelens-tui mcp</code></a>):</strong> Expose 100+ cluster tools to Cursor, Claude, and Gemini over stdio with explicit mutation consent gates.</li>');
-  has(docs, '<li><strong>Instant Shells &amp; Deep Debugging:</strong> Press <code>s</code> to drop into a container shell, trying <code>/bin/sh</code>, then <code>bash</code>, through your local <code>kubectl</code>. Open a privileged node shell with <code>s</code> on the Nodes view. MCP clients that launch <code>srelens-tui mcp --allow-destructive</code> can attach ephemeral debug containers to distroless pods (<code>k8s.debugPod</code>). External interactive sessions run on an alternate screen with zero terminal debris on exit.</li>');
+  has(docs, '<li><strong>Headless MCP Server (<a href="/docs/tui/#tui-mcp"><code>srectl mcp</code></a>):</strong> Expose 100+ cluster tools to Cursor, Claude, and Gemini over stdio with explicit mutation consent gates.</li>');
+  has(docs, '<li><strong>Instant Shells &amp; Deep Debugging:</strong> Press <code>s</code> to drop into a container shell, trying <code>/bin/sh</code>, then <code>bash</code>, through your local <code>kubectl</code>. Open a privileged node shell with <code>s</code> on the Nodes view. MCP clients that launch <code>srectl mcp --allow-destructive</code> can attach ephemeral debug containers to distroless pods (<code>k8s.debugPod</code>). External interactive sessions run on an alternate screen with zero terminal debris on exit.</li>');
   has(docs, 'Manage background port-forwards with live byte counters and automatic reconnects (<code>:pf</code>).');
   has(docs, 'Instant view switching for opened views, powered by an in-memory Informer cache,');
 });
@@ -243,7 +249,7 @@ test('no long-form page keeps a claim the owner rejected (B28, B29, B65, B67, C0
     never(html, /\b0ms\b|sub-millisecond/i, `${file}: unmeasured latency`);
     never(html, /\b80\+/, `${file}: 80+`);
     never(html, /3-way/i, `${file}: 3-way diff`);
-    never(text(html), /srelens-tui mcp\s+--mcp-allow-/, `${file}: --mcp-allow-* after srelens-tui mcp`);
+    never(text(html), /srectl mcp\s+--mcp-allow-/, `${file}: --mcp-allow-* after srectl mcp`);
     never(prose(html), /(?:\/bin\/)?bash (?:to|➔) (?:\/bin\/)?sh\b/, `${file}: bash then sh`);
   }
 });

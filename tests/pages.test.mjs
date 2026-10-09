@@ -111,22 +111,22 @@ test('/mcp/ hero is the recorded MCP session, with no old settings screenshot or
 
 test('/mcp/ gives the MCP flags per binary and says where the server runs (C34)', () => {
   const answers = sectionOf(mcp, 'answers');
-  assert.ok(answers.includes('<p>No. By default, the server runs in safe read-only mode with sensitive data masked. Mutating actions require the server to be launched with <code>--mcp-allow-destructive</code> (<code>--allow-destructive</code> for <code>srelens-tui mcp</code>) <em>and</em> the agent must explicitly provide <code>"_confirm": true</code> in its tool call arguments. Reading plaintext Secrets requires launching with <code>--mcp-allow-sensitive-reads</code> (<code>--allow-sensitive-reads</code> for <code>srelens-tui mcp</code>).</p>'));
-  assert.ok(answers.includes('<p>No. srelens connects to clusters directly with your local kubeconfig credentials. The MCP server runs locally, either inside the app or as a local <code>srelens</code> or <code>srelens-tui mcp</code> process, with no srelens cloud relay between an agent and your API servers.</p>'));
+  assert.ok(answers.includes('<p>No. By default, the server runs in safe read-only mode with sensitive data masked. Mutating actions require the server to be launched with <code>--mcp-allow-destructive</code> (<code>--allow-destructive</code> for <code>srectl mcp</code>) <em>and</em> the agent must explicitly provide <code>"_confirm": true</code> in its tool call arguments. Reading plaintext Secrets requires launching with <code>--mcp-allow-sensitive-reads</code> (<code>--allow-sensitive-reads</code> for <code>srectl mcp</code>).</p>'));
+  assert.ok(answers.includes('<p>No. srelens connects to clusters directly with your local kubeconfig credentials. The MCP server runs locally, either inside the app or as a local <code>srelens</code> or <code>srectl mcp</code> process, with no srelens cloud relay between an agent and your API servers.</p>'));
   assert.doesNotMatch(mcp, /part of the local app process/);
 });
 
-test('/mcp/ never attaches a --mcp-allow-* flag to `srelens-tui mcp` (B69, B70, C34)', () => {
-  // `srelens-tui mcp --mcp-allow-*` exits 2 on v0.15.0; the subcommand spells them --allow-*.
-  assert.doesNotMatch(text(mcp), /srelens-tui mcp\s+--mcp-allow-/, 'prose');
+test('/mcp/ never attaches a --mcp-allow-* flag to `srectl mcp` (B69, B70, C34)', () => {
+  // `srectl mcp --mcp-allow-*` is a usage error (srelens-tui mcp was on v0.15.0); the subcommand spells them --allow-*.
+  assert.doesNotMatch(text(mcp), /srectl mcp\s+--mcp-allow-/, 'prose');
   for (const m of mcp.matchAll(/data-copy=(?:"([^"]*)"|'([^']*)')/g)) {
-    assert.doesNotMatch(m[1] ?? m[2], /srelens-tui[\s\S]*--mcp-allow-/, 'copy button payload');
+    assert.doesNotMatch(m[1] ?? m[2], /srectl[\s\S]*--mcp-allow-/, 'copy button payload');
   }
   for (const m of mcp.matchAll(/"args":\s*\[([^\]]*)\]/g)) assert.doesNotMatch(m[1], /--mcp-allow-/, 'client config args');
   // The desktop binary keeps its own spelling: every --mcp-allow-* mention is paired with the subcommand one.
   const pairs = [...mainOf(mcp).matchAll(/<code>--mcp-allow-([a-z-]+)<\/code>(?: <em>and<\/em>)?/g)];
   assert.ok(pairs.length >= 1);
-  for (const [, name] of pairs) assert.ok(mcp.includes(`<code>--allow-${name}</code> for <code>srelens-tui mcp</code>`), `--allow-${name} is given for srelens-tui mcp`);
+  for (const [, name] of pairs) assert.ok(mcp.includes(`<code>--allow-${name}</code> for <code>srectl mcp</code>`), `--allow-${name} is given for srectl mcp`);
 });
 
 // ---- /download/ ------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ test('/download/ no longer claims a "0ms Informer cache" (C02)', () => {
   assert.doesNotMatch(download, /\b0ms\b/);
   assert.equal(
     text(sectionOf(download, 'tui').match(/<p class="sub">[\s\S]*?<\/p>/)[0]),
-    'Prefer the terminal or working over remote SSH sessions? srelens-tui brings the full srelens control room into a fast Ratatui interface with an in-memory Informer cache, live stream watches, deep Helm values diff, interactive themes, and an embedded AI assistant.',
+    'Prefer the terminal or working over remote SSH sessions? srectl brings the full srelens control room into a fast Ratatui interface with an in-memory Informer cache, live stream watches, deep Helm values diff, interactive themes, and an embedded AI assistant.',
   );
 });
 
@@ -227,7 +227,7 @@ test('A5: /features/ logs row says the stream opens as a tab, not docked', () =>
 test('C11: /download/ meta description says "build from source with Cargo", not "install via Cargo"', () => {
   assert.equal(
     meta(download, 'description'),
-    'Download srelens free: Kubernetes desktop client and pure-Rust terminal UI (srelens-tui) for macOS, Windows, and Linux — direct from GitHub Releases, or build from source with Cargo.',
+    'Download srelens free: Kubernetes desktop client and pure-Rust terminal UI (srectl) for macOS, Windows, and Linux — direct from GitHub Releases, or build from source with Cargo.',
   );
   assert.doesNotMatch(download, /install via Cargo/i);
 });

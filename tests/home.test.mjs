@@ -37,7 +37,7 @@ test('the terminal caption and label never claim CrashLoopBackOff (v0.15.0 shows
   const figure = html.match(/<figure class="tui-figure">[\s\S]*?<\/figure>/)[0];
   const outsideCapture = figure.replace(/<pre class="tui"[^>]*>[\s\S]*?<\/pre>/, (pre) => pre.match(/<pre[^>]*>/)[0]);
   assert.doesNotMatch(outsideCapture, /CrashLoopBackOff/);
-  assert.match(outsideCapture, /<figcaption>text capture · srelens-tui v0\.15\.0 on the same cluster · select it<\/figcaption>/);
+  assert.match(outsideCapture, /<figcaption>text capture · srectl v0\.15\.0 on the same cluster · select it<\/figcaption>/);
 });
 
 test('the incident drill sits in #workflow, before #features', () => {
@@ -49,7 +49,7 @@ test('the incident drill sits in #workflow, before #features', () => {
 test('the hero keeps the download, terminal and GitHub actions', () => {
   const hero = html.slice(html.indexOf('<section class="hero">'), html.indexOf('</section>', html.indexOf('id="mode-terminal"')));
   for (const href of ['/download/', '/download/#tui', 'https://github.com/srelens/srelens']) assert.ok(hero.includes(`href="${href}"`), href);
-  assert.ok(hero.includes('data-copy="brew install srelens/tap/srelens-tui"'));
+  assert.ok(hero.includes('data-copy="brew install srelens/tap/srectl"'));
 });
 
 // Devesh 2026-10-09 ("Hide the button"): the product tour shows the old UI. Nothing on the homepage opens it any more;
@@ -83,7 +83,7 @@ const KEYS = {
   'Multi-kubeconfig': '<p class="keys">tui <kbd>F1</kbd>-<kbd>F10</kbd> switch · <kbd>Ctrl</kbd>+<kbd>x</kbd> picker</p>',
   'Browser-style tabs': '<p class="keys"><kbd>⌘W</kbd> close tab (macOS)</p>',
   'Local-first': null,
-  'srelens-tui in your shell': '<p class="keys"><kbd>l</kbd> logs · <kbd>s</kbd> shell · <kbd>t</kbd> tree · <kbd>Tab</kbd> assistant</p>',
+  'srectl in your shell': '<p class="keys"><kbd>l</kbd> logs · <kbd>s</kbd> shell · <kbd>t</kbd> tree · <kbd>Tab</kbd> assistant</p>',
 };
 const cells = [...html.matchAll(/<article class="bento-cell">([\s\S]*?)<\/article>/g)].map((m) => m[1].trim());
 
@@ -179,7 +179,7 @@ test('A5: logs, shells and forwards open as tabs; nothing is docked', () => {
 });
 
 test('C9: the hero lede says "fast terminal UI", not "ultra-fast"', () => {
-  assert.ok(text(afterHead).includes('high-performance desktop workspace or a fast terminal UI (srelens-tui)'));
+  assert.ok(text(afterHead).includes('high-performance desktop workspace or a fast terminal UI (srectl)'));
 });
 
 // Owner review 2026-10-05 (A2, A5): the pod page shows current metrics with YAML one tab away, and logs, shells

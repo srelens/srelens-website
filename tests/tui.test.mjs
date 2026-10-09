@@ -20,7 +20,7 @@ const sectionOf = (id) => {
 test('the hero shows the real capture and the install command', () => {
   const hero = html.slice(html.indexOf('<section class="page-hero">'), html.indexOf('</section>', html.indexOf('<section class="page-hero">')));
   assert.ok(hero.includes(`<!-- capture:pods:start -->${captureHtml('pods')}<!-- capture:pods:end -->`));
-  assert.ok(hero.includes('data-copy="brew install srelens/tap/srelens-tui"'));
+  assert.ok(hero.includes('data-copy="brew install srelens/tap/srectl"'));
 });
 
 test('the hero keeps its One-Line Install eyebrow and h2 above the command row (ruling 1)', () => {
@@ -28,14 +28,21 @@ test('the hero keeps its One-Line Install eyebrow and h2 above the command row (
   const eyebrow = hero.indexOf('One-Line Install');
   const h2 = hero.indexOf('<h2>Install via Homebrew or Shell Script</h2>');
   assert.ok(eyebrow > 0 && h2 > eyebrow && hero.indexOf('class="cmd"') > h2);
-  assert.ok(hero.includes('<a class="btn btn-primary" href="/download/#tui">Install srelens-tui</a>'));
+  assert.ok(hero.includes('<a class="btn btn-primary" href="/download/#tui">Install srectl</a>'));
   assert.ok(hero.includes('<a class="btn btn-ghost" href="/docs/tui/">Read Documentation</a>'));
 });
 
 test('the hero carries the capture caption and never claims CrashLoopBackOff (pods show the phase)', () => {
-  assert.ok(html.includes('<figcaption>text capture · srelens-tui v0.15.0 on the srelens-demo kind cluster · select it</figcaption>'));
+  assert.ok(html.includes('<figcaption>text capture · srectl v0.15.0 on the srelens-demo kind cluster · select it</figcaption>'));
   // The shared footer links the CrashLoopBackOff guide; that is a page title, not a claim about the TUI.
   assert.doesNotMatch(bare.replace(/<footer class="site-footer">[\s\S]*?<\/footer>/, ''), /CrashLoopBackOff/);
+});
+
+// Devesh 2026-10-09: v0.16.0 / srectl. The H1 ("The terminal control room for Kubernetes.") never named the product, so the lede does:
+// it names srectl and carries the one visible "formerly srelens-tui".
+test('the hero lede names srectl and says once that it was srelens-tui', () => {
+  const lede = text(html.match(/<p class="lede">[\s\S]*?<\/p>/)[0]);
+  assert.ok(lede.startsWith('Built on ratatui and kube-rs, srectl (formerly srelens-tui) delivers the full operational power of srelens inside a single, fast native binary.'), lede);
 });
 
 test('the startup feature guide is a text capture after the hero (it replaced the banner screenshot)', () => {
@@ -99,7 +106,7 @@ test('every in-page #anchor-link targets an id that exists', () => {
   for (const id of links) assert.ok(ids.has(id), `#${id}`);
 });
 
-// Devesh 2026-10-09 ("All new UI images"): the two Cursor screenshots give way to the recorded srelens-tui --mcp-stdio session.
+// Devesh 2026-10-09 ("All new UI images"): the two Cursor screenshots give way to the recorded srectl --mcp-stdio session.
 test('the headless MCP row shows the recorded --mcp-stdio session and keeps its bullets, with no Cursor screenshots', () => {
   const row = html.slice(html.indexOf('id="headless-mcp-server"'), html.indexOf('id="argocd-gitops"'));
   assert.ok(row.includes('<!-- mcp-demo:start --><figure class="mcp-demo">'), 'the row holds the panel');
@@ -117,7 +124,7 @@ test('the compare table scrolls inside its own box with scoped headers', () => {
   const section = sectionOf('compare');
   assert.match(section, /<div class="compare-scroll">\s*<table>/);
   assert.equal((section.match(/<th scope="col"/g) ?? []).length, 5);
-  assert.ok(section.includes('<th scope="col" class="srelens">srelens-tui</th>'));
+  assert.ok(section.includes('<th scope="col" class="srelens">srectl</th>'));
   const rows = [...section.matchAll(/<tr>\s*(<th scope="row">[\s\S]*?)<\/tr>/g)].map((m) => m[1]);
   assert.equal(rows.length, 7, 'Idle Memory Consumption (C03) is gone, the other seven rows stay');
   for (const row of rows) assert.equal((row.match(/<td/g) ?? []).length, 4);
@@ -200,7 +207,7 @@ test('the approved copy replaces each reworded claim, exactly', () => {
     // B65 /network -> /endpoints
     ['B65', '<li><strong>Incident Playbooks:</strong> Run <code>/crashloop</code>, <code>/oom</code>, <code>/rollout</code>, or <code>/endpoints</code> to diagnose failing workloads with grounded root cause analysis.</li>'],
     // C18
-    ['C18', '<li><strong>Tool Badges &amp; Execution:</strong> Transparently runs diagnostic tools (manifest and event reads, log tailing, metrics). Tools that change the cluster are blocked in the assistant; MCP clients can use them by launching <code>srelens-tui mcp --allow-destructive</code>.</li>'],
+    ['C18', '<li><strong>Tool Badges &amp; Execution:</strong> Transparently runs diagnostic tools (manifest and event reads, log tailing, metrics). Tools that change the cluster are blocked in the assistant; MCP clients can use them by launching <code>srectl mcp --allow-destructive</code>.</li>'],
     // C05
     ['C05', '<li><strong>Multi-Provider &amp; Token Estimates:</strong> Each reply shows an estimated token count and the reply time. Connect Anthropic Claude, OpenAI, Google Gemini, or any OpenAI-compatible endpoint such as local <strong>Ollama</strong>.</li>'],
     // C06
@@ -296,12 +303,12 @@ for (const file of TUI_PAGES) {
       assert.ok(section.includes(`<!-- capture:${name}:start -->`), `${anchor} holds capture "${name}"`);
       assert.equal((section.match(/<figure/g) ?? []).length, 1, `${anchor}: the capture is the section's first figure`);
       const figure = section.slice(section.indexOf('<figure class="tui-figure">'));
-      assert.match(figure, new RegExp(`<figure class="tui-figure">\\s*<pre class="tui" tabindex="0" role="region" aria-label="srelens-tui [^"]+, text capture"><!-- capture:${name}:start -->`), name);
+      assert.match(figure, new RegExp(`<figure class="tui-figure">\\s*<pre class="tui" tabindex="0" role="region" aria-label="srectl [^"]+, text capture"><!-- capture:${name}:start -->`), name);
       const caption = figure.match(/<figcaption>([^<]+)<\/figcaption>/)?.[1];
       assert.ok(caption, `${name}: figcaption`);
       assert.match(caption, name === 'gpu'
-        ? /^srelens-tui [^·]+ · text capture from v0\.15\.0 · simulated GPU node \(kwok\)$/
-        : /^srelens-tui [^·]+ · text capture from v0\.15\.0$/, `${name}: ${caption}`);
+        ? /^srectl [^·]+ · text capture from v0\.15\.0 · simulated GPU node \(kwok\)$/
+        : /^srectl [^·]+ · text capture from v0\.15\.0$/, `${name}: ${caption}`);
       assert.doesNotMatch(figure.replace(/<pre class="tui"[^>]*>[\s\S]*?<\/pre>/, ''), /CrashLoopBackOff/, `${name}: pods show the phase, not CrashLoopBackOff`);
     }
   });
@@ -419,9 +426,11 @@ test('C9: the /tui/ lede and its meta, Open Graph and Twitter descriptions say "
 });
 
 test('C10: "pure Rust" is gone from the /tui/ body, badge, compare cell and JSON-LD; titles keep "Pure-Rust"', () => {
-  const titles = html.match(/<(?:title>|meta (?:property="og:title"|name="twitter:title") content=")srelens-tui — Pure-Rust Terminal UI for Kubernetes/g) ?? [];
-  assert.equal(titles.length, 3, 'title, og:title and twitter:title keep "Pure-Rust"');
-  const rest = html.replace(/srelens-tui — Pure-Rust Terminal UI for Kubernetes/g, '');
+  // Devesh 2026-10-09: v0.16.0 / srectl. The title names srectl and keeps "formerly srelens-tui" so searches for the old name still land.
+  const TITLE = 'srectl (formerly srelens-tui) — Pure-Rust Terminal UI for Kubernetes';
+  const titles = [...html.matchAll(/<(?:title>|meta (?:property="og:title"|name="twitter:title") content=")([^"<]*)/g)].map((m) => m[1]);
+  assert.deepEqual(titles, [TITLE, TITLE, TITLE], 'title, og:title and twitter:title keep "Pure-Rust"');
+  const rest = html.split(TITLE).join('');
   assert.doesNotMatch(rest, /pure[- ]rust/i);
   assert.ok(html.includes('<td>Rust (kube-rs + Ratatui)</td>'));
 });
