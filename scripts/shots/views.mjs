@@ -82,7 +82,7 @@ export const VIEWS = [
     route: ({ pod }) => `/k/Pod/payments/${pod('payments-api')}`,
     namespaces: PAYMENTS,
     expect: 'Active',
-    keep: 'In web mode the Local column shows the server proxy URL (http://127.0.0.1:8791/pf/1/), not the desktop 127.0.0.1:8080.',
+    // In web mode the Local column shows the server proxy URL (http://127.0.0.1:8791/pf/1/), not the desktop 127.0.0.1:8080; the alt on /features/ says so.
     // The pod's Forward action opens the New port forward dialog; once it is up the status bar's counter opens the Port forwards tab.
     steps: [
       { text: 'Forward' }, { wait: 1500 },

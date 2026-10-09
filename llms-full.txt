@@ -78,12 +78,12 @@ Supported backend capabilities are registered in a shared capability registry an
 - YAML editor on the payments-api Deployment, checked by a server dry run, with schema-aware key hints — https://srelens.com/assets/shots/dark-yaml.webp
 - Shell session inside a payments-api pod running hostname and nslookup for the redis service — https://srelens.com/assets/shots/dark-terminal.webp
 - Log stream for the crash-looping ledger-worker pod: connecting to ledger-db, then fatal: connection refused — https://srelens.com/assets/shots/dark-logs.webp
-- MCP settings panel (server, CLI, client config) — https://srelens.com/assets/shots/dark-mcp.webp
+- Real MCP session (srelens-tui v0.15.0 --mcp-stdio) answering one question from three kind clusters, on https://srelens.com/#talk-to-your-clusters
 - Namespaces list for the demo cluster with status, labels and age — https://srelens.com/assets/shots/dark-namespaces.webp
 - Cluster events with all, warnings and normal filters and a by-reason count that includes one BackOff warning — https://srelens.com/assets/shots/dark-events.webp
 - Deployments across all namespaces with ready, up-to-date and available counts, ledger-worker at 0/1 ready — https://srelens.com/assets/shots/dark-deployments.webp
 - Services across namespaces with type, cluster IP and ports, and the external IP of the payments-api-lb load balancer — https://srelens.com/assets/shots/dark-services.webp
-- Port-forward management — https://srelens.com/assets/shots/dark-port-forwards.webp
+- Port forwards tab: payments-api port 80 forwarded through the srelens server at http://127.0.0.1:8791/pf/1/ — https://srelens.com/assets/shots/dark-port-forwards.webp
 - Helm releases list with podinfo deployed in checkout at revision 2 and its Upgrade, Roll back and Uninstall actions — https://srelens.com/assets/shots/dark-helm.webp
 - Delete Pod? confirmation for the crash-looping ledger-worker pod in payments, with the equivalent kubectl command — https://srelens.com/assets/shots/dark-confirm-delete.webp
 - Helm pane for podinfo with the rendered manifest diff from revision 1 to 2, replicas going from 1 to 2 — https://srelens.com/assets/shots/dark-helm-detail.webp

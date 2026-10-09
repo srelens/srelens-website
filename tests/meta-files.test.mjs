@@ -83,8 +83,6 @@ test('C29: llms files say srelens-tui uses local kubectl and helm', () => {
 // llms-full.txt screenshot inventory and demo-cluster description.
 const full = () => read('llms-full.txt');
 const SHOT_URL = /https:\/\/srelens\.com\/assets\/shots\/([\w-]+\.webp)/g;
-// Entries whose images did not change in the redesign keep their old descriptions.
-const UNCHANGED_SHOTS = new Set(['dark-mcp', 'dark-port-forwards']);
 
 test('every screenshot URL in the llms files exists on disk and none is a TUI image', () => {
   for (const file of LLMS) {
@@ -108,15 +106,20 @@ test('each inventory description is the alt text of the matching features-page s
   }
   let checked = 0;
   for (const [, desc, name] of full().matchAll(/^- (.+?) — https:\/\/srelens\.com\/assets\/shots\/([\w-]+)\.webp$/gm)) {
-    if (UNCHANGED_SHOTS.has(name)) continue;
     const alt = alts.get(name);
     assert.ok(alt, `${name} has no alt on /features/`);
     const expected = alt.replace(/^srelens /, '');
     assert.equal(desc, expected[0].toUpperCase() + expected.slice(1), name);
     checked += 1;
   }
-  // dark-mcp left /features/ on 2026-10-09 (its row is the MCP panel now), so only the unchanged shots still pictured there are skipped.
-  assert.equal(checked, alts.size - [...UNCHANGED_SHOTS].filter((name) => alts.has(name)).length);
+  // Every shot pictured on /features/ is a new-UI capture now (dark-port-forwards was recaptured on 2026-10-09), so none is exempt.
+  assert.equal(checked, alts.size);
+});
+
+// dark-mcp.webp is an old-UI image no page shows any more (the MCP row is the recorded session), so the inventory must not offer it.
+test('no llms file names dark-mcp.webp, and llms-full.txt describes the recorded MCP session instead', () => {
+  for (const file of LLMS) assert.doesNotMatch(read(file), /dark-mcp\.webp/, file);
+  assert.ok(full().split('\n').includes('- Real MCP session (srelens-tui v0.15.0 --mcp-stdio) answering one question from three kind clusters, on https://srelens.com/#talk-to-your-clusters'));
 });
 
 test('llms files describe no stale demo cluster', () => {

@@ -114,7 +114,8 @@ test('cdp on delivers only the named event and stops after off()', () => withFak
 
 test('views web mode cannot show faithfully name the reason they keep their existing image', () => {
   const kept = VIEWS.filter((v) => v.keep);
-  assert.deepEqual(kept.map((v) => v.name), ['port-forwards', 'mcp']);
+  // port-forwards left the list on 2026-10-09 (Devesh: "Capture in web mode"); mcp stays because its image is on no page now.
+  assert.deepEqual(kept.map((v) => v.name), ['mcp']);
   for (const v of kept) assert.ok(v.keep.length > 40, `${v.name} needs a reason`);
 });
 
