@@ -78,7 +78,7 @@ Supported backend capabilities are registered in a shared capability registry an
 - YAML editor on the payments-api Deployment, checked by a server dry run, with schema-aware key hints — https://srelens.com/assets/shots/dark-yaml.webp
 - Shell session inside a payments-api pod running hostname and nslookup for the redis service — https://srelens.com/assets/shots/dark-terminal.webp
 - Log stream for the crash-looping ledger-worker pod: connecting to ledger-db, then fatal: connection refused — https://srelens.com/assets/shots/dark-logs.webp
-- Real MCP session (srectl --mcp-stdio) answering one question from three kind clusters, on https://srelens.com/#talk-to-your-clusters
+- Real MCP session (srectl v0.16.0 --mcp-stdio) answering one question from three kind clusters, on https://srelens.com/#talk-to-your-clusters
 - Namespaces list for the demo cluster with status, labels and age — https://srelens.com/assets/shots/dark-namespaces.webp
 - Cluster events with all, warnings and normal filters and a by-reason count that includes one BackOff warning — https://srelens.com/assets/shots/dark-events.webp
 - Deployments across all namespaces with ready, up-to-date and available counts, ledger-worker at 0/1 ready — https://srelens.com/assets/shots/dark-deployments.webp

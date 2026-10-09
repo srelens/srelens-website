@@ -119,9 +119,8 @@ test('each inventory description is the alt text of the matching features-page s
 // dark-mcp.webp is an old-UI image no page shows any more (the MCP row is the recorded session), so the inventory must not offer it.
 test('no llms file names dark-mcp.webp, and llms-full.txt describes the recorded MCP session instead', () => {
   for (const file of LLMS) assert.doesNotMatch(read(file), /dark-mcp\.webp/, file);
-  // Devesh 2026-10-09: v0.16.0 / srectl. No version in the line until Task 7 re-records the session with srectl 0.16.0: the page's
-  // transcript still comes from srelens-tui 0.15.0, and "srectl v0.15.0" never existed.
-  assert.ok(full().split('\n').includes('- Real MCP session (srectl --mcp-stdio) answering one question from three kind clusters, on https://srelens.com/#talk-to-your-clusters'));
+  // Devesh 2026-10-09: v0.16.0 / srectl. The session was re-recorded with srectl v0.16.0 (Task 7), the version the page's figcaption names.
+  assert.ok(full().split('\n').includes('- Real MCP session (srectl v0.16.0 --mcp-stdio) answering one question from three kind clusters, on https://srelens.com/#talk-to-your-clusters'));
 });
 
 test('llms files describe no stale demo cluster', () => {
