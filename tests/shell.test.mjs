@@ -51,17 +51,17 @@ test('applyShell swaps head links and is idempotent', () => {
   assert.equal(applyShell(once, p, '0.15.0'), once);
 });
 
-// Minimal page skeleton for applyShell unit tests (index.html has no crumbs, so none are needed).
+// Minimal page skeleton for applyShell unit tests (404.html has no crumbs and no OG card, so it needs neither a path line nor a canonical link).
 const doc = (body) => `<head></head><body><header class="site-header"></header><main id="main">${body}</main><script src="/main.js" defer></script></body>`;
 
 test('applyShell turns a short H1 gradient phrase into the accent and drops the rest', () => {
-  const html = applyShell(doc('<h1 class="display">The terminal control room <br><span class="grad">for Kubernetes.</span></h1><h2>A <span class="grad">long gradient phrase here.</span></h2>'), page('index.html'), '0.15.0');
+  const html = applyShell(doc('<h1 class="display">The terminal control room <br><span class="grad">for Kubernetes.</span></h1><h2>A <span class="grad">long gradient phrase here.</span></h2>'), page('404.html'), '0.15.0');
   assert.match(html, /<span class="accent">for Kubernetes\.<\/span>/);
   assert.match(html, /<h2>A long gradient phrase here\.<\/h2>/);
 });
 
 test('applyShell turns an eyebrow tick into a section permalink', () => {
-  const html = applyShell(doc('<section class="section" id="workflow"><p class="eyebrow"><span class="tick">●</span> The reliability loop</p></section>'), page('index.html'), '0.15.0');
+  const html = applyShell(doc('<section class="section" id="workflow"><p class="eyebrow"><span class="tick">●</span> The reliability loop</p></section>'), page('404.html'), '0.15.0');
   assert.match(html, /<p class="eyebrow"><a class="section-label anchor-link" href="#workflow">#workflow<\/a> · The reliability loop<\/p>/);
 });
 
@@ -148,6 +148,29 @@ test('applyShell swaps tui/ from its old screenshot tags to the card', () => {
   assert.equal(applyShell(old, p, '0.15.0'), now);
 });
 
+// The compare pages shipped an og:image with no width, height or alt, and the six sub-pages no twitter:image: the card swap
+// must add what is missing, once each, in the page's own spacing.
+test('applyShell adds the missing dimension, alt and twitter:image tags next to their neighbours, and only once', () => {
+  for (const file of ['compare/index.html', 'compare/k9s/index.html']) {
+    const p = page(file);
+    const bare = read(p.file)
+      .replace(/\s*<meta property="og:image:(?:width|height|alt)" content="[^"]*">/g, '')
+      .replace(/\s*<meta name="twitter:image" content="[^"]*">/, '');
+    assert.equal(meta(bare, 'og:image:width'), null, `${file}: the fixture still has the tags`);
+    assert.equal(meta(bare, 'twitter:image'), null, `${file}: the fixture still has twitter:image`);
+    const out = applyShell(bare, p, '0.15.0');
+    assert.equal(meta(out, 'twitter:image'), `https://srelens.com/assets/og/${p.ogCard}`, file);
+    assert.equal(out.match(/name="twitter:image"/g).length, 1, file);
+    assert.match(out, /<meta name="twitter:card" content="summary_large_image">(\s*)<meta name="twitter:image" content="[^"]*">/, file);
+    assert.equal(meta(out, 'og:image:width'), '1200', file);
+    assert.equal(meta(out, 'og:image:height'), '630', file);
+    assert.equal(meta(out, 'og:image:alt'), `srelens.com${new URL(canonical(bare)).pathname}: ${h1s(bare)[0]}`, file);
+    assert.equal(out.match(/og:image:(?:width|height|alt)"/g).length, 3, file);
+    assert.match(out, /<meta property="og:image" content="[^"]*">(\s*)<meta property="og:image:width" content="1200">\1<meta property="og:image:height" content="630">\1<meta property="og:image:alt" content="[^"]*">\1<meta name="twitter:card"/, file);
+    assert.equal(applyShell(out, p, '0.15.0'), out, `${file}: not idempotent`);
+  }
+});
+
 test('applyShell names the missing canonical link instead of failing on an invalid URL', () => {
   const p = page('security/index.html');
   const html = preOg(read(p.file)).replace(/<link rel="canonical" href="[^"]*">/, '');
@@ -191,7 +214,7 @@ test('applyShell keeps $-patterns in a crumb literal in the path line and the Br
 });
 
 test('applyShell keeps a $-pattern in the version literal in the footer, inserted or replaced', () => {
-  const p = page('index.html');
+  const p = page('404.html');
   const inserted = applyShell(doc(''), p, '1.$&');
   assert.ok(inserted.includes('<span data-version>v1.$&</span>'));
   assert.equal(applyShell(inserted, p, '1.$&'), inserted);
@@ -204,6 +227,17 @@ test('footer links every indexable page: all published pages except the 404 and 
   for (const p of PAGES.filter((e) => e.file !== '404.html' && !e.mirrorOf)) {
     const path = new URL(canonical(read(p.file))).pathname;
     assert.ok(hrefs.has(path), `the footer does not link ${path}`);
+  }
+});
+
+// Devesh 2026-10-09: the brand line is "the Kubernetes kernel"; no page footer says "control room" any more.
+test('every page footer carries the kernel brand line and none says "control room"', () => {
+  assert.match(renderFooter('0.15.0'), /<p class="footer-tag">The Kubernetes kernel · built with Rust &amp; Tauri<\/p>/);
+  for (const p of PAGES) {
+    const footer = read(p.file).match(/<footer class="site-footer">[\s\S]*?<\/footer>/);
+    assert.ok(footer, `${p.file} has no footer`);
+    assert.doesNotMatch(footer[0], /control room/i, p.file);
+    assert.ok(footer[0].includes('<p class="footer-tag">The Kubernetes kernel · built with Rust &amp; Tauri</p>'), p.file);
   }
 });
 

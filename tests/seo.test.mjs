@@ -9,6 +9,11 @@ import { PAGES, page as pageEntry } from '../scripts/pages.mjs';
 // ---- Deliberate changes from the spec (section 8). Everything else must match the baseline. ----
 // Expected meta values that replace the baseline: { file: { key: value } }.
 const META_CHANGES = {
+  // Devesh 2026-10-09: the brand line is "the Kubernetes kernel"
+  'index.html': {
+    'og:title': 'srelens — The Kubernetes kernel',
+    'twitter:title': 'srelens — The Kubernetes kernel',
+  },
   // C02 (claims check): "0ms" is not a measured latency. Only the description carried it; og:description and twitter:description did not.
   'compare/k9s/index.html': {
     description: 'Compare srelens and K9s: srelens offers both a multi-tab desktop workspace and a standalone pure-Rust terminal UI (srelens-tui) with an in-memory Informer cache, deep Helm values diff, and built-in AI MCP, compared to K9s.',
@@ -56,6 +61,8 @@ for (const p of PAGES) {
       'twitter:description': b.meta.description, 'twitter:image': image,
     });
   }
+  // Only what really differs: a page whose old card was already 1200x630 changes no dimension tag.
+  for (const [key, value] of Object.entries(changes)) if (value === b.meta[key]) delete changes[key];
   if (Object.keys(changes).length) META_CHANGES[p.file] = { ...META_CHANGES[p.file], ...changes };
 }
 // Approved claim fixes (TUI claims check, Decision 3): exact baseline featureList entry -> replacement, per page.
@@ -250,8 +257,32 @@ test('every indexable page has an og:image that exists on disk', () => {
   }
 });
 
+// Devesh 2026-10-09: the brand line is "the Kubernetes kernel"; the card footer carries it.
+test('the OG card template carries the brand line "The Kubernetes kernel", not "control room"', () => {
+  const template = readFileSync(join(ROOT, 'scripts', 'og-card.html'), 'utf8');
+  assert.ok(template.includes('<span>The Kubernetes kernel</span>'));
+  assert.doesNotMatch(template, /control room/i);
+});
+
+// Devesh 2026-10-09: "All new UI images". The old og-*.jpg cards stay published (nothing 404s) but no page points at one.
+test('no published page points og:image or twitter:image at an old-UI .jpg in assets/og/', () => {
+  for (const file of listPages()) {
+    const html = read(file);
+    for (const key of ['og:image', 'twitter:image']) {
+      assert.doesNotMatch(meta(html, key) ?? '', /\/assets\/og\/[^/]*\.jpe?g$/i, `${file}: ${key}`);
+    }
+  }
+});
+
+test('every indexable page has its own PNG card in the manifest; only the docs/tui.html mirror shares one', () => {
+  const own = PAGES.filter((p) => p.file !== '404.html' && !p.mirrorOf);
+  for (const p of own) assert.match(p.ogCard ?? '', /^og-[a-z0-9-]+\.png$/, `${p.file} has no PNG ogCard`);
+  assert.equal(new Set(own.map((p) => p.ogCard)).size, own.length, 'two pages share a card');
+  for (const p of PAGES.filter((e) => e.mirrorOf)) assert.equal(meta(read(p.file), 'og:image'), `https://srelens.com/assets/og/${pageEntry(p.mirrorOf).ogCard}`, p.file);
+});
+
 test('every OG card in the manifest is a 1200x630 PNG', () => {
   const cards = PAGES.filter((p) => p.ogCard);
-  assert.equal(cards.length, 9);
+  assert.equal(cards.length, 21);
   for (const { ogCard } of cards) assert.deepEqual(pngSize(`assets/og/${ogCard}`), [1200, 630], ogCard);
 });

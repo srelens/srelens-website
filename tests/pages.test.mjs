@@ -188,8 +188,8 @@ test('/mcp/ example: every key line of the JSON body is indented alike, "_confir
 });
 
 // ---- Owner copy fixes (Devesh 2026-10-05): the feature rows describe the new UI the screenshots show ----
-// The og:image:alt in the head describes og-features.jpg, an old-UI card that is not part of this change, so the
-// "drawer" check reads the page after </head>.
+// The "drawer" check reads the page after </head>: until 2026-10-09 the og:image:alt in the head described og-features.jpg,
+// an old-UI card (it is now the H1 on og-features.png).
 const featureCopy = text(mainOf(features));
 const afterHead = (html) => html.slice(html.indexOf('</head>'));
 

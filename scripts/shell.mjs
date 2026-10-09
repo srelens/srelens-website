@@ -85,7 +85,7 @@ export function renderFooter(version) {
     '<div class="wrap footer-grid">',
     '<div class="footer-brand">',
     BRAND,
-    '<p class="footer-tag">The Kubernetes control room · built with Rust &amp; Tauri</p>',
+    '<p class="footer-tag">The Kubernetes kernel · built with Rust &amp; Tauri</p>',
     `<p class="footer-version">latest <span data-version>v${version}</span> · MIT</p>`,
     '</div>',
     `<nav class="footer-cols" aria-label="Footer">${cols.join('')}</nav>`,
@@ -200,6 +200,14 @@ export function applyShell(html, page, version) {
         .replace(/<meta property="og:image:height" content="[^"]*">/, () => '<meta property="og:image:height" content="630">')
         .replace(/<meta property="og:image:alt" content="[^"]*">/, () => `<meta property="og:image:alt" content="${alt}">`)
         .replace(/<meta name="twitter:image" content="[^"]*">/, () => `<meta name="twitter:image" content="${image}">`);
+      // The compare pages had an image but no dimension or alt tags (the sub-pages no twitter:image either): add what is
+      // missing next to its neighbour, in the page's own spacing.
+      const addAfter = (anchor, tags) => {
+        if (tags.length) out = out.replace(anchor, (m, tag, gap) => tag + gap + tags.join(gap) + gap);
+      };
+      addAfter(/(<meta property="og:image" content="[^"]*">)(\s*)/, [['og:image:width', '1200'], ['og:image:height', '630'], ['og:image:alt', alt]]
+        .filter(([key]) => meta(out, key) === null).map(([key, value]) => `<meta property="${key}" content="${value}">`));
+      addAfter(/(<meta name="twitter:card" content="[^"]*">)(\s*)/, meta(out, 'twitter:image') === null ? [`<meta name="twitter:image" content="${image}">`] : []);
     } else {
       out = replaceOne(out, /(<link rel="canonical" href="[^"]*">)/, (m, link) => `${link}\n${ogTags(page, out)}`, 'canonical link');
     }
