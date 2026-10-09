@@ -49,21 +49,21 @@ test('tui-captures.tsv lists every feature once, as name, arguments and keys, al
   }
 });
 
-test('capture-all.sh runs the TSV at 120x32 against the published srelens-tui and prints its version', () => {
+test('capture-all.sh runs the TSV at 120x32 against the published srectl and prints its version', () => {
   const script = read('scripts/demo/capture-all.sh');
   assert.match(script, /^#!\/usr\/bin\/env bash\n/);
   assert.match(script, /^set -euo pipefail$/m);
-  assert.match(script, /tmux new-session -d -s cap -x 120 -y 32 /);
-  assert.match(script, /curl -fsSL https:\/\/srelens\.com\/install\.sh \| sh -s -- --version "\$VERSION"/);
-  assert.match(script, /^srelens-tui version$/m);
+  assert.match(script, /tmux new-session -d -s cap -x 120 -y 32 "srectl \$args"/);
+  assert.match(script, /sh \/work\/install\.sh --version "\$VERSION"/);
+  assert.match(script, /^srectl version$/m);
   assert.match(script, /done < \/work\/tui-captures\.tsv/);
 });
 
 test('capture-all.sh keeps the capture pinned to $VERSION: the update check cannot reach api.github.com', () => {
-  // srelens-tui checks api.github.com at startup and puts "▲ Update: v0.16.0" in the header once a newer release exists.
+  // srectl checks api.github.com at startup and puts "▲ Update: <newer release>" in the header once a newer release exists.
   const script = read('scripts/demo/capture-all.sh');
   const hosts = script.indexOf('>> /etc/hosts');
-  assert.ok(hosts > script.indexOf('install.sh'), 'the hosts entry comes after the installer ran');
+  assert.ok(hosts > script.indexOf('sh /work/install.sh'), 'the hosts entry comes after the installer ran');
   assert.ok(hosts < script.indexOf('tmux new-session'), 'and before the first session starts');
   assert.match(script, /^echo "127\.0\.0\.1 api\.github\.com" >> \/etc\/hosts$/m);
 });
@@ -94,11 +94,11 @@ test('the assistant row opens the AI assistant on the demo cluster and asks one 
 
 const AI_KEYS = ['ANTHROPIC_API_KEY', 'OPENAI_API_KEY', 'GEMINI_API_KEY'];
 
-test('capture-all.sh hands the AI keys to srelens-tui from the container environment and never prints, logs or writes them', () => {
+test('capture-all.sh hands the AI keys to srectl from the container environment and never prints, logs or writes them', () => {
   const script = read('scripts/demo/capture-all.sh');
-  // Only the installer's subshell names them, to unset them: the downloaded install.sh has no use for a key.
+  // Only the installer's subshell names them, to unset them: install.sh has no use for a key.
   const unset = `unset ${AI_KEYS.join(' ')}`;
-  assert.match(script, new RegExp(`^\\( ${unset}; curl -fsSL https://srelens\\.com/install\\.sh \\| sh -s -- --version "\\$VERSION" \\)$`, 'm'));
+  assert.match(script, new RegExp(`^\\( ${unset}; sh /work/install\\.sh --version "\\$VERSION" \\)$`, 'm'));
   for (const line of script.split('\n')) {
     for (const key of AI_KEYS) if (line.includes(key)) assert.ok(line.includes(unset) || line.trimStart().startsWith('#'), `a line uses ${key}: ${line}`);
   }

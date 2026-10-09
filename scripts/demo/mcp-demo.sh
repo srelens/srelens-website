@@ -2,18 +2,18 @@
 # Runs inside ubuntu:24.04 on the "kind" Docker network: one real MCP stdio session against three kind clusters.
 # Writes /work/out/mcp-rollouts.jsonl (every request and response, in order) and /work/out/mcp-rollouts.version.
 set -euo pipefail
-VERSION="${VERSION:-0.15.0}"
+VERSION="${VERSION:-0.16.0}"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq && apt-get install -y -qq curl ca-certificates >/dev/null
-curl -fsSL https://srelens.com/install.sh | sh -s -- --version "$VERSION"
+sh /work/install.sh --version "$VERSION"
 export PATH="/usr/local/bin:$HOME/.local/bin:$PATH"
 export KUBECONFIG=/work/kubeconfig-mcp
 mkdir -p /work/out
 OUT=/work/out/mcp-rollouts.jsonl
 : > "$OUT"
-srelens-tui version > /work/out/mcp-rollouts.version
+srectl version > /work/out/mcp-rollouts.version
 mkfifo /tmp/mcp-in
-srelens-tui --mcp-stdio < /tmp/mcp-in > /tmp/mcp-out.jsonl 2> /tmp/mcp-err.log &
+srectl --mcp-stdio < /tmp/mcp-in > /tmp/mcp-out.jsonl 2> /tmp/mcp-err.log &
 PID=$!
 exec 3> /tmp/mcp-in
 seen=0

@@ -32,7 +32,7 @@ _headers            security + cache headers (Netlify / Cloudflare Pages)
 vercel.json         same headers for Vercel
 assets/             logos, favicons, OG sources
 assets/shots/       product screenshots (webp, 2400w, desktop dark-*/light-* and tui-*)
-assets/captures/    raw ANSI sources of the srelens-tui text captures (not published)
+assets/captures/    raw ANSI sources of the srectl text captures (not published)
 assets/og/          1200x630 OG cards per page (jpg and png)
 assets/media/       17-second product walkthrough in MP4 and GIF formats
 scripts/            authoring tools: shared shell, captures, screenshots, OG cards, review shots (not published)
@@ -76,11 +76,11 @@ node scripts/shots/desktop-shots.mjs \
 
 It drives headless Chrome over the DevTools Protocol (set `CHROME` if it is not at the default path) at a 1600×974 viewport with device scale 1.5, and writes `assets/shots/{dark,light}-<view>.webp` at 2400×1461, quality 82. Each view's route, the text that proves it has synced, and any click steps live in `scripts/shots/views.mjs`. Add a view there to capture a new one.
 
-One view carries a `keep` field and is skipped by a full run: `mcp`. Web mode cannot show it faithfully (the MCP server pane exists only in the desktop app), and its image is on no page now; `--only=mcp` still captures it. `port-forwards` is captured in web mode, where the Local column shows the srelens server proxy URL (`http://127.0.0.1:8791/pf/1/`) instead of the desktop `127.0.0.1:8080`, and the alt text on `/features/` says so. One image is kept on purpose until its text capture exists: the `srelens-tui` AI assistant screenshot (see "Assistant capture" below; it needs a real provider key).
+One view carries a `keep` field and is skipped by a full run: `mcp`. Web mode cannot show it faithfully (the MCP server pane exists only in the desktop app), and its image is on no page now; `--only=mcp` still captures it. `port-forwards` is captured in web mode, where the Local column shows the srelens server proxy URL (`http://127.0.0.1:8791/pf/1/`) instead of the desktop `127.0.0.1:8080`, and the alt text on `/features/` says so. One image is kept on purpose until its text capture exists: the `srectl` AI assistant screenshot (see "Assistant capture" below; it needs a real provider key).
 
 ## Terminal capture
 
-The terminal blocks are real `srelens-tui` v0.15.0 text, not mock-ups. Everything uses an isolated kubeconfig, `.superpowers/capture/kubeconfig-host` (context `kind-srelens-demo`). `~/.kube/config` is never read or written, and no other cluster is touched. The `.superpowers/capture/` folder is working space and is not part of the site.
+The terminal blocks are real `srectl` v0.16.0 text, not mock-ups. Everything uses an isolated kubeconfig, `.superpowers/capture/kubeconfig-host` (context `kind-srelens-demo`). `~/.kube/config` is never read or written, and no other cluster is touched. The `.superpowers/capture/` folder is working space and is not part of the site.
 
 ```sh
 # 1. the cluster, with its own kubeconfig
@@ -94,14 +94,14 @@ bash scripts/demo/extras.sh        # Helm, Argo CD, BGP
 
 # 2. an in-network kubeconfig and the capture scripts, for the container
 kind get kubeconfig --name srelens-demo --internal > .superpowers/capture/kubeconfig
-cp scripts/demo/capture.sh scripts/demo/capture-all.sh scripts/demo/tui-captures.tsv .superpowers/capture/
+cp install.sh scripts/demo/capture.sh scripts/demo/capture-all.sh scripts/demo/tui-captures.tsv .superpowers/capture/
 
 # 3. capture inside Docker on the kind network (MSYS_NO_PATHCONV=1 keeps Git Bash from rewriting /work)
 MSYS_NO_PATHCONV=1 docker run --rm --network kind -v "$(pwd -W 2>/dev/null || pwd)/.superpowers/capture:/work" \
   -e KUBECONFIG=/work/kubeconfig ubuntu:24.04 bash /work/capture-all.sh
 ```
 
-`scripts/demo/capture-all.sh` installs the pinned `srelens-tui` (`VERSION=0.15.0`) in the container, then captures every row of `scripts/demo/tui-captures.tsv` in tmux at 120×32 (100 columns truncated the STATUS and NAME columns), writing `.superpowers/capture/out/<name>.ansi`. Add `-e ONLY=overview,helm` to the `docker run` to capture only those rows. The homepage and `/tui/` hero capture, the pods view with `ledger-worker` selected, comes from `scripts/demo/capture.sh` the same way (`-e JUMP=<n>` moves the selection down n rows; the TUI sorts pods by name) and writes `pods.ansi`. The `gpu` row needs a simulated node: install kwok v0.6.1, apply `scripts/demo/extras/gpu.yaml`, capture with `ONLY=gpu`, then remove them again. Its caption says the node is simulated. A row's optional fourth column is the number of seconds to wait after its keys before the screen is read (only `assistant` uses it, to wait for the model). The script also points `api.github.com` at localhost inside the container, so srelens-tui's startup update check cannot add a "newer release" notice to a capture of the pinned version.
+`scripts/demo/capture-all.sh` installs the pinned `srectl` (`VERSION=0.16.0`) in the container with the repo's own `install.sh` (the `cp` above puts it at `/work/install.sh`; the scripts never fetch the live one), then captures every row of `scripts/demo/tui-captures.tsv` in tmux at 120×32 (100 columns truncated the STATUS and NAME columns), writing `.superpowers/capture/out/<name>.ansi`. Add `-e ONLY=overview,helm` to the `docker run` to capture only those rows. The homepage and `/tui/` hero capture, the pods view with `ledger-worker` selected, comes from `scripts/demo/capture.sh` the same way (`-e JUMP=<n>` moves the selection down n rows; the TUI sorts pods by name) and writes `pods.ansi`. The `gpu` row needs a simulated node: install kwok v0.6.1, apply `scripts/demo/extras/gpu.yaml`, capture with `ONLY=gpu`, then remove them again. Its caption says the node is simulated. A row's optional fourth column is the number of seconds to wait after its keys before the screen is read (only `assistant` uses it, to wait for the model). The script also points `api.github.com` at localhost inside the container, so srectl's startup update check cannot add a "newer release" notice to a capture of the pinned version.
 
 Copy the `.ansi` files into `assets/captures/`, then embed them:
 
@@ -114,7 +114,7 @@ Pages hold `<!-- capture:NAME:start --><!-- capture:NAME:end -->` marker pairs. 
 
 ### Assistant capture (needs your AI key)
 
-The `assistant` row opens the AI assistant (`:ai`) on `kind-srelens-demo` and asks "Why is ledger-worker in payments crash-looping?", then waits 90 seconds for the answer. It needs a provider key, which this repo never holds, so it is run by hand. A key goes to the container only as an environment variable of that one `docker run`: `-e ANTHROPIC_API_KEY` with no value makes Docker copy it from your shell (set it there first), so it is never typed into the command, written to a file or printed. `capture-all.sh` also keeps it from the installer it downloads. `OPENAI_API_KEY` and `GEMINI_API_KEY` are passed through the same way, but srelens-tui v0.15.0 defaults to the Anthropic provider and only uses them once its provider setting is changed. srelens-tui v0.15.0 defaults to the Anthropic model `claude-3-7-sonnet-20250219` (`ai_config.rs:60` in the v0.15.0 source); if Anthropic has retired it, the capture shows an API error and the privacy scan refuses it, so set a current model in srelens-tui's AI settings first.
+The `assistant` row opens the AI assistant (`:ai`) on `kind-srelens-demo` and asks "Why is ledger-worker in payments crash-looping?", then waits 90 seconds for the answer. It needs a provider key, which this repo never holds, so it is run by hand. A key goes to the container only as an environment variable of that one `docker run`: `-e ANTHROPIC_API_KEY` with no value makes Docker copy it from your shell (set it there first), so it is never typed into the command, written to a file or printed. `capture-all.sh` also keeps it from the installer it runs. `OPENAI_API_KEY` and `GEMINI_API_KEY` are passed through the same way, but srectl v0.16.0 defaults to the Anthropic provider with the model `claude-3-7-sonnet-20250219` (`apps/tui/src/ai_config.rs:60` and `:149` in the v0.16.0 source), so they are only used once its provider setting is changed. If Anthropic has retired that model, the capture shows an API error and the privacy scan refuses it, so set a current model in srectl's AI settings first.
 
 With the cluster up and step 2 above repeated (so the container has the current script and rows), run it from the repo root:
 
@@ -127,16 +127,16 @@ A run without `ONLY=assistant` captures every row, this one included; without a 
 
 1. Read `.superpowers/capture/out/assistant.ansi`. It must show a real answer about `ledger-worker` (no error, no "No API key configured"). Its per-reply "tokens" line is allowed; a key, an error banner, another context or a host path is not, and `node --test` checks that.
 2. Copy it into `assets/captures/`.
-3. On `/tui/` (`#ai-assistant`) and `/docs/tui/` (`#ai-assistant`), replace the `tui-assistant.webp` `<figure class="shot">` with a `tui-figure` block like the other captures: a `<pre class="tui" tabindex="0" role="region" aria-label="srelens-tui AI assistant answering a question about ledger-worker, text capture">` holding `<!-- capture:assistant:start --><!-- capture:assistant:end -->`, and a `<figcaption>` ending ` · text capture from v0.15.0`. Add `assistant` to `PLACED` in `tests/tui.test.mjs` and move `tui-assistant.webp` from `KEPT` to `REPLACED` there (and update the screenshot count in `tests/longform.test.mjs`) first, so the page change starts from a failing test.
+3. On `/tui/` (`#ai-assistant`) and `/docs/tui/` (`#ai-assistant`), replace the `tui-assistant.webp` `<figure class="shot">` with a `tui-figure` block like the other captures: a `<pre class="tui" tabindex="0" role="region" aria-label="srectl AI assistant answering a question about ledger-worker, text capture">` holding `<!-- capture:assistant:start --><!-- capture:assistant:end -->`, and a `<figcaption>` ending ` · text capture from v0.16.0`. Add `assistant` to `PLACED` in `tests/tui.test.mjs` and move `tui-assistant.webp` from `KEPT` to `REPLACED` there (and update the screenshot count in `tests/longform.test.mjs`) first, so the page change starts from a failing test.
 4. Fill the marker with `node scripts/embed-captures.mjs`, mirror the page with `cp docs/tui/index.html docs/tui.html`, and run `node --test`. Keep `assets/shots/tui-assistant.webp` on disk.
 
 ### MCP demo
 
-The "Talk to your clusters" panel on the homepage is one real `srelens-tui --mcp-stdio` session, recorded as JSON-RPC lines in `assets/captures/mcp-rollouts.jsonl` (and the version it ran in `mcp-rollouts.version`). It needs three throwaway kind clusters, `kind-demo-eu`, `kind-demo-us` and `kind-demo-ap`, all in the isolated kubeconfig `.superpowers/capture/kubeconfig-mcp-host`. In `ap` the `checkout` rollout is stuck at 1 of 3 up to date, and in `us` one `ledger` replica stays Pending. The transcript is never edited by hand; if a call fails, fix the script and re-run.
+The "Talk to your clusters" panel on the homepage is one real `srectl --mcp-stdio` session, recorded as JSON-RPC lines in `assets/captures/mcp-rollouts.jsonl` (and the version it ran in `mcp-rollouts.version`). It needs three throwaway kind clusters, `kind-demo-eu`, `kind-demo-us` and `kind-demo-ap`, all in the isolated kubeconfig `.superpowers/capture/kubeconfig-mcp-host`. In `ap` the `checkout` rollout is stuck at 1 of 3 up to date, and in `us` one `ledger` replica stays Pending. The transcript is never edited by hand; if a call fails, fix the script and re-run.
 
 ```sh
 bash scripts/demo/mcp-clusters.sh create     # three kind clusters, workloads, and the in-network kubeconfig-mcp
-cp scripts/demo/mcp-demo.sh .superpowers/capture/
+cp install.sh scripts/demo/mcp-demo.sh .superpowers/capture/
 MSYS_NO_PATHCONV=1 docker run --rm --network kind -v "$(pwd -W 2>/dev/null || pwd)/.superpowers/capture:/work" ubuntu:24.04 bash /work/mcp-demo.sh
 cp .superpowers/capture/out/mcp-rollouts.jsonl .superpowers/capture/out/mcp-rollouts.version assets/captures/
 node scripts/embed-mcp-demo.mjs              # render the transcript into index.html
@@ -172,12 +172,15 @@ Any of these work with zero config:
 
 ## Installation script
 
-`https://srelens.com/install.sh` serves the Linux `srelens-tui` installer as a
+`https://srelens.com/install.sh` serves the Linux `srectl` installer as a
 static shell script. `install.sh` is copied verbatim from
 [`srelens/srelens:packaging/install/install.sh`](https://github.com/srelens/srelens/blob/main/packaging/install/install.sh)
-(source blob `4c68b1a29844635cac023b0aca5d5117a1d4479e`). Refresh this copy
-when the upstream installer changes; GitHub Pages cannot proxy the upstream URL.
-Run `sh -n install.sh` before publishing an update.
+(source blob `858b6ff69ef8689fb8dba679db426dd635fe19f4` at `srelens-v0.16.0`). It
+still installs a release cut before the rename, whose archives are named
+`srelens-tui-…`, as `srectl`. Refresh this copy when the upstream installer
+changes (`git -C <srelens checkout> show srelens-vX.Y.Z:packaging/install/install.sh > install.sh`);
+GitHub Pages cannot proxy the upstream URL. Run `sh -n install.sh` before
+publishing an update. The capture scripts install with this copy, not the live URL.
 
 ## Release bump
 
@@ -186,7 +189,7 @@ Run `sh -n install.sh` before publishing an update.
 1. Update `RELEASE` in `tests/version.test.mjs`.
 2. Update `softwareVersion` in the JSON-LD on `/` and `/tui/`.
 3. Update the `<span data-version>` fallback labels and the fallback download URLs (`releases/download/srelens-vX.Y.Z/…`; the asset names carry the version too). `node scripts/apply-shell.mjs --all` re-renders the footer's version from the homepage JSON-LD.
-4. Re-capture the evidence for the new version: the desktop screenshots (`node scripts/shots/desktop-shots.mjs`), then the terminal captures (run `capture.sh` and `capture-all.sh` with `VERSION=X.Y.Z`, then `node scripts/embed-captures.mjs`). Update the captions that name the version.
+4. Re-capture the evidence for the new version: the desktop screenshots (`node scripts/shots/desktop-shots.mjs`), then the terminal captures (refresh `install.sh` from the new tag first, then run `capture.sh` and `capture-all.sh` with `VERSION=X.Y.Z`, then `node scripts/embed-captures.mjs`). Update the captions that name the version.
 5. Run `node --test`. Every `softwareVersion`, `data-version` label and download URL must agree with `RELEASE`.
 6. Bump `lastmod` in `sitemap.xml`.
 

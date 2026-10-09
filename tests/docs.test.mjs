@@ -2,7 +2,8 @@
 // every value the docs state is read back from the file that owns it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT, read } from './lib/site.mjs';
 import { VIEWS } from '../scripts/shots/views.mjs';
@@ -231,12 +232,33 @@ test('README has an "Assistant capture (needs your AI key)" subsection with the 
   assert.match(section, /OPENAI_API_KEY[\s\S]*GEMINI_API_KEY/, 'the other two providers are named');
 });
 
-// Devesh 2026-10-09 review: v0.15.0 defaults to a model Anthropic may have retired; the run then fails and he has to know why.
-test('README names the srelens-tui v0.15.0 default model and what to do when Anthropic has retired it', () => {
+// Devesh 2026-10-09 review: the v0.16.0 default is a model Anthropic may have retired; the run then fails and he has to know why.
+test('README names the srectl v0.16.0 default model once and what to do when Anthropic has retired it', () => {
   const section = /### Assistant capture \(needs your AI key\)\n([\s\S]*?)(?=\n##)/.exec(readme)?.[1] ?? '';
   const flat = section.replace(/\s+/g, ' ');
-  assert.ok(flat.includes('srelens-tui v0.15.0 defaults to the Anthropic model `claude-3-7-sonnet-20250219` (`ai_config.rs:60` in the v0.15.0 source)'), 'the default model and where it is set');
-  assert.match(flat, /retired[^.]*API error[^.]*privacy scan[^.]*refuses[^.]*current model in srelens-tui's AI settings first\./, 'a retired model: the error, the refusal, the fix');
+  assert.ok(flat.includes('srectl v0.16.0 defaults to the Anthropic provider with the model `claude-3-7-sonnet-20250219` (`apps/tui/src/ai_config.rs:60` and `:149` in the v0.16.0 source)'), 'the default model and where it is set');
+  assert.equal(flat.match(/defaults to/g)?.length, 1, 'the default is stated once, not once for the provider and again for the model');
+  assert.match(flat, /retired[^.]*API error[^.]*privacy scan[^.]*refuses[^.]*current model in srectl's AI settings first\./, 'a retired model: the error, the refusal, the fix');
+});
+
+// The capture scripts install from the repo's own install.sh, which the container sees only through the /work mount.
+test('README copies install.sh into the capture folder with the scripts, and the capture sections name srectl v0.16.0', () => {
+  const section = /## Terminal capture\n([\s\S]*?)(?=\n## OG cards)/.exec(readme)?.[1] ?? '';
+  assert.ok(section.includes('cp install.sh scripts/demo/capture.sh scripts/demo/capture-all.sh scripts/demo/tui-captures.tsv .superpowers/capture/'), 'the terminal capture copies install.sh');
+  assert.ok(section.includes('cp install.sh scripts/demo/mcp-demo.sh .superpowers/capture/'), 'the MCP demo copies install.sh');
+  assert.ok(section.includes('`srectl` v0.16.0'), 'the capture is of srectl v0.16.0');
+  assert.ok(section.includes('`VERSION=0.16.0`'), 'the pinned version');
+  assert.ok(section.includes('`srectl --mcp-stdio`'), 'the MCP session');
+  assert.doesNotMatch(section, /srelens-tui|0\.15\.0/, 'no pre-rename name or version is left in the capture sections');
+});
+
+test('README says the served install.sh is the v0.16.0 upstream blob, and it is', () => {
+  const body = readFileSync(join(ROOT, 'install.sh'));
+  const blob = createHash('sha1').update(`blob ${body.length}\0`).update(body).digest('hex');
+  assert.equal(blob, '858b6ff69ef8689fb8dba679db426dd635fe19f4', 'install.sh is not byte for byte the srelens-v0.16.0 file');
+  const section = /## Installation script\n([\s\S]*?)(?=\n## )/.exec(readme)?.[1] ?? '';
+  assert.ok(section.includes(`source blob \`${blob}\` at \`srelens-v0.16.0\``), 'the README names the blob and the tag');
+  assert.ok(section.includes('`srectl` installer'), 'and says what it installs');
 });
 
 test('the scripts that drive headless Chrome use a throwaway profile, never the user\'s own', () => {
