@@ -180,6 +180,20 @@ test('/docs/tui/ :config bullets name the fields as v0.16.0 labels them: Hub Con
   never(prose(tui), /UI URL|Fetch Timeout/, 'new in 0.16.0, not advertised');
 });
 
+// Devesh 2026-10-09, controller ruling (spec §3.3; owner review 2026-10-05: rephrase what cannot be confirmed). `srectl info` prints
+// "Found N contexts across kubeconfigs" and each context's cluster and server address, then returns (apps/tui/src/main.rs:199-207). It
+// resolves kubeconfig files (crates/kube/src/context_resolve.rs) and opens no connection, so it reports no connectivity, server
+// version or reachability. The product's own --help line says "reachability" (cli.rs:48); that is the product's wording, not behaviour.
+test('srectl info is described as what it does: it lists kubeconfig contexts, and no page says it tests reachability', () => {
+  has(tui, '<tr><td><code>info</code></td><td>Subcommand: List the kubeconfig contexts srectl can see, with each one\'s cluster and server address, without starting the TUI</td></tr>');
+  hasCode(tui, '# List the kubeconfig contexts srectl sees\nsrectl info');
+  has(tui, 'data-copy=\'# List the kubeconfig contexts srectl sees\nsrectl info');
+  has(docs, '<tr><td><code>srectl info</code></td><td>List kubeconfig contexts with their cluster and server address</td></tr>');
+  never(prose(tui), /connectivity|reachability/i, '/docs/tui/ prose');
+  never(codeOf(tui), /reachability/i, '/docs/tui/ code');
+  never(docs.match(/<tr><td><code>srectl info<\/code>[\s\S]*?<\/tr>/)[0], /reachab|connectivity/i, '/docs/ info row');
+});
+
 // Devesh 2026-10-09: v0.16.0 re-check. The assistant now shows the usage its provider reports (agent.rs resolve_token_usage,
 // crates/llm/src/agent_loop.rs StreamItem::Usage) and falls back to an estimate only when none arrives, so "estimated" is gone.
 test('/docs/tui/ AI section: per-reply token usage, real providers and the shipped slash commands (C05, C08, B65, B67)', () => {

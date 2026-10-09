@@ -287,7 +287,7 @@
                 <li><strong>Direct Agent Integration:</strong> Plug into Cursor (<code>.cursor/mcp.json</code>), Claude Desktop, Claude Code, or Gemini CLI via stdio transport.</li>
                 <li><strong>100+ Native Tools:</strong> Agents invoke high-performance cluster primitives — tailing multi-pod logs, inspecting manifests, querying metrics, and analyzing topology.</li>
                 <li><strong>Granular Safety Flags:</strong> Gate sensitive reads with <code>--allow-sensitive-reads</code> and mutating actions (scale, restart, apply, delete) with <code>--allow-destructive</code>.</li>
-                <li><strong>Zero Cloud Relay:</strong> Operates 100% locally over stdio against your local kubeconfig. No cluster credentials, tokens, or telemetry leave your machine.</li>
+                <li><strong>Zero Cloud Relay:</strong> Runs locally over stdio against your local kubeconfig, with no srelens cloud in between and no telemetry. Your kubeconfig credentials are used only to reach your own clusters. A few tools fetch from the internet when an agent calls them: <code>github.rolloutCause</code> asks api.github.com about an Argo sync, and the toolbox installers (which need <code>--allow-destructive</code>) download kubectl, helm and krew. A <code>GITHUB_TOKEN</code> or <code>GH_TOKEN</code> is sent to api.github.com only if you have set one.</li>
               </ul>
             </div>
             <!-- mcp-demo:start --><figure class="mcp-demo">
@@ -531,7 +531,7 @@
               <ul class="feature-bullets">
                 <li><strong>Hardware Discovery:</strong> Automatically identifies physical GPU accelerator models (NVIDIA H100, A100, L4, T4, Tesla) and driver versions.</li>
                 <li><strong>VRAM Capacity Gauges:</strong> Live visual bars for allocated vs. allocatable GPU memory per node across the cluster.</li>
-                <li><strong>Workload Attribution:</strong> Instantly map running training jobs, inference pods, and DCGM exporters to physical GPUs.</li>
+                <li><strong>Workload Attribution:</strong> Instantly see the training jobs and inference pods that request GPUs on each node, with the GPUs and VRAM each one asks for.</li>
               </ul>
             </div>
             <figure class="tui-figure">

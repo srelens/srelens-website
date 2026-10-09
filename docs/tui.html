@@ -223,7 +223,7 @@ srectl update</code></pre>
               <tr><td><code>-A, --all-namespaces</code></td><td>Launch scoped to all cluster namespaces</td></tr>
               <tr><td><code>-c, --context &lt;NAME&gt;</code></td><td>Activate a specific kubeconfig context on launch</td></tr>
               <tr><td><code>-k, --kubeconfig &lt;PATH&gt;</code></td><td>Explicit path to a kubeconfig file (defaults to <code>$KUBECONFIG</code> or <code>~/.kube/config</code>)</td></tr>
-              <tr><td><code>info</code></td><td>Subcommand: Print cluster connectivity, server version, and reachability diagnostics without starting TUI</td></tr>
+              <tr><td><code>info</code></td><td>Subcommand: List the kubeconfig contexts srectl can see, with each one's cluster and server address, without starting the TUI</td></tr>
               <tr><td><code>toolbox</code></td><td>Subcommand: Check local CLI diagnostics (kubectl, helm, krew plugins)</td></tr>
               <tr><td><code>update</code></td><td>Subcommand: Update srectl in-place to the latest release (<code>--check</code> to inspect)</td></tr>
             </tbody>
@@ -1011,12 +1011,12 @@ claude mcp add srelens -- srectl mcp --allow-sensitive-reads --allow-destructive
 
           <h2 id="troubleshooting">Diagnostics &amp; Troubleshooting</h2>
           <div class="codeblock">
-            <button class="copy-btn" type="button" data-copy='# Run cluster reachability diagnostics
+            <button class="copy-btn" type="button" data-copy='# List the kubeconfig contexts srectl sees
 srectl info
 
 # Check local CLI toolchains
 srectl toolbox'>copy</button>
-<pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Run cluster reachability diagnostics</span>
+<pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># List the kubeconfig contexts srectl sees</span>
 srectl info
 
 <span class="c"># Check local CLI toolchains</span>

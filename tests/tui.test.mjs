@@ -250,6 +250,26 @@ test('the approved prose replaces the lede and the section copy (C02, C05, C11, 
   ]) assert.ok(prose.includes(sentence), `${row}: ${sentence}`);
 });
 
+// Devesh 2026-10-09, controller ruling (spec §3.3: claims that changed are fixed; the 2026-10-05 owner review: drop or rephrase what
+// cannot be confirmed). "Operates 100% locally ... no tokens leave your machine" stopped being literal in v0.16.0: `srectl mcp`
+// builds the desktop registry (apps/tui/src/mcp_server.rs:20, crates/registry/src/lib.rs:248-252, 394), which registers
+// github.rolloutCause (lib.rs:585-587; crates/registry/src/github.rs:539), a read-only tool that calls api.github.com (github.rs:22)
+// and attaches GITHUB_TOKEN / GH_TOKEN only when one is set (github.rs:200, 244-247). The toolbox installers download kubectl, helm
+// and krew (lib.rs:442-452, 145-160; they are gated as destructive: crates/mcp/src/lib.rs:359-372). Nothing is uploaded or reported
+// to srelens: crates/capability/src/audit.rs:15.
+test('the Zero Cloud Relay bullet names the tools that reach the internet instead of claiming 100% local (v0.16.0)', () => {
+  assert.ok(html.includes('<li><strong>Zero Cloud Relay:</strong> Runs locally over stdio against your local kubeconfig, with no srelens cloud in between and no telemetry. Your kubeconfig credentials are used only to reach your own clusters. A few tools fetch from the internet when an agent calls them: <code>github.rolloutCause</code> asks api.github.com about an Argo sync, and the toolbox installers (which need <code>--allow-destructive</code>) download kubectl, helm and krew. A <code>GITHUB_TOKEN</code> or <code>GH_TOKEN</code> is sent to api.github.com only if you have set one.</li>'));
+  assert.doesNotMatch(text(main), /100% locally|tokens, or telemetry leave/);
+});
+
+// Devesh 2026-10-09, controller ruling. The GPU view lists the pods that request GPU or VRAM resources on each node, with their GPUs and
+// VRAM requested (crates/kube/src/gpu_info.rs:316-425; columns GPUS and VRAM REQ at apps/tui/src/views/gpu_view.rs:829-858). No TUI code
+// treats a DCGM exporter specially (the only "dcgm" code is the MCP endpoint helper, crates/kube/src/endpoint_query.rs:110, 266).
+test('GPU Workload Attribution says what the GPU view reads (pods that request GPUs), with no DCGM claim', () => {
+  assert.ok(html.includes('<li><strong>Workload Attribution:</strong> Instantly see the training jobs and inference pods that request GPUs on each node, with the GPUs and VRAM each one asks for.</li>'));
+  assert.doesNotMatch(text(main), /DCGM/i);
+});
+
 // ---- styles ----------------------------------------------------------------------------------
 
 test('.stat-value is scoped under .stat so ".stat p" cannot shrink or mute it', () => {
