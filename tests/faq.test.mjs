@@ -41,3 +41,26 @@ test('C13: /faq/ is the only page with FAQPage JSON-LD (a second one needs the s
   const withFaq = listPages().filter((file) => ldNodes(read(file)).some((n) => n['@type'] === 'FAQPage'));
   assert.deepEqual(withFaq, ['faq/index.html']);
 });
+
+// Devesh 2026-10-09: v0.16.0 re-check (privacy), controller ruling. "runs entirely on your machine" / "Nowhere" stopped being literal:
+// github.rolloutCause (crates/registry/src/github.rs:539, registered at lib.rs:585-587, in the desktop registry that `srelens` and
+// `srectl mcp` both build) sends an Argo app's repository and commit SHAs to api.github.com when you or an agent call it (github.rs:307-346).
+// The cluster credentials still go only to the clusters. The same answer is on /faq/ (visible and JSON-LD), the homepage FAQ and both llms files.
+const CREDENTIALS_ANSWER = "Nowhere. srelens runs on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There's no intermediary cloud service between the app and your API servers. Some tools do reach the internet when you or an agent call them, such as a GitHub commit lookup for an Argo CD sync, which sends the repository and commit SHAs to api.github.com; your cluster credentials are not part of it.";
+const DATA_ANSWER = 'Nowhere by default — the app runs locally and talks directly to your clusters. Some tools reach the internet when you or an agent call them, such as a GitHub commit lookup for an Argo CD sync, which sends the repository and commit SHAs to api.github.com.';
+
+test('v0.16.0 privacy: the credentials answer names the internet-reaching tools on /faq/ (visible and FAQPage) and the homepage', () => {
+  const q = 'Where do my cluster credentials go?';
+  assert.equal(visible.find((v) => v.question === q).answer, CREDENTIALS_ANSWER, '/faq/ visible');
+  assert.equal(faq.mainEntity.find((e) => e.name === q).acceptedAnswer.text, CREDENTIALS_ANSWER, '/faq/ FAQPage');
+  assert.ok(text(read('index.html')).includes(CREDENTIALS_ANSWER), 'homepage FAQ');
+  for (const [file, page] of [['faq/index.html', html], ['index.html', read('index.html')]]) assert.doesNotMatch(page, /runs entirely on your machine/, file);
+});
+
+test('v0.16.0 privacy: both llms files answer "where does cluster data go" with the same exception', () => {
+  for (const file of ['llms.txt', 'llms-full.txt']) {
+    const body = read(file);
+    assert.ok(body.includes(`- Where does cluster data go? ${DATA_ANSWER}\n`), file);
+    assert.doesNotMatch(body, /Where does cluster data go\? Nowhere —/, file);
+  }
+});

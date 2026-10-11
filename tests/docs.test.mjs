@@ -2,7 +2,8 @@
 // every value the docs state is read back from the file that owns it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT, read } from './lib/site.mjs';
 import { VIEWS } from '../scripts/shots/views.mjs';
@@ -88,6 +89,13 @@ test('DESIGN.md names the Command line system, not the old Operations Brief', ()
   }
 });
 
+// Devesh 2026-10-09: the homepage accent is "kernel". The Accent Rule names what the page really carries.
+test('DESIGN.md Accent Rule names the accent phrase the homepage H1 really carries', () => {
+  const accent = /<h1[\s\S]*?<span class="accent">([^<]+)<\/span>[\s\S]*?<\/h1>/.exec(read('index.html'))?.[1];
+  assert.ok(accent, 'the homepage H1 has an accent');
+  assert.ok(prose.replace(/\s+/g, ' ').includes(`On the homepage the accent is "${accent}".`), `DESIGN.md does not say the homepage accent is "${accent}"`);
+});
+
 test('DESIGN.md sends terminal captures to --font-grid and does not claim JetBrains Mono draws box borders', () => {
   assert.match(prose, /`--font-grid`[^\n]*\.tui|\.tui[^\n]*`--font-grid`/);
   assert.match(prose, /lack U\+2500[–-]25FF/);
@@ -152,6 +160,21 @@ test('design.json shadow, motion, breakpoints and component colours exist in sit
   }
 });
 
+// Devesh 2026-10-09: v0.16.0 / srectl. The design notes quote the product as their evidence, so they name the terminal product
+// srectl and the release the evidence is from. Neither file is scanned by rename.test.mjs or version.test.mjs, so this pins them.
+test('DESIGN.md and design.json name srectl and v0.16.0 evidence, not srelens-tui or v0.15.0', () => {
+  const designJson = read('.impeccable/design.json');
+  for (const [file, body] of [['DESIGN.md', designMd], ['.impeccable/design.json', designJson]]) {
+    assert.doesNotMatch(body, /srelens-tui/, `${file} still says srelens-tui`);
+    assert.doesNotMatch(body, /0\.15\.0/, `${file} still cites v0.15.0`);
+  }
+  assert.match(designMd, /Every binding is verified against the released\s+v0\.16\.0 source before it appears\./);
+  assert.ok(design.components.some((c) => c.html.includes('brew install srelens/tap/srectl')), 'the Command Block shows the srectl install');
+  assert.ok(design.components.some((c) => c.html.includes('$ srectl -A')), 'the Terminal Capture shows srectl');
+  assert.match(design.narrative.overview, /the desktop app and srectl\./);
+  assert.ok(design.narrative.keyCharacteristics.some((k) => k.startsWith('Real desktop screenshots and srectl text captures from v0.16.0 ')));
+});
+
 // ---- README.md ----
 
 const readme = read('README.md');
@@ -204,6 +227,35 @@ test('README says only the mcp view keeps its image, and that port-forwards is c
   assert.match(readme, /`port-forwards` is captured in web mode[^\n]*(?:server proxy URL|http:\/\/127\.0\.0\.1:8791\/pf\/1\/)/);
 });
 
+// The desktop screenshots are recaptured from srelens v0.16.0 (the terminal captures have their own test below).
+test('README and DESIGN.md date the desktop screenshots to srelens v0.16.0', () => {
+  const shots = /## Screenshots\n([\s\S]*?)(?=\n## Terminal capture)/.exec(readme)?.[1] ?? '';
+  assert.ok(shots.includes('Desktop screenshots show srelens v0.16.0 connected to a live 3-node kind cluster'), 'the README Screenshots section names v0.16.0');
+  assert.doesNotMatch(shots, /0\.15\.0/, 'no v0.15.0 left in the README Screenshots section');
+  const evidence = designMd.slice(designMd.indexOf('## Evidence'), designMd.indexOf('## Do\'s and Don\'ts')).replace(/\s+/g, ' ');
+  assert.match(evidence, /Desktop screenshots are srelens v0\.16\.0/);
+  assert.doesNotMatch(evidence, /Desktop screenshots[^.]*0\.15\.0/, 'DESIGN.md Evidence does not date the desktop screenshots to v0.15.0');
+  const traits = designMd.slice(designMd.indexOf('**Key Characteristics:**'), designMd.indexOf('- Monospace is the voice')).replace(/\s+/g, ' ');
+  assert.match(traits, /desktop screenshots from srelens v0\.16\.0/);
+});
+
+// Devesh 2026-10-09: v0.16.0 / srectl. The terminal captures are srectl v0.16.0 text, and every doc that dates them says so.
+test('DESIGN.md, PRODUCT.md and llms-full.txt date the terminal captures to srectl v0.16.0', () => {
+  const evidence = designMd.slice(designMd.indexOf('## Evidence'), designMd.indexOf('## Do\'s and Don\'ts')).replace(/\s+/g, ' ');
+  assert.match(evidence, /Desktop screenshots are srelens v0\.16\.0 and terminal captures are `srectl` v0\.16\.0, both against the `srelens-demo` kind cluster/);
+  assert.match(evidence, /Terminal captures are real `srectl` text at 120×32/);
+  assert.doesNotMatch(evidence, /0\.15\.0|srelens-tui/, 'DESIGN.md Evidence names neither the old version nor the old binary');
+  const traits = designMd.slice(designMd.indexOf('**Key Characteristics:**'), designMd.indexOf('- Monospace is the voice')).replace(/\s+/g, ' ');
+  assert.match(traits, /desktop screenshots from srelens v0\.16\.0 and `srectl` text captures from v0\.16\.0 \(see Evidence\)/);
+  assert.match(designMd.replace(/\s+/g, ' '), /desktop screenshots and text captured from `srectl`, both taken against the `srelens-demo` cluster/);
+  assert.match(designMd.replace(/\s+/g, ' '), /desktop screenshots and `srectl` text captures, from the released version/);
+  assert.match(read('PRODUCT.md').replace(/\s+/g, ' '), /Real `srectl` v0\.16\.0 text captures of the demo cluster/);
+  // The same paragraphs name the product, so the old binary name goes everywhere except where PRODUCT.md says "formerly".
+  assert.doesNotMatch(designMd, /srelens-tui/, 'DESIGN.md names the terminal product srectl throughout');
+  assert.doesNotMatch(read('PRODUCT.md').replace(/\(formerly srelens-tui\)|, formerly srelens-tui/g, ''), /srelens-tui/, 'PRODUCT.md says srelens-tui only as "formerly"');
+  assert.match(read('llms-full.txt'), /The srectl screens are text captures of v0\.16\.0 against the same cluster/);
+});
+
 test('README notes the optional fourth tsv column and that the container cannot reach the update check', () => {
   assert.match(readme, /optional fourth column[^\n]*seconds/i);
   assert.match(readme, /api\.github\.com/);
@@ -222,6 +274,35 @@ test('README has an "Assistant capture (needs your AI key)" subsection with the 
     assert.ok(section.includes(step), `the follow-up steps mention ${step}`);
   }
   assert.match(section, /OPENAI_API_KEY[\s\S]*GEMINI_API_KEY/, 'the other two providers are named');
+});
+
+// Devesh 2026-10-09 review: the v0.16.0 default is a model Anthropic may have retired; the run then fails and he has to know why.
+test('README names the srectl v0.16.0 default model once and what to do when Anthropic has retired it', () => {
+  const section = /### Assistant capture \(needs your AI key\)\n([\s\S]*?)(?=\n##)/.exec(readme)?.[1] ?? '';
+  const flat = section.replace(/\s+/g, ' ');
+  assert.ok(flat.includes('srectl v0.16.0 defaults to the Anthropic provider with the model `claude-3-7-sonnet-20250219` (`apps/tui/src/ai_config.rs:60` and `:149` in the v0.16.0 source)'), 'the default model and where it is set');
+  assert.equal(flat.match(/defaults to/g)?.length, 1, 'the default is stated once, not once for the provider and again for the model');
+  assert.match(flat, /retired[^.]*API error[^.]*privacy scan[^.]*refuses[^.]*current model in srectl's AI settings first\./, 'a retired model: the error, the refusal, the fix');
+});
+
+// The capture scripts install from the repo's own install.sh, which the container sees only through the /work mount.
+test('README copies install.sh into the capture folder with the scripts, and the capture sections name srectl v0.16.0', () => {
+  const section = /## Terminal capture\n([\s\S]*?)(?=\n## OG cards)/.exec(readme)?.[1] ?? '';
+  assert.ok(section.includes('cp install.sh scripts/demo/capture.sh scripts/demo/capture-all.sh scripts/demo/tui-captures.tsv .superpowers/capture/'), 'the terminal capture copies install.sh');
+  assert.ok(section.includes('cp install.sh scripts/demo/mcp-demo.sh .superpowers/capture/'), 'the MCP demo copies install.sh');
+  assert.ok(section.includes('`srectl` v0.16.0'), 'the capture is of srectl v0.16.0');
+  assert.ok(section.includes('`VERSION=0.16.0`'), 'the pinned version');
+  assert.ok(section.includes('`srectl --mcp-stdio`'), 'the MCP session');
+  assert.doesNotMatch(section, /srelens-tui|0\.15\.0/, 'no pre-rename name or version is left in the capture sections');
+});
+
+test('README says the served install.sh is the v0.16.0 upstream blob, and it is', () => {
+  const body = readFileSync(join(ROOT, 'install.sh'));
+  const blob = createHash('sha1').update(`blob ${body.length}\0`).update(body).digest('hex');
+  assert.equal(blob, '858b6ff69ef8689fb8dba679db426dd635fe19f4', 'install.sh is not byte for byte the srelens-v0.16.0 file');
+  const section = /## Installation script\n([\s\S]*?)(?=\n## )/.exec(readme)?.[1] ?? '';
+  assert.ok(section.includes(`source blob \`${blob}\` at \`srelens-v0.16.0\``), 'the README names the blob and the tag');
+  assert.ok(section.includes('`srectl` installer'), 'and says what it installs');
 });
 
 test('the scripts that drive headless Chrome use a throwaway profile, never the user\'s own', () => {

@@ -23,7 +23,7 @@ evaluate or download.
 
 ## Positioning
 
-srelens combines a native Tauri desktop application, a standalone pure-Rust Terminal UI (`srelens-tui`), a kube-rs core, direct
+srelens combines a native Tauri desktop application, a standalone pure-Rust Terminal UI (`srectl`, formerly srelens-tui), a kube-rs core, direct
 local kubeconfig access, and a built-in MCP server in one open-source control room. It
 is a clean-room product, not a Lens or Freelens fork.
 
@@ -55,7 +55,7 @@ and a downloadable release.
 ## Evidence on Hand
 
 - Seventeen real product workflows on /features/, captured in light and dark themes.
-- Real `srelens-tui` v0.15.0 text captures of the demo cluster, embedded as
+- Real `srectl` v0.16.0 text captures of the demo cluster, embedded as
   selectable text from `assets/captures/`.
 - Current feature inventory, MCP setup instructions, download details, FAQs, and
   source links in the existing public pages.

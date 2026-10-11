@@ -108,8 +108,8 @@
           <p>The desktop app connects directly to Kubernetes API servers with the credentials already available through your local kubeconfig.</p>
         </div>
 
-        <h2 id="tui">Terminal interface (srelens-tui)</h2>
-        <p>For operators living in shells or working across SSH connections, <code>srelens-tui</code> provides the full power of srelens inside a native pure-Rust terminal workspace built on <code>kube-rs</code> and <code>ratatui</code>. Completely asynchronous throughout, the interface never blocks on cluster latency.</p>
+        <h2 id="tui">Terminal interface (srectl)</h2>
+        <p>For operators living in shells or working across SSH connections, <code>srectl</code> provides the full power of srelens inside a native pure-Rust terminal workspace built on <code>kube-rs</code> and <code>ratatui</code>. Completely asynchronous throughout, the interface never blocks on cluster latency.</p>
 
         <div class="operator-callout">
           <strong>Fast, keyboard-driven investigation</strong>
@@ -120,23 +120,23 @@
         <p>Install via Homebrew, download direct binaries from <a href="/download/#tui">Download</a>, or build from source:</p>
         <div class="codeblock">
             <button class="copy-btn" type="button" data-copy='# Homebrew (macOS &amp; Linux)
-brew install srelens/tap/srelens-tui
+brew install srelens/tap/srectl
 
-# One-line install script (macOS &amp; Linux)
+# One-line install script (Linux)
 curl -fsSL https://srelens.com/install.sh | bash
 
 # Cargo
-cargo install --git https://github.com/srelens/srelens srelens-tui'>copy</button>
+cargo install --git https://github.com/srelens/srelens srectl'>copy</button>
 <pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># Homebrew (macOS &amp; Linux)</span>
-brew install srelens/tap/srelens-tui
+brew install srelens/tap/srectl
 
-<span class="c"># One-line install script (macOS &amp; Linux)</span>
+<span class="c"># One-line install script (Linux)</span>
 curl -fsSL https://srelens.com/install.sh | bash
 
 <span class="c"># Cargo</span>
-cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
+cargo install --git https://github.com/srelens/srelens srectl</code></pre>
           </div>
-        <p>If you installed via prebuilt binary or the script, update in-place with <code>srelens-tui update</code> (use <code>--check</code> to inspect available updates without installing).</p>
+        <p>If you installed via prebuilt binary or the script, update in-place with <code>srectl update</code> (use <code>--check</code> to inspect available updates without installing).</p>
 
         <h3 id="tui-overview">Cluster health &amp; overview (<code>:overview</code>)</h3>
         <p>Type <code>:overview</code> (or <code>:cluster</code>, <code>:info</code>) from anywhere to get an immediate, high-level control room readout of your connected cluster:</p>
@@ -160,8 +160,8 @@ cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
         <h3 id="tui-gpuinfo">GPU nodes &amp; VRAM allocation inspector (<code>:gpuinfo</code>)</h3>
         <p>For machine learning, AI inference, and compute-heavy clusters, <code>:gpuinfo</code> (or <code>:gpu</code>, <code>:gpus</code>) opens a dedicated, dual-pane accelerator dashboard:</p>
         <ul>
-          <li><strong>GPU Node Fleet (Left Pane):</strong> Inspect every GPU-equipped node, detected physical accelerator models (NVIDIA A100, H100, L4, V100, RTX series), installed card counts, total vs. allocated VRAM, and per-node GPU utilization gauges.</li>
-          <li><strong>Workload VRAM Breakdown (Right Pane):</strong> See exactly which pods and namespaces are consuming accelerator capacity, their requested physical GPUs or fractional MIG/vGPU slices, and current execution phase.</li>
+          <li><strong>GPU Node Fleet (Left Pane):</strong> Inspect every GPU-equipped node, detected physical accelerator models (NVIDIA A100, H100, L4, V100, RTX series), installed card counts, total vs. allocated VRAM, and per-node GPU allocation gauges.</li>
+          <li><strong>Workload VRAM Breakdown (Right Pane):</strong> See exactly which pods and namespaces are requesting accelerator capacity, their requested physical GPUs or fractional MIG/vGPU slices, and current execution phase.</li>
           <li><strong>Cluster Totals:</strong> Top-level summary tracking total cards installed, cards allocated, aggregate VRAM capacity, and assigned VRAM.</li>
         </ul>
 
@@ -181,7 +181,7 @@ cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
           <li><strong>Context-Aware Troubleshooting:</strong> Ask questions about failing workloads, parse confusing stack traces, diagnose crashloops, or investigate warning event cascades. The assistant receives active cluster context to provide grounded answers.</li>
           <li><strong>Built-in Slash Commands:</strong> Run quick investigation macros like <code>/crashloop</code>, <code>/oom</code>, <code>/rollout</code>, or <code>/endpoints</code> to trigger standardized diagnostic workflows.</li>
           <li><strong>Multi-Provider &amp; Local LLMs:</strong> Configure Anthropic (Claude), OpenAI, Google, or local Ollama models via <code>:ai-settings</code> (or <code>:settings</code>). No proprietary lock-in.</li>
-          <li><strong>High-Density "Caveman Mode":</strong> Enable terse, high-information-density output (<code>/caveman</code>) designed specifically for rapid operational debugging with minimal token overhead.</li>
+          <li><strong>High-Density "Caveman Mode":</strong> Terse, high-information-density output designed specifically for rapid operational debugging with minimal token overhead. It starts at the <code>ultra</code> level until you choose another with <code>/caveman</code>.</li>
           <li><strong>Model Context Protocol (MCP) Tools:</strong> Integrated with srelens's native MCP tool registry, allowing the AI to safely query cluster APIs and run diagnostic lookups. Tools that change the cluster are blocked in the assistant.</li>
         </ul>
 
@@ -189,11 +189,11 @@ cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
         <ul>
           <li><strong>ArgoCD GitOps &amp; Hub-Spoke (<a href="/docs/tui/#argocd-gitops"><code>:argo</code></a>):</strong> Inspect applications, sync drift, and health across Hub-and-Spoke cluster topologies with spoke-scoped destination filtering.</li>
           <li><strong>Node SSH &amp; Out-of-Band Recovery (<a href="/docs/tui/#node-ssh"><code>S</code> on the Nodes view</a>):</strong> Open an interactive SSH session to triage unready nodes when the Kubernetes API cannot schedule debug pods. The AI assistant can also read service status and journal logs for services such as <code>kubelet</code>, <code>containerd</code> and <code>rke2-server</code>. Auto-resolves InternalIP and hands authentication to your system <code>ssh</code>, which offers agent identities first and then the standard keys in <code>~/.ssh/</code>.</li>
-          <li><strong>Headless MCP Server (<a href="/docs/tui/#tui-mcp"><code>srelens-tui mcp</code></a>):</strong> Expose 100+ cluster tools to Cursor, Claude, and Gemini over stdio with explicit mutation consent gates.</li>
+          <li><strong>Headless MCP Server (<a href="/docs/tui/#tui-mcp"><code>srectl mcp</code></a>):</strong> Expose 100+ cluster tools to Cursor, Claude, and Gemini over stdio with explicit mutation consent gates.</li>
           <li><strong>Adaptive On-Demand Watching:</strong> An LRU-bounded stream pool watches only the active view and namespace, preventing cluster API overload while streaming live updates to the current screen.</li>
           <li><strong>First-Class CRD Support:</strong> Auto-discovers every CustomResourceDefinition, extracts server-side printer columns (evaluating JSONPaths dynamically), and live-watches CRD instances just like built-in primitives.</li>
           <li><strong>Engineered Logs Viewer:</strong> Long lines wrap with clean hanging indents under the line-number gutter (<code>│ continuation</code>) so numbers stay pinned. Toggle wrap off with <code>w</code> for horizontal scrolling (<code>h</code>/<code>l</code>, <code>0</code> to reset). True follow-mode accounts for wrapped visual rows.</li>
-          <li><strong>Instant Shells &amp; Deep Debugging:</strong> Press <code>s</code> to drop into a container shell, trying <code>/bin/sh</code>, then <code>bash</code>, through your local <code>kubectl</code>. Open a privileged node shell with <code>s</code> on the Nodes view. MCP clients that launch <code>srelens-tui mcp --allow-destructive</code> can attach ephemeral debug containers to distroless pods (<code>k8s.debugPod</code>). External interactive sessions run on an alternate screen with zero terminal debris on exit.</li>
+          <li><strong>Instant Shells &amp; Deep Debugging:</strong> Press <code>s</code> to drop into a container shell, trying <code>/bin/sh</code>, then <code>bash</code>, through your local <code>kubectl</code>. Open a privileged node shell with <code>s</code> on the Nodes view. MCP clients that launch <code>srectl mcp --allow-destructive</code> can attach ephemeral debug containers to distroless pods (<code>k8s.debugPod</code>). External interactive sessions run on an alternate screen with zero terminal debris on exit.</li>
           <li><strong>Visual Resource Trees:</strong> Press <code>t</code> to view hierarchical ASCII owner-reference trees (Deployments ➔ ReplicaSets ➔ Pods, CRD owners) with live health dots.</li>
           <li><strong>Port Forwarding Manager:</strong> Manage background port-forwards with live byte counters and automatic reconnects (<code>:pf</code>).</li>
           <li><strong>Reason Rail:</strong> Instant event triage and correlation for warning events and crash loops.</li>
@@ -202,7 +202,7 @@ cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
 
         <h3 id="tui-usage">CLI Usage &amp; Subcommands</h3>
         <div class="codeblock">
-<pre tabindex="0" role="group" aria-label="Code example"><code>srelens-tui [TARGET] [-n NAMESPACE] [-A] [--context CONTEXT] [--kubeconfig PATH]</code></pre>
+<pre tabindex="0" role="group" aria-label="Code example"><code>srectl [TARGET] [-n NAMESPACE] [-A] [--context CONTEXT] [--kubeconfig PATH]</code></pre>
           </div>
         <table>
           <thead><tr><th scope="col">Flag / Command</th><th scope="col">Description</th></tr></thead>
@@ -212,9 +212,9 @@ cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
             <tr><td><code>-A, --all-namespaces</code></td><td>Launch scoped to all cluster namespaces</td></tr>
             <tr><td><code>-c, --context &lt;NAME&gt;</code></td><td>Kubernetes context to activate (defaults to current context)</td></tr>
             <tr><td><code>-k, --kubeconfig &lt;PATH&gt;</code></td><td>Custom path to kubeconfig file</td></tr>
-            <tr><td><code>srelens-tui info</code></td><td>Print cluster overview &amp; reachability diagnostics</td></tr>
-            <tr><td><code>srelens-tui toolbox</code></td><td>Check tooling diagnostics (kubectl, helm, krew plugins)</td></tr>
-            <tr><td><code>srelens-tui update</code></td><td>Update binary in-place to the latest release (<code>--check</code> to inspect)</td></tr>
+            <tr><td><code>srectl info</code></td><td>List kubeconfig contexts with their cluster and server address</td></tr>
+            <tr><td><code>srectl toolbox</code></td><td>Check tooling diagnostics (kubectl, helm, krew plugins)</td></tr>
+            <tr><td><code>srectl update</code></td><td>Update binary in-place to the latest release (<code>--check</code> to inspect)</td></tr>
           </tbody>
         </table>
 
@@ -305,7 +305,7 @@ cargo install --git https://github.com/srelens/srelens srelens-tui</code></pre>
 <div class="footer-brand">
 <a class="brand" href="/"><img src="/assets/logo-mark.svg" alt="" width="24" height="24"><span>srelens</span></a>
 <p class="footer-tag">The Kubernetes kernel · built with Rust &amp; Tauri</p>
-<p class="footer-version">latest <span data-version>v0.15.0</span> · MIT</p>
+<p class="footer-version">latest <span data-version>v0.16.0</span> · MIT</p>
 </div>
 <nav class="footer-cols" aria-label="Footer"><div class="footer-col"><p class="footer-h">product</p><ul><li><a href="/features/">features</a></li><li><a href="/tui/">tui</a></li><li><a href="/mcp/">mcp</a></li><li><a href="/download/">download</a></li></ul></div><div class="footer-col"><p class="footer-h">learn</p><ul><li><a href="/docs/">docs</a></li><li><a href="/docs/tui/">tui docs</a></li><li><a href="/guides/">sre guides</a></li><li><a href="/guides/crashloopbackoff/">CrashLoopBackOff</a></li><li><a href="/guides/oomkilled/">OOMKilled</a></li><li><a href="/guides/failed-deployment/">Failed deployment</a></li><li><a href="/faq/">faq</a></li></ul></div><div class="footer-col"><p class="footer-h">compare</p><ul><li><a href="/compare/">all comparisons</a></li><li><a href="/compare/lens/">lens</a></li><li><a href="/compare/k9s/">k9s</a></li><li><a href="/compare/headlamp/">headlamp</a></li><li><a href="/compare/freelens/">freelens</a></li><li><a href="/compare/aptakube/">aptakube</a></li><li><a href="/compare/kubernetes-dashboard/">kubernetes dashboard</a></li></ul></div><div class="footer-col"><p class="footer-h">project</p><ul><li><a href="/security/">security</a></li><li><a href="/architecture/">architecture</a></li><li><a href="https://github.com/srelens/srelens" rel="noopener">github</a></li><li><a href="https://github.com/srelens/srelens/releases" rel="noopener">releases</a></li></ul></div></nav>
 </div>

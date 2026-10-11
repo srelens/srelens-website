@@ -3,10 +3,13 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT, SEO_META, listPages, read, title, meta, canonical, h1s, ldNodes, pageLinks } from './lib/site.mjs';
-import { baselineFor } from './lib/baseline.mjs';
+import { baselineFor, BASELINE_OF } from './lib/baseline.mjs';
 import { PAGES, page as pageEntry } from '../scripts/pages.mjs';
 
 // ---- Deliberate changes from the spec (section 8). Everything else must match the baseline. ----
+// A change keyed by a page also holds for its mirror (docs/tui.html follows docs/tui/index.html).
+const changeFor = (changes, file) => changes[BASELINE_OF[file] ?? file];
+
 // Expected meta values that replace the baseline: { file: { key: value } }.
 const META_CHANGES = {
   // Devesh 2026-10-09: the brand line is "the Kubernetes kernel"
@@ -16,33 +19,63 @@ const META_CHANGES = {
   },
   // C02 (claims check): "0ms" is not a measured latency. Only the description carried it; og:description and twitter:description did not.
   'compare/k9s/index.html': {
-    description: 'Compare srelens and K9s: srelens offers both a multi-tab desktop workspace and a standalone pure-Rust terminal UI (srelens-tui) with an in-memory Informer cache, deep Helm values diff, and built-in AI MCP, compared to K9s.',
+    // Devesh 2026-10-09: v0.16.0 / srectl
+    description: 'Compare srelens and K9s: srelens offers both a multi-tab desktop workspace and a standalone pure-Rust terminal UI (srectl) with an in-memory Informer cache, deep Helm values diff, and built-in AI MCP, compared to K9s.',
   },
   // Devesh 2026-10-05 owner review: C9 ("ultra-fast" becomes "fast"; the description, og:description and twitter:description all carried it).
   'tui/index.html': {
-    description: 'srelens-tui is a fast, keyboard-driven terminal UI for Kubernetes built in Rust with Ratatui and kube-rs. Live stream watches, BGP peering dashboard, Helm 3 inspector, interactive logs, and in-process AI diagnostics.',
+    // Devesh 2026-10-09: v0.16.0 / srectl (og:title and twitter:title follow TITLE_CHANGES below)
+    description: 'srectl is a fast, keyboard-driven terminal UI for Kubernetes built in Rust with Ratatui and kube-rs. Live stream watches, BGP peering dashboard, Helm 3 inspector, interactive logs, and in-process AI diagnostics.',
     'og:description': 'A fast, keyboard-driven terminal workspace for Kubernetes operators. Live stream watches, BGP peering dashboard, Helm 3 diffs, and embedded AI diagnostics.',
     'twitter:description': 'A fast, keyboard-driven terminal workspace for Kubernetes operators. Live stream watches, BGP peering dashboard, Helm 3 diffs, and embedded AI diagnostics.',
   },
   // Devesh 2026-10-05 owner review: C11 (a Cargo build of srelens-tui is from source, not an install: Makefile builds it with `cargo build --release -p srelens-tui`).
   'download/index.html': {
-    description: 'Download srelens free: Kubernetes desktop client and pure-Rust terminal UI (srelens-tui) for macOS, Windows, and Linux — direct from GitHub Releases, or build from source with Cargo.',
+    // Devesh 2026-10-09: v0.16.0 / srectl
+    description: 'Download srelens free: Kubernetes desktop client and pure-Rust terminal UI (srectl) for macOS, Windows, and Linux — direct from GitHub Releases, or build from source with Cargo.',
+  },
+  // Devesh 2026-10-09: v0.16.0 / srectl (og:title and twitter:title follow TITLE_CHANGES below; this page's baseline has no
+  // og:description or twitter:description, so the Task 22 loop below repeats this description in both)
+  'docs/tui/index.html': {
+    description: 'Comprehensive documentation for srectl: installation, keybindings, command palette reference, BGP peering dashboard, Helm 3 values diff, log streaming, and AI assistant configuration.',
   },
 };
 
 // H1s changed on purpose, as exact [from, to] pairs. Devesh 2026-10-09: the homepage H1 becomes the "kernel" line.
 const H1_CHANGES = {
   'index.html': ['The Kubernetes control room for engineers and AI agents.', 'The Kubernetes kernel for engineers and AI agents.'],
+  // Devesh 2026-10-09: v0.16.0 / srectl. The /tui/ H1 ("The terminal control room for Kubernetes.") never named the product, so it stays.
+  'docs/tui/index.html': ['srelens-tui Guide & Reference', 'srectl Guide & Reference'],
 };
-const plannedH1 = (file, base) => (H1_CHANGES[file] ? [H1_CHANGES[file][1], ...base.h1.slice(1)] : base.h1);
+const plannedH1 = (file, base) => (changeFor(H1_CHANGES, file) ? [changeFor(H1_CHANGES, file)[1], ...base.h1.slice(1)] : base.h1);
 
 test('every planned H1 change replaces the H1 the baseline really has', () => {
   for (const [file, [from]] of Object.entries(H1_CHANGES)) assert.equal(baselineFor(file).h1[0], from, file);
 });
 
+// <title> changes on purpose, as exact [from, to] pairs. Devesh 2026-10-09: v0.16.0 / srectl. The terminal product is srectl now;
+// /tui/ and /docs/tui/ were found as srelens-tui, so each title keeps "formerly srelens-tui" and the rest of it is as it was.
+const TITLE_CHANGES = {
+  'tui/index.html': ['srelens-tui — Pure-Rust Terminal UI for Kubernetes', 'srectl (formerly srelens-tui) — Pure-Rust Terminal UI for Kubernetes'],
+  'docs/tui/index.html': ['srelens-tui Documentation — Pure-Rust Terminal UI for Kubernetes', 'srectl (formerly srelens-tui) Documentation — Pure-Rust Terminal UI for Kubernetes'],
+};
+const plannedTitle = (file, base) => changeFor(TITLE_CHANGES, file)?.[1] ?? base.title;
+
+test('every planned title change replaces the title the baseline really has, and og:title and twitter:title repeat it', () => {
+  for (const [file, [from]] of Object.entries(TITLE_CHANGES)) {
+    const base = baselineFor(file);
+    assert.equal(base.title, from, file);
+    // A page whose baseline has no card tags (docs/tui) gets them from the Task 22 loop below, which repeats the title too.
+    for (const key of ['og:title', 'twitter:title']) assert.ok([null, from].includes(base.meta[key]), `${file}: the baseline ${key} is the title or absent`);
+  }
+});
+// og:title and twitter:title repeat the title (Devesh 2026-10-09: v0.16.0 / srectl).
+for (const [file, [, to]] of Object.entries(TITLE_CHANGES)) META_CHANGES[file] = { ...META_CHANGES[file], 'og:title': to, 'twitter:title': to };
+
 // Task 22: full robots directive everywhere except 404, and an OG/Twitter card on every page the manifest gives one
 // (the mirror docs/tui.html follows docs/tui/index.html). A page that already has og:image only swaps the image.
 const baseOf = baselineFor;
+const plannedDescription = (file, base) => META_CHANGES[file]?.description ?? base.meta.description;
 const ROBOTS = 'index, follow, max-image-preview:large, max-snippet:-1';
 for (const p of PAGES) {
   const src = p.mirrorOf ? pageEntry(p.mirrorOf) : p;
@@ -55,16 +88,18 @@ for (const p of PAGES) {
     Object.assign(changes, b.meta['og:image'] ? {
       'og:image': image, 'og:image:width': '1200', 'og:image:height': '630', 'og:image:alt': alt, 'twitter:image': image,
     } : {
-      'og:type': 'website', 'og:url': b.canonical, 'og:site_name': 'srelens', 'og:title': b.title,
-      'og:description': b.meta.description, 'og:image': image, 'og:image:width': '1200', 'og:image:height': '630',
-      'og:image:alt': alt, 'og:locale': 'en_US', 'twitter:card': 'summary_large_image', 'twitter:title': b.title,
-      'twitter:description': b.meta.description, 'twitter:image': image,
+      'og:type': 'website', 'og:url': b.canonical, 'og:site_name': 'srelens', 'og:title': plannedTitle(src.file, b),
+      'og:description': plannedDescription(src.file, b), 'og:image': image, 'og:image:width': '1200', 'og:image:height': '630',
+      'og:image:alt': alt, 'og:locale': 'en_US', 'twitter:card': 'summary_large_image', 'twitter:title': plannedTitle(src.file, b),
+      'twitter:description': plannedDescription(src.file, b), 'twitter:image': image,
     });
   }
   // Only what really differs: a page whose old card was already 1200x630 changes no dimension tag.
   for (const [key, value] of Object.entries(changes)) if (value === b.meta[key]) delete changes[key];
   if (Object.keys(changes).length) META_CHANGES[p.file] = { ...META_CHANGES[p.file], ...changes };
 }
+// The mirror carries every meta change its page does (docs/tui.html is a byte-for-byte copy of docs/tui/index.html).
+for (const p of PAGES.filter((e) => e.mirrorOf)) META_CHANGES[p.file] = { ...META_CHANGES[p.mirrorOf], ...META_CHANGES[p.file] };
 // Approved claim fixes (TUI claims check, Decision 3): exact baseline featureList entry -> replacement, per page.
 const LD_FEATURE_CHANGES = {
   'index.html': [
@@ -72,7 +107,14 @@ const LD_FEATURE_CHANGES = {
     ['Resource browser covering 40+ Kubernetes resource kinds', 'Resource browser covering 35 built-in Kubernetes resource kinds plus custom resources'],
     // C02: "0ms" is not a measured latency.
     ['Live streaming resource watches and 0ms Informer cache', 'Live streaming resource watches and an in-memory Informer cache'],
+    // Devesh 2026-10-09: v0.16.0 / srectl
+    ['Dual-mode interface: Desktop GUI application and standalone pure-Rust Terminal UI (srelens-tui)', 'Dual-mode interface: Desktop GUI application and standalone pure-Rust Terminal UI (srectl)'],
   ],
+};
+// Approved renames of a JSON-LD node's `name`: exact baseline name -> replacement, per page.
+const LD_NAME_CHANGES = {
+  // Devesh 2026-10-09: v0.16.0 / srectl
+  'tui/index.html': [['srelens-tui', 'srectl']],
 };
 // Approved claim fixes: exact baseline JSON-LD `description` -> replacement, per page.
 const LD_DESCRIPTION_CHANGES = {
@@ -81,7 +123,8 @@ const LD_DESCRIPTION_CHANGES = {
     [
       'srelens-tui is a standalone pure-Rust terminal user interface for Kubernetes operators, built with Ratatui and kube-rs. It provides 0ms Informer cache browsing, live stream watches, BGP peering dashboard, deep Helm 3 values diff and rollback, auto-wrapped logs, debug containers, and an in-process AI assistant drawer.',
       // Devesh 2026-10-05 owner review: C10 ("pure-Rust" becomes "Rust" in the JSON-LD description; the titles keep "Pure-Rust").
-      'srelens-tui is a standalone Rust terminal user interface for Kubernetes operators, built with Ratatui and kube-rs. It provides in-memory Informer cache browsing, live stream watches, BGP peering dashboard, deep Helm 3 values diff and rollback, auto-wrapped logs, and an in-process AI assistant drawer.',
+      // Devesh 2026-10-09: v0.16.0 / srectl
+      'srectl is a standalone Rust terminal user interface for Kubernetes operators, built with Ratatui and kube-rs. It provides in-memory Informer cache browsing, live stream watches, BGP peering dashboard, deep Helm 3 values diff and rollback, auto-wrapped logs, and an in-process AI assistant drawer.',
     ],
   ],
 };
@@ -103,13 +146,17 @@ const LD_ANSWER_CHANGES = {
       "srelens targets macOS, Windows, and Linux desktops via Tauri v2.",
       "macOS, Windows, and Linux desktops via Tauri v2.",
     ],
+    // Devesh 2026-10-09: /mcp/ shows the setup and a recorded session across three clusters now, not screenshots.
     [
       "Supported backend capabilities in srelens are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned.",
-      "Supported backend capabilities are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned. The MCP page shows the setup with real screenshots.",
+      "Supported backend capabilities are registered in a shared capability registry and exposed through the built-in MCP server. MCP-capable clients can connect over stdio or loopback HTTP. Mutating tools require an explicit _confirm: true argument before they run. Additional MCP security and audit controls are planned. The MCP page shows the setup and a recorded session across three clusters.",
     ],
+    // Devesh 2026-10-09: v0.16.0 re-check (privacy). "runs entirely on your machine" stopped being literal: github.rolloutCause
+    // (crates/registry/src/github.rs:539, registered at lib.rs:585-587) sends an Argo app's repository and commit SHAs to api.github.com
+    // when you or an agent call it. The visible answer is the source of truth (C13), so this is its text word for word.
     [
       "Nowhere. srelens runs entirely on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There is no intermediary cloud service between the app and your API servers.",
-      "Nowhere. srelens runs entirely on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There's no intermediary cloud service between the app and your API servers.",
+      "Nowhere. srelens runs on your machine and connects to clusters directly using the credentials in your local kubeconfig files. There's no intermediary cloud service between the app and your API servers. Some tools do reach the internet when you or an agent call them, such as a GitHub commit lookup for an Argo CD sync, which sends the repository and commit SHAs to api.github.com; your cluster credentials are not part of it.",
     ],
     [
       "Yes. Installers for macOS (Apple Silicon and Intel), Windows, and Linux are published on GitHub Releases. The latest build is always available there, and you can also build srelens from source.",
@@ -125,8 +172,21 @@ const LD_ANSWER_CHANGES = {
     ],
   ],
 };
-// Exact baseline JSON-LD `image` -> replacement, per page.
+// Exact baseline JSON-LD `image` / `primaryImageOfPage` -> replacement, per page.
 const LD_IMAGE_CHANGES = {
+  // Devesh 2026-10-09: all new UI images; the old og-*.jpg cards show the old UI
+  'index.html': [
+    ['https://srelens.com/assets/og/og-home.jpg', 'https://srelens.com/assets/og/og-home.png'],
+  ],
+  'features/index.html': [
+    ['https://srelens.com/assets/og/og-features.jpg', 'https://srelens.com/assets/og/og-features.png'],
+  ],
+  'mcp/index.html': [
+    ['https://srelens.com/assets/og/og-mcp.jpg', 'https://srelens.com/assets/og/og-mcp.png'],
+  ],
+  'download/index.html': [
+    ['https://srelens.com/assets/og/og-download.jpg', 'https://srelens.com/assets/og/og-download.png'],
+  ],
   'tui/index.html': [
     // Devesh 2026-10: use the new UI images; the old one shows a real cluster.
     ['https://srelens.com/assets/shots/tui-overview.webp', 'https://srelens.com/assets/og/og-tui.png'],
@@ -141,15 +201,21 @@ const LD_SCREENSHOT_CHANGES = {
 };
 // Applied to every baseline JSON-LD node of `file` before comparison.
 const ldChange = (node, file) => {
-  let out = 'softwareVersion' in node ? { ...node, softwareVersion: '0.15.0' } : node;
+  // Devesh 2026-10-09: v0.16.0
+  let out = 'softwareVersion' in node ? { ...node, softwareVersion: '0.16.0' } : node;
   const pictured = new Map(LD_IMAGE_CHANGES[file] ?? []);
-  if (typeof out.image === 'string') out = { ...out, image: pictured.get(out.image) ?? out.image };
+  // `image` and `primaryImageOfPage` are a URL string or an ImageObject ({url} or {@id}); the baseline has plain strings.
+  const reimage = (v) => (typeof v === 'string' ? pictured.get(v) ?? v
+    : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, ['url', '@id'].includes(k) ? pictured.get(x) ?? x : x])) : v);
+  for (const key of ['image', 'primaryImageOfPage']) if (key in out) out = { ...out, [key]: reimage(out[key]) };
   const screenshots = new Map(LD_SCREENSHOT_CHANGES[file] ?? []);
   if (Array.isArray(out.screenshot)) out = { ...out, screenshot: out.screenshot.map((s) => screenshots.get(s) ?? s) };
   const swaps = new Map(LD_FEATURE_CHANGES[file] ?? []);
   if (Array.isArray(out.featureList)) out = { ...out, featureList: out.featureList.map((f) => swaps.get(f) ?? f) };
   const described = new Map(LD_DESCRIPTION_CHANGES[file] ?? []);
   if (typeof out.description === 'string') out = { ...out, description: described.get(out.description) ?? out.description };
+  const named = new Map(LD_NAME_CHANGES[file] ?? []);
+  if (typeof out.name === 'string') out = { ...out, name: named.get(out.name) ?? out.name };
   const answers = new Map(LD_ANSWER_CHANGES[file] ?? []);
   if (Array.isArray(out.mainEntity)) {
     out = { ...out, mainEntity: out.mainEntity.map((q) => ({ ...q, acceptedAnswer: { ...q.acceptedAnswer, text: answers.get(q.acceptedAnswer.text) ?? q.acceptedAnswer.text } })) };
@@ -176,6 +242,13 @@ test('every planned JSON-LD change replaces a feature that the baseline really h
   }
 });
 
+test('every planned JSON-LD name change replaces a name that the baseline really has', () => {
+  for (const [file, swaps] of Object.entries(LD_NAME_CHANGES)) {
+    const names = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).map((n) => n.name);
+    for (const [from] of swaps) assert.ok(names.includes(from), `${file}: "${from}" is not in the baseline`);
+  }
+});
+
 test('every planned JSON-LD description change replaces a description that the baseline really has', () => {
   for (const [file, swaps] of Object.entries(LD_DESCRIPTION_CHANGES)) {
     const descriptions = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).map((n) => n.description);
@@ -185,7 +258,7 @@ test('every planned JSON-LD description change replaces a description that the b
 
 test('every planned JSON-LD image change replaces an image that the baseline really has, with the page\'s og:image', () => {
   for (const [file, swaps] of Object.entries(LD_IMAGE_CHANGES)) {
-    const images = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).map((n) => n.image);
+    const images = baselineFor(file).jsonLd.flatMap((j) => j['@graph'] ?? [j]).flatMap((n) => [n.image, n.primaryImageOfPage]);
     for (const [from, to] of swaps) {
       assert.ok(images.includes(from), `${file}: "${from}" is not in the baseline`);
       assert.equal(to, META_CHANGES[file]['og:image'], `${file}: the JSON-LD image is the og:image`);
@@ -217,7 +290,7 @@ for (const file of listPages()) {
 
   test(`${file}: title, canonical and h1 match the baseline plus planned changes`, () => {
     assert.ok(base, 'page missing from the baseline');
-    assert.equal(title(html), base.title);
+    assert.equal(title(html), plannedTitle(file, base));
     assert.equal(canonical(html), base.canonical);
     assert.deepEqual(h1s(html), plannedH1(file, base));
   });
@@ -271,6 +344,13 @@ test('no published page points og:image or twitter:image at an old-UI .jpg in as
     for (const key of ['og:image', 'twitter:image']) {
       assert.doesNotMatch(meta(html, key) ?? '', /\/assets\/og\/[^/]*\.jpe?g$/i, `${file}: ${key}`);
     }
+  }
+});
+
+// The structured data must not name them either: a crawler reads `image` / `primaryImageOfPage` as the page's picture.
+test('no published page names an old-UI .jpg from assets/og/ anywhere in its JSON-LD', () => {
+  for (const file of listPages()) {
+    assert.doesNotMatch(JSON.stringify(ldNodes(read(file))), /\/assets\/og\/[^"/]*\.jpe?g/i, file);
   }
 });
 

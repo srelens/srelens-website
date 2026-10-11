@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { ROOT, listPages, read } from './lib/site.mjs';
@@ -49,21 +49,21 @@ test('tui-captures.tsv lists every feature once, as name, arguments and keys, al
   }
 });
 
-test('capture-all.sh runs the TSV at 120x32 against the published srelens-tui and prints its version', () => {
+test('capture-all.sh runs the TSV at 120x32 against the published srectl and prints its version', () => {
   const script = read('scripts/demo/capture-all.sh');
   assert.match(script, /^#!\/usr\/bin\/env bash\n/);
   assert.match(script, /^set -euo pipefail$/m);
-  assert.match(script, /tmux new-session -d -s cap -x 120 -y 32 /);
-  assert.match(script, /curl -fsSL https:\/\/srelens\.com\/install\.sh \| sh -s -- --version "\$VERSION"/);
-  assert.match(script, /^srelens-tui version$/m);
+  assert.match(script, /tmux new-session -d -s cap -x 120 -y 32 "srectl \$args"/);
+  assert.match(script, /sh \/work\/install\.sh --version "\$VERSION"/);
+  assert.match(script, /^srectl version$/m);
   assert.match(script, /done < \/work\/tui-captures\.tsv/);
 });
 
 test('capture-all.sh keeps the capture pinned to $VERSION: the update check cannot reach api.github.com', () => {
-  // srelens-tui checks api.github.com at startup and puts "▲ Update: v0.16.0" in the header once a newer release exists.
+  // srectl checks api.github.com at startup and puts "▲ Update: <newer release>" in the header once a newer release exists.
   const script = read('scripts/demo/capture-all.sh');
   const hosts = script.indexOf('>> /etc/hosts');
-  assert.ok(hosts > script.indexOf('install.sh'), 'the hosts entry comes after the installer ran');
+  assert.ok(hosts > script.indexOf('sh /work/install.sh'), 'the hosts entry comes after the installer ran');
   assert.ok(hosts < script.indexOf('tmux new-session'), 'and before the first session starts');
   assert.match(script, /^echo "127\.0\.0\.1 api\.github\.com" >> \/etc\/hosts$/m);
 });
@@ -94,11 +94,11 @@ test('the assistant row opens the AI assistant on the demo cluster and asks one 
 
 const AI_KEYS = ['ANTHROPIC_API_KEY', 'OPENAI_API_KEY', 'GEMINI_API_KEY'];
 
-test('capture-all.sh hands the AI keys to srelens-tui from the container environment and never prints, logs or writes them', () => {
+test('capture-all.sh hands the AI keys to srectl from the container environment and never prints, logs or writes them', () => {
   const script = read('scripts/demo/capture-all.sh');
-  // Only the installer's subshell names them, to unset them: the downloaded install.sh has no use for a key.
+  // Only the installer's subshell names them, to unset them: install.sh has no use for a key.
   const unset = `unset ${AI_KEYS.join(' ')}`;
-  assert.match(script, new RegExp(`^\\( ${unset}; curl -fsSL https://srelens\\.com/install\\.sh \\| sh -s -- --version "\\$VERSION" \\)$`, 'm'));
+  assert.match(script, new RegExp(`^\\( ${unset}; sh /work/install\\.sh --version "\\$VERSION" \\)$`, 'm'));
   for (const line of script.split('\n')) {
     for (const key of AI_KEYS) if (line.includes(key)) assert.ok(line.includes(unset) || line.trimStart().startsWith('#'), `a line uses ${key}: ${line}`);
   }
@@ -149,7 +149,7 @@ test('key shapes of the three providers and the env var assignments are refused 
   }
 });
 
-test('only the assistant capture may say tokens, because its replies show a per-reply token estimate (the product text)', () => {
+test('only the assistant capture may say tokens, because its replies show per-reply token usage (the product text)', () => {
   const estimate = '⚡ 1,204 tokens (900 prompt, 304 completion)';
   assert.deepEqual(captureProblems('assistant.ansi', `Hello! Type '/caveman' for token compression.\n${estimate}\n`), []);
   assert.match(captureProblems('pods.ansi', estimate).join('\n'), /credential word/);
@@ -167,6 +167,35 @@ test('the assistant capture is refused when the key never reached srelens-tui, t
 
 test('the update notice srelens-tui puts in the header once a newer release exists is refused', () => {
   assert.match(captureProblems('argo-config.ansi', '● v1.36.1 Nodes: 3 Pods: 38  ▲ Update: v0.16.0').join('\n'), /loading, error or update banner/);
+});
+
+// ---- Devesh 2026-10-09: v0.16.0 / srectl. Every screen is re-taken from the renamed binary -----------
+
+const stored = () => readdirSync(CAPTURES).filter((f) => f.endsWith('.ansi')).map((f) => [f, read(`assets/captures/${f}`).replace(/\x1b\[[0-9;:]*m/g, '')]);
+
+test('no stored text capture is from srelens-tui or v0.15.0: the product text says srectl and v0.16.0', () => {
+  const files = stored();
+  assert.ok(files.length >= 17, 'the TSV captures and the hero capture are all scanned');
+  for (const [file, text] of files) {
+    assert.doesNotMatch(text, /srelens-tui/, `${file} still says srelens-tui`);
+    assert.doesNotMatch(text, /\b0\.15\.0\b/, `${file} still says 0.15.0`);
+  }
+});
+
+// v0.16.0 put a "Changed triage guide banner" setting (field 5) in front of the ArgoCD Hub Context (field 6) in :config
+// (apps/tui/src/views/tui_config_view.rs:228-229), so the row needs six j presses, not five. j = select_next_field (app.rs:6708-6710).
+test('argo-config presses j six times: ArgoCD Hub Context is the seventh setting of :config in v0.16.0', () => {
+  assert.equal(rowsOf().find((r) => r[0] === 'argo-config')[2], 'j j j j j j');
+  // v0.16.0 groups the Argo settings in an "ArgoCD (:argo)" box whose first field is "Hub Context" (tui_config_view.rs:649).
+  assert.match(stored().find(([f]) => f === 'argo-config.ansi')[1], /▶ Hub Context/, 'the capture has the Hub Context field selected');
+});
+
+test('the tsv comments name srectl, not the old binary', () => {
+  assert.doesNotMatch(read(TSV), /srelens-tui/);
+});
+
+test('the startup feature guide shows the version the captures are of', () => {
+  assert.match(stored().find(([f]) => f === 'features.ansi')[1], /Version v0\.16\.0\b/);
 });
 
 // ---- Task 21 fix round 1: the hero pods capture matches the rest of the evidence ------------------

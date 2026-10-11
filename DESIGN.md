@@ -1,6 +1,6 @@
 ---
 name: srelens
-description: Terminal-native design system for the local-first Kubernetes control room, desktop app and srelens-tui as one product
+description: Terminal-native design system for the local-first Kubernetes control room, desktop app and srectl as one product
 colors:
   bg: "#fbfafc"
   surface: "#ffffff"
@@ -127,11 +127,11 @@ components:
 **Creative North Star: "Command line"**
 
 srelens is one product with one Rust core and two front ends: the desktop app
-and `srelens-tui`. The site is written as if it were a shell session so both
+and `srectl`. The site is written as if it were a shell session so both
 read as the same thing. Headings, labels, commands, key bindings and data are
 monospace; running text is a proportional face at reading width. Navigation is a
 path (`srelens / compare / k9s`). Evidence is real: desktop screenshots and
-text captured from `srelens-tui`, both taken against the `srelens-demo` cluster.
+text captured from `srectl`, both taken against the `srelens-demo` cluster.
 
 The system is quiet and flat. Hierarchy comes from type scale, rules, spacing
 and state color, not from decoration. Every page is complete at rest and readable
@@ -139,8 +139,8 @@ without JavaScript.
 
 **Key Characteristics:**
 
-- Real product evidence is the primary visual: desktop screenshots and
-  `srelens-tui` text captures, both from v0.15.0 (see Evidence).
+- Real product evidence is the primary visual: desktop screenshots from srelens
+  v0.16.0 and `srectl` text captures from v0.16.0 (see Evidence).
 - Monospace is the voice of the system; Geist carries long reading.
 - Two complete themes. The default follows the visitor's OS.
 - Terminal surfaces (code blocks, captures, the incident drill) are dark in
@@ -184,7 +184,7 @@ overrides it and remembers the choice. Desktop screenshots swap between
 
 **The Accent Rule.** At most one accent phrase per page, on the H1 only, in a
 `<span class="accent">` of four words or fewer. `.accent` sets `--hot`. A longer
-phrase is plain H1 text. On the homepage the accent is "control room".
+phrase is plain H1 text. On the homepage the accent is "kernel".
 
 **The Status Color Rule.** Green, amber and red describe state. Brand violet
 carries links and primary action. Neither becomes ambient decoration.
@@ -300,7 +300,7 @@ hidden and both panels render one after the other under a `.mode-label`.
 `kbd` is a small sunk chip with a heavier bottom border. A `.keys` row of keycaps
 sits in a feature or capability card. When both apps have a binding for the same
 thing, both show (`⌘K` and `:`). Every binding is verified against the released
-v0.15.0 source before it appears.
+v0.16.0 source before it appears.
 
 ### Buttons
 
@@ -363,16 +363,17 @@ pages. It keeps `noindex`.
 
 ## Evidence
 
-Desktop screenshots and terminal captures are srelens v0.15.0 against the
-`srelens-demo` kind cluster (1 control-plane, 2 workers). Desktop screenshots come
+Desktop screenshots are srelens v0.16.0 and terminal captures are `srectl` v0.16.0,
+both against the `srelens-demo` kind cluster (1 control-plane, 2
+workers). Desktop screenshots come
 from `srelens-server` serving the app's "next" design in web mode, driven by
-`scripts/shots/desktop-shots.mjs`. Terminal captures are real `srelens-tui` text
+`scripts/shots/desktop-shots.mjs`. Terminal captures are real `srectl` text
 at 120×32, taken in tmux by `scripts/demo/capture-all.sh` and
 `scripts/demo/capture.sh`.
 
 Some images are not from that run: the desktop `mcp` view, which web mode cannot
 show faithfully (the `keep` field in `scripts/shots/views.mjs`; its image is on no
-page now), and the `srelens-tui` AI assistant screenshot, which needs a real
+page now), and the `srectl` AI assistant screenshot, which needs a real
 provider key and is replaced by a text capture once its owner runs the row. In web
 mode port forwards are captured through the srelens server, so the Local column
 shows its proxy URL and the alt text says so. Older `tui-*` screenshots also
@@ -382,7 +383,7 @@ remain where no text capture replaces them. The README has the full workflow.
 
 ### Do:
 
-- **Do** lead with real evidence: desktop screenshots and `srelens-tui` text
+- **Do** lead with real evidence: desktop screenshots and `srectl` text
   captures, from the released version.
 - **Do** keep terminal and code surfaces dark in both themes.
 - **Do** take every color from a `site.css` token, and keep body-text pairs at

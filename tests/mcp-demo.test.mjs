@@ -29,7 +29,7 @@ test('renderMcpDemo shows the prompt, every tool call in order, and a row per de
 test('renderMcpDemo flags a deployment that is not fully rolled out with mcp-warn, and only that one', () => {
   const rows = (html) => [...html.matchAll(/<tr( class="mcp-warn")?><td>([\w-]+)<\/td><td>([\w&;]+)<\/td>/g)].map((m) => [m[2], m[3], Boolean(m[1])]);
   assert.deepEqual(rows(renderMcpDemo(fixture, '0.15.0')), [['kind-a', 'web&lt;x&gt;&amp;y', true]]);
-  const committed = rows(renderMcpDemo(readFileSync(transcriptPath, 'utf8'), '0.15.0'));
+  const committed = rows(renderMcpDemo(readFileSync(transcriptPath, 'utf8'), '0.16.0'));
   assert.deepEqual(committed.filter((r) => r[2]).map((r) => `${r[0]} ${r[1]}`), ['kind-demo-us ledger', 'kind-demo-ap checkout']);
   assert.equal(committed.length, 7);
 });
@@ -39,15 +39,16 @@ test('renderMcpDemo shows a failed call as an error row, never hides it', () => 
 });
 
 test('renderMcpDemo labels its table and code for assistive technology and names the version it ran', () => {
-  const html = renderMcpDemo(fixture, '0.15.0');
+  const html = renderMcpDemo(fixture, '0.16.0');
   assert.match(html, /<div class="mini-bar">mcp · srelens — agent session<\/div>\s*<div class="mini-body">\s*<pre tabindex="0" role="group" aria-label="mcp · srelens — agent session">/);
   assert.match(html, /<caption>Deployments in <code>default<\/code>, by cluster<\/caption>/);
   assert.equal((html.match(/<th scope="col">/g) ?? []).length, 6);
-  assert.match(html, /<figcaption>Real tool calls and results: srelens-tui v0\.15\.0 --mcp-stdio, three local kind clusters\./);
+  // Devesh 2026-10-09: v0.16.0 / srectl. The terminal product is srectl, so the caption names it.
+  assert.match(html, /<figcaption>Real tool calls and results: srectl v0\.16\.0 --mcp-stdio, three local kind clusters\. Any MCP client \(Cursor, Claude Code, your own agent\) can make the same calls\.<\/figcaption>/);
 });
 
 test('the figcaption says other clients can make the same calls, not that they do (a script sent this session)', () => {
-  const caption = renderMcpDemo(fixture, '0.15.0').match(/<figcaption>[^\n]*<\/figcaption>/)[0];
+  const caption = renderMcpDemo(fixture, '0.16.0').match(/<figcaption>[^\n]*<\/figcaption>/)[0];
   assert.ok(caption.endsWith('can make the same calls.</figcaption>'), caption);
   assert.ok(!caption.includes(' makes the same calls'), caption);
 });
@@ -67,7 +68,7 @@ test('the committed transcript is one real session: initialize, listContexts, th
   assert.equal(server?.name, 'srelens');
   const recorded = readFileSync(join(ROOT, 'assets/captures/mcp-rollouts.version'), 'utf8').match(/\d+\.\d+\.\d+/)[0];
   assert.equal(server?.version, recorded, 'the server in the transcript is the version the capture is labelled with');
-  assert.equal(recorded, '0.15.0');
+  assert.equal(recorded, '0.16.0');
   assert.equal(calls[0].tool, 'k8s.listContexts');
   assert.deepEqual(calls[0].result.contexts.map((c) => c.name).sort(), [...CONTEXTS].sort());
   const deps = calls.filter((c) => c.tool === 'k8s.listDeployments');
@@ -83,8 +84,8 @@ test('the transcript tells the rollout story the page describes', () => {
   assert.equal(by('kind-demo-us', 'ledger').ready, '1/2', 'us ledger has an unavailable replica');
 });
 
-test('the transcript comes from srelens-tui 0.15.0', () => {
-  assert.match(readFileSync(join(ROOT, 'assets/captures/mcp-rollouts.version'), 'utf8'), /\bv?0\.15\.0\b/);
+test('the transcript comes from srectl 0.16.0', () => {
+  assert.match(readFileSync(join(ROOT, 'assets/captures/mcp-rollouts.version'), 'utf8'), /^srectl v?0\.16\.0\b/);
 });
 
 const home = read('index.html');
@@ -127,7 +128,7 @@ function scratchSite(pages) {
   const dir = mkdtempSync(join(tmpdir(), 'mcp-demo-'));
   mkdirSync(join(dir, 'assets/captures'), { recursive: true });
   writeFileSync(join(dir, 'assets/captures/mcp-rollouts.jsonl'), fixture);
-  writeFileSync(join(dir, 'assets/captures/mcp-rollouts.version'), 'srelens-tui v0.15.0\n');
+  writeFileSync(join(dir, 'assets/captures/mcp-rollouts.version'), 'srectl v0.16.0\n');
   for (const [page, html] of Object.entries(pages)) {
     mkdirSync(dirname(join(dir, page)), { recursive: true });
     writeFileSync(join(dir, page), html);
@@ -140,7 +141,7 @@ test('embedPanelPages writes the one render into every panel page, and a second 
   const dir = scratchSite(Object.fromEntries(PANEL_PAGES.map((p) => [p, stale(p)])));
   try {
     assert.deepEqual(embedPanelPages(dir), PANEL_PAGES);
-    const block = renderMcpDemo(fixture, '0.15.0');
+    const block = renderMcpDemo(fixture, '0.16.0');
     for (const page of PANEL_PAGES) assert.equal(readFileSync(join(dir, page), 'utf8'), `<main>${page}${MARKERS[0]}${block}${MARKERS[1]}</main>`);
     assert.deepEqual(embedPanelPages(dir), [], 'nothing left to change');
   } finally { rmSync(dir, { recursive: true, force: true }); }
@@ -167,8 +168,4 @@ test('a deployment row that is not rolled out is styled with the terminal warnin
 
 test('/mcp/ calls srelens the Kubernetes kernel for AI', () => {
   assert.match(read('mcp/index.html'), /srelens is the Kubernetes kernel for AI: your agents use it so you don’t have to\./);
-});
-
-test('no page and no llms file names srectl before the release that ships it', () => {
-  for (const file of [...listPages(), 'llms.txt', 'llms-full.txt']) assert.doesNotMatch(read(file), /srectl/i, file);
 });

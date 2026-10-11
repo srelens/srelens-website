@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT } from './lib/site.mjs';
-import { VIEWS, APP_DESIGN, APP_THEME, workspaceDoc, seen, selectViews, selectThemes } from '../scripts/shots/views.mjs';
+import { VIEWS, APP_DESIGN, APP_THEME, workspaceDoc, seen, reachable, selectViews, selectThemes } from '../scripts/shots/views.mjs';
 import { connect, navigate } from '../scripts/shots/cdp.mjs';
+import { stopAllForwards } from '../scripts/shots/forwards.mjs';
 
 export function webpSize(buf) {
   assert.equal(buf.toString('ascii', 0, 4), 'RIFF');
@@ -56,6 +57,15 @@ test('workspaceDoc opens the route on the demo cluster behind a pinned home tab'
   assert.equal(ws.tabs[0].route, '/');
   assert.equal(ws.tabs[0].pinned, true);
   assert.deepEqual(tabAt('/k/pods'), { id: ws.activeId, route: '/k/pods', title: 'Pods', kind: 'workloads', sub: 'kind-srelens-demo' });
+});
+
+// v0.16.0 made the namespace selection per tab (tabsPersist.ts parseNamespaces, workspace.ts useNamespaces):
+// it is read from Tab.namespaces[stableId], and the old global srelens.next.namespaces setting is no longer read at all.
+test('workspaceDoc puts the namespace filter on the tab, keyed by the active cluster\'s stableId', () => {
+  assert.deepEqual(tabAt('/k/pods').namespaces, undefined, 'no filter given, none written');
+  const pick = (namespaces) => workspaceDoc(contexts, 'kind-srelens-demo', '/k/pods', namespaces).workspaces[0].tabs[1].namespaces;
+  assert.deepEqual(pick(['payments']), { 'k.yaml#kind-srelens-demo': ['payments'] });
+  assert.deepEqual(pick([]), { 'k.yaml#kind-srelens-demo': [] }, 'an empty list is an explicit all-namespaces choice');
 });
 
 test('workspaceDoc titles each route the way the tab strip does', () => {
@@ -174,7 +184,8 @@ test('every view waits for something an empty or unsynced screen cannot show', (
   for (const v of VIEWS) assert.ok(v.expect !== undefined, `${v.name} has no expect`);
   const unhealthy = ['overview', 'pods', 'pods-payments'].map((n) => VIEWS.find((v) => v.name === n));
   for (const v of unhealthy) {
-    for (const text of ['Degraded', 'CrashLoopBackOff', 'NotReady', '1 not ready']) assert.equal(seen(text, v.expect), true, `${v.name} should accept ${text}`);
+    // v0.16.0 lists the crash-looping pod as "Error" between restarts and "CrashLoopBackOff" while it waits in back-off.
+    for (const text of ['Degraded', 'CrashLoopBackOff', 'NotReady', '1 not ready', 'ledger-worker-7f8847c54d-qvqmz payments 0/1 Error 1967']) assert.equal(seen(text, v.expect), true, `${v.name} should accept ${text}`);
     // the screen the dark overview was captured on before the app had synced
     assert.equal(seen('NODES 3 all ready PODS 38 all ready Nothing is unhealthy', v.expect), false, `${v.name} accepts an unsynced screen`);
   }
@@ -245,6 +256,60 @@ test('confirm-delete opens the delete confirmation for ledger-worker and never c
   for (const s of steps.slice(opener + 1)) {
     assert.doesNotMatch(clicks(s), CONFIRMING, 'a step after the dialog opened clicks a confirming control');
     assert.deepEqual(Object.keys(s), ['wait'], 'only waits after the dialog opened (Enter would press its focused button)');
+  }
+});
+
+// --- Task 5 (v0.16.0): a port forward lives in the server, so the one the port-forwards view starts would
+// otherwise outlive its shot and show as "1 port-forward" in the status bar of every shot after it.
+const fakeApi = (listed, stopStatus = 204) => {
+  const calls = [];
+  const api = async (path, init = {}) => {
+    calls.push([path, init.body]);
+    if (path.endsWith('/list_forwards')) return new Response(JSON.stringify(listed), { status: listed === null ? 500 : 200 });
+    return new Response(null, { status: stopStatus });
+  };
+  return { api, calls };
+};
+
+test('stopAllForwards stops every forward the server lists, by id, and nothing else', async () => {
+  const { api, calls } = fakeApi({ forwards: [{ id: 3 }, { id: 4 }] });
+  await stopAllForwards(api);
+  assert.deepEqual(calls, [
+    ['/api/command/list_forwards', '{}'],
+    ['/api/command/stop_port_forward', '{"id":3}'],
+    ['/api/command/stop_port_forward', '{"id":4}'],
+  ]);
+});
+
+test('stopAllForwards does nothing when no forward is running', async () => {
+  const { api, calls } = fakeApi({ forwards: [] });
+  await stopAllForwards(api);
+  assert.deepEqual(calls.map(([path]) => path), ['/api/command/list_forwards']);
+});
+
+test('stopAllForwards fails the run when a forward cannot be stopped or listed', async () => {
+  await assert.rejects(stopAllForwards(fakeApi({ forwards: [{ id: 1 }] }, 500).api), /stop_port_forward.*500/);
+  await assert.rejects(stopAllForwards(fakeApi(null).api), /list_forwards.*500/);
+});
+
+// The first v0.16.0 run caught dark-deployments mid-flap: the right rows, but the sidebar said "Error" and the status bar
+// "version unknown / Unreachable". The view's own `expect` cannot see that, so the shot waits for the connection too.
+test('a screen whose status bar says the cluster is Unreachable is not ready to photograph', () => {
+  assert.equal(reachable('kind-srelens-demo version unknown Unreachable 0 port-forwards Ask'), false);
+  assert.equal(reachable('kind-srelens-demo v1.36.1 Connected 0 port-forwards Ask'), true);
+  assert.equal(reachable('Status Error ledger-worker-7f8847c54d-qvqmz 0/1 ready kind-srelens-demo v1.36.1 Connected'), true, 'a pod in Error is not an unreachable cluster');
+  assert.equal(reachable('Events 117 EVENTS · 3 WARNINGS Unhealthy 2 BackOff 1'), true, 'an Unhealthy event is not an unreachable cluster');
+});
+
+// The v0.16.0 recapture changed two things an alt can see. Every view now starts with no forwards, so the dark shot shows
+// /pf/1/ and the light one /pf/2/: the alt names the proxy, not a number. And the Nodes list gained CPU and memory bars.
+test('/features/ alts follow the v0.16.0 captures: no forward number on port-forwards, usage bars on nodes', () => {
+  const html = readFileSync(join(ROOT, 'features/index.html'), 'utf8').replace(/\r\n/g, '\n');
+  const alt = (name, theme = 'dark') => new RegExp(`src="/assets/shots/${theme}-${name}\\.webp"[^>]*?alt="([^"]*)"`).exec(html)?.[1] ?? '';
+  for (const theme of ['dark', 'light']) {
+    assert.match(alt('port-forwards', theme), /forwarded through the srelens server at a 127\.0\.0\.1:8791\/pf\/ proxy URL/);
+    assert.doesNotMatch(alt('port-forwards', theme), /pf\/\d/, 'the dark and light shots show different forward numbers');
+    assert.match(alt('nodes', theme), /CPU and memory usage bars/);
   }
 });
 

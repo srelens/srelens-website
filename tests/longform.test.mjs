@@ -117,18 +117,24 @@ test('/docs/tui/ keeps two real screenshots as images; the other ten are text ca
   assert.equal((mainOf(tui).match(/<figure class="tui-figure">/g) ?? []).length, 10);
 });
 
+// Devesh 2026-10-09: v0.16.0 / srectl. The H1 names srectl; the hero lede carries the one visible "formerly srelens-tui".
+test('/docs/tui/ H1 and hero lede name srectl, and the lede says it was srelens-tui', () => {
+  assert.equal(text(tui.match(/<h1>[\s\S]*?<\/h1>/)[0]), 'srectl Guide & Reference');
+  assert.equal(text(tui.match(/<p class="lede">[\s\S]*?<\/p>/)[0]), 'srectl (formerly srelens-tui) is a high-performance, keyboard-driven pure-Rust terminal workspace for Kubernetes operators and SREs.');
+});
+
 // ---- /docs/tui/ claim fixes ------------------------------------------------------------------
 
 test('/docs/tui/ MCP: every client config and command uses the subcommand spelling --allow-* (B69, B70)', () => {
-  // `srelens-tui mcp --mcp-allow-*` exits 2 on v0.15.0; only the top-level --mcp-stdio form takes --mcp-allow-*.
+  // `srectl mcp --mcp-allow-*` is a usage error (srelens-tui mcp was on v0.15.0); only the top-level --mcp-stdio form takes --mcp-allow-*.
   never(tui, /--mcp-allow-/, 'the page');
   const configs = [...codeOf(tui).matchAll(/"args":\s*\[([^\]]*)\]/g)].map((m) => JSON.parse(`[${m[1]}]`));
   assert.equal(configs.length, 4, 'Cursor, Claude Desktop, Gemini / Antigravity and generic client configs');
   for (const args of configs) assert.deepEqual(args, ['mcp', '--allow-sensitive-reads', '--allow-destructive']);
-  hasCode(tui, '# Allow reading sensitive Secret data in plaintext\nsrelens-tui mcp --allow-sensitive-reads');
-  hasCode(tui, '# Allow mutating and destructive operations\nsrelens-tui mcp --allow-destructive');
-  hasCode(tui, '# Full access (sensitive reads + destructive mutations)\nsrelens-tui mcp --allow-sensitive-reads --allow-destructive');
-  hasCode(tui, 'claude mcp add srelens -- srelens-tui mcp --allow-sensitive-reads --allow-destructive');
+  hasCode(tui, '# Allow reading sensitive Secret data in plaintext\nsrectl mcp --allow-sensitive-reads');
+  hasCode(tui, '# Allow mutating and destructive operations\nsrectl mcp --allow-destructive');
+  hasCode(tui, '# Full access (sensitive reads + destructive mutations)\nsrectl mcp --allow-sensitive-reads --allow-destructive');
+  hasCode(tui, 'claude mcp add srelens -- srectl mcp --allow-sensitive-reads --allow-destructive');
   const copied = [...tui.matchAll(/data-copy=(?:"([^"]*)"|'([^']*)')/g)].map((m) => decode(m[1] ?? m[2]));
   assert.ok(copied.length >= 5, 'the config blocks carry copy buttons');
   for (const payload of copied) never(payload, /--mcp-allow-/, 'copy button payload');
@@ -142,7 +148,7 @@ test('/docs/tui/ MCP flag descriptions say what the flags really gate (C24)', ()
 
 test('/docs/tui/ says 100+ tools, not 80+ (C06), and the safe-by-default sentence stays (C32)', () => {
   assert.ok(prose(tui).includes('exposing 100+ cluster tools (Kubernetes, Helm, toolbox and server tools) to AI agents (Cursor, Claude, Gemini, and custom agents).'));
-  assert.ok(prose(tui).includes('By default, srelens-tui mcp runs in safe read-only mode: queries execute immediately, Secrets are masked, and mutating tools are blocked.'));
+  assert.ok(prose(tui).includes('By default, srectl mcp runs in safe read-only mode: queries execute immediately, Secrets are masked, and mutating tools are blocked.'));
 });
 
 test('/docs/tui/ keybinding tables carry the verified keys (B06, B12, B23, B28, B29, B38, C26, C17)', () => {
@@ -164,8 +170,35 @@ test('/docs/tui/ command table: real aliases and descriptions (B48, B58, C14, C1
   never(tui, /:bgp-peers|:port-forwards/, 'unrecognised aliases');
 });
 
-test('/docs/tui/ AI section: estimated tokens, real providers and the shipped slash commands (C05, C08, B65, B67)', () => {
-  assert.ok(prose(tui).includes('The AI assistant drawer provides in-process conversational diagnosis with an estimated token count per reply and direct Kubernetes MCP tool execution.'));
+// Devesh 2026-10-09: v0.16.0 re-check. :config groups the Argo settings in an "ArgoCD (:argo)" box and labels its first two fields
+// "Hub Context" and "Hub Kubeconfig" (apps/tui/src/views/tui_config_view.rs:630, 649, 666); v0.15.0 had "ArgoCD Hub Context" and
+// "ArgoCD Hub Kubeconfig Path". The box also has UI URL and Fetch Timeout, which are new in 0.16.0 and not advertised here (spec §6).
+test('/docs/tui/ :config bullets name the fields as v0.16.0 labels them: Hub Context and Hub Kubeconfig', () => {
+  has(tui, '<li><strong>Hub Context:</strong> Select or cycle (<code>h</code>/<code>l</code> or <code>e</code> to edit) the kubeconfig context where your ArgoCD control plane resides.</li>');
+  has(tui, '<li><strong>Hub Kubeconfig:</strong> Set a custom path if your Hub cluster kubeconfig is separate from <code>$KUBECONFIG</code>.</li>');
+  never(mainOf(tui), /<strong>ArgoCD Hub (?:Context|Kubeconfig Path):<\/strong>/, 'v0.15.0 field labels');
+  never(prose(tui), /UI URL|Fetch Timeout/, 'new in 0.16.0, not advertised');
+});
+
+// Devesh 2026-10-09, controller ruling (spec §3.3; owner review 2026-10-05: rephrase what cannot be confirmed). `srectl info` prints
+// "Found N contexts across kubeconfigs" and each context's cluster and server address, then returns (apps/tui/src/main.rs:199-207). It
+// resolves kubeconfig files (crates/kube/src/context_resolve.rs) and opens no connection, so it reports no connectivity, server
+// version or reachability. The product's own --help line says "reachability" (cli.rs:48); that is the product's wording, not behaviour.
+test('srectl info is described as what it does: it lists kubeconfig contexts, and no page says it tests reachability', () => {
+  has(tui, '<tr><td><code>info</code></td><td>Subcommand: List the kubeconfig contexts srectl can see, with each one\'s cluster and server address, without starting the TUI</td></tr>');
+  hasCode(tui, '# List the kubeconfig contexts srectl sees\nsrectl info');
+  has(tui, 'data-copy=\'# List the kubeconfig contexts srectl sees\nsrectl info');
+  has(docs, '<tr><td><code>srectl info</code></td><td>List kubeconfig contexts with their cluster and server address</td></tr>');
+  never(prose(tui), /connectivity|reachability/i, '/docs/tui/ prose');
+  never(codeOf(tui), /reachability/i, '/docs/tui/ code');
+  never(docs.match(/<tr><td><code>srectl info<\/code>[\s\S]*?<\/tr>/)[0], /reachab|connectivity/i, '/docs/ info row');
+});
+
+// Devesh 2026-10-09: v0.16.0 re-check. The assistant now shows the usage its provider reports (agent.rs resolve_token_usage,
+// crates/llm/src/agent_loop.rs StreamItem::Usage) and falls back to an estimate only when none arrives, so "estimated" is gone.
+test('/docs/tui/ AI section: per-reply token usage, real providers and the shipped slash commands (C05, C08, B65, B67)', () => {
+  assert.ok(prose(tui).includes('The AI assistant drawer provides in-process conversational diagnosis with per-reply token usage and direct Kubernetes MCP tool execution.'));
+  never(prose(tui), /estimated token/i, 'token counts are provider-reported in v0.16.0');
   has(tui, '<li><strong>Anthropic Claude:</strong> default model <code>claude-3-7-sonnet-20250219</code>; any Claude model ID can be set.</li>\n<li><strong>OpenAI:</strong> default model <code>gpt-4o</code>; any chat model ID can be set.</li>\n<li><strong>Google Gemini:</strong> default model <code>gemini-2.5-flash</code>; any Gemini model ID can be set.</li>\n<li><strong>OpenAI-compatible / Ollama (local):</strong> defaults to <code>http://localhost:11434/v1</code> and <code>llama3.2</code>; point it at any OpenAI-compatible endpoint.</li>');
   has(tui, '<tr><td><code>/endpoints</code></td><td>Debugs a Service with no ready endpoints: selector vs labels, readiness probes, targetPort and EndpointSlices</td></tr>');
   assert.deepEqual([...mainOf(tui).matchAll(/<td><code>(\/[a-z]+)<\/code><\/td>/g)].map((m) => m[1]), ['/crashloop', '/oom', '/rollout', '/endpoints', '/caveman']);
@@ -188,16 +221,16 @@ test('/docs/tui/ pod bullets no longer promise a Shift + D key (B28), and the sh
   const pods = mainOf(tui).match(/<h2 id="pod-operations">[\s\S]*?<h2 id="helm-inspector">/)[0];
   never(pods, /Debug Containers/, 'pod bullets');
   has(tui, '<li><strong>Container Shell (<code>s</code>):</strong> Drops straight into a container shell, trying <code>/bin/sh</code>, <code>sh</code>, <code>bash</code> and <code>/bin/bash</code> in turn.</li>');
-  has(tui, '<li><strong>Ephemeral Debug Containers (MCP):</strong> MCP clients that launch <code>srelens-tui mcp --allow-destructive</code> can attach an ephemeral debug container to a distroless pod without restarting it (<code>k8s.debugPod</code>).</li>');
+  has(tui, '<li><strong>Ephemeral Debug Containers (MCP):</strong> MCP clients that launch <code>srectl mcp --allow-destructive</code> can attach an ephemeral debug container to a distroless pod without restarting it (<code>k8s.debugPod</code>).</li>');
   has(tui, '<li><strong>Privileged Node Shell (<code>s</code> on the Nodes view):</strong> Runs <code>kubectl debug node/&lt;name&gt;</code> to open a root shell with the node\'s host namespaces and filesystem reachable. Requires <code>kubectl</code> on your PATH.</li>');
 });
 
 test('/docs/tui/ node SSH: the TUI key is S, status / journal / restart are assistant and MCP tools (B29, C23)', () => {
-  has(tui, '<code>srelens-tui</code> hands authentication to your system <code>ssh</code>, which offers agent identities first and then the standard keys in <code>~/.ssh/</code>:');
+  has(tui, '<code>srectl</code> hands authentication to your system <code>ssh</code>, which offers agent identities first and then the standard keys in <code>~/.ssh/</code>:');
   has(tui, '<li><strong>Interactive Node SSH (<code>S</code> on the Nodes view):</strong> Opens an interactive <code>ssh</code> session to the node after you confirm the destination (InternalIP, then ExternalIP).</li>');
   has(tui, '<li><strong>Systemd Status (assistant / MCP, needs <code>--allow-sensitive-reads</code>):</strong> Check system service states (<code>systemctl status &lt;service&gt;</code>) without an operational kubelet.</li>');
   has(tui, '<li><strong>Journal Logs (assistant / MCP, needs <code>--allow-sensitive-reads</code>):</strong> Retrieve systemd journal logs (<code>journalctl -u &lt;service&gt;</code>, with <code>--since</code> and <code>--grep</code> filters).</li>');
-  has(tui, '<li><strong>Guarded Restarts (MCP, needs <code>--allow-destructive</code>):</strong> Restart a system service such as <code>kubelet</code> or <code>rke2-server</code> from an MCP client that launches <code>srelens-tui mcp --allow-destructive</code>.</li>');
+  has(tui, '<li><strong>Guarded Restarts (MCP, needs <code>--allow-destructive</code>):</strong> Restart a system service such as <code>kubelet</code> or <code>rke2-server</code> from an MCP client that launches <code>srectl mcp --allow-destructive</code>.</li>');
   never(prose(tui), /negotiates SSH authentication automatically|Stream systemd journal|Safely trigger controlled service restarts/, 'old SSH claim');
 });
 
@@ -207,8 +240,38 @@ test('/docs/tui/ keeps the rows marked keep: ArgoCD hub and spoke (C33), GPU mod
   assert.ok(prose(tui).includes('Automatically detects hardware accelerator classes (H100, A100, L4, T4, Tesla).'));
 });
 
-test('/docs/tui/ and /docs/ never say the TUI pods table shows CrashLoopBackOff (D2)', () => {
-  // The Kubernetes state is a pod phase of Running with READY 0/1 in the TUI; the only mention left is the /crashloop playbook.
+// Devesh 2026-10-09, controller ruling (same as the /tui/ "Workload Attribution" bullet). The GPU view's right pane, "GPU CONSUMPTION &
+// WORKLOADS" (apps/tui/src/views/gpu_view.rs:418, "Select a GPU node on the left" at :427), lists "PODS ASKING FOR GPU / VRAM" for the
+// selected node (:739) with GPUS and VRAM REQ columns (:797-858), from the pods whose containers request GPU or VRAM resources
+// (crates/kube/src/gpu_info.rs:316-425). It shows requests per node, not which GPU device a pod is bound to.
+test('/docs/tui/ GPU "Attached Workloads" describes per-node GPU requests, not binding to specific devices', () => {
+  // Fix round 1: GPUS is the count requested and VRAM REQ the VRAM those GPUs represent (taken from the request for MIG slices or HAMi
+  // memory, else derived from the node's per-GPU VRAM for whole GPUs: crates/kube/src/gpu_info.rs:398-404).
+  has(tui, '<li><strong>Attached Workloads:</strong> Select a GPU node to see the training jobs and inference pods that request GPUs on it, with the GPUs requested and the VRAM they represent.</li>');
+  never(prose(tui), /specific GPU devices|asks for/, 'device binding is not shown');
+});
+
+// Devesh 2026-10-09, controller ruling (fix round 1). The assistant starts at the ultra caveman level until the user chooses
+// (apps/tui/src/ai_config.rs:276-283, applied at app.rs:595-596). A bare /caveman reports the current level while one is active
+// (app.rs:6422-6429) and turns on full only when the mode is off (:6430-6444); the levels are lite, full, ultra, wenyan-lite,
+// wenyan-full, wenyan-ultra and off (ai_skills.rs:172-174, 384-410).
+test('/docs/tui/ /caveman row says the assistant starts at ultra and what the bare command does (v0.16.0)', () => {
+  has(tui, '<tr><td><code>/caveman</code></td><td>Sets how terse the assistant\'s replies are: <code>lite</code>, <code>full</code>, <code>ultra</code>, <code>wenyan-*</code> or <code>off</code>. It starts at <code>ultra</code> until you choose; <code>/caveman</code> alone shows the current level, or turns on <code>full</code> if it is off</td></tr>');
+  never(prose(tui), /Enables high-density/, 'old row');
+});
+
+// Fix round 1 (controller ruling): the Workload VRAM Breakdown lists the pods that REQUEST GPUs; "consuming" implies measured use
+// (the pods table is gpu_view.rs:739 "PODS ASKING FOR GPU / VRAM" with GPUS and VRAM REQ columns, :797-858).
+test('/docs/ GPU breakdown says requesting, not consuming; the caveman item says it starts at ultra', () => {
+  has(docs, 'See exactly which pods and namespaces are requesting accelerator capacity, their requested physical GPUs or fractional MIG/vGPU slices, and current execution phase.');
+  never(docs, /consuming accelerator/, '/docs/');
+  has(docs, '<li><strong>High-Density "Caveman Mode":</strong> Terse, high-information-density output designed specifically for rapid operational debugging with minimal token overhead. It starts at the <code>ultra</code> level until you choose another with <code>/caveman</code>.</li>');
+});
+
+test('/docs/tui/ and /docs/ make no CrashLoopBackOff claim about the TUI pods table (D2)', () => {
+  // D2 held at v0.15.0, where the pods table showed the phase (Running, READY 0/1). v0.16.0 shows kubectl's own STATUS word
+  // instead (d2a2b925, #786), CrashLoopBackOff included, so the guard is now copy discipline, not a fact about the product:
+  // the only mention left is the /crashloop playbook.
   assert.equal((prose(tui).match(/CrashLoopBackOff/g) ?? []).length, 1);
   has(tui, '<tr><td><code>/crashloop</code></td><td>Automated CrashLoopBackOff analysis: pulls exit codes, crash logs, and event cascades</td></tr>');
   never(prose(docs), /CrashLoopBackOff/, '/docs/');
@@ -221,8 +284,8 @@ test('/docs/ TUI section carries the approved wording (B28, B29, B65, C02, C06, 
   has(docs, 'Press <strong>Enter</strong> on any release to launch the 5-tab Deep Helm Inspector. Reading releases does not need the <code>helm</code> CLI; rollback calls your local <code>helm</code>:');
   has(docs, '<li><strong>Built-in Slash Commands:</strong> Run quick investigation macros like <code>/crashloop</code>, <code>/oom</code>, <code>/rollout</code>, or <code>/endpoints</code> to trigger standardized diagnostic workflows.</li>');
   has(docs, '<li><strong>Node SSH &amp; Out-of-Band Recovery (<a href="/docs/tui/#node-ssh"><code>S</code> on the Nodes view</a>):</strong>');
-  has(docs, '<li><strong>Headless MCP Server (<a href="/docs/tui/#tui-mcp"><code>srelens-tui mcp</code></a>):</strong> Expose 100+ cluster tools to Cursor, Claude, and Gemini over stdio with explicit mutation consent gates.</li>');
-  has(docs, '<li><strong>Instant Shells &amp; Deep Debugging:</strong> Press <code>s</code> to drop into a container shell, trying <code>/bin/sh</code>, then <code>bash</code>, through your local <code>kubectl</code>. Open a privileged node shell with <code>s</code> on the Nodes view. MCP clients that launch <code>srelens-tui mcp --allow-destructive</code> can attach ephemeral debug containers to distroless pods (<code>k8s.debugPod</code>). External interactive sessions run on an alternate screen with zero terminal debris on exit.</li>');
+  has(docs, '<li><strong>Headless MCP Server (<a href="/docs/tui/#tui-mcp"><code>srectl mcp</code></a>):</strong> Expose 100+ cluster tools to Cursor, Claude, and Gemini over stdio with explicit mutation consent gates.</li>');
+  has(docs, '<li><strong>Instant Shells &amp; Deep Debugging:</strong> Press <code>s</code> to drop into a container shell, trying <code>/bin/sh</code>, then <code>bash</code>, through your local <code>kubectl</code>. Open a privileged node shell with <code>s</code> on the Nodes view. MCP clients that launch <code>srectl mcp --allow-destructive</code> can attach ephemeral debug containers to distroless pods (<code>k8s.debugPod</code>). External interactive sessions run on an alternate screen with zero terminal debris on exit.</li>');
   has(docs, 'Manage background port-forwards with live byte counters and automatic reconnects (<code>:pf</code>).');
   has(docs, 'Instant view switching for opened views, powered by an in-memory Informer cache,');
 });
@@ -243,7 +306,7 @@ test('no long-form page keeps a claim the owner rejected (B28, B29, B65, B67, C0
     never(html, /\b0ms\b|sub-millisecond/i, `${file}: unmeasured latency`);
     never(html, /\b80\+/, `${file}: 80+`);
     never(html, /3-way/i, `${file}: 3-way diff`);
-    never(text(html), /srelens-tui mcp\s+--mcp-allow-/, `${file}: --mcp-allow-* after srelens-tui mcp`);
+    never(text(html), /srectl mcp\s+--mcp-allow-/, `${file}: --mcp-allow-* after srectl mcp`);
     never(prose(html), /(?:\/bin\/)?bash (?:to|➔) (?:\/bin\/)?sh\b/, `${file}: bash then sh`);
   }
 });

@@ -1,13 +1,14 @@
 # name	arguments	keys
 # Columns are tab-separated. Keys are tmux send-keys tokens; | separates batches, sent 2 s apart. Lines starting with # are ignored.
-# Without a deep link or -n, srelens-tui opens the feature guide over the Namespaces view, so rows that type into a table add a target (-A pods) or -n.
+# Without a deep link or -n, srectl opens the feature guide over the Namespaces view, so rows that type into a table add a target (-A pods) or -n.
+# argo-config presses j six times: in v0.16.0 the ArgoCD Hub Context is the seventh :config setting (tui_config_view.rs:228-229).
 features	-A	
 overview	-A srelens://view/kind-srelens-demo/_/overview	
 deployments	srelens://view/kind-srelens-demo/payments/deployments	
 helm	-A srelens://view/kind-srelens-demo/_/helm	
 helm-detail	-A srelens://view/kind-srelens-demo/_/helm	Enter | 2 | m m
 argo	-A srelens://view/kind-srelens-demo/_/argo
-argo-config	-A srelens://view/kind-srelens-demo/_/config	j j j j j
+argo-config	-A srelens://view/kind-srelens-demo/_/config	j j j j j j
 bgp	-A srelens://view/kind-srelens-demo/_/bgp	
 gpu	-A srelens://view/kind-srelens-demo/_/gpuinfo	
 top	-A srelens://view/kind-srelens-demo/_/top	

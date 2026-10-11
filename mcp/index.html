@@ -57,7 +57,7 @@
     "url": "https://srelens.com/mcp/",
     "description": "How the built-in srelens MCP server exposes supported Kubernetes operations to AI agents over stdio and loopback HTTP.",
     "isPartOf": { "@type": "WebSite", "name": "srelens", "url": "https://srelens.com/" },
-    "primaryImageOfPage": "https://srelens.com/assets/og/og-mcp.jpg"
+    "primaryImageOfPage": "https://srelens.com/assets/og/og-mcp.png"
   }
   </script>
   <script type="application/ld+json">
@@ -100,7 +100,7 @@
           srelens is the Kubernetes kernel for AI: your agents use it so you don’t have to.
         </p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="/download/">Download <span data-version>v0.15.0</span></a>
+          <a class="btn btn-primary" href="/download/">Download <span data-version>v0.16.0</span></a>
           <a class="btn btn-ghost" href="#setup">Connect a client</a>
         </div>
       </div>
@@ -125,7 +125,7 @@
       </div>
     </div>
   </div>
-  <figcaption>Real tool calls and results: srelens-tui v0.15.0 --mcp-stdio, three local kind clusters. Any MCP client (Cursor, Claude Code, your own agent) can make the same calls.</figcaption>
+  <figcaption>Real tool calls and results: srectl v0.16.0 --mcp-stdio, three local kind clusters. Any MCP client (Cursor, Claude Code, your own agent) can make the same calls.</figcaption>
 </figure><!-- mcp-demo:end -->
     </div>
 
@@ -161,7 +161,7 @@
           <p class="eyebrow"><a class="section-label anchor-link" href="#setup">#setup</a> · Connect a client</p>
           <h2>Ready-to-paste config for every AI workspace.</h2>
           <p class="sub">
-            Register <code>srelens-tui mcp</code> or <code>srelens --mcp-stdio</code> with your assistant.
+            Register <code>srectl mcp</code> or <code>srelens --mcp-stdio</code> with your assistant.
             Mutating tools require confirmation; read-only diagnostics execute instantly.
           </p>
         </div>
@@ -174,7 +174,7 @@
               <button class="copy-btn" type="button" data-copy='{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -182,7 +182,7 @@
 <pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -197,7 +197,7 @@
               <button class="copy-btn" type="button" data-copy='{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -205,7 +205,7 @@
 <pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -217,9 +217,9 @@
             <h3>Claude Code CLI</h3>
             <p>Register via one-line terminal command:</p>
             <div class="codeblock">
-              <button class="copy-btn" type="button" data-copy="claude mcp add srelens -- srelens-tui mcp">copy</button>
+              <button class="copy-btn" type="button" data-copy="claude mcp add srelens -- srectl mcp">copy</button>
 <pre tabindex="0" role="group" aria-label="Code example"><code><span class="c"># register stdio MCP server</span>
-<span class="p">$</span> claude mcp add srelens -- srelens-tui mcp
+<span class="p">$</span> claude mcp add srelens -- srectl mcp
 
 <span class="c"># or via HTTP server (when enabled)</span>
 <span class="p">$</span> claude mcp add --transport http srelens \
@@ -234,7 +234,7 @@
               <button class="copy-btn" type="button" data-copy='{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -242,7 +242,7 @@
 <pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -257,7 +257,7 @@
               <button class="copy-btn" type="button" data-copy='{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -265,7 +265,7 @@
 <pre tabindex="0" role="group" aria-label="Code example"><code>{
   "mcpServers": {
     "srelens": {
-      "command": "srelens-tui",
+      "command": "srectl",
       "args": ["mcp"]
     }
   }
@@ -314,11 +314,11 @@
         </div>
         <div class="answer">
           <h2>Can an AI agent break my cluster through srelens?</h2>
-          <p>No. By default, the server runs in safe read-only mode with sensitive data masked. Mutating actions require the server to be launched with <code>--mcp-allow-destructive</code> (<code>--allow-destructive</code> for <code>srelens-tui mcp</code>) <em>and</em> the agent must explicitly provide <code>"_confirm": true</code> in its tool call arguments. Reading plaintext Secrets requires launching with <code>--mcp-allow-sensitive-reads</code> (<code>--allow-sensitive-reads</code> for <code>srelens-tui mcp</code>).</p>
+          <p>No. By default, the server runs in safe read-only mode with sensitive data masked. Mutating actions require the server to be launched with <code>--mcp-allow-destructive</code> (<code>--allow-destructive</code> for <code>srectl mcp</code>) <em>and</em> the agent must explicitly provide <code>"_confirm": true</code> in its tool call arguments. Reading plaintext Secrets requires launching with <code>--mcp-allow-sensitive-reads</code> (<code>--allow-sensitive-reads</code> for <code>srectl mcp</code>).</p>
         </div>
         <div class="answer">
           <h2>Do my credentials ever leave my machine?</h2>
-          <p>No. srelens connects to clusters directly with your local kubeconfig credentials. The MCP server runs locally, either inside the app or as a local <code>srelens</code> or <code>srelens-tui mcp</code> process, with no srelens cloud relay between an agent and your API servers.</p>
+          <p>No. srelens connects to clusters directly with your local kubeconfig credentials. The MCP server runs locally, either inside the app or as a local <code>srelens</code> or <code>srectl mcp</code> process, with no srelens cloud relay between an agent and your API servers.</p>
         </div>
         <div class="answer">
           <h2>Which MCP clients work with srelens?</h2>
@@ -332,7 +332,7 @@
       <h2 class="display">Your cluster, on the tool list.</h2>
       <p>Download srelens and connect your first MCP client in minutes.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="/download/">Download <span data-version>v0.15.0</span></a>
+        <a class="btn btn-primary" href="/download/">Download <span data-version>v0.16.0</span></a>
         <a class="btn btn-ghost" href="https://github.com/srelens/srelens" rel="noopener">Star on GitHub</a>
       </div>
     </section>
@@ -344,7 +344,7 @@
 <div class="footer-brand">
 <a class="brand" href="/"><img src="/assets/logo-mark.svg" alt="" width="24" height="24"><span>srelens</span></a>
 <p class="footer-tag">The Kubernetes kernel · built with Rust &amp; Tauri</p>
-<p class="footer-version">latest <span data-version>v0.15.0</span> · MIT</p>
+<p class="footer-version">latest <span data-version>v0.16.0</span> · MIT</p>
 </div>
 <nav class="footer-cols" aria-label="Footer"><div class="footer-col"><p class="footer-h">product</p><ul><li><a href="/features/">features</a></li><li><a href="/tui/">tui</a></li><li><a href="/mcp/">mcp</a></li><li><a href="/download/">download</a></li></ul></div><div class="footer-col"><p class="footer-h">learn</p><ul><li><a href="/docs/">docs</a></li><li><a href="/docs/tui/">tui docs</a></li><li><a href="/guides/">sre guides</a></li><li><a href="/guides/crashloopbackoff/">CrashLoopBackOff</a></li><li><a href="/guides/oomkilled/">OOMKilled</a></li><li><a href="/guides/failed-deployment/">Failed deployment</a></li><li><a href="/faq/">faq</a></li></ul></div><div class="footer-col"><p class="footer-h">compare</p><ul><li><a href="/compare/">all comparisons</a></li><li><a href="/compare/lens/">lens</a></li><li><a href="/compare/k9s/">k9s</a></li><li><a href="/compare/headlamp/">headlamp</a></li><li><a href="/compare/freelens/">freelens</a></li><li><a href="/compare/aptakube/">aptakube</a></li><li><a href="/compare/kubernetes-dashboard/">kubernetes dashboard</a></li></ul></div><div class="footer-col"><p class="footer-h">project</p><ul><li><a href="/security/">security</a></li><li><a href="/architecture/">architecture</a></li><li><a href="https://github.com/srelens/srelens" rel="noopener">github</a></li><li><a href="https://github.com/srelens/srelens/releases" rel="noopener">releases</a></li></ul></div></nav>
 </div>
