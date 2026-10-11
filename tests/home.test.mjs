@@ -47,6 +47,13 @@ test('the incident drill sits in #workflow, before #features', () => {
   assert.ok(workflow > 0 && drill > workflow && drill < html.indexOf('id="features"'));
 });
 
+// Devesh 2026-10-11: the drill sat capped at 760px under three full-width cards, leaving an empty band; it spans the row now.
+test('the incident drill spans the same width as the three loop cards above it', () => {
+  const drill = read('site.css').match(/(?:^|\n)\.incident-drill\s*\{([^}]*)\}/)?.[1];
+  assert.ok(drill, '.incident-drill rule exists');
+  assert.doesNotMatch(drill, /max-width/);
+});
+
 test('the hero keeps the download, terminal and GitHub actions', () => {
   const hero = html.slice(html.indexOf('<section class="hero">'), html.indexOf('</section>', html.indexOf('id="mode-terminal"')));
   for (const href of ['/download/', '/download/#tui', 'https://github.com/srelens/srelens']) assert.ok(hero.includes(`href="${href}"`), href);

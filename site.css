@@ -398,7 +398,7 @@ h2:hover .heading-anchor, h3:hover .heading-anchor, .heading-anchor:focus-visibl
 .loop-step p { margin: 0; font-size: 15.5px; color: var(--muted); }
 
 .incident-drill {
-  max-width: 760px; margin-top: 32px; overflow: hidden;
+  margin-top: 32px; overflow: hidden;
   background: var(--term-bg); color: var(--term-fg); border: 1px solid var(--term-line); border-radius: var(--r-frame);
   box-shadow: var(--evidence-shadow); font-family: var(--font-term);
 }
