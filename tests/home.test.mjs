@@ -64,15 +64,29 @@ test('the hero keeps the download, terminal and GitHub actions', () => {
 // the MP4 and GIF stay published so no link to them returns 404.
 test('the desktop panel keeps both real screenshots and their caption, with no control that opens the old tour', () => {
   const desktop = html.match(/<div class="mode-panel" id="mode-desktop"[\s\S]*?<div class="mode-panel" id="mode-terminal"/)[0];
-  assert.match(desktop, /<img class="shot-dark" src="\/assets\/shots\/dark-overview\.webp"[^>]*fetchpriority="high"/);
+  assert.match(desktop, /<img class="shot-dark" src="\/assets\/shots\/dark-overview\.webp"[^>]*loading="lazy"/);
   assert.match(desktop, /<img class="shot-light" src="\/assets\/shots\/light-overview\.webp"/);
+  assert.doesNotMatch(desktop, /fetchpriority="high"/);
   assert.ok(desktop.includes('<p class="shot-cap">real screenshot · srelens connected to a 3-node kind cluster (1 control-plane + 2 workers)</p>'));
   assert.doesNotMatch(desktop, /<button|data-tour|tour-|walkthrough/i);
 });
 
-test('the homepage has no tour dialog, video or link, and the tour files stay published', () => {
+test('the hero shows the demo GIF after the platforms line and before the mode tabs', () => {
+  const platforms = html.indexOf('class="hero-platforms"');
+  const gif = html.indexOf('src="/assets/media/srelens-demo-changes.gif"');
+  const modes = html.indexOf('class="modes"');
+  assert.ok(platforms > 0 && gif > platforms && gif < modes && modes > gif);
+  assert.match(html, /src="\/assets\/media\/srelens-demo-changes\.gif" width="1280" height="720"/);
+  assert.match(html, /src="\/assets\/media\/srelens-demo-changes\.gif"[^>]*fetchpriority="high"/);
+  assert.match(html, /<link rel="preload" as="image" href="\/assets\/media\/srelens-demo-changes\.gif">/);
+  assert.match(html, /alt="srelens desktop watching live cluster changes: a Deployment replica count dropping, CrashLoopBackOff, then logs showing ImagePullBackOff for a missing nginx tag"/);
+  assert.ok(html.includes('<p class="shot-cap">demo · live watches as a Deployment fails and recovers</p>'));
+});
+
+test('the homepage has no tour dialog, video or link, and the media files stay published', () => {
   assert.doesNotMatch(html, /data-tour|tour-|<dialog|<video|srelens-product-tour|walkthrough/i);
   for (const ext of ['mp4', 'gif']) assert.ok(existsSync(join(ROOT, `assets/media/srelens-product-tour.${ext}`)), `srelens-product-tour.${ext} was deleted`);
+  assert.ok(existsSync(join(ROOT, 'assets/media/srelens-demo-changes.gif')), 'srelens-demo-changes.gif was deleted');
 });
 
 test('site.css has no rule for the removed tour or its text button', () => {

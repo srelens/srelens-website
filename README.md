@@ -34,7 +34,7 @@ assets/             logos, favicons, OG sources
 assets/shots/       product screenshots (webp, 2400w, desktop dark-*/light-* and tui-*)
 assets/captures/    raw ANSI sources of the srectl text captures (not published)
 assets/og/          1200x630 OG cards per page (jpg and png)
-assets/media/       17-second product walkthrough in MP4 and GIF formats
+assets/media/       homepage demo GIF plus the 17-second product walkthrough in MP4 and GIF formats
 scripts/            authoring tools: shared shell, captures, screenshots, OG cards, review shots (not published)
 tests/              zero-dependency tests for URLs, SEO, shell, contrast, captures, docs (not published)
 docs/superpowers/   design spec and plans for the terminal-native redesign (not published)
