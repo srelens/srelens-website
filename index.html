@@ -54,7 +54,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
 
-  <link rel="preload" as="image" href="/assets/shots/dark-overview.webp" media="(prefers-color-scheme: dark)">
+  <link rel="preload" as="image" href="/assets/media/srelens-demo-changes.gif">
   <link rel="stylesheet" href="/site.css?v=1">
 
   <!-- Structured data: SoftwareApplication -->
@@ -178,6 +178,13 @@
         </p>
         <p class="hero-platforms"><b>Desktop GUI</b> · <b>Terminal UI (TUI)</b> · <b>macOS</b> · <b>Linux</b> · <b>Windows</b> · free and open source</p>
 
+        <figure class="shot">
+          <img src="/assets/media/srelens-demo-changes.gif" width="1280" height="720"
+               fetchpriority="high"
+               alt="srelens desktop watching live cluster changes: a Deployment replica count dropping, CrashLoopBackOff, then logs showing ImagePullBackOff for a missing nginx tag">
+        </figure>
+        <p class="shot-cap">demo · live watches as a Deployment fails and recovers</p>
+
         <div class="modes" data-modes>
           <div class="mode-bar">
             <div class="mode-tabs" role="tablist" aria-label="Choose an app" hidden>
@@ -193,8 +200,7 @@
               <a class="btn btn-primary" href="/download/">Download <span data-version>v0.16.0</span></a>
             </div>
             <figure class="shot hero-shot">
-              <img class="shot-dark" src="/assets/shots/dark-overview.webp" width="2400" height="1461"
-                   fetchpriority="high"
+              <img class="shot-dark" src="/assets/shots/dark-overview.webp" width="2400" height="1461" loading="lazy"
                    alt="srelens cluster overview of the three-node kind-srelens-demo cluster, flagging the crash-looping ledger-worker in payments as not ready">
               <img class="shot-light" src="/assets/shots/light-overview.webp" width="2400" height="1461" loading="lazy"
                    alt="srelens cluster overview of the three-node kind-srelens-demo cluster, flagging the crash-looping ledger-worker in payments as not ready, light theme">
